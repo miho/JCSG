@@ -12,7 +12,32 @@ In addition to [csg.js](https://github.com/evanw/csg.js) this library provides t
 
 ![](/resources/screenshot1.png)
 
-### Sample:
+## How to Build JavaCSG
+
+### Requirements
+
+- Java >= 1.8
+- Internet connection (dependencies are downloaded automatically)
+- IDE: [Gradle](http://www.gradle.org/) Plugin (not necessary for command line usage)
+
+### IDE
+
+Open the `JavaCSG` [Gradle](http://www.gradle.org/) project in your favourite IDE (tested with NetBeans 7.4) and build it
+by calling the `assemble` task.
+
+### Command Line
+
+Navigate to the [Gradle](http://www.gradle.org/) project (e.g., `path/to/JavaCSG`) and enter the following command
+
+#### Bash (Linux/OS X/Cygwin/other Unix-like shell)
+
+    sh gradlew assemble
+    
+#### Windows (CMD)
+
+    gradlew assemble
+
+## Sample:
 
 
 ```java
