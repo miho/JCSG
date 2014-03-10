@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  */
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         // we use cube and sphere as base geometries
         CSG cube = new Cube(2).toCSG();
@@ -61,10 +61,7 @@ public class Main {
         
         // save union as stl
         try {
-            FileUtil.write(
-                    Paths.get("sample.stl"),
-                    union.toStlString()
-            );
+            FileUtil.write(Paths.get("sample.stl"), union.toStlString());
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
