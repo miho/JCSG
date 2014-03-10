@@ -37,7 +37,7 @@ Navigate to the [Gradle](http://www.gradle.org/) project (e.g., `path/to/JavaCSG
 
     gradlew assemble
 
-## Sample:
+## Code Sample:
 
 
 ```java
