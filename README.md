@@ -1,6 +1,8 @@
 JavaCSG
 =======
 
+Java implementation of BSP based CSG (Constructive Solid Geometry). This implementation uses the same CSG algorithm as [csg.js](https://github.com/evanw/csg.js). In addition to [csg.js](https://github.com/evanw/csg.js) this library supports extrusion of concave, non-intersecting polygons. It uses [Poly2Tri](https://code.google.com/p/poly2tri/) for triangulation.
+
 
 ```java
 
