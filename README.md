@@ -10,6 +10,10 @@ In addition to [csg.js](https://github.com/evanw/csg.js) this library provides t
 - STL import and export (STLLoader from [Fiji](https://github.com/fiji/fiji/blob/master/src-plugins/3D_Viewer/src/main/java/customnode/STLLoader.java))
 
 
+![](http://github.com/miho/JavaCSG/blob/master/resources/screenshot1.png)
+
+
+
 ```java
 
         // we use cube and sphere as base geometries
