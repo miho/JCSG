@@ -14,10 +14,17 @@ import java.util.List;
 import javax.vecmath.Point3f;
 
 /**
- *
+ * Loads a CSG from stl.
+ * 
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class STL {
+    /**
+     * Loads a CSG from stl.
+     * @param path file path
+     * @return CSG
+     * @throws IOException if loading failed
+     */
     public static CSG file(Path path) throws IOException {
         STLLoader loader = new STLLoader();
         
