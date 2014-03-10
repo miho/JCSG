@@ -1,7 +1,7 @@
 JavaCSG
 =======
 
-Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only Java implementation I am aware of. This implementation uses the same CSG algorithm as [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
+Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses the same CSG algorithm as [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
 
 In addition to [csg.js](https://github.com/evanw/csg.js) this library provides the following features:
 
