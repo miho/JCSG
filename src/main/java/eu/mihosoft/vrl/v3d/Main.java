@@ -61,7 +61,7 @@ public class Main {
         
         // save union as stl
         try {
-            FileUtil.write(Paths.get("sample.stl"), union.toStlString());
+            FileUtil.write(Paths.get("sample.stl"), ServoWheel.toCSG().transformed(Transform.unity().scale(0.2)).toStlString());
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
