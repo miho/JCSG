@@ -59,8 +59,6 @@ public class ServoWheel {
               Transform rot = Transform.unity().rotZ(i * (360.0 / toothCount));  
               
               tooth = tooth.transformed(rot.apply(translate));
-
-//              tooth = tooth.transformed(rot);
             
             if (i == 0) {
                 result = tooth;
