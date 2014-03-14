@@ -82,16 +82,11 @@ public class ServoWheel {
             double toothWidth,
             double armLength,
             int armCount) {
-        
+        return null;
     }
     
     public static CSG arm(double toothLength, double toothWidth, double headHeight, double headHeight1, double headHeight2, int holeCount) {
-        double armScrewDiameter = 2;
-        
-        return difference(
-                new Cylinder(new Vector3d(0, 0, 0), new Vector3d(0, 0, headHeight2), toothWidth/2.0, 16).toCSG(),
-                Extrude.points(new Vector3d(0, headHeight, headHeight), points)
-                );
+        return null;
     }
     
     private static CSG union(CSG first, CSG... csgs) {

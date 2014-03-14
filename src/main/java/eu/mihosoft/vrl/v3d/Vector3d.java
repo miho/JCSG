@@ -40,6 +40,12 @@ public class Vector3d {
     public double x;
     public double y;
     public double z;
+    
+    public static final Vector3d ZERO = new Vector3d(0, 0, 0);
+    public static final Vector3d UNITY = new Vector3d(1, 1, 1);
+    public static final Vector3d X_ONE = new Vector3d(1, 0, 0);
+    public static final Vector3d Y_ONE = new Vector3d(0, 1, 0);
+    public static final Vector3d Z_ONE = new Vector3d(0, 0, 1);
 
     /**
      * Creates a new vector.
