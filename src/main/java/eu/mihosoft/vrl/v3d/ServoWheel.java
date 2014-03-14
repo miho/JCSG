@@ -72,4 +72,55 @@ public class ServoWheel {
         return result;
 
     }
+    
+    public static CSG servoArm(
+            double headDiameter,
+            double headHeight,
+            double headThickness,
+            double headScrewDiameter,
+            double toothLength, 
+            double toothWidth,
+            double armLength,
+            int armCount) {
+        
+    }
+    
+    public static CSG arm(double toothLength, double toothWidth, double headHeight, double headHeight1, double headHeight2, int holeCount) {
+        double armScrewDiameter = 2;
+        
+        return difference(
+                new Cylinder(new Vector3d(0, 0, 0), new Vector3d(0, 0, headHeight2), toothWidth/2.0, 16).toCSG(),
+                Extrude.points(new Vector3d(0, headHeight, headHeight), points)
+                );
+    }
+    
+    private static CSG union(CSG first, CSG... csgs) {
+        CSG result = first;
+        
+        for (CSG csg : csgs) {
+            result = result.union(csg);
+        }
+        
+        return first;
+    }
+    
+    private static CSG difference(CSG first, CSG... csgs) {
+        CSG result = first;
+        
+        for (CSG csg : csgs) {
+            result = result.difference(csg);
+        }
+        
+        return first;
+    }
+    
+    private static CSG intersect(CSG first, CSG... csgs) {
+        CSG result = first;
+        
+        for (CSG csg : csgs) {
+            result = result.intersect(csg);
+        }
+        
+        return first;
+    }
 }
