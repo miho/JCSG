@@ -1,39 +1,43 @@
 /**
  * CSG.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    1. Redistributions of source code must retain the above copyright notice, this list of
- *       conditions and the following disclaimer.
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
  *
- *    2. Redistributions in binary form must reproduce the above copyright notice, this list
- *       of conditions and the following disclaimer in the documentation and/or other materials
- *       provided with the distribution.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * The views and conclusions contained in the software and documentation are those of the
- * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
- */ 
-
+ * The views and conclusions contained in the software and documentation are
+ * those of the authors and should not be interpreted as representing official
+ * policies, either expressed or implied, of Michael Hoffer
+ * <info@michaelhoffer.de>.
+ */
 package eu.mihosoft.vrl.v3d;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.scene.shape.TriangleMesh;
 
 /**
  * Constructive Solid Geometry (CSG).
@@ -278,6 +282,69 @@ public class CSG {
         CSG result = CSG.fromPolygons(newpolygons);
 
         return result;
+    }
+
+    /**
+     * Returns the CSG as JavaFX triangle mesh.
+     *
+     * @return the CSG as JavaFX triangle mesh
+     */
+    public TriangleMesh toJavaFXMesh() {
+
+        TriangleMesh mesh = new TriangleMesh();
+
+        for (Polygon p : getPolygons()) {
+            if (p.vertices.size() >= 3) {
+
+                // TODO: improve the triangulation?
+                //
+                // JavaOne requires triangular polygons.
+                // If our polygon has more vertices, create
+                // multiple triangles:
+                Vertex firstVertex = p.vertices.get(0);
+                for (int i = 0; i < p.vertices.size() - 2; i++) {
+
+                    mesh.getPoints().addAll(
+                            (float) firstVertex.pos.x,
+                            (float) firstVertex.pos.y,
+                            (float) firstVertex.pos.z);
+
+                    mesh.getTexCoords().addAll(0); // texture (not covered)
+                    mesh.getTexCoords().addAll(0);
+
+                    Vertex secondVertex = p.vertices.get(i + 1);
+
+                    mesh.getPoints().addAll(
+                            (float) secondVertex.pos.x,
+                            (float) secondVertex.pos.y,
+                            (float) secondVertex.pos.z);
+
+                    mesh.getTexCoords().addAll(0); // texture (not covered)
+                    mesh.getTexCoords().addAll(0);
+
+                    Vertex thirdVertex = p.vertices.get(i + 2);
+
+                    mesh.getPoints().addAll(
+                            (float) thirdVertex.pos.x,
+                            (float) thirdVertex.pos.y,
+                            (float) thirdVertex.pos.z);
+
+                    mesh.getTexCoords().addAll(0); // texture (not covered)
+                    mesh.getTexCoords().addAll(0);
+
+                    mesh.getFaces().addAll(
+                            0, // first vertex
+                            0, // texture (not covered)
+                            i + 1, // second vertex
+                            0, // texture (not covered)
+                            i + 2, // third vertex
+                            0 // texture (not covered)
+                    );
+                } // end for
+            }
+        } // end for
+
+        return mesh;
     }
 
 }

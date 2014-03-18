@@ -61,7 +61,8 @@ public class Main {
         
         // save union as stl
         try {
-            FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
+            FileUtil.write(Paths.get("sample.stl"), 
+                    new ServoHead().servoTooth().transformed(Transform.unity().scale(1.0)).toStlString());
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

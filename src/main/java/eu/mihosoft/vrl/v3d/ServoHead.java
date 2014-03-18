@@ -43,7 +43,7 @@ public class ServoHead {
     public ServoHead() {
     }
 
-    private CSG servoTooth() {
+    public CSG servoTooth() {
 
         //
         //       |  tw  |
@@ -97,7 +97,7 @@ public class ServoHead {
     public CSG servoHeadFemale() {
 
         CSG cyl1 = new Cylinder(headDiameter / 2 + headThickness, headHeight + 1, 16).toCSG();
-        cyl1 = cyl1.transformed(Transform.unity().translateZ(0.1));
+//        cyl1 = cyl1.transformed(Transform.unity().translateZ(0.1));
 
         CSG cyl2 = new Cylinder(headScrewDiameter / 2, 10, 16).toCSG();
 
