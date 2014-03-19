@@ -1,0 +1,17 @@
+language: java
+jdk:
+  - oraclejdk8
+  
+before_install:
+  - "export DISPLAY=:99.0"
+  - "export TERM=dumb"
+  - "sh -e /etc/init.d/xvfb start"
+
+install:
+    - TERM=dumb ./gradlew --refresh-dependencies --stacktrace
+
+script:
+    - TERM=dumb ./gradlew build --stacktrace
+
+after_failure:
+  - "cat ./build/test-results/*.xml"
