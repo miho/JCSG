@@ -69,7 +69,7 @@ public class Extrude {
         double direction = polygon1.plane.normal.dot(dir);
        
         if (direction > 0) {
-            System.out.println("CW -> CCW");
+            System.out.println("Extrude: CW -> CCW");
             polygon1 = polygon1.flipped();
         }
 
