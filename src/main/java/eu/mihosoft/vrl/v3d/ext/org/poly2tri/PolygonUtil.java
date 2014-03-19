@@ -89,7 +89,6 @@ public class PolygonUtil {
                     result.add(poly);
                     counter = 0;
                     triPoints = new ArrayList<>();
-                    System.out.println(poly.toStlString());
 
                 } else {
                     counter++;

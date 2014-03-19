@@ -261,7 +261,7 @@ public class CSG {
         sb.append("solid v3d.csg\n");
         this.polygons.stream().forEach(
                 (Polygon p) -> {
-                    p.toStlString(sb).append("hello\n");
+                    p.toStlString(sb);
                 });
         sb.append("endsolid v3d.csg\n");
         return sb;
