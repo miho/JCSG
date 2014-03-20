@@ -82,7 +82,7 @@ public class Extrude {
         return extrude(dir, Polygon.fromPoints(toCCW(newList)));
     }
 
-    private static CSG extrudeSimple(Vector3d dir, Polygon polygon1) {
+    private static CSG extrude(Vector3d dir, Polygon polygon1) {
         List<Polygon> newPolygons = new ArrayList<>();
 
         newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
@@ -111,10 +111,6 @@ public class Extrude {
 
         return CSG.fromPolygons(newPolygons);
 
-    }
-
-    private static CSG extrude(Vector3d dir, Polygon polygon1) {
-        return extrudeSimple(dir, polygon1);
     }
 
     public static List<Vector3d> toCCW(List<Vector3d> points) {
@@ -154,7 +150,8 @@ public class Extrude {
             if (v.pos.y > highestLeftVertex.pos.y) {
                 highestLeftVertex = v;
                 highestLeftVertexIndex = i;
-            } else if (v.pos.y == highestLeftVertex.pos.y && v.pos.x < highestLeftVertex.pos.x) {
+            } else if (v.pos.y == highestLeftVertex.pos.y
+                    && v.pos.x < highestLeftVertex.pos.x) {
                 highestLeftVertex = v;
                 highestLeftVertexIndex = i;
             }
@@ -184,19 +181,18 @@ public class Extrude {
             selectedVIndex = prevVertexIndex;
         }
 
-//        System.out.println("sel: " + selectedVIndex + ", hl: " + highestLeftVertexIndex);
-
-        if (selectedVIndex == 0 && highestLeftVertexIndex == polygon.vertices.size() - 1) {
+        if (selectedVIndex == 0
+                && highestLeftVertexIndex == polygon.vertices.size() - 1) {
             selectedVIndex = polygon.vertices.size();
-//            System.out.println(" -> sel " + selectedVIndex);
         }
 
-        if (highestLeftVertexIndex == 0 && selectedVIndex == polygon.vertices.size() - 1) {
+        if (highestLeftVertexIndex == 0
+                && selectedVIndex == polygon.vertices.size() - 1) {
             highestLeftVertexIndex = polygon.vertices.size();
-//            System.out.println(" -> hl " + selectedVIndex);
         }
 
-        // indicates whether edge points from highestLeftVertexIndex towards the sel index (ccw)
+        // indicates whether edge points from highestLeftVertexIndex towards
+        // the sel index (ccw)
         return selectedVIndex > highestLeftVertexIndex;
     }
 
