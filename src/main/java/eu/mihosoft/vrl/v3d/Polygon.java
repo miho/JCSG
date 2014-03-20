@@ -312,8 +312,6 @@ public final class Polygon {
     private static Polygon fromPoints(
             List<Vector3d> points, PropertyStorage shared, Plane plane) {
         
-        points = Extrude.toCCW(points);
-        
         Vector3d normal
                 = (plane != null) ? plane.normal.clone() : new Vector3d(0, 0, 0);
 
