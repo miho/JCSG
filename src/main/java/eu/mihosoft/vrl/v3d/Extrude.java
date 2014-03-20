@@ -113,7 +113,7 @@ public class Extrude {
 
     }
 
-    public static List<Vector3d> toCCW(List<Vector3d> points) {
+    static List<Vector3d> toCCW(List<Vector3d> points) {
 
         List<Vector3d> result = new ArrayList<>(points);
 
@@ -124,7 +124,7 @@ public class Extrude {
         return result;
     }
 
-    public static List<Vector3d> toCW(List<Vector3d> points) {
+    static List<Vector3d> toCW(List<Vector3d> points) {
 
         List<Vector3d> result = new ArrayList<>(points);
 
