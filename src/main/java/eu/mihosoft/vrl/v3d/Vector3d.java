@@ -129,6 +129,19 @@ public class Vector3d {
     public Vector3d times(double a) {
         return new Vector3d(x * a, y * a, z * a);
     }
+    
+        /**
+     * Returns the product of this vector and the specified vector.
+     *
+     * @param a the vector
+     *
+     * <b>Note:</b> this vector is not modified.
+     *
+     * @return the product of this vector and the specified vector
+     */
+    public Vector3d times(Vector3d a) {
+        return new Vector3d(x * a.x, y * a.y, z * a.z);
+    }
 
     /**
      * Returns this vector devided by the specified value.
@@ -178,7 +191,7 @@ public class Vector3d {
      *
      * @return the magnitude of this vector
      */
-    public double length() {
+    public double magnitude() {
         return Math.sqrt(this.dot(this));
     }
 
@@ -189,8 +202,8 @@ public class Vector3d {
      *
      * @return a normalized copy of this vector with {@code length}
      */
-    public Vector3d unit() {
-        return this.dividedBy(this.length());
+    public Vector3d normalized() {
+        return this.dividedBy(this.magnitude());
     }
 
     /**
