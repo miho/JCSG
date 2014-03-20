@@ -5,6 +5,10 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  * @author miho
@@ -52,14 +56,19 @@ public class ServoMount {
     private CSG boardMount() {
 
         double h = servoMountHeight - borderThickness;
-
-        return Extrude.points(new Vector3d(0,0,boardHolderLength),
-                Vector3d.ZERO,
+        
+        List<Vector3d> points = Arrays.asList(Vector3d.ZERO,
                 new Vector3d(0, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness, h),
                 new Vector3d(boardMountingThickness, h),
                 new Vector3d(boardMountingThickness, 0)
+        );
+        
+        Collections.reverse(points);
+
+        return Extrude.points(new Vector3d(0,0,boardHolderLength),
+                points
         );
     }
 }

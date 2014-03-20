@@ -30,6 +30,7 @@
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 
+import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.Plane;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.Vertex;
@@ -53,9 +54,11 @@ public class PolygonUtil {
 
         Vector3d normal = concave.vertices.get(0).normal.clone();
 
-        Plane plane = concave.plane.clone();
-
-        boolean cw = plane.dist > 0;
+//        Plane plane = concave.plane.clone();
+//
+//        boolean cw = plane.dist > 0;
+        
+        boolean cw = !Extrude.isCCW(concave);
 
         List< PolygonPoint> points = new ArrayList<>();
 

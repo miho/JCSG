@@ -202,7 +202,7 @@ public class Vector3d {
      *
      * @return a normalized copy of this vector with {@code length}
      */
-    public Vector3d normalized() {
+    public Vector3d unit() {
         return this.dividedBy(this.magnitude());
     }
 
