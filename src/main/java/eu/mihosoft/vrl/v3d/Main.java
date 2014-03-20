@@ -64,10 +64,10 @@ public class Main {
             FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
           FileUtil.write(Paths.get("sample.stl"), new ServoMount().toCSG().transformed(Transform.unity().scale(1.0)).toStlString());
    
-//                 FileUtil.write(Paths.get("sample.stl"), RaspberryPiMount.boardAndPegs().transformed(Transform.unity().scale(1.0)).toStlString());
+                 FileUtil.write(Paths.get("sample.stl"), RaspberryPiMount.boardAndPegs().transformed(Transform.unity().scale(1.0)).toStlString());
                  
                  
-//                  FileUtil.write(Paths.get("sample.stl"), Peg.peg().transformed(Transform.unity().scale(1.0)).toStlString());
+                  FileUtil.write(Paths.get("sample.stl"), Peg.peg().transformed(Transform.unity().scale(1.0)).toStlString());
 
     
     }

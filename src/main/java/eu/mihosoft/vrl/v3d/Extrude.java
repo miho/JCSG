@@ -82,38 +82,30 @@ public class Extrude {
         return extrude(dir, Polygon.fromPoints(toCCW(newList)));
     }
 
-    private static CSG extrude(Vector3d dir, Polygon polygon1) {
+    private static CSG extrudeSimple(Vector3d dir, Polygon polygon1) {
         List<Polygon> newPolygons = new ArrayList<>();
 
-//        double direction = polygon1.plane.normal.dot(dir);
-//
-//        if (direction > 0) {
-//            System.out.println("Extrude: CW -> CCW");
-//            polygon1 = polygon1.flipped();
-//        }
         newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
-
         Polygon polygon2 = polygon1.translated(dir);
 
         int numvertices = polygon1.vertices.size();
         for (int i = 0; i < numvertices; i++) {
-            List<Vector3d> sidefacepoints = new ArrayList<>();
-            int nexti = (i < (numvertices - 1)) ? i + 1 : 0;
-            sidefacepoints.add(polygon1.vertices.get(i).pos);
-            sidefacepoints.add(polygon2.vertices.get(i).pos);
-            sidefacepoints.add(polygon2.vertices.get(nexti).pos);
-            sidefacepoints.add(polygon1.vertices.get(nexti).pos);
-            Polygon sidefacepolygon = Polygon.fromPoints(
-                    (sidefacepoints), polygon1.shared);
-            newPolygons.add(sidefacepolygon);
+
+            int nexti = (i + 1) % numvertices;
+
+            Vector3d bottomV1 = polygon1.vertices.get(i).pos;
+            Vector3d topV1 = polygon2.vertices.get(i).pos;
+            Vector3d bottomV2 = polygon1.vertices.get(nexti).pos;
+            Vector3d topV2 = polygon2.vertices.get(nexti).pos;
+
+            List<Vector3d> pPoints = Arrays.asList(bottomV2, topV2, topV1, bottomV1);
+
+            newPolygons.add(Polygon.fromPoints(pPoints));
+
         }
 
-//        polygon2 = polygon2.flipped();
+        polygon2 = polygon2.flipped();
         List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
-
-        for (Polygon polygon : topPolygons) {
-            polygon.flip();
-        }
 
         newPolygons.addAll(topPolygons);
 
@@ -121,69 +113,25 @@ public class Extrude {
 
     }
 
-    private static CSG extrudeWithSubPoly(Vector3d dir, Polygon polygon1) {
-        List<Polygon> newPolygons = new ArrayList<>();
-
-//        double direction = polygon1.plane.normal.dot(dir);
-//
-//        if (direction > 0) {
-//            System.out.println("Extrude: CW -> CCW");
-//            polygon1 = polygon1.flipped();
-//        }
-        
-        List<Polygon> bottomPolygons = PolygonUtil.concaveToConvex(polygon1);
-
-        for (Polygon bottom : bottomPolygons) {
-            
-            newPolygons.add(bottom);
-            
-            Polygon top = bottom.translated(dir);
-
-            int numvertices = bottom.vertices.size();
-            for (int i = 0; i < numvertices; i++) {
-                List<Vector3d> sidefacepoints = new ArrayList<>();
-                int nexti = (i < (numvertices - 1)) ? i + 1 : 0;
-                sidefacepoints.add(bottom.vertices.get(i).pos);
-                sidefacepoints.add(top.vertices.get(i).pos);
-                sidefacepoints.add(top.vertices.get(nexti).pos);
-                sidefacepoints.add(bottom.vertices.get(nexti).pos);
-                Polygon sidefacepolygon = Polygon.fromPoints(
-                        sidefacepoints, bottom.shared);
-                newPolygons.add(sidefacepolygon);
-            }
-            
-            newPolygons.add(top.flipped());
-
-        }
-
-////        polygon2 = polygon2.flipped();
-//        List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
-//
-//        for (Polygon polygon : topPolygons) {
-//            polygon.flip();
-//        }
-
-//        newPolygons.addAll(topPolygons);
-
-        return CSG.fromPolygons(newPolygons);
-
+    private static CSG extrude(Vector3d dir, Polygon polygon1) {
+        return extrudeSimple(dir, polygon1);
     }
 
     public static List<Vector3d> toCCW(List<Vector3d> points) {
-        
+
         List<Vector3d> result = new ArrayList<>(points);
-        
+
         if (!isCCW(Polygon.fromPoints(result))) {
             Collections.reverse(result);
         }
 
         return result;
     }
-    
+
     public static List<Vector3d> toCW(List<Vector3d> points) {
-        
+
         List<Vector3d> result = new ArrayList<>(points);
-        
+
         if (isCCW(Polygon.fromPoints(result))) {
             Collections.reverse(result);
         }
@@ -236,13 +184,62 @@ public class Extrude {
             selectedVIndex = prevVertexIndex;
         }
 
-        // indicates whether edge points towards the highestLeftVertexIndex (ccw/cw)
-        return selectedVIndex < highestLeftVertexIndex;
+//        System.out.println("sel: " + selectedVIndex + ", hl: " + highestLeftVertexIndex);
+
+        if (selectedVIndex == 0 && highestLeftVertexIndex == polygon.vertices.size() - 1) {
+            selectedVIndex = polygon.vertices.size();
+//            System.out.println(" -> sel " + selectedVIndex);
+        }
+
+        if (highestLeftVertexIndex == 0 && selectedVIndex == polygon.vertices.size() - 1) {
+            highestLeftVertexIndex = polygon.vertices.size();
+//            System.out.println(" -> hl " + selectedVIndex);
+        }
+
+        // indicates whether edge points from highestLeftVertexIndex towards the sel index (ccw)
+        return selectedVIndex > highestLeftVertexIndex;
     }
 
     private static double normalizedX(Vector3d v1, Vector3d v2) {
         Vector3d v2MinusV1 = v2.minus(v1);
 
         return v2MinusV1.dividedBy(v2MinusV1.magnitude()).times(Vector3d.X_ONE).x;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("1 CCW: " + isCCW(Polygon.fromPoints(
+                new Vector3d(-1, -1),
+                new Vector3d(0, -1),
+                new Vector3d(1, 0),
+                new Vector3d(1, 1)
+        )));
+
+        System.out.println("3 CCW: " + isCCW(Polygon.fromPoints(
+                new Vector3d(1, 1),
+                new Vector3d(1, 0),
+                new Vector3d(0, -1),
+                new Vector3d(-1, -1)
+        )));
+
+        System.out.println("2 CCW: " + isCCW(Polygon.fromPoints(
+                new Vector3d(0, -1),
+                new Vector3d(1, 0),
+                new Vector3d(1, 1),
+                new Vector3d(-1, -1)
+        )));
+
+        System.out.println("4 CCW: " + isCCW(Polygon.fromPoints(
+                new Vector3d(-1, -1),
+                new Vector3d(-1, 1),
+                new Vector3d(0, 0)
+        )));
+
+        System.out.println("5 CCW: " + isCCW(Polygon.fromPoints(
+                new Vector3d(0, 0),
+                new Vector3d(0, 1),
+                new Vector3d(0.5, 0.5),
+                new Vector3d(1, 1.1),
+                new Vector3d(1, 0)
+        )));
     }
 }
