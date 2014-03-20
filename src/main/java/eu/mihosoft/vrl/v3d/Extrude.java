@@ -136,7 +136,8 @@ public class Extrude {
     }
 
     public static boolean isCCW(Polygon polygon) {
-
+        // thanks to Sepp Reiter for explaining me the algorithm!
+        
         if (polygon.vertices.size() < 3) {
             throw new IllegalArgumentException("Only polygons with at least 3 vertices are supported!");
         }
