@@ -42,18 +42,18 @@ public class ServoMount {
     }
 
     public CSG toCSG() {
-        CSG bm1 = boardMount().transformed(Transform.unity().rotY(90).rotZ(90).translate(borderThickness, borderThickness, -boardHolderLength / 2));
-        CSG bm2 = bm1.transformed(Transform.unity().translateX(servoWidth));
+        CSG bm1 = boardMount().transformed(Transform.unity().rotY(90).rotZ(90).translate(borderThickness, borderThickness, -boardHolderLength + borderThickness));
+        CSG bm2 = bm1.transformed(Transform.unity().translateX(servoWidth - borderThickness/2.0));
         CSG sm = toCSGSimple();
 
-        return sm.union(bm1).union(bm2).transformed(Transform.unity().scale(0.08));
+        return sm.union(bm1).union(bm2);//.transformed(Transform.unity().scale(0.08));
     }
 
     private CSG boardMount() {
 
         double h = servoMountHeight - borderThickness;
 
-        return Extrude.points(Vector3d.Z_ONE.times(boardHolderLength),
+        return Extrude.points(new Vector3d(0,0,boardHolderLength),
                 Vector3d.ZERO,
                 new Vector3d(0, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness, -borderThickness),
