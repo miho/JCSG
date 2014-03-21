@@ -50,6 +50,8 @@ public class Cube implements Primitive {
      */
     private Vector3d dimensions;
     
+    private boolean centered;
+    
     private final PropertyStorage properties = new PropertyStorage();
 
     /**
@@ -113,6 +115,16 @@ public class Cube implements Primitive {
             }
             polygons.add(new Polygon(vertices,properties));
         }
+        
+        if (!centered) {
+            
+            Transform centerTransform = Transform.unity().translate(dimensions.x/2.0, dimensions.y/2.0, dimensions.z/2.0);
+            
+            for (Polygon p : polygons) {
+                p.transform(centerTransform);
+            }
+        }
+        
         return polygons;
     }
 
@@ -148,4 +160,12 @@ public class Cube implements Primitive {
     public PropertyStorage getProperties() {
         return properties;
     }
+    
+    public Cube noCenter() {
+        centered = true;
+        return this;
+    }
+    
+    
+
 }
