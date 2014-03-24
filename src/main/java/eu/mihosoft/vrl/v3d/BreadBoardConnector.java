@@ -19,9 +19,9 @@ public class BreadBoardConnector {
 
     private double boardMountingThickness = 2.0;
 
-    private double breadBoardThickness = 10;
+    private double breadBoardThickness = 9;
 
-    private double connectorDepth = 15;
+    private double connectorDepth = 8;
 
     private double pegHeight = 1;
     private double pegToothHeight = 0.3;
@@ -36,7 +36,7 @@ public class BreadBoardConnector {
         double th = 2;
         double smh = boardMountingWidth;
         double bmth = boardMountingThickness;
-        double bbth = breadBoardThickness;
+        double bbth = breadBoardThickness -th;
 
         double pth = pegToothHeight;
         double ph = pegHeight;
@@ -71,7 +71,7 @@ public class BreadBoardConnector {
         BreadBoardConnector arConnect = new BreadBoardConnector();
 
         // save union as stl
-        FileUtil.write(Paths.get("sample.stl"), arConnect.toCSG().toStlString());
+        FileUtil.write(Paths.get("sample.stl"), arConnect.toCSG().transformed(Transform.unity().mirror(Plane.XY_PLANE).rotY(180)).toStlString());
 
     }
 }
