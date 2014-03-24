@@ -429,7 +429,8 @@ public class Transform {
      * <code>false</code> otherwise
      */
     public boolean isMirror() {
-        return m.m00 < 0 || m.m11 < 0 || m.m22 < 0 || m.m33 < 0;
+//        return m.m00 < 0 || m.m11 < 0 || m.m22 < 0 || m.m33 < 0;
+        return false;
     }
 
     /**
