@@ -25,8 +25,8 @@ public class RaspberryArduinoConnector {
     private double connectorDepth = 8;
     
     private double pegHeight= 1;
-    private double pegToothHeight = 0.6;
-    private double pegOverlap = 0.5;
+    private double pegToothHeight = 0.3;
+    private double pegOverlap = 0.6;
     
     private double boardMountingWidth = 8;
     
@@ -45,6 +45,7 @@ public class RaspberryArduinoConnector {
         return Extrude.points(new Vector3d(0,0,connectorDepth),
                 new Vector3d(-th,-th),
                 new Vector3d(smh + pth+ph,-th),
+                new Vector3d(smh + pth+Math.max(ph/3,0.4),0 + po),
                 new Vector3d(smh + pth,0 + po),
                 new Vector3d(smh,0),
                 new Vector3d(0,0),
@@ -59,6 +60,7 @@ public class RaspberryArduinoConnector {
                 new Vector3d(0,ath+th+b2bs+th+rth),
                 new Vector3d(smh,ath+th+b2bs+th+rth),
                 new Vector3d(smh + pth,ath+th+b2bs+th+rth - po),
+                new Vector3d(smh + pth+Math.max(ph/3,0.4), ath + th + b2bs + th + rth - po),
                 new Vector3d(smh + pth+ph,ath+th+b2bs+th+rth+th),
                 new Vector3d(-th,ath+th+b2bs+th+rth+th)
         );
