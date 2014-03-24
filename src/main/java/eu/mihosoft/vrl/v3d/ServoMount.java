@@ -28,6 +28,12 @@ public class ServoMount {
 
     private double boardMountingThickness = 2;
     private double boardHolderLength = 5;
+    
+    private double boardMountingWidth = 8;
+    
+    private double pegHeight= 1;
+    private double pegToothHeight = 0.6;
+    private double pegOverlap = 0.5;
 
     public CSG toCSGSimple() {
 
@@ -55,13 +61,14 @@ public class ServoMount {
 
     private CSG boardMount() {
 
-        double h = servoMountHeight - borderThickness;
+        double h = boardMountingWidth;
         
         List<Vector3d> points = Arrays.asList(Vector3d.ZERO,
                 new Vector3d(0, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness, -borderThickness),
-                new Vector3d(boardMountingThickness + borderThickness, h),
-                new Vector3d(boardMountingThickness, h),
+                new Vector3d(boardMountingThickness + borderThickness, h + pegToothHeight+pegHeight),
+                new Vector3d(boardMountingThickness - pegOverlap, h + pegToothHeight),
+                 new Vector3d(boardMountingThickness, h),
                 new Vector3d(boardMountingThickness, 0)
         );
         
