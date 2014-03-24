@@ -34,7 +34,7 @@ public class ArduinoMount {
 
         CSG first = prototype.clone().transformed(Transform.unity().translate(bottomWidth / 2.0, bottomHeight / 2.0, 0));
         CSG second = prototype.clone().transformed(Transform.unity().translate(bottomWidth / 2.0, -bottomHeight / 2.0, 0));
-        CSG third = prototype.clone().transformed(Transform.unity().translate(-bottomWidth / 2.0-1, 0, 0));
+        CSG third = prototype.clone().transformed(Transform.unity().translate(-bottomWidth / 2.0, 0, 0));
 
         CSG pins = first.union(second).union(third);
 
