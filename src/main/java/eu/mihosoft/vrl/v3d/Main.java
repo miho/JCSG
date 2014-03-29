@@ -61,10 +61,12 @@ public class Main {
                 union(cubePlusSphere.transformed(Transform.unity().translateX(6))).
                 union(cubeMinusSphere.transformed(Transform.unity().translateX(9))).
                 union(cubeIntersectSphere.transformed(Transform.unity().translateX(12)));
+        
+        FileUtil.write(Paths.get("sample.stl"), union.toStlString());
 
         // save union as stl
 //        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
-        FileUtil.write(Paths.get("sample.stl"), new ServoMount().toCSG().transformed(Transform.unity().scale(1.0)).toStlString());
+//        FileUtil.write(Paths.get("sample.stl"), new ServoMount().toCSG().transformed(Transform.unity().scale(1.0)).toStlString());
 
     }
 }
