@@ -293,6 +293,7 @@ public class CSG {
 
         TriangleMesh mesh = new TriangleMesh();
 
+        int counter = 0;
         for (Polygon p : getPolygons()) {
             if (p.vertices.size() >= 3) {
 
@@ -302,7 +303,7 @@ public class CSG {
                 // If our polygon has more vertices, create
                 // multiple triangles:
                 Vertex firstVertex = p.vertices.get(0);
-                for (int i = 0; i < p.vertices.size() - 2; i++) {
+                for (int i = 0; i < p.vertices.size()-2; i++) {
 
                     mesh.getPoints().addAll(
                             (float) firstVertex.pos.x,
@@ -333,16 +334,18 @@ public class CSG {
                     mesh.getTexCoords().addAll(0);
 
                     mesh.getFaces().addAll(
-                            0, // first vertex
+                            counter, // first vertex
                             0, // texture (not covered)
-                            i + 1, // second vertex
+                            counter + 1, // second vertex
                             0, // texture (not covered)
-                            i + 2, // third vertex
+                            counter + 2, // third vertex
                             0 // texture (not covered)
                     );
+                    counter+=3;
                 } // end for
             }
-        } // end for
+            
+        } // end for polygon
 
         return mesh;
     }
