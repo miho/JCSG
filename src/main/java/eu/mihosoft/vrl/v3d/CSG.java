@@ -289,9 +289,17 @@ public class CSG {
      *
      * @return the CSG as JavaFX triangle mesh
      */
-    public TriangleMesh toJavaFXMesh() {
+    public MeshContainer toJavaFXMesh() {
 
         TriangleMesh mesh = new TriangleMesh();
+
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double minZ = Double.MAX_VALUE;
+
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+        double maxZ = Double.MIN_VALUE;
 
         int counter = 0;
         for (Polygon p : getPolygons()) {
@@ -303,7 +311,17 @@ public class CSG {
                 // If our polygon has more vertices, create
                 // multiple triangles:
                 Vertex firstVertex = p.vertices.get(0);
-                for (int i = 0; i < p.vertices.size()-2; i++) {
+                for (int i = 0; i < p.vertices.size() - 2; i++) {
+
+                    if (firstVertex.pos.x < minX) {
+                        minX = firstVertex.pos.x;
+                    }
+                    if (firstVertex.pos.y < minY) {
+                        minY = firstVertex.pos.y;
+                    }
+                    if (firstVertex.pos.z < minZ) {
+                        minZ = firstVertex.pos.z;
+                    }
 
                     mesh.getPoints().addAll(
                             (float) firstVertex.pos.x,
@@ -314,6 +332,16 @@ public class CSG {
                     mesh.getTexCoords().addAll(0);
 
                     Vertex secondVertex = p.vertices.get(i + 1);
+
+                    if (secondVertex.pos.x < minX) {
+                        minX = secondVertex.pos.x;
+                    }
+                    if (secondVertex.pos.y < minY) {
+                        minY = secondVertex.pos.y;
+                    }
+                    if (secondVertex.pos.z < minZ) {
+                        minZ = secondVertex.pos.z;
+                    }
 
                     mesh.getPoints().addAll(
                             (float) secondVertex.pos.x,
@@ -330,6 +358,16 @@ public class CSG {
                             (float) thirdVertex.pos.y,
                             (float) thirdVertex.pos.z);
 
+                    if (thirdVertex.pos.x < minX) {
+                        minX = thirdVertex.pos.x;
+                    }
+                    if (thirdVertex.pos.y < minY) {
+                        minY = thirdVertex.pos.y;
+                    }
+                    if (thirdVertex.pos.z < minZ) {
+                        minZ = thirdVertex.pos.z;
+                    }
+
                     mesh.getTexCoords().addAll(0); // texture (not covered)
                     mesh.getTexCoords().addAll(0);
 
@@ -341,13 +379,13 @@ public class CSG {
                             counter + 2, // third vertex
                             0 // texture (not covered)
                     );
-                    counter+=3;
+                    counter += 3;
                 } // end for
             }
-            
+
         } // end for polygon
 
-        return mesh;
+        return new MeshContainer(mesh, maxX-minX, maxY-minY, maxZ-minZ);
     }
 
 }
