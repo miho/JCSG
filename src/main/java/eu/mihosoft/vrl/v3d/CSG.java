@@ -323,6 +323,16 @@ public class CSG {
                         minZ = firstVertex.pos.z;
                     }
 
+                    if (firstVertex.pos.x > maxX) {
+                        maxX = firstVertex.pos.x;
+                    }
+                    if (firstVertex.pos.y > maxY) {
+                        maxY = firstVertex.pos.y;
+                    }
+                    if (firstVertex.pos.z > maxZ) {
+                        maxZ = firstVertex.pos.z;
+                    }
+
                     mesh.getPoints().addAll(
                             (float) firstVertex.pos.x,
                             (float) firstVertex.pos.y,
@@ -341,6 +351,16 @@ public class CSG {
                     }
                     if (secondVertex.pos.z < minZ) {
                         minZ = secondVertex.pos.z;
+                    }
+
+                    if (secondVertex.pos.x > maxX) {
+                        maxX = firstVertex.pos.x;
+                    }
+                    if (secondVertex.pos.y > maxY) {
+                        maxY = firstVertex.pos.y;
+                    }
+                    if (secondVertex.pos.z > maxZ) {
+                        maxZ = firstVertex.pos.z;
                     }
 
                     mesh.getPoints().addAll(
@@ -368,6 +388,16 @@ public class CSG {
                         minZ = thirdVertex.pos.z;
                     }
 
+                    if (thirdVertex.pos.x > maxX) {
+                        maxX = firstVertex.pos.x;
+                    }
+                    if (thirdVertex.pos.y > maxY) {
+                        maxY = firstVertex.pos.y;
+                    }
+                    if (thirdVertex.pos.z > maxZ) {
+                        maxZ = firstVertex.pos.z;
+                    }
+
                     mesh.getTexCoords().addAll(0); // texture (not covered)
                     mesh.getTexCoords().addAll(0);
 
@@ -385,7 +415,7 @@ public class CSG {
 
         } // end for polygon
 
-        return new MeshContainer(mesh, maxX-minX, maxY-minY, maxZ-minZ);
+        return new MeshContainer(mesh, maxX - minX, maxY - minY, maxZ - minZ);
     }
 
 }

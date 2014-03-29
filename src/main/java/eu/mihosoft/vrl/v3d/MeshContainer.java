@@ -53,6 +53,9 @@ public class MeshContainer {
         return mesh;
     }
     
-    
+    @Override
+    public String toString() {
+        return "[w:" + width + ", h:"+height+",d:"+depth+"]"; 
+    }
     
 }
