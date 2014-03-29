@@ -14,6 +14,8 @@ In addition to CSG this library provides the following features:
 
 ![](/resources/screenshot1.png)
 
+To see what's possible with JavaCSG try [JavaFXScad](based on [JavaCSG](https://github.com/miho/JavaFXScad).
+
 ## How to Build JavaCSG
 
 ### Requirements
