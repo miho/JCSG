@@ -33,10 +33,10 @@
  */
 package eu.mihosoft.vrl.v3d;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javafx.scene.shape.TriangleMesh;
 
 /**
@@ -116,10 +116,24 @@ public class CSG {
     @Override
     public CSG clone() {
         CSG csg = new CSG();
-        csg.polygons = new ArrayList<>();
-        polygons.stream().forEach((polygon) -> {
-            csg.polygons.add(polygon.clone());
-        });
+        
+        // sequential code
+//        csg.polygons = new ArrayList<>();
+//        polygons.forEach((polygon) -> {
+//            csg.polygons.add(polygon.clone());
+//        });
+        
+        Stream<Polygon> polygonStream;
+
+        if (polygons.size() > 200) {
+            polygonStream = polygons.parallelStream();
+        } else {
+            polygonStream = polygons.stream();
+        }
+        
+        csg.polygons = polygonStream.
+                map((Polygon p)-> p.clone()).collect(Collectors.toList());
+        
         return csg;
     }
 

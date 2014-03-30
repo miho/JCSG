@@ -5,6 +5,8 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -77,5 +79,15 @@ public class ServoMount {
         return Extrude.points(new Vector3d(0,0,boardHolderLength),
                 points
         );
+    }
+    
+        public static void main(String[] args) throws IOException {
+
+        ServoMount sMount = new ServoMount();
+
+        // save union as stl
+//        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
+        FileUtil.write(Paths.get("sample.stl"), sMount.toCSG().toStlString());
+
     }
 }

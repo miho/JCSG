@@ -30,6 +30,9 @@
 
 package eu.mihosoft.vrl.v3d;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
 /**
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
@@ -138,5 +141,13 @@ public class RaspberryPiMount {
         return union;
         
 //        return peg1;
+    }
+    
+        public static void main(String[] args) throws IOException {
+
+        // save union as stl
+//        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
+        FileUtil.write(Paths.get("sample.stl"), RaspberryPiMount.boardAndPegs().transformed(Transform.unity().rotX(180)).toStlString());
+
     }
 }

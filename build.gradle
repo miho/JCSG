@@ -18,3 +18,17 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.6.1'
     //compile group: 'java3d', name: 'vecmath', version: '1.3.1' , classifier: "javadoc"
 }
+
+// create a fat-jar (class files plus dependencies
+// excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
+jar {
+
+    // dependencies except VRL
+    from configurations.runtime.asFileTree.
+        filter({file->return !file.name.startsWith("vrl-0")}).
+        files.collect { zipTree(it) }
+
+    // project class files compiled from source
+    from files(sourceSets.main.output.classesDir)
+
+}
