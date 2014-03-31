@@ -50,7 +50,7 @@ public class Cube implements Primitive {
      */
     private Vector3d dimensions;
     
-    private boolean centered;
+    private boolean centered = true;
     
     private final PropertyStorage properties = new PropertyStorage();
 
@@ -162,7 +162,7 @@ public class Cube implements Primitive {
     }
     
     public Cube noCenter() {
-        centered = true;
+        centered = false;
         return this;
     }
     

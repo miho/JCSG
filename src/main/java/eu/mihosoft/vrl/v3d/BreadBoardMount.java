@@ -26,7 +26,7 @@ public class BreadBoardMount {
     private double servoConnectThickness = 7;
     
     private CSG board() {
-        return new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth, breadboardLength, breadBoardHeight)).noCenter().toCSG();
+        return new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth, breadboardLength, breadBoardHeight)).toCSG();
     }
 
     private CSG pins() {
@@ -46,11 +46,11 @@ public class BreadBoardMount {
     private CSG pinConnections() {
 
         CSG first = new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth / 2, 3, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().translate(-breadBoardWidth / 4, 0, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().translate(-breadBoardWidth / 4, 0, bottomThickness / 2));
         CSG second = new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth / 2 + 10, 3, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().rotZ(37.8).translate(breadBoardWidth / 4 + 5, 0, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().rotZ(37.8).translate(breadBoardWidth / 4 + 5, 0, bottomThickness / 2));
         CSG third = new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth / 2 + 10, 3, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().rotZ(-37.8).translate(breadBoardWidth / 4 + 5, 0, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().rotZ(-37.8).translate(breadBoardWidth / 4 + 5, 0, bottomThickness / 2));
 
         return first.union(second).union(third);
     }
@@ -58,10 +58,10 @@ public class BreadBoardMount {
     private CSG servoConnect() {
 
         CSG firstA = new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth, servoConnectThickness, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().translate(0, -breadBoardHeight/2, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().translate(0, -breadBoardHeight/2, bottomThickness / 2));
        
         CSG firstB = new Cube(Vector3d.ZERO, new Vector3d(3, breadBoardHeight/2+servoConnectThickness/2, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().translate(-breadBoardWidth/2, -breadBoardHeight/4 - servoConnectThickness/4, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().translate(-breadBoardWidth/2, -breadBoardHeight/4 - servoConnectThickness/4, bottomThickness / 2));
 
         CSG first = firstA.union(firstB);
         

@@ -26,7 +26,7 @@ public class ArduinoMount {
     private double servoConnectThickness = 7;
 
     private CSG board() {
-        return new Cube(Vector3d.ZERO, new Vector3d(bottomWidth, bottomHeight, bottomThickness)).noCenter().toCSG();
+        return new Cube(Vector3d.ZERO, new Vector3d(bottomWidth, bottomHeight, bottomThickness)).toCSG();
     }
 
     private CSG pins() {
@@ -46,11 +46,11 @@ public class ArduinoMount {
     private CSG pinConnections() {
 
         CSG first = new Cube(Vector3d.ZERO, new Vector3d(bottomWidth / 2, 3, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().translate(-bottomWidth / 4, 0, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().translate(-bottomWidth / 4, 0, bottomThickness / 2));
         CSG second = new Cube(Vector3d.ZERO, new Vector3d(bottomWidth / 2 + 10, 3, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().rotZ(37.8).translate(bottomWidth / 4 + 5, 0, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().rotZ(37.8).translate(bottomWidth / 4 + 5, 0, bottomThickness / 2));
         CSG third = new Cube(Vector3d.ZERO, new Vector3d(bottomWidth / 2 + 10, 3, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().rotZ(-37.8).translate(bottomWidth / 4 + 5, 0, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().rotZ(-37.8).translate(bottomWidth / 4 + 5, 0, bottomThickness / 2));
 
         return first.union(second).union(third);
     }
@@ -58,10 +58,10 @@ public class ArduinoMount {
     private CSG servoConnect() {
 
         CSG firstA = new Cube(Vector3d.ZERO, new Vector3d(bottomWidth, servoConnectThickness, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().translate(0, -bottomHeight/2, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().translate(0, -bottomHeight/2, bottomThickness / 2));
        
         CSG firstB = new Cube(Vector3d.ZERO, new Vector3d(3, bottomHeight/2+servoConnectThickness/2, bottomThickness)).
-                noCenter().toCSG().transformed(Transform.unity().translate(-bottomWidth/2, -bottomHeight/4 - servoConnectThickness/4, bottomThickness / 2));
+                toCSG().transformed(Transform.unity().translate(-bottomWidth/2, -bottomHeight/4 - servoConnectThickness/4, bottomThickness / 2));
 
         CSG first = firstA.union(firstB);
         
