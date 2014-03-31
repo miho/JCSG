@@ -5,6 +5,8 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +70,8 @@ public class ServoMount {
                 new Vector3d(boardMountingThickness + borderThickness, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness, h + pegToothHeight+pegHeight),
                 new Vector3d(boardMountingThickness - pegOverlap, h + pegToothHeight),
-                 new Vector3d(boardMountingThickness, h),
+                new Vector3d(boardMountingThickness - pegOverlap, h + Math.max(pegToothHeight/3,0.4)),
+                new Vector3d(boardMountingThickness, h),
                 new Vector3d(boardMountingThickness, 0)
         );
         
@@ -77,5 +80,15 @@ public class ServoMount {
         return Extrude.points(new Vector3d(0,0,boardHolderLength),
                 points
         );
+    }
+    
+       public static void main(String[] args) throws IOException {
+
+        ServoMount servoMount = new ServoMount();
+
+        // save union as stl
+//        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
+        FileUtil.write(Paths.get("sample.stl"), servoMount.toCSG().toStlString());
+
     }
 }
