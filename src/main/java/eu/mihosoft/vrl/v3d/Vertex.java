@@ -102,6 +102,15 @@ public class Vertex {
         sb.append("vertex ");
         return this.pos.toStlString(sb);
     }
+    
+    public StringBuilder toObjString(StringBuilder sb) {
+        sb.append("v ");
+        return this.pos.toObjString(sb).append("\n");
+    }
+    
+    public String toObjString() {
+        return toObjString(new StringBuilder()).toString();
+    }
 
     /**
      * Applies the specified transform to this vertex.
