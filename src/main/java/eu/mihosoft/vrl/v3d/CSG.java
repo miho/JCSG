@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,13 +117,12 @@ public class CSG {
     @Override
     public CSG clone() {
         CSG csg = new CSG();
-        
+
         // sequential code
 //        csg.polygons = new ArrayList<>();
 //        polygons.forEach((polygon) -> {
 //            csg.polygons.add(polygon.clone());
 //        });
-        
         Stream<Polygon> polygonStream;
 
         if (polygons.size() > 200) {
@@ -130,10 +130,10 @@ public class CSG {
         } else {
             polygonStream = polygons.stream();
         }
-        
+
         csg.polygons = polygonStream.
-                map((Polygon p)-> p.clone()).collect(Collectors.toList());
-        
+                map((Polygon p) -> p.clone()).collect(Collectors.toList());
+
         return csg;
     }
 
@@ -279,6 +279,59 @@ public class CSG {
                 });
         sb.append("endsolid v3d.csg\n");
         return sb;
+    }
+
+    public StringBuilder toObjString(StringBuilder sb) {
+        sb.append("# Group").append("\n");
+        sb.append("g v3d.csg\n");
+
+        List<Vertex> vertices = new ArrayList<>();
+        List<List<Integer>> indices = new ArrayList<>();
+
+        sb.append("\n# Vertices\n");
+
+        for (Polygon p : polygons) {
+            List<Integer> polyIndices = new ArrayList<>();
+            for (Vertex v : p.vertices) {
+
+                if (!vertices.contains(v)) {
+                    vertices.add(v);
+                    v.toObjString(sb);
+                    polyIndices.add(vertices.size());
+                } else {
+                    polyIndices.add(vertices.indexOf(v) + 1);
+                }
+            }
+
+            indices.add(polyIndices);
+        }
+
+        sb.append("\n# Faces").append("\n");
+
+        for (List<Integer> pVerts : indices) {
+
+            // we triangulate the polygon to ensure 
+            // compatibility with 3d printer software
+            int index1 = pVerts.get(0);
+            for (int i = 0; i < pVerts.size() - 2; i++) {
+                int index2 = pVerts.get(i + 1);
+                int index3 = pVerts.get(i + 2);
+
+                sb.append("f ").
+                        append(index1).append(" ").
+                        append(index2).append(" ").
+                        append(index3).append("\n");
+            }
+        }
+        
+        sb.append("\n# End Group v3d.csg").append("\n");
+
+        return sb;
+    }
+
+    public String toObjString() {
+        StringBuilder sb = new StringBuilder();
+        return toObjString(sb).toString();
     }
 
     /**
