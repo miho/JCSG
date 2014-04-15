@@ -247,10 +247,21 @@ public class Vector3d {
                 append(this.z);
     }
 
+    /**
+     * Returns this vector in OBJ string format.
+     *
+     * @return this vector in OBJ string format
+     */
     public String toObjString() {
         return toObjString(new StringBuilder()).toString();
     }
 
+    /**
+     * Returns this vector in OBJ string format.
+     *
+     * @param sb string builder
+     * @return the specified string builder
+     */
     public StringBuilder toObjString(StringBuilder sb) {
         return sb.append(this.x).append(" ").
                 append(this.y).append(" ").
