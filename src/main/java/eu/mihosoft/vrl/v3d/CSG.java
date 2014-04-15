@@ -281,6 +281,12 @@ public class CSG {
         return sb;
     }
 
+    /**
+     * Returns this csg in OBJ string format.
+     *
+     * @param sb string builder
+     * @return the specified string builder
+     */
     public StringBuilder toObjString(StringBuilder sb) {
         sb.append("# Group").append("\n");
         sb.append("g v3d.csg\n");
@@ -323,12 +329,17 @@ public class CSG {
                         append(index3).append("\n");
             }
         }
-        
+
         sb.append("\n# End Group v3d.csg").append("\n");
 
         return sb;
     }
 
+    /**
+     * Returns this csg in OBJ string format.
+     *
+     * @return this csg in OBJ string format
+     */
     public String toObjString() {
         StringBuilder sb = new StringBuilder();
         return toObjString(sb).toString();
