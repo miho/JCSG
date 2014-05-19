@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import eu.mihosoft.vrl.v3d.ext.com.jme3.bounding.Intersection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -123,15 +124,13 @@ public class CSG {
 //        polygons.forEach((polygon) -> {
 //            csg.polygons.add(polygon.clone());
 //        });
-        
-        
         Stream<Polygon> polygonStream;
 
         if (polygons.size() > 200) {
             polygonStream = polygons.parallelStream();
         } else {
             polygonStream = polygons.stream();
-        } 
+        }
 
         csg.polygons = polygonStream.
                 map((Polygon p) -> p.clone()).collect(Collectors.toList());
@@ -206,8 +205,37 @@ public class CSG {
      * @return difference of this csg and the specified csg
      */
     public CSG difference(CSG csg) {
-        Node a = new Node(this.clone().polygons);
+
+        List<Polygon> inside = new ArrayList<>();
+        List<Polygon> outside = new ArrayList<>();
+
+        this.clone().polygons.stream().forEach((p1) -> {
+
+            csg.clone().polygons.stream().forEach((p2) -> {
+                if (Intersection.intersects(p1, p2)) {
+                    if (!inside.contains(p1)) {
+                        inside.add(p1);
+                    }
+                } else {
+                    if (!outside.contains(p1)) {
+                        outside.add(p1);
+                    }
+                }
+            });
+        });
+
+        if (outside.isEmpty()) {
+            System.out.println("OUTSIDE EMPTY");
+        }
+
+        if (inside.isEmpty()) {
+            System.out.println("INSIDE EMPTY");
+            return this.clone();
+        }
+
+        Node a = new Node(inside);
         Node b = new Node(csg.clone().polygons);
+
         a.invert();
         a.clipTo(b);
         b.clipTo(a);
@@ -216,7 +244,30 @@ public class CSG {
         b.invert();
         a.build(b.allPolygons());
         a.invert();
-        return CSG.fromPolygons(a.allPolygons());
+
+        List<Polygon> finalListA = a.allPolygons();
+        finalListA.addAll(outside);
+
+        CSG csgA = CSG.fromPolygons(finalListA);
+        return csgA;
+
+    }
+
+    public CSG difference(CSG csg, boolean bounds) {
+        Node a = new Node(this.clone().polygons);
+        Node b = new Node(csg.clone().polygons);
+
+        a.invert();
+        a.clipTo(b);
+        b.clipTo(a);
+        b.invert();
+        b.clipTo(a);
+        b.invert();
+        a.build(b.allPolygons());
+        a.invert();
+
+        CSG csgA = CSG.fromPolygons(a.allPolygons());
+        return csgA;
     }
 
     /**
@@ -491,11 +542,61 @@ public class CSG {
                     );
                     counter += 3;
                 } // end for
-            }
+            } // end if #verts >= 3
 
         } // end for polygon
 
         return new MeshContainer(mesh, maxX - minX, maxY - minY, maxZ - minZ);
+    }
+
+    /**
+     * Returns the bounds of this csg.
+     *
+     * @return bouds of this csg
+     */
+    public Bounds getBounds() {
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double minZ = Double.MAX_VALUE;
+
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+        double maxZ = Double.MIN_VALUE;
+
+        for (Polygon p : getPolygons()) {
+
+            for (int i = 0; i < p.vertices.size(); i++) {
+
+                Vertex vert = p.vertices.get(i);
+
+                if (vert.pos.x < minX) {
+                    minX = vert.pos.x;
+                }
+                if (vert.pos.y < minY) {
+                    minY = vert.pos.y;
+                }
+                if (vert.pos.z < minZ) {
+                    minZ = vert.pos.z;
+                }
+
+                if (vert.pos.x > maxX) {
+                    maxX = vert.pos.x;
+                }
+                if (vert.pos.y > maxY) {
+                    maxY = vert.pos.y;
+                }
+                if (vert.pos.z > maxZ) {
+                    maxZ = vert.pos.z;
+                }
+
+            } // end for vertices
+
+        } // end for polygon
+
+        // TODO crappy constructor
+        return new Bounds(
+                new Vector3d(minX, minY, minZ),
+                new Vector3d(maxX, maxY, maxZ));
     }
 
 }

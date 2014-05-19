@@ -19,7 +19,7 @@ public class PlaneWithHoles {
         
         CSG spheres = null;
 
-        for (int y = 0; y < 11; y++) {
+        for (int y = 0; y < 3; y++) {
             
             System.out.println("line: " + y);
             
@@ -31,7 +31,7 @@ public class PlaneWithHoles {
                 CSG sphere = new Cylinder(radius,1,16).toCSG().transformed(
                         Transform.unity().translate((x-5)*(radius*2+spacing), (y-5)*(radius*2+spacing), -0.5));
                 
-//                result = result.difference(sphere);
+                result = result.difference(sphere);
                 
                 if (spheres ==null) {
                     spheres = sphere;
@@ -42,7 +42,9 @@ public class PlaneWithHoles {
             }
         }
         
-        result = result.difference(spheres);
+        System.out.println(">> final diff");
+        
+        //result = result.difference(spheres);
 
         return result;
     }

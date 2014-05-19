@@ -85,6 +85,19 @@ public class Cube implements Primitive {
         this.center = center;
         this.dimensions = dimensions;
     }
+    
+    /**
+     * Constructor.
+     * Creates a new cuboid with center {@code [0,0,0]} and 
+     * with the specified dimensions.
+     * 
+     * @param w width
+     * @param h height
+     * @param d depth 
+     */
+    public Cube(double w, double h, double d) {
+        this(Vector3d.ZERO, new Vector3d(w, h, d));
+    }
 
     @Override
     public List<Polygon> toPolygons() {
