@@ -63,7 +63,7 @@ public class Bounds {
     }
 
     public boolean contains(Polygon p) {
-        return p.vertices.stream().anyMatch((v) -> (contains(v)));
+        throw new UnsupportedOperationException("Implementation missing!");
     }
 
     /**
