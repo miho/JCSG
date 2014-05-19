@@ -123,13 +123,15 @@ public class CSG {
 //        polygons.forEach((polygon) -> {
 //            csg.polygons.add(polygon.clone());
 //        });
+        
+        
         Stream<Polygon> polygonStream;
 
         if (polygons.size() > 200) {
             polygonStream = polygons.parallelStream();
         } else {
             polygonStream = polygons.stream();
-        }
+        } 
 
         csg.polygons = polygonStream.
                 map((Polygon p) -> p.clone()).collect(Collectors.toList());

@@ -127,7 +127,6 @@ final class Node {
             polygon.flip();
         });
 
-
         if (this.plane == null && !polygons.isEmpty()) {
             this.plane = polygons.get(0).plane.clone();
         } else if (this.plane == null && polygons.isEmpty()) {
