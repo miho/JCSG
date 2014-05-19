@@ -206,54 +206,6 @@ public class CSG {
      */
     public CSG difference(CSG csg) {
 
-        List<Polygon> inside = new ArrayList<>();
-        List<Polygon> outside = new ArrayList<>();
-
-        this.clone().polygons.stream().forEach((p1) -> {
-
-            csg.clone().polygons.stream().forEach((p2) -> {
-                if (Intersection.intersects(p1, p2)) {
-                    if (!inside.contains(p1)) {
-                        inside.add(p1);
-                    }
-                } else {
-                    if (!outside.contains(p1)) {
-                        outside.add(p1);
-                    }
-                }
-            });
-        });
-
-        if (outside.isEmpty()) {
-            System.out.println("OUTSIDE EMPTY");
-        }
-
-        if (inside.isEmpty()) {
-            System.out.println("INSIDE EMPTY");
-            return this.clone();
-        }
-
-        Node a = new Node(inside);
-        Node b = new Node(csg.clone().polygons);
-
-        a.invert();
-        a.clipTo(b);
-        b.clipTo(a);
-        b.invert();
-        b.clipTo(a);
-        b.invert();
-        a.build(b.allPolygons());
-        a.invert();
-
-        List<Polygon> finalListA = a.allPolygons();
-        finalListA.addAll(outside);
-
-        CSG csgA = CSG.fromPolygons(finalListA);
-        return csgA;
-
-    }
-
-    public CSG difference(CSG csg, boolean bounds) {
         Node a = new Node(this.clone().polygons);
         Node b = new Node(csg.clone().polygons);
 
