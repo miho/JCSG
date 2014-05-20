@@ -206,27 +206,45 @@ public class CSG {
      */
     public CSG difference(CSG csg) {
 
-        Node a = new Node(this.clone().polygons);
-        Node b = new Node(csg.clone().polygons);
+        return _difference(csg);
+    }
 
-        a.invert();
-        a.clipTo(b);
-        b.clipTo(a);
-        b.invert();
-        b.clipTo(a);
-        b.invert();
-        a.build(b.allPolygons());
-        a.invert();
+    /**
+     * Return a new CSG solid representing the difference of this csg and the
+     * specified csg.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csg are modified.
+     *
+     * <blockquote><pre>
+     * A.difference(B)
+     *
+     * +-------+            +-------+
+     * |       |            |       |
+     * |   A   |            |       |
+     * |    +--+----+   =   |    +--+
+     * +----+--+    |       +----+
+     *      |   B   |
+     *      |       |
+     *      +-------+
+     * </pre></blockquote>
+     *
+     * @param csg other csg
+     * @param local tries to keep diff operation within bounds if {@code true}
+     * @return difference of this csg and the specified csg
+     */
+    public CSG difference(CSG csg, boolean local) {
 
-        CSG csgA = CSG.fromPolygons(a.allPolygons());
-        return csgA;
-        
-//        CSG b = csg;
-//        
-//        CSG a1 = this._difference(csg.getBounds().toCSG());
-//        CSG a2 = this.intersect(csg.getBounds().toCSG());
-//        
-//        return a2._difference(b).union(a1);
+        if (local) {
+
+            CSG b = csg;
+
+            CSG a1 = this._difference(csg.getBounds().toCSG());
+            CSG a2 = this.intersect(csg.getBounds().toCSG());
+
+            return a2._difference(b).union(a1);
+        } else {
+            return _difference(csg);
+        }
 
     }
 
