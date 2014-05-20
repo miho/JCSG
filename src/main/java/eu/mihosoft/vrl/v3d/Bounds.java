@@ -26,17 +26,17 @@ public class Bounds {
      */
     public Bounds(Vector3d min, Vector3d max) {
         this.center = new Vector3d(
-                (max.x - min.x) / 2,
-                (max.y - min.y) / 2,
-                (max.z - min.z) / 2);
+                (max.x +min.x) / 2,
+                (max.y +min.y) / 2,
+                (max.z +min.z) / 2);
 
         this.bounds = new Vector3d(
-                max.x - min.x,
-                max.y - min.y,
-                max.z - min.z);
+                Math.abs(max.x - min.x),
+                Math.abs(max.y - min.y),
+                Math.abs(max.z - min.z));
 
-        this.min = min;
-        this.max = max;
+        this.min = min.clone();
+        this.max = max.clone();
 
         cube = new Cube(center, bounds).toCSG();
     }
@@ -70,6 +70,8 @@ public class Bounds {
      * @return this bounding box as csg
      */
     public CSG toCSG() {
+        System.out.println("before: " + this.toString());
+        System.out.println("after: " + cube.getBounds().toString());
         return cube;
     }
 
@@ -138,6 +140,11 @@ public class Bounds {
      */
     public Vector3d getMax() {
         return max;
+    }
+
+    @Override
+    public String toString() {
+        return "[center: " + center + ", bounds: " + bounds + "]";
     }
 
 }

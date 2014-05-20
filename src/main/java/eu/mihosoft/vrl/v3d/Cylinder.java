@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * A solid cylinder.
  *
- * Tthe tessellation can be controlled via the {@link #numSlices} parameter.
+ * The tessellation can be controlled via the {@link #numSlices} parameter.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */

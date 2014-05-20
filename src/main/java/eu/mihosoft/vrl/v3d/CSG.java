@@ -375,13 +375,13 @@ public class CSG {
 
         TriangleMesh mesh = new TriangleMesh();
 
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE;
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
 
-        double maxX = Double.MIN_VALUE;
-        double maxY = Double.MIN_VALUE;
-        double maxZ = Double.MIN_VALUE;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
 
         int counter = 0;
         for (Polygon p : getPolygons()) {
@@ -497,7 +497,7 @@ public class CSG {
 
         } // end for polygon
 
-        return new MeshContainer(mesh, maxX - minX, maxY - minY, maxZ - minZ);
+        return new MeshContainer(mesh, new Vector3d(minX,minY,minZ),new Vector3d(maxX,maxY,maxZ));
     }
 
     /**
@@ -506,13 +506,13 @@ public class CSG {
      * @return bouds of this csg
      */
     public Bounds getBounds() {
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE;
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
 
-        double maxX = Double.MIN_VALUE;
-        double maxY = Double.MIN_VALUE;
-        double maxZ = Double.MIN_VALUE;
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
 
         for (Polygon p : getPolygons()) {
 
@@ -544,7 +544,6 @@ public class CSG {
 
         } // end for polygon
 
-        // TODO crappy constructor
         return new Bounds(
                 new Vector3d(minX, minY, minZ),
                 new Vector3d(maxX, maxY, maxZ));
