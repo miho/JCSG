@@ -32,8 +32,6 @@
  * <info@michaelhoffer.de>.
  */
 package eu.mihosoft.vrl.v3d;
-
-import eu.mihosoft.vrl.v3d.ext.com.jme3.bounding.Intersection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
