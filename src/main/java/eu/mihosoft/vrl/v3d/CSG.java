@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import eu.mihosoft.vrl.v3d.ext.com.jme3.bounding.Intersection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -204,6 +205,32 @@ public class CSG {
      * @return difference of this csg and the specified csg
      */
     public CSG difference(CSG csg) {
+
+//        Node a = new Node(this.clone().polygons);
+//        Node b = new Node(csg.clone().polygons);
+//
+//        a.invert();
+//        a.clipTo(b);
+//        b.clipTo(a);
+//        b.invert();
+//        b.clipTo(a);
+//        b.invert();
+//        a.build(b.allPolygons());
+//        a.invert();
+//
+//        CSG csgA = CSG.fromPolygons(a.allPolygons());
+//        return csgA;
+        
+        CSG b = csg;
+        
+        CSG a1 = this._difference(csg.getBounds().toCSG());
+        CSG a2 = this.intersect(csg.getBounds().toCSG());
+        
+        return a2._difference(b).union(a1);
+
+    }
+
+    private CSG _difference(CSG csg) {
 
         Node a = new Node(this.clone().polygons);
         Node b = new Node(csg.clone().polygons);
@@ -497,7 +524,7 @@ public class CSG {
 
         } // end for polygon
 
-        return new MeshContainer(mesh, new Vector3d(minX,minY,minZ),new Vector3d(maxX,maxY,maxZ));
+        return new MeshContainer(mesh, new Vector3d(minX, minY, minZ), new Vector3d(maxX, maxY, maxZ));
     }
 
     /**

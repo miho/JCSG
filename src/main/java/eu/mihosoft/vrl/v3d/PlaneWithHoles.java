@@ -45,8 +45,17 @@ public class PlaneWithHoles {
         System.out.println(">> final diff");
         
         result = result.difference(spheres);
+            
+        
+        result = result.difference(new Cylinder(2, 5, 16).toCSG().transformed(Transform.unity().translate(12,0,-2.5)));
+        
+        
+        CSG result2 = new Cube(Vector3d.ZERO, new Vector3d(40, 40, 0.5)).toCSG();
+//        
+        return result2.union(result);
+        
+//        return result;
 
-        return result;
     }
 
     public static void main(String[] args) throws IOException {

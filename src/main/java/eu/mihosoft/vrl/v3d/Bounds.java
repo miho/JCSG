@@ -70,8 +70,6 @@ public class Bounds {
      * @return this bounding box as csg
      */
     public CSG toCSG() {
-        System.out.println("before: " + this.toString());
-        System.out.println("after: " + cube.getBounds().toString());
         return cube;
     }
 
