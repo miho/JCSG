@@ -5,9 +5,8 @@
  */
 package eu.mihosoft.vrl.v3d;
 
-import java.util.List;
-
 /**
+ * Bounding box for CSGs.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
@@ -19,62 +18,123 @@ public class Bounds {
     private final Vector3d max;
     private final CSG cube;
 
+    /**
+     * Constructor.
+     *
+     * @param min min x,y,z values
+     * @param max max x,y,z values
+     */
     public Bounds(Vector3d min, Vector3d max) {
         this.center = new Vector3d(
                 (max.x - min.x) / 2,
                 (max.y - min.y) / 2,
                 (max.z - min.z) / 2);
-        
+
         this.bounds = new Vector3d(
                 max.x - min.x,
                 max.y - min.y,
                 max.z - min.z);
-        
+
         this.min = min;
         this.max = max;
 
         cube = new Cube(center, bounds).toCSG();
     }
 
+    @Override
+    public Bounds clone() {
+        return new Bounds(min.clone(), max.clone());
+    }
+
     /**
-     * @return the center
+     * Returns the position of the center.
+     *
+     * @return the center position
      */
     public Vector3d getCenter() {
         return center;
     }
 
     /**
-     * @return the bounds
+     * Returns the bounds (width,height,depth).
+     *
+     * @return the bounds (width,height,depth)
      */
     public Vector3d getBounds() {
         return bounds;
     }
 
+    /**
+     * Returns this bounding box as csg.
+     *
+     * @return this bounding box as csg
+     */
     public CSG toCSG() {
         return cube;
     }
 
+    /**
+     * Indicates whether the specified vertex is contained within this bounding
+     * box (check includes box boundary).
+     *
+     * @param v vertex to check
+     * @return {@code true} if the vertex is contained within this bounding box;
+     * {@code false} otherwise
+     */
     public boolean contains(Vertex v) {
-        boolean inX = min.x <= v.pos.x && v.pos.x <= max.x;
-        boolean inY = min.y <= v.pos.y && v.pos.y <= max.y;
-        boolean inZ = min.z <= v.pos.z && v.pos.z <= max.z;
+        return contains(v.pos);
+    }
+
+    /**
+     * Indicates whether the specified point is contained within this bounding
+     * box (check includes box boundary).
+     *
+     * @param v vertex to check
+     * @return {@code true} if the point is contained within this bounding box;
+     * {@code false} otherwise
+     */
+    public boolean contains(Vector3d v) {
+        boolean inX = min.x <= v.x && v.x <= max.x;
+        boolean inY = min.y <= v.y && v.y <= max.y;
+        boolean inZ = min.z <= v.z && v.z <= max.z;
 
         return inX && inY && inZ;
     }
 
+    /**
+     * Indicates whether the specified polygon is contained within this bounding
+     * box (check includes box boundary).
+     *
+     * @param p polygon to check
+     * @return {@code true} if the polygon is contained within this bounding
+     * box; {@code false} otherwise
+     */
     public boolean contains(Polygon p) {
+        return p.vertices.stream().allMatch(v -> contains(v));
+    }
+
+    /**
+     * Indicates whether the specified polygon intersects with this bounding box
+     * (check includes box boundary).
+     *
+     * @param p polygon to check
+     * @return {@code true} if the polygon intersects this bounding box;
+     * {@code false} otherwise
+     * @deprecated not implemented yet
+     */
+    public boolean intersects(Polygon p) {
         throw new UnsupportedOperationException("Implementation missing!");
     }
 
     /**
-     * @return the min
+     * @return the min x,y,z values
      */
     public Vector3d getMin() {
         return min;
     }
 
     /**
-     * @return the max
+     * @return the max x,y,z values
      */
     public Vector3d getMax() {
         return max;
