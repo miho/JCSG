@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'application'
 
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -13,6 +14,9 @@ task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'eu.mihosoft.vrl.v3d.Main'
 }
+
+applicationDefaultJvmArgs = ["-Xss515m"]
+mainClassName = mainClass
 
 repositories {
     mavenCentral()
