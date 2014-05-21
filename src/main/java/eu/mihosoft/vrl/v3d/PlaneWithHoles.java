@@ -7,6 +7,8 @@ package eu.mihosoft.vrl.v3d;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,46 +18,43 @@ public class PlaneWithHoles {
 
     public CSG toCSG() {
         CSG result = new Cube(Vector3d.ZERO, new Vector3d(30, 30, 1)).toCSG();
-        
+
+//        CSG result = null;
+//        try {
+//            result = STL.file(Paths.get("box_refined-01.stl")).transformed(Transform.unity().scale(30, 30, 0.5)).optimization(CSG.OptType.NONE);
+//        } catch (IOException ex) {
+//            Logger.getLogger(PlaneWithHoles.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+
         CSG spheres = null;
 
         for (int y = 0; y < 11; y++) {
-            
+
             System.out.println("line: " + y);
-            
+
             for (int x = 0; x < 11; x++) {
-                
+
                 double radius = 1;
                 double spacing = 0.25;
-                
-                CSG sphere = new Cylinder(radius,1,16).toCSG().transformed(
-                        Transform.unity().translate((x-5)*(radius*2+spacing), (y-5)*(radius*2+spacing), -0.5));
-                
+
+                CSG sphere = new Cylinder(radius, 1, 24).toCSG().transformed(
+                        Transform.unity().translate((x - 5) * (radius * 2 + spacing), (y - 5) * (radius * 2 + spacing), -0.5));
+
 //                result = result.difference(sphere);
-                
-                if (spheres ==null) {
+                if (spheres == null) {
                     spheres = sphere;
                 } else {
                     spheres = spheres.union(sphere);
                 }
-                
+
             }
         }
-        
-        System.out.println(">> final diff");
-        
-        result = result.difference(spheres);
-            
-        
-        result = result.difference(new Cylinder(2, 5, 16).toCSG().transformed(Transform.unity().translate(12,0,-2.5)));
-        
-        
-        CSG result2 = new Cube(Vector3d.ZERO, new Vector3d(40, 40, 0.5)).toCSG();
-//        
-        return result2.union(result);
-        
-//        return result;
 
+        System.out.println(">> final diff");
+
+        result = result.difference(spheres);
+
+        return result;
     }
 
     public static void main(String[] args) throws IOException {

@@ -26,9 +26,9 @@ public class Bounds {
      */
     public Bounds(Vector3d min, Vector3d max) {
         this.center = new Vector3d(
-                (max.x +min.x) / 2,
-                (max.y +min.y) / 2,
-                (max.z +min.z) / 2);
+                (max.x + min.x) / 2,
+                (max.y + min.y) / 2,
+                (max.z + min.z) / 2);
 
         this.bounds = new Vector3d(
                 Math.abs(max.x - min.x),
@@ -122,8 +122,33 @@ public class Bounds {
      * {@code false} otherwise
      * @deprecated not implemented yet
      */
+    @Deprecated
     public boolean intersects(Polygon p) {
         throw new UnsupportedOperationException("Implementation missing!");
+    }
+
+    /**
+     * Indicates whether the specified bounding box intersects with this
+     * bounding box (check includes box boundary).
+     *
+     * @param b box to check
+     * @return {@code true} if the bounding box intersects this bounding box;
+     * {@code false} otherwise
+     */
+    public boolean intersects(Bounds b) {
+
+        if (b.getMin().x > this.getMax().x || b.getMax().x < this.getMin().x) {
+            return false;
+        }
+        if (b.getMin().y > this.getMax().y || b.getMax().y < this.getMin().y) {
+            return false;
+        }
+        if (b.getMin().z > this.getMax().z || b.getMax().z < this.getMin().z) {
+            return false;
+        }
+
+        return true;
+
     }
 
     /**
