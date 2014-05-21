@@ -3,10 +3,11 @@ JavaCSG
 
 [![Build Status](https://travis-ci.org/miho/JavaCSG.png?branch=master)](https://travis-ci.org/miho/JavaCSG)
 
-Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses the same CSG algorithm as [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
+Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses an optimized CSG algorithm based on [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
 
 In addition to CSG this library provides the following features:
 
+- optimized `difference()` and `union()` operations (many thanks to Sebastian Reiter)
 - extrusion of concave, non-intersecting polygons. Uses [Poly2Tri](https://code.google.com/p/poly2tri/) for triangulation.
 - Transformations (Scale, Rotation, Translation and Mirror)
 - STL import and export (STLLoader from [Fiji](https://github.com/fiji/fiji/blob/master/src-plugins/3D_Viewer/src/main/java/customnode/STLLoader.java))
