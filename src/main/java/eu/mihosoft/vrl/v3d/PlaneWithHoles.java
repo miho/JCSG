@@ -17,14 +17,14 @@ import java.util.logging.Logger;
 public class PlaneWithHoles {
 
     public CSG toCSG() {
-        CSG result = new Cube(Vector3d.ZERO, new Vector3d(30, 30, 1)).toCSG();
+//        CSG result = new Cube(Vector3d.ZERO, new Vector3d(30, 30, 1)).toCSG();
 
-//        CSG result = null;
-//        try {
-//            result = STL.file(Paths.get("box_refined-01.stl")).transformed(Transform.unity().scale(30, 30, 0.5)).optimization(CSG.OptType.NONE);
-//        } catch (IOException ex) {
-//            Logger.getLogger(PlaneWithHoles.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        CSG result = null;
+        try {
+            result = STL.file(Paths.get("box_refined-01.stl")).transformed(Transform.unity().scale(30, 30, 0.5)).optimization(CSG.OptType.POLYGON_BOUND);
+        } catch (IOException ex) {
+            Logger.getLogger(PlaneWithHoles.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         CSG spheres = null;
 
@@ -34,12 +34,16 @@ public class PlaneWithHoles {
 
             for (int x = 0; x < 11; x++) {
 
-                double radius = 1;
+                double radius = 1.2;
                 double spacing = 0.25;
 
-                CSG sphere = new Cylinder(radius, 1, 24).toCSG().transformed(
-                        Transform.unity().translate((x - 5) * (radius * 2 + spacing), (y - 5) * (radius * 2 + spacing), -0.5));
+//                CSG sphere = new Cylinder(radius, 1, 24).toCSG().transformed(
+//                        Transform.unity().translate((x - 5) * (radius * 1.7 + spacing), (y - 5) * (radius * 1.7 + spacing), -0.5)).optimization(CSG.OptType.CSG_BOUND);
 
+                CSG sphere = new Sphere(radius).toCSG().transformed(
+                        Transform.unity().translate((x - 5) * (radius * 2 + spacing), (y - 5) * (radius * 2 + spacing), -0.0)).optimization(CSG.OptType.POLYGON_BOUND);
+
+                
 //                result = result.difference(sphere);
                 if (spheres == null) {
                     spheres = sphere;
@@ -48,6 +52,12 @@ public class PlaneWithHoles {
                 }
 
             }
+        }
+        
+        try {
+            FileUtil.write(Paths.get("cyl.stl"), spheres.toStlString());
+        } catch (IOException ex) {
+            Logger.getLogger(PlaneWithHoles.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         System.out.println(">> final diff");
