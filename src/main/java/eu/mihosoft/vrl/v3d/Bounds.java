@@ -16,7 +16,8 @@ public class Bounds {
     private final Vector3d bounds;
     private final Vector3d min;
     private final Vector3d max;
-    private final CSG cube;
+    private final CSG csg;
+    private final Cube cube;
 
     /**
      * Constructor.
@@ -38,7 +39,8 @@ public class Bounds {
         this.min = min.clone();
         this.max = max.clone();
 
-        cube = new Cube(center, bounds).toCSG();
+        cube = new Cube(center, bounds);
+        csg = cube.toCSG();
     }
 
     @Override
@@ -70,6 +72,15 @@ public class Bounds {
      * @return this bounding box as csg
      */
     public CSG toCSG() {
+        return csg;
+    }
+
+    /**
+     * Returns this bounding box as cube.
+     *
+     * @return this bounding box as cube
+     */
+    public Cube toCube() {
         return cube;
     }
 
