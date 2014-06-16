@@ -84,6 +84,10 @@ public class Extrude {
 
     private static CSG extrude(Vector3d dir, Polygon polygon1) {
         List<Polygon> newPolygons = new ArrayList<>();
+        
+        if (dir.z<0) {
+            throw new IllegalArgumentException("z < 0 currently not supported for extrude: " + dir);
+        }
 
         newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
         Polygon polygon2 = polygon1.translated(dir);

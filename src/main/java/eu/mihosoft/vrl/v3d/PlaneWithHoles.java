@@ -17,14 +17,14 @@ import java.util.logging.Logger;
 public class PlaneWithHoles {
 
     public CSG toCSG() {
-//        CSG result = new Cube(Vector3d.ZERO, new Vector3d(30, 30, 1)).toCSG();
+        CSG result = new Cube(Vector3d.ZERO, new Vector3d(30, 30, 1)).toCSG();
 
-        CSG result = null;
-        try {
-            result = STL.file(Paths.get("box_refined-01.stl")).transformed(Transform.unity().scale(30, 30, 0.5)).optimization(CSG.OptType.POLYGON_BOUND);
-        } catch (IOException ex) {
-            Logger.getLogger(PlaneWithHoles.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        CSG result = null;
+//        try {
+//            result = STL.file(Paths.get("box_refined-01.stl")).transformed(Transform.unity().scale(30, 30, 0.5)).optimization(CSG.OptType.POLYGON_BOUND);
+//        } catch (IOException ex) {
+//            Logger.getLogger(PlaneWithHoles.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         CSG spheres = null;
 
