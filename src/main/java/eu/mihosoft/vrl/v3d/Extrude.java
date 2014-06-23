@@ -81,7 +81,55 @@ public class Extrude {
 
         return extrude(dir, Polygon.fromPoints(toCCW(newList)));
     }
+    
+        /**
+     * Extrudes the specified path (convex or concave polygon without holes or
+     * intersections, specified in CCW) into the specified direction.
+     *
+     * @param t direction
+     * @param points path (convex or concave polygon without holes or
+     * intersections)
+     *
+     * @return a CSG object that consists of the extruded polygon
+     */
+    public static CSG points(Transform t, List<Vector3d> points) {
 
+        List<Vector3d> newList = new ArrayList<>(points);
+
+        return extrudeExperiment(t, Polygon.fromPoints(toCCW(newList)));
+    }
+
+    private static CSG extrudeExperiment(Transform t, Polygon polygon1) {
+        List<Polygon> newPolygons = new ArrayList<>();
+
+        newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
+        Polygon polygon2 = polygon1.transformed(t);
+
+        int numvertices = polygon1.vertices.size();
+        for (int i = 0; i < numvertices; i++) {
+
+            int nexti = (i + 1) % numvertices;
+
+            Vector3d bottomV1 = polygon1.vertices.get(i).pos;
+            Vector3d topV1 = polygon2.vertices.get(i).pos;
+            Vector3d bottomV2 = polygon1.vertices.get(nexti).pos;
+            Vector3d topV2 = polygon2.vertices.get(nexti).pos;
+
+            List<Vector3d> pPoints = Arrays.asList(bottomV2, topV2, topV1, bottomV1);
+
+            newPolygons.add(Polygon.fromPoints(pPoints));
+
+        }
+
+        polygon2 = polygon2.flipped();
+        List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
+
+        newPolygons.addAll(topPolygons);
+
+        return CSG.fromPolygons(newPolygons);
+
+    }
+    
     private static CSG extrude(Vector3d dir, Polygon polygon1) {
         List<Polygon> newPolygons = new ArrayList<>();
         
