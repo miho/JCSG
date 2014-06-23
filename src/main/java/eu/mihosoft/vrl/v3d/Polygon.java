@@ -49,17 +49,6 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
  */
 public final class Polygon {
 
-    /**
-     * Decomposes the specified concave polygon into convex polygons.
-     *
-     * @param points the points that define the polygon
-     * @return the decomposed concave polygon (list of convex polygons)
-     */
-    public static List<Polygon> fromConcavePoints(Vector3d... points) {
-        Polygon p = fromPoints(points);
-
-        return PolygonUtil.concaveToConvex(p);
-    }
 
     /**
      * Polygon vertices
@@ -76,6 +65,19 @@ public final class Polygon {
      */
     public final Plane plane;
 
+    
+    /**
+     * Decomposes the specified concave polygon into convex polygons.
+     *
+     * @param points the points that define the polygon
+     * @return the decomposed concave polygon (list of convex polygons)
+     */
+    public static List<Polygon> fromConcavePoints(Vector3d... points) {
+        Polygon p = fromPoints(points);
+
+        return PolygonUtil.concaveToConvex(p);
+    }
+    
     /**
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
@@ -217,6 +219,13 @@ public final class Polygon {
         vertices.forEach((vertex) -> {
             vertex.pos = vertex.pos.plus(v);
         });
+        
+          Vector3d a = this.vertices.get(0).pos;
+        Vector3d b = this.vertices.get(1).pos;
+        Vector3d c = this.vertices.get(2).pos;
+
+        this.plane.normal = b.minus(a).cross(c.minus(a));
+        
         return this;
     }
 
@@ -248,8 +257,16 @@ public final class Polygon {
         this.vertices.stream().forEach(
                 (v) -> {
                     v.transform(transform);
-                });
+                }
+        );
 
+        Vector3d a = this.vertices.get(0).pos;
+        Vector3d b = this.vertices.get(1).pos;
+        Vector3d c = this.vertices.get(2).pos;
+
+        this.plane.normal = b.minus(a).cross(c.minus(a)).unit();
+        this.plane.dist = this.plane.normal.dot(a);
+        
         if (transform.isMirror()) {
             // the transformation includes mirroring. flip polygon
 

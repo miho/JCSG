@@ -26,7 +26,8 @@ public class Möbiusband {
 
 //        CSG result = null;
 
-        List<Vector3d> points = Arrays.asList(new Vector3d(-width/2, -height/2),
+        List<Vector3d> points = Arrays.asList(
+                new Vector3d(-width/2, -height/2),
                 new Vector3d(width/2, -height/2),
                 new Vector3d(width/2, height/2),
                 new Vector3d(-width/2, height/2));
@@ -37,9 +38,7 @@ public class Möbiusband {
 
             Transform t = Transform.unity().translateZ(1).rotZ(i);
 
-            CSG facet = Extrude.points(t,
-                    points
-            );
+            CSG facet = Extrude.points(new Vector3d(0, 0, 1), points);
             
             facets.add(facet);
             
@@ -50,7 +49,14 @@ public class Möbiusband {
         
         for(int i = 1; i < 10; i++) {
             System.out.println("facet: " + i);
-//            result = result.optimization(CSG.OptType.NONE).union(facets.get(i).optimization(CSG.OptType.NONE));
+            
+            System.out.println(facets.get(i).toStlString());
+
+            Node n = new Node(facets.get(i).getPolygons());
+            
+            //if (true)return result;
+
+            result = result.optimization(CSG.OptType.POLYGON_BOUND).union(facets.get(i).optimization(CSG.OptType.POLYGON_BOUND));
             try {
                 FileUtil.write(Paths.get("möbiusband"+i+".stl"), facets.get(i).toStlString());
             } catch (IOException ex) {
@@ -58,7 +64,7 @@ public class Möbiusband {
             }
         }
 
-        return result;
+        return Hull.fromCSG(result);
     }
 
     public static void main(String[] args) throws IOException {

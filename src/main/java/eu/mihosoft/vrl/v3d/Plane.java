@@ -145,19 +145,25 @@ public class Plane {
             polygonType |= type;
             types.add(type);
         }
+        
+        //System.out.println("> switching");
 
         // Put the polygon in the correct list, splitting it when necessary.
         switch (polygonType) {
             case COPLANAR:
+                //System.out.println(" -> coplanar");
                 (this.normal.dot(polygon.plane.normal) > 0 ? coplanarFront : coplanarBack).add(polygon);
                 break;
             case FRONT:
+                //System.out.println(" -> front");
                 front.add(polygon);
                 break;
             case BACK:
+                //System.out.println(" -> back");
                 back.add(polygon);
                 break;
             case SPANNING:
+                //System.out.println(" -> spanning");
                 List<Vertex> f = new ArrayList<>();
                 List<Vertex> b = new ArrayList<>();
                 for (int i = 0; i < polygon.vertices.size(); i++) {

@@ -229,11 +229,11 @@ final class Node {
      * @param polygons polygons used to build the BSP
      */
     public final void build(List<Polygon> polygons) {
+        
+        if (polygons.isEmpty()) return;
 
-        if (this.plane == null && !polygons.isEmpty()) {
+        if (this.plane == null) {
             this.plane = polygons.get(0).plane.clone();
-        } else if (this.plane == null && polygons.isEmpty()) {
-            throw new RuntimeException("Please fix me! I don't know what to do?");
         }
 
         List<Polygon> frontP = new ArrayList<>();
