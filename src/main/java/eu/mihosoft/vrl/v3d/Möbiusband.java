@@ -24,51 +24,52 @@ public class Möbiusband {
         double width = 10;
         double height = 20;
 
-//        CSG result = null;
-
         List<Vector3d> points = Arrays.asList(
-                new Vector3d(-width/2, -height/2),
-                new Vector3d(width/2, -height/2),
-                new Vector3d(width/2, height/2),
-                new Vector3d(-width/2, height/2));
-        
+                new Vector3d(-width / 2, -height / 2),
+                new Vector3d(width / 2, -height / 2),
+                new Vector3d(width / 2, height / 2),
+                new Vector3d(-width / 2, height / 2));
+
+        List<CSG> originalFacets = new ArrayList<>();
+
         List<CSG> facets = new ArrayList<>();
+
+        CSG prev = null;
 
         for (int i = 0; i < 10; i++) {
 
-            Transform t = Transform.unity().translateZ(1).rotZ(i);
+            Transform t = Transform.unity().translateZ(2).rotZ(i);
 
             CSG facet = Extrude.points(new Vector3d(0, 0, 1), points);
-            
-            facets.add(facet);
-            
-            points.stream().forEach((p) -> t.transform(p));
-        }
-        
-        CSG result = facets.get(0);
-        
-        for(int i = 1; i < 10; i++) {
-            System.out.println("facet: " + i);
-            
-            System.out.println(facets.get(i).toStlString());
 
-            Node n = new Node(facets.get(i).getPolygons());
-            
-            //if (true)return result;
-
-            result = result.optimization(CSG.OptType.POLYGON_BOUND).union(facets.get(i).optimization(CSG.OptType.POLYGON_BOUND));
-            try {
-                FileUtil.write(Paths.get("möbiusband"+i+".stl"), facets.get(i).toStlString());
-            } catch (IOException ex) {
-                Logger.getLogger(Möbiusband.class.getName()).log(Level.SEVERE, null, ex);
+            if (prev != null) {
+                facets.add(Hull.fromCSG(facet.union(prev)));
             }
+
+            originalFacets.add(facet);
+
+            points.stream().forEach((p) -> t.transform(p));
+
+            prev = facet;
         }
 
-        return Hull.fromCSG(result);
+        CSG result = facets.get(0);
+
+        for (int i = 1; i < facets.size(); i++) {
+            result = result.union(facets.get(i));
+        }
+
+        CSG originalResult = originalFacets.get(0);
+
+        for (int i = 1; i < facets.size(); i++) {
+            originalResult = originalResult.union(originalFacets.get(i));
+        }
+
+        return result.union(originalResult.transformed(Transform.unity().translateX(width * 2)));
     }
 
     public static void main(String[] args) throws IOException {
-        
+
         System.out.println("RUNNING");
 
         FileUtil.write(Paths.get("möbiusband.stl"), new Möbiusband().toCSG().toStlString());
