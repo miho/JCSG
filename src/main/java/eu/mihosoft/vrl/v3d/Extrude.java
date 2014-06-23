@@ -99,6 +99,22 @@ public class Extrude {
         return extrudeExperiment(t, Polygon.fromPoints(toCCW(newList)));
     }
 
+            /**
+     * Extrudes the specified path (convex or concave polygon without holes or
+     * intersections, specified in CCW) into the specified direction.
+     *
+     * @param t direction
+     * @param points path (convex or concave polygon without holes or
+     * intersections)
+     *
+     * @return a CSG object that consists of the extruded polygon
+     */
+    public static CSG points(Transform t, Vector3d... points) {
+
+       return points(t, Arrays.asList(points));
+    }
+
+    
     private static CSG extrudeExperiment(Transform t, Polygon polygon1) {
         List<Polygon> newPolygons = new ArrayList<>();
 

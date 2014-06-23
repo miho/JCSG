@@ -20,7 +20,7 @@ public class SurfacePro2PenHolder {
         double width = sdCard.getBounds().getBounds().x;
         double height = sdCard.getBounds().getBounds().z;
         
-        double extensionSize = 8;
+        double extensionSize = 11;
         
         CSG extension = Extrude.points(new Vector3d(0,0,height*2), 
                 new Vector3d(0,0),

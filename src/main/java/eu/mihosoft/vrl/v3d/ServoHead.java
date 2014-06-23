@@ -5,6 +5,9 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
 /**
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
@@ -106,5 +109,15 @@ public class ServoHead {
         CSG headFinal = cyl1.difference(cyl2).difference(head);
 
         return headFinal;
+    }
+    
+    
+        public static void main(String[] args) throws IOException {
+        
+        System.out.println("RUNNING");
+
+        FileUtil.write(Paths.get("servo-head-female.stl"), new ServoHead().servoHeadFemale().toStlString());
+         FileUtil.write(Paths.get("servo-head-male.stl"), new ServoHead().servoHeadMale().toStlString());
+
     }
 }

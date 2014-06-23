@@ -5,6 +5,9 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
 /**
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
@@ -117,5 +120,13 @@ public class ServoWheel {
         }
         
         return first;
+    }
+    
+    public static void main(String[] args) throws IOException {
+        
+        System.out.println("RUNNING");
+
+        FileUtil.write(Paths.get("servo-wheel.stl"), new ServoWheel().toCSG().toStlString());
+
     }
 }
