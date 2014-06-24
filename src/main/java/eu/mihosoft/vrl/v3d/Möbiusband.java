@@ -43,7 +43,7 @@ public class Möbiusband {
             CSG facet = Extrude.points(new Vector3d(0, 0, 1), points);
 
             if (prev != null) {
-                facets.add(Hull.fromCSG(facet.union(prev)));
+                facets.add(facet.union(prev).hull());
             }
 
             originalFacets.add(facet);

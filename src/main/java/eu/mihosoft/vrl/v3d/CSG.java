@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -193,6 +194,14 @@ public class CSG {
             default:
                 return _unionNoOpt(csg);
         }
+    }
+    
+    /**
+     * Returns the convex hull of this csg.
+     * @return the convex hull of this csg
+     */
+    public CSG hull() {
+        return HullUtil.hull(this);
     }
 
     private CSG _unionCSGBoundsOpt(CSG csg) {
