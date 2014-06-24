@@ -8,10 +8,11 @@ Java implementation of BSP based CSG (Constructive Solid Geometry). It is the on
 In addition to CSG this library provides the following features:
 
 - optimized `difference()` and `union()` operations (many thanks to Sebastian Reiter)
-- extrusion of concave, non-intersecting polygons. Uses [Poly2Tri](https://code.google.com/p/poly2tri/) for triangulation.
+- extrusion of concave, non-intersecting polygons (uses [Poly2Tri](https://code.google.com/p/poly2tri/) for triangulation)
+- convex hull (uses [QuickHull3D](https://www.cs.ubc.ca/~lloyd/java/quickhull3d.html))
 - Transformations (Scale, Rotation, Translation and Mirror)
 - STL import and export (STLLoader from [Fiji](https://github.com/fiji/fiji/blob/master/src-plugins/3D_Viewer/src/main/java/customnode/STLLoader.java))
-
+- supports conversion of CSG's to `JavaFX 3D` nodes
 
 ![](/resources/screenshot1.png)
 
