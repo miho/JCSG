@@ -33,15 +33,20 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.ObjImporter;
 import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Mesh;
 import javafx.scene.shape.TriangleMesh;
 
 /**
@@ -632,13 +637,32 @@ public class CSG {
 
         return result;
     }
+    
+    public MeshContainer toJavaFXMesh() {
+        
+        if (true) {
+            return toJavaFXMeshSimple();
+        }
+
+        try {
+            ObjImporter importer =new ObjImporter(toObj());
+            
+            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
+            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
+                    meshes, new ArrayList<>(importer.getMaterialCollection()));
+        } catch (IOException ex) {
+            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // we have no backup strategy for broken streams :(
+        return null;
+    }
 
     /**
      * Returns the CSG as JavaFX triangle mesh.
      *
      * @return the CSG as JavaFX triangle mesh
      */
-    public MeshContainer toJavaFXMesh() {
+    public MeshContainer toJavaFXMeshSimple() {
 
         TriangleMesh mesh = new TriangleMesh();
 
@@ -764,7 +788,7 @@ public class CSG {
 
         } // end for polygon
 
-        return new MeshContainer(mesh, new Vector3d(minX, minY, minZ), new Vector3d(maxX, maxY, maxZ));
+        return new MeshContainer(new Vector3d(minX, minY, minZ), new Vector3d(maxX, maxY, maxZ), mesh);
     }
 
     /**

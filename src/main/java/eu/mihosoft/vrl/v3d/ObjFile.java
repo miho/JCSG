@@ -5,7 +5,10 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -16,7 +19,9 @@ import java.nio.file.Paths;
 public final class ObjFile {
 
     private String obj;
-    private String mtl;
+    private final String mtl;
+    private InputStream objStream;
+    private InputStream mtlStream;
 
     static final String MTL_NAME = "$JCSG_MTL_NAME$";
 
@@ -40,6 +45,7 @@ public final class ObjFile {
         String mtlName = fileName + ".mtl";
 
         obj = obj.replace(MTL_NAME, mtlName);
+        objStream = null;
 
         if (parent == null) {
             FileUtil.write(Paths.get(objName), obj);
@@ -57,5 +63,21 @@ public final class ObjFile {
 
     public String getMtl() {
         return this.mtl;
+    }
+    
+    public InputStream getObjStream() {
+        if (objStream == null) {
+           objStream = new ByteArrayInputStream(obj.getBytes(StandardCharsets.UTF_8));
+        }
+        
+        return objStream;
+    }
+    
+    public InputStream getMtlStream() {
+        if (mtlStream == null) {
+           mtlStream = new ByteArrayInputStream(mtl.getBytes(StandardCharsets.UTF_8));
+        }
+        
+        return mtlStream;
     }
 }

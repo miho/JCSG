@@ -67,6 +67,18 @@ public class MtlReader {
             ex.printStackTrace();
         }
     }
+    
+    public MtlReader(InputStream stream) {
+
+        try {
+            log("Reading material from stream");
+            read(stream);
+        } catch (FileNotFoundException ex) {
+            System.err.println("No material file found for obj. [stream]");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     private Map<String, Material> materials = new HashMap<>();
     private PhongMaterial material = new PhongMaterial();
