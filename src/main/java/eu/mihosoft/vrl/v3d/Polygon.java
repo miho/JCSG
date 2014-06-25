@@ -57,13 +57,17 @@ public final class Polygon {
     /**
      * Shared property (can be used for shared color etc.).
      */
-    public final PropertyStorage shared;
+    private PropertyStorage shared;
     /**
      * Plane defined by this polygon.
      *
      * <b>Note:</b> uses first three vertices to define the plane.
      */
     public final Plane plane;
+    
+    void setStorage(PropertyStorage storage) {
+        this.shared = storage;
+    }
 
     
     /**
@@ -108,7 +112,6 @@ public final class Polygon {
      */
     public Polygon(List<Vertex> vertices) {
         this.vertices = vertices;
-        this.shared = new PropertyStorage();
         this.plane = Plane.createFromPoints(
                 vertices.get(0).pos,
                 vertices.get(1).pos,
@@ -135,7 +138,7 @@ public final class Polygon {
         this.vertices.forEach((vertex) -> {
             newVertices.add(vertex.clone());
         });
-        return new Polygon(newVertices, shared);
+        return new Polygon(newVertices, getStorage());
     }
 
     /**
@@ -503,4 +506,16 @@ public final class Polygon {
 //
 ////        return result;
 //    }
+
+    /**
+     * @return the shared
+     */
+    public PropertyStorage getStorage() {
+        
+        if (shared == null) {
+            shared = new PropertyStorage();
+        }
+        
+        return shared;
+    }
 }

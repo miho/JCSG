@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -47,8 +48,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         // we use cube and sphere as base geometries
-        CSG cube = new Cube(2).toCSG();
-        CSG sphere = new Sphere(1.25).toCSG();
+        CSG cube = new Cube(2).toCSG().color(Color.RED);
+        CSG sphere = new Sphere(1.25).toCSG().color(Color.BLUE);
 
         // perform union, difference and intersection
         CSG cubePlusSphere = cube.union(sphere);
@@ -63,6 +64,8 @@ public class Main {
                 union(cubeIntersectSphere.transformed(Transform.unity().translateX(12)));
         
         FileUtil.write(Paths.get("sample.stl"), union.toStlString());
+        
+        union.toObj().toFile(Paths.get("sample-color.stl"));
 
         // save union as stl
 //        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());

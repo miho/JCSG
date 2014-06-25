@@ -186,10 +186,10 @@ public class Plane {
                     }
                 }
                 if (f.size() >= 3) {
-                    front.add(new Polygon(f, polygon.shared));
+                    front.add(new Polygon(f, polygon.getStorage()));
                 }
                 if (b.size() >= 3) {
-                    back.add(new Polygon(b, polygon.shared));
+                    back.add(new Polygon(b, polygon.getStorage()));
                 }
                 break;
         }

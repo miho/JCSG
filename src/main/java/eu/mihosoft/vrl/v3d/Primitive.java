@@ -55,7 +55,7 @@ public interface Primitive {
      * @return this primitive as {@link CSG}
      */
     public default CSG toCSG() {
-        return CSG.fromPolygons(toPolygons());
+        return CSG.fromPolygons(getProperties(),toPolygons());
     }
     
     /**
