@@ -98,7 +98,7 @@ public class CSG {
 
     private List<Polygon> polygons;
     private OptType optType = OptType.POLYGON_BOUND;
-    private PropertyStorage storage;
+    private PropertyStorage storage = new PropertyStorage();
 
     private CSG() {
     }
@@ -634,6 +634,8 @@ public class CSG {
         ).collect(Collectors.toList());
 
         CSG result = CSG.fromPolygons(newpolygons).optimization(optType);
+        
+        result.storage = storage;
 
         return result;
     }
