@@ -25,7 +25,7 @@ public final class ObjFile {
         this.mtl = mtl;
     }
 
-    public void toFile(Path p) throws IOException {
+    public void toFiles(Path p) throws IOException {
 
         Path parent = p.getParent();
 

@@ -65,7 +65,7 @@ public class Main {
         
         FileUtil.write(Paths.get("sample.stl"), union.toStlString());
         
-        union.toObj().toFile(Paths.get("sample-color.stl"));
+        union.toObj().toFiles(Paths.get("sample-color.obj"));
 
         // save union as stl
 //        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
