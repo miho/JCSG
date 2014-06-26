@@ -14,7 +14,7 @@ In addition to CSG this library provides the following features:
 - STL import and export (STLLoader from [Fiji](https://github.com/fiji/fiji/blob/master/src-plugins/3D_Viewer/src/main/java/customnode/STLLoader.java))
 - supports conversion of CSG's to `JavaFX 3D` nodes
 
-![](/resources/screenshot1.png)
+![](/resources/screenshot2.png)
 
 To see what's possible with JavaCSG try [JavaFXScad](https://github.com/miho/JavaFXScad).
 
