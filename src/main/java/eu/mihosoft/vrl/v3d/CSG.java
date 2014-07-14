@@ -98,9 +98,10 @@ public class CSG {
 
     private List<Polygon> polygons;
     private OptType optType = OptType.POLYGON_BOUND;
-    private PropertyStorage storage = new PropertyStorage();
+    private PropertyStorage storage;
 
     private CSG() {
+        storage = new PropertyStorage();
     }
 
     /**
@@ -239,12 +240,75 @@ public class CSG {
     }
 
     /**
+     * Return a new CSG solid representing the union of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csg are modified.
+     *
+     * <blockquote><pre>
+     *    A.union(B)
+     *
+     *    +-------+            +-------+
+     *    |       |            |       |
+     *    |   A   |            |       |
+     *    |    +--+----+   =   |       +----+
+     *    +----+--+    |       +----+       |
+     *         |   B   |            |       |
+     *         |       |            |       |
+     *         +-------+            +-------+
+     * </pre></blockquote>
+     *
+     *
+     * @param csgs other csgs
+     *
+     * @return union of this csg and the specified csgs
+     */
+    public CSG union(List<CSG> csgs) {
+
+        CSG result = this;
+
+        for (CSG csg : csgs) {
+            result = result.union(csg);
+        }
+
+        return result;
+    }
+
+    /**
+     * Return a new CSG solid representing the union of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csg are modified.
+     *
+     * <blockquote><pre>
+     *    A.union(B)
+     *
+     *    +-------+            +-------+
+     *    |       |            |       |
+     *    |   A   |            |       |
+     *    |    +--+----+   =   |       +----+
+     *    +----+--+    |       +----+       |
+     *         |   B   |            |       |
+     *         |       |            |       |
+     *         +-------+            +-------+
+     * </pre></blockquote>
+     *
+     *
+     * @param csgs other csgs
+     *
+     * @return union of this csg and the specified csgs
+     */
+    public CSG union(CSG... csgs) {
+        return union(Arrays.asList(csgs));
+    }
+
+    /**
      * Returns the convex hull of this csg.
      *
      * @return the convex hull of this csg
      */
     public CSG hull() {
-        return HullUtil.hull(this);
+        return HullUtil.hull(this,storage);
     }
 
     private CSG _unionCSGBoundsOpt(CSG csg) {
@@ -634,21 +698,21 @@ public class CSG {
         ).collect(Collectors.toList());
 
         CSG result = CSG.fromPolygons(newpolygons).optimization(optType);
-        
+
         result.storage = storage;
 
         return result;
     }
-    
+
     public MeshContainer toJavaFXMesh() {
-        
+
         if (true) {
             return toJavaFXMeshSimple();
         }
 
         try {
-            ObjImporter importer =new ObjImporter(toObj());
-            
+            ObjImporter importer = new ObjImporter(toObj());
+
             List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
             return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
                     meshes, new ArrayList<>(importer.getMaterialCollection()));
@@ -841,6 +905,9 @@ public class CSG {
                 new Vector3d(minX, minY, minZ),
                 new Vector3d(maxX, maxY, maxZ));
     }
+
+
+    
 
     public static enum OptType {
 

@@ -104,7 +104,7 @@ public class Extrude {
 
             List<Vector3d> pPoints = Arrays.asList(bottomV2, topV2, topV1, bottomV1);
 
-            newPolygons.add(Polygon.fromPoints(pPoints));
+            newPolygons.add(Polygon.fromPoints(pPoints, polygon1.getStorage()));
 
         }
 
@@ -207,40 +207,40 @@ public class Extrude {
         return v2MinusV1.dividedBy(v2MinusV1.magnitude()).times(Vector3d.X_ONE).x;
     }
 
-    public static void main(String[] args) {
-        System.out.println("1 CCW: " + isCCW(Polygon.fromPoints(
-                new Vector3d(-1, -1),
-                new Vector3d(0, -1),
-                new Vector3d(1, 0),
-                new Vector3d(1, 1)
-        )));
-
-        System.out.println("3 CCW: " + isCCW(Polygon.fromPoints(
-                new Vector3d(1, 1),
-                new Vector3d(1, 0),
-                new Vector3d(0, -1),
-                new Vector3d(-1, -1)
-        )));
-
-        System.out.println("2 CCW: " + isCCW(Polygon.fromPoints(
-                new Vector3d(0, -1),
-                new Vector3d(1, 0),
-                new Vector3d(1, 1),
-                new Vector3d(-1, -1)
-        )));
-
-        System.out.println("4 CCW: " + isCCW(Polygon.fromPoints(
-                new Vector3d(-1, -1),
-                new Vector3d(-1, 1),
-                new Vector3d(0, 0)
-        )));
-
-        System.out.println("5 CCW: " + isCCW(Polygon.fromPoints(
-                new Vector3d(0, 0),
-                new Vector3d(0, 1),
-                new Vector3d(0.5, 0.5),
-                new Vector3d(1, 1.1),
-                new Vector3d(1, 0)
-        )));
-    }
+//    public static void main(String[] args) {
+//        System.out.println("1 CCW: " + isCCW(Polygon.fromPoints(
+//                new Vector3d(-1, -1),
+//                new Vector3d(0, -1),
+//                new Vector3d(1, 0),
+//                new Vector3d(1, 1)
+//        )));
+//
+//        System.out.println("3 CCW: " + isCCW(Polygon.fromPoints(
+//                new Vector3d(1, 1),
+//                new Vector3d(1, 0),
+//                new Vector3d(0, -1),
+//                new Vector3d(-1, -1)
+//        )));
+//
+//        System.out.println("2 CCW: " + isCCW(Polygon.fromPoints(
+//                new Vector3d(0, -1),
+//                new Vector3d(1, 0),
+//                new Vector3d(1, 1),
+//                new Vector3d(-1, -1)
+//        )));
+//
+//        System.out.println("4 CCW: " + isCCW(Polygon.fromPoints(
+//                new Vector3d(-1, -1),
+//                new Vector3d(-1, 1),
+//                new Vector3d(0, 0)
+//        )));
+//
+//        System.out.println("5 CCW: " + isCCW(Polygon.fromPoints(
+//                new Vector3d(0, 0),
+//                new Vector3d(0, 1),
+//                new Vector3d(0.5, 0.5),
+//                new Vector3d(1, 1.1),
+//                new Vector3d(1, 0)
+//        )));
+//    }
 }

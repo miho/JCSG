@@ -327,4 +327,37 @@ public class Vector3d {
         return hash;
     }
 
+     /**
+     * Creates a new vector with specified {@code x}
+     *
+     * @param x x value
+     * @return a new vector  {@code [x,0,0]}
+     * 
+     */
+    public static Vector3d x(double x) {
+        return new Vector3d(x, 0, 0);
+    }
+
+     /**
+     * Creates a new vector with specified {@code y}
+     *
+     * @param y y value
+     * @return a new vector {@code [0,y,0]}
+     * 
+     */
+    public static Vector3d y(double y) {
+        return new Vector3d(0, y, 0);
+    }
+
+     /**
+     * Creates a new vector with specified {@code z}
+     *
+     * @param z z value
+     * @return a new vector {@code [0,0,z]}
+     * 
+     */
+    public static Vector3d z(double z) {
+        return new Vector3d(0, 0, z);
+    }
+
 }
