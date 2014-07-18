@@ -12,9 +12,10 @@ In addition to CSG this library provides the following features:
 - convex hull (uses [QuickHull3D](https://www.cs.ubc.ca/~lloyd/java/quickhull3d.html))
 - Transformations (Scale, Rotation, Translation and Mirror)
 - STL import and export (STLLoader from [Fiji](https://github.com/fiji/fiji/blob/master/src-plugins/3D_Viewer/src/main/java/customnode/STLLoader.java))
+- OBJ export including material information (see screenshot below)
 - supports conversion of CSG's to `JavaFX 3D` nodes
 
-![](/resources/screenshot1.png)
+![](/resources/screenshot2.png)
 
 To see what's possible with JavaCSG try [JavaFXScad](https://github.com/miho/JavaFXScad).
 
