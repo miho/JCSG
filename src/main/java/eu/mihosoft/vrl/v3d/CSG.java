@@ -110,7 +110,7 @@ public class CSG {
      * @return a CSG instance
      */
     public static CSG empty() {
-        return new CSG();
+        return fromPolygons(new ArrayList<>());
     }
 
     /**
@@ -239,8 +239,8 @@ public class CSG {
      */
     public CSG union(CSG csg) {
 
-        if (polygons==null) {
-            return fromPolygons(csg.polygons).optimization(optType);
+        if (polygons.isEmpty()) {
+            return fromPolygons(csg.polygons);
         }
 
         switch (optType) {
@@ -401,8 +401,8 @@ public class CSG {
      */
     public CSG difference(CSG csg) {
 
-        if (polygons == null) {
-            return fromPolygons(csg.polygons).optimization(optType);
+        if (polygons.isEmpty()) {
+            return this.clone();
         }
 
         switch (optType) {
@@ -490,8 +490,8 @@ public class CSG {
      */
     public CSG intersect(CSG csg) {
 
-        if (polygons == null) {
-            return fromPolygons(csg.polygons).optimization(optType);
+        if (polygons.isEmpty()) {
+            return this.clone();
         }
 
         Node a = new Node(this.clone().polygons);
@@ -723,7 +723,7 @@ public class CSG {
      */
     public CSG transformed(Transform transform) {
 
-        if (polygons == null) {
+        if (polygons.isEmpty()) {
             return clone();
         }
 
@@ -738,24 +738,24 @@ public class CSG {
         return result;
     }
 
+    // TODO finish experiment (20.7.2014)
     public MeshContainer toJavaFXMesh() {
-
-        if (polygons == null) {
-            return null;
+        
+        if (true) {
+            return toJavaFXMeshSimple();
         }
-        return toJavaFXMeshSimple();
 
-//        try {
-//            ObjImporter importer = new ObjImporter(toObj());
-//
-//            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
-//            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
-//                    meshes, new ArrayList<>(importer.getMaterialCollection()));
-//        } catch (IOException ex) {
-//            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            ObjImporter importer = new ObjImporter(toObj());
+
+            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
+            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
+                    meshes, new ArrayList<>(importer.getMaterialCollection()));
+        } catch (IOException ex) {
+            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
+        }
         // we have no backup strategy for broken streams :(
-//        return null;
+        return null;
     }
 
     /**
@@ -764,10 +764,6 @@ public class CSG {
      * @return the CSG as JavaFX triangle mesh
      */
     public MeshContainer toJavaFXMeshSimple() {
-        
-         if (polygons==null) {
-             return null;
-         }
 
         TriangleMesh mesh = new TriangleMesh();
 
@@ -903,7 +899,7 @@ public class CSG {
      */
     public Bounds getBounds() {
 
-        if (polygons==null) {
+        if (polygons.isEmpty()) {
             return new Bounds(Vector3d.ZERO, Vector3d.ZERO);
         }
 
