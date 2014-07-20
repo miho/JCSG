@@ -105,6 +105,15 @@ public class CSG {
     }
 
     /**
+     * Constructs an empty CSG.
+     *
+     * @return a CSG instance
+     */
+    public static CSG empty() {
+        return new CSG();
+    }
+
+    /**
      * Constructs a CSG from a list of {@link Polygon} instances.
      *
      * @param polygons polygons
@@ -229,6 +238,11 @@ public class CSG {
      * @return union of this csg and the specified csg
      */
     public CSG union(CSG csg) {
+
+        if (polygons==null) {
+            return fromPolygons(csg.polygons).optimization(optType);
+        }
+
         switch (optType) {
             case CSG_BOUND:
                 return _unionCSGBoundsOpt(csg);
@@ -308,7 +322,12 @@ public class CSG {
      * @return the convex hull of this csg
      */
     public CSG hull() {
-        return HullUtil.hull(this,storage);
+
+        if (polygons.isEmpty()) {
+            return this.clone();
+        }
+
+        return HullUtil.hull(this, storage);
     }
 
     private CSG _unionCSGBoundsOpt(CSG csg) {
@@ -381,6 +400,11 @@ public class CSG {
      * @return difference of this csg and the specified csg
      */
     public CSG difference(CSG csg) {
+
+        if (polygons == null) {
+            return fromPolygons(csg.polygons).optimization(optType);
+        }
+
         switch (optType) {
             case CSG_BOUND:
                 return _differenceCSGBoundsOpt(csg);
@@ -465,6 +489,11 @@ public class CSG {
      * @return intersection of this csg and the specified csg
      */
     public CSG intersect(CSG csg) {
+
+        if (polygons == null) {
+            return fromPolygons(csg.polygons).optimization(optType);
+        }
+
         Node a = new Node(this.clone().polygons);
         Node b = new Node(csg.clone().polygons);
         a.invert();
@@ -693,6 +722,11 @@ public class CSG {
      * @return a transformed copy of this CSG
      */
     public CSG transformed(Transform transform) {
+
+        if (polygons == null) {
+            return clone();
+        }
+
         List<Polygon> newpolygons = this.polygons.stream().map(
                 p -> p.transformed(transform)
         ).collect(Collectors.toList());
@@ -706,21 +740,22 @@ public class CSG {
 
     public MeshContainer toJavaFXMesh() {
 
-        if (true) {
-            return toJavaFXMeshSimple();
+        if (polygons == null) {
+            return null;
         }
+        return toJavaFXMeshSimple();
 
-        try {
-            ObjImporter importer = new ObjImporter(toObj());
-
-            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
-            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
-                    meshes, new ArrayList<>(importer.getMaterialCollection()));
-        } catch (IOException ex) {
-            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            ObjImporter importer = new ObjImporter(toObj());
+//
+//            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
+//            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
+//                    meshes, new ArrayList<>(importer.getMaterialCollection()));
+//        } catch (IOException ex) {
+//            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         // we have no backup strategy for broken streams :(
-        return null;
+//        return null;
     }
 
     /**
@@ -729,6 +764,10 @@ public class CSG {
      * @return the CSG as JavaFX triangle mesh
      */
     public MeshContainer toJavaFXMeshSimple() {
+        
+         if (polygons==null) {
+             return null;
+         }
 
         TriangleMesh mesh = new TriangleMesh();
 
@@ -863,6 +902,11 @@ public class CSG {
      * @return bouds of this csg
      */
     public Bounds getBounds() {
+
+        if (polygons==null) {
+            return new Bounds(Vector3d.ZERO, Vector3d.ZERO);
+        }
+
         double minX = Double.POSITIVE_INFINITY;
         double minY = Double.POSITIVE_INFINITY;
         double minZ = Double.POSITIVE_INFINITY;
@@ -905,9 +949,6 @@ public class CSG {
                 new Vector3d(minX, minY, minZ),
                 new Vector3d(maxX, maxY, maxZ));
     }
-
-
-    
 
     public static enum OptType {
 

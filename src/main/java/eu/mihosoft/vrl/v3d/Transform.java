@@ -291,6 +291,11 @@ public class Transform {
      * @return this transform
      */
     public Transform scale(Vector3d vec) {
+        
+        if (vec.x == 0 || vec.y == 0 || vec.z == 0) {
+            throw new IllegalArgumentException("scale by 0 not allowed!");
+        }
+        
         double elemenents[] = {
             vec.x, 0, 0, 0, 0, vec.y, 0, 0, 0, 0, vec.z, 0, 0, 0, 0, 1};
         m.mul(new Matrix4d(elemenents));
@@ -307,6 +312,11 @@ public class Transform {
      * @return this transform
      */
     public Transform scale(double x, double y, double z) {
+        
+        if (x ==0 || y == 0 || z == 0) {
+            throw new IllegalArgumentException("scale by 0 not allowed!");
+        }
+        
         double elemenents[] = {
             x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1};
         m.mul(new Matrix4d(elemenents));
@@ -321,6 +331,12 @@ public class Transform {
      * @return this transform
      */
     public Transform scale(double s) {
+        
+        
+        if (s == 0) {
+            throw new IllegalArgumentException("scale by 0 not allowed!");
+        }
+        
         double elemenents[] = {
             s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 1};
         m.mul(new Matrix4d(elemenents));
@@ -335,6 +351,12 @@ public class Transform {
      * @return this transform
      */
     public Transform scaleX(double s) {
+        
+        
+        if (s == 0) {
+            throw new IllegalArgumentException("scale by 0 not allowed!");
+        }
+        
         double elemenents[] = {
             s, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
         m.mul(new Matrix4d(elemenents));
@@ -349,6 +371,11 @@ public class Transform {
      * @return this transform
      */
     public Transform scaleY(double s) {
+        
+        if (s == 0) {
+            throw new IllegalArgumentException("scale by 0 not allowed!");
+        }
+        
         double elemenents[] = {
             1, 0, 0, 0, 0, s, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
         m.mul(new Matrix4d(elemenents));
@@ -363,6 +390,11 @@ public class Transform {
      * @return this transform
      */
     public Transform scaleZ(double s) {
+        
+        if (s == 0) {
+            throw new IllegalArgumentException("scale by 0 not allowed!");
+        }
+        
         double elemenents[] = {
             1, 0, 0, 0, 0, 1, 0, 0, 0, 0, s, 0, 0, 0, 0, 1};
         m.mul(new Matrix4d(elemenents));
