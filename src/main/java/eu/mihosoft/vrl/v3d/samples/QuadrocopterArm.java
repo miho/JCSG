@@ -36,10 +36,12 @@ public class QuadrocopterArm {
         double maxXYOffset = outerRadius;
 
         double innerRadius = 5;
-        double innerWallThickness = 0.5;
+        double innerWallThickness = 0.7;
 
         double numPlates = 0;
         double plateThickness = 1;
+        
+        double shrinkFactorX = 0.5;
 
         CSG innerStructure = null;
 
@@ -73,15 +75,15 @@ public class QuadrocopterArm {
                 new Cylinder(outerRadius, length, 16).toCSG().
                 transformed(unity().scaleX(0.5)));
 
-        CSG outerCyl = outerCyl(outerRadius, length, wallThickness).
-                transformed(unity().scaleX(0.5)).union(innerStructure);
+        CSG outerCyl = outerCyl(outerRadius, length, wallThickness/shrinkFactorX).
+                transformed(unity().scaleX(shrinkFactorX)).union(innerStructure);
 
         CSG innerCyl = new Cylinder(innerRadius, length, 16).toCSG();//.optimization(CSG.OptType.NONE);
 
         CSG finalGeometry = outerCyl.union(innerCyl);
 
-        CSG plate = new Cylinder(outerRadius, 1, 16).toCSG().
-                transformed(unity().scaleX(0.5));//.optimization(CSG.OptType.NONE);
+        CSG plate = new Cylinder(outerRadius, plateThickness, 16).toCSG().
+                transformed(unity().scaleX(shrinkFactorX));//.optimization(CSG.OptType.NONE);
 
         CSG plates = null;
 
