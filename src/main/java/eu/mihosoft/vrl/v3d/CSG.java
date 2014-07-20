@@ -105,15 +105,6 @@ public class CSG {
     }
 
     /**
-     * Constructs an empty CSG.
-     *
-     * @return a CSG instance
-     */
-    public static CSG empty() {
-        return fromPolygons(new ArrayList<>());
-    }
-
-    /**
      * Constructs a CSG from a list of {@link Polygon} instances.
      *
      * @param polygons polygons
@@ -239,10 +230,6 @@ public class CSG {
      */
     public CSG union(CSG csg) {
 
-        if (polygons.isEmpty()) {
-            return fromPolygons(csg.polygons);
-        }
-
         switch (optType) {
             case CSG_BOUND:
                 return _unionCSGBoundsOpt(csg);
@@ -323,10 +310,6 @@ public class CSG {
      */
     public CSG hull() {
 
-        if (polygons.isEmpty()) {
-            return this.clone();
-        }
-
         return HullUtil.hull(this, storage);
     }
 
@@ -400,10 +383,6 @@ public class CSG {
      * @return difference of this csg and the specified csg
      */
     public CSG difference(CSG csg) {
-
-        if (polygons.isEmpty()) {
-            return this.clone();
-        }
 
         switch (optType) {
             case CSG_BOUND:
@@ -489,10 +468,6 @@ public class CSG {
      * @return intersection of this csg and the specified csg
      */
     public CSG intersect(CSG csg) {
-
-        if (polygons.isEmpty()) {
-            return this.clone();
-        }
 
         Node a = new Node(this.clone().polygons);
         Node b = new Node(csg.clone().polygons);
