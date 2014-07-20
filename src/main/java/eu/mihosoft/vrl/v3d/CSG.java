@@ -97,7 +97,8 @@ import javafx.scene.shape.TriangleMesh;
 public class CSG {
 
     private List<Polygon> polygons;
-    private OptType optType = OptType.POLYGON_BOUND;
+    private static OptType defaultOptType = OptType.POLYGON_BOUND;
+    private OptType optType = null;
     private PropertyStorage storage;
 
     private CSG() {
@@ -164,7 +165,7 @@ public class CSG {
     public CSG clone() {
         CSG csg = new CSG();
 
-        csg.optType = this.optType;
+        csg.setOptType(this.getOptType());
 
         // sequential code
 //        csg.polygons = new ArrayList<>();
@@ -200,7 +201,7 @@ public class CSG {
      * @return this CSG
      */
     public CSG optimization(OptType type) {
-        this.optType = type;
+        this.setOptType(type);
         return this;
     }
 
@@ -230,7 +231,7 @@ public class CSG {
      */
     public CSG union(CSG csg) {
 
-        switch (optType) {
+        switch (getOptType()) {
             case CSG_BOUND:
                 return _unionCSGBoundsOpt(csg);
             case POLYGON_BOUND:
@@ -345,7 +346,7 @@ public class CSG {
             allPolygons.addAll(csg.polygons);
         }
 
-        return CSG.fromPolygons(allPolygons).optimization(optType);
+        return CSG.fromPolygons(allPolygons).optimization(getOptType());
     }
 
     private CSG _unionNoOpt(CSG csg) {
@@ -357,7 +358,7 @@ public class CSG {
         b.clipTo(a);
         b.invert();
         a.build(b.allPolygons());
-        return CSG.fromPolygons(a.allPolygons()).optimization(optType);
+        return CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
     }
 
     /**
@@ -384,7 +385,7 @@ public class CSG {
      */
     public CSG difference(CSG csg) {
 
-        switch (optType) {
+        switch (getOptType()) {
             case CSG_BOUND:
                 return _differenceCSGBoundsOpt(csg);
             case POLYGON_BOUND:
@@ -400,7 +401,7 @@ public class CSG {
         CSG a1 = this._differenceNoOpt(csg.getBounds().toCSG());
         CSG a2 = this.intersect(csg.getBounds().toCSG());
 
-        return a2._differenceNoOpt(b).union(a1).optimization(optType);
+        return a2._differenceNoOpt(b).union(a1).optimization(getOptType());
     }
 
     private CSG _differencePolygonBoundsOpt(CSG csg) {
@@ -423,7 +424,7 @@ public class CSG {
         allPolygons.addAll(outer);
         allPolygons.addAll(innerCSG._differenceNoOpt(csg).polygons);
 
-        return CSG.fromPolygons(allPolygons).optimization(optType);
+        return CSG.fromPolygons(allPolygons).optimization(getOptType());
     }
 
     private CSG _differenceNoOpt(CSG csg) {
@@ -440,7 +441,7 @@ public class CSG {
         a.build(b.allPolygons());
         a.invert();
 
-        CSG csgA = CSG.fromPolygons(a.allPolygons()).optimization(optType);
+        CSG csgA = CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
         return csgA;
     }
 
@@ -478,7 +479,7 @@ public class CSG {
         b.clipTo(a);
         a.build(b.allPolygons());
         a.invert();
-        return CSG.fromPolygons(a.allPolygons()).optimization(optType);
+        return CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
     }
 
     /**
@@ -706,7 +707,7 @@ public class CSG {
                 p -> p.transformed(transform)
         ).collect(Collectors.toList());
 
-        CSG result = CSG.fromPolygons(newpolygons).optimization(optType);
+        CSG result = CSG.fromPolygons(newpolygons).optimization(getOptType());
 
         result.storage = storage;
 
@@ -919,6 +920,27 @@ public class CSG {
         return new Bounds(
                 new Vector3d(minX, minY, minZ),
                 new Vector3d(maxX, maxY, maxZ));
+    }
+
+    /**
+     * @return the optType
+     */
+    private OptType getOptType() {
+        return optType != null? optType : defaultOptType;
+    }
+    
+    /**
+     * @param optType the optType to set
+     */
+    public static void setDefaultOptType(OptType optType) {
+        defaultOptType = optType;
+    }
+
+    /**
+     * @param optType the optType to set
+     */
+    public void setOptType(OptType optType) {
+        this.optType = optType;
     }
 
     public static enum OptType {
