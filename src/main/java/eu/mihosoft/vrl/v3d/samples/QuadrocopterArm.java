@@ -43,11 +43,12 @@ public class QuadrocopterArm {
         
         double shrinkFactorX = 0.5;
         
+        // optimization seems to cause problems
         CSG.setDefaultOptType(CSG.OptType.NONE);
 
         CSG innerStructure = null;
 
-        for (int i = 0; i < 45; i++) {
+        for (int i = 0; i < 50; i++) {
             CSG cyl = new Cylinder(structureRadius, outerRadius * 10, 8).toCSG();
             cyl = cyl.transformed(Transform.unity().scale(
                     Math.max(0.5, Math.random() * 3),
@@ -77,7 +78,8 @@ public class QuadrocopterArm {
                 new Cylinder(outerRadius, length, 16).toCSG().
                 transformed(unity().scaleX(0.5)));
 
-        CSG outerCyl = outerCyl(outerRadius, length, wallThickness, shrinkFactorX, shrinkFactorX*0.95).union(innerStructure);
+        CSG outerCyl = outerCyl(outerRadius, length, wallThickness,
+                shrinkFactorX, shrinkFactorX*0.95).union(innerStructure);
 
         CSG innerCyl = new Cylinder(innerRadius, length, 16).toCSG();
 
