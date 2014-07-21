@@ -26,7 +26,7 @@ public class QuadrocopterArm {
 
         double outerRadius = 15;
         double length = 150;
-        double wallThickness = 0.4;
+        double wallThickness = 0.2;
 
         double structureRadius = 0.4;
         double maxXRot = 180;
@@ -70,14 +70,14 @@ public class QuadrocopterArm {
             } else {
                 innerStructure = innerStructure.union(cyl);
             }
-
         }
 
         innerStructure = innerStructure.intersect(
                 new Cylinder(outerRadius, length, 16).toCSG().
                 transformed(unity().scaleX(0.5)));
 
-        CSG outerCyl = outerCyl(outerRadius, length, wallThickness, shrinkFactorX, shrinkFactorX*0.95).union(innerStructure);
+        CSG outerCyl = outerCyl(outerRadius, length, wallThickness,
+                shrinkFactorX, shrinkFactorX*0.95).union(innerStructure);
 
         CSG innerCyl = new Cylinder(innerRadius, length, 16).toCSG();
 
@@ -107,18 +107,22 @@ public class QuadrocopterArm {
         return finalGeometry;
     }
 
-    private CSG outerCyl(double outerRadius, double length, double wallThickness, double scaleOuter, double scaleInner) {
-        CSG outerCyl = new Cylinder(outerRadius, length, 32).toCSG().transformed(unity().scaleX(scaleOuter));
-        CSG outerCylInner = new Cylinder(outerRadius - wallThickness/scaleOuter, length, 32).toCSG().transformed(unity().scaleX(scaleInner));
+    private CSG outerCyl(double outerRadius, double length,
+            double wallThickness, double scaleOuter, double scaleInner) {
+        CSG outerCyl = new Cylinder(outerRadius, length, 32).toCSG().
+                transformed(unity().scaleX(scaleOuter));
+        CSG outerCylInner = new Cylinder(outerRadius - wallThickness/scaleOuter,
+                length, 32).toCSG().transformed(unity().scaleX(scaleInner));
         outerCyl = outerCyl.difference(outerCylInner);
         return outerCyl;
     }
 
     public static void main(String[] args) throws IOException {
+        
+        CSG result = new QuadrocopterArm().toCSG();
 
-        FileUtil.write(Paths.get("quadrocopter-arm.stl"), new QuadrocopterArm().toCSG().toStlString());
-
-        new QuadrocopterArm().toCSG().toObj().toFiles(Paths.get("quadrocopter-arm.obj"));
+        FileUtil.write(Paths.get("quadrocopter-arm.stl"), result.toStlString());
+        result.toObj().toFiles(Paths.get("quadrocopter-arm.obj"));
 
     }
 
