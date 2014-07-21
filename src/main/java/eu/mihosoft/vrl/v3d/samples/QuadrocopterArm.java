@@ -8,11 +8,9 @@ package eu.mihosoft.vrl.v3d.samples;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.Cylinder;
-import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Transform;
-import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -24,7 +22,7 @@ import static eu.mihosoft.vrl.v3d.Transform.*;
  */
 public class QuadrocopterArm {
 
-    public CSG mainArm(int numInnerStructures, double length, double armThickness) {
+    public CSG mainArm(int numInnerStructures, double length, double armThickness, double innerTubeOffset) {
 
         double outerRadius = armThickness/2.0;
         double wallThickness = 0.4;
@@ -62,7 +60,7 @@ public class QuadrocopterArm {
             cyl = cyl.transformed(Transform.unity().translate(
                     -maxXYOffset / 2.0 + Math.random() * maxXYOffset,
                     -maxXYOffset / 2.0 + Math.random() * maxXYOffset,
-                    Math.random() * length));
+                    innerTubeOffset +Math.random() * (length - innerTubeOffset)));
 
             if (innerStructure == null) {
                 innerStructure = cyl;
@@ -73,8 +71,8 @@ public class QuadrocopterArm {
 
         if (innerStructure != null) {
             innerStructure = innerStructure.intersect(
-                    new Cylinder(outerRadius, length, 16).toCSG().
-                    transformed(unity().scaleX(0.5)));
+                    new Cylinder(outerRadius, length - innerTubeOffset, 16).toCSG().
+                    transformed(unity().scaleX(0.5).translateZ(innerTubeOffset)));
         }
 
         CSG outerCyl = outerCyl(outerRadius, length, wallThickness,
@@ -84,17 +82,21 @@ public class QuadrocopterArm {
             outerCyl = outerCyl.union(innerStructure);
         }
 
-        CSG innerCyl = new Cylinder(innerRadius, length, 16).toCSG();
+        CSG innerCyl = new Cylinder(innerRadius, length-innerTubeOffset, 16).toCSG().transformed(unity().translateZ(innerTubeOffset));
 
         CSG finalGeometry = outerCyl.union(innerCyl);
 
         CSG plate = new Cylinder(outerRadius, plateThickness, 16).toCSG().
                 transformed(unity().scaleX(shrinkFactorX));
+        
+        CSG endPlate = plate.transformed(unity().translateZ(innerTubeOffset));
+        
+        finalGeometry = finalGeometry.union(endPlate);
 
         CSG plates = null;
 
         if (numPlates > 0) {
-            double dt = length / numPlates;
+            double dt = (length-innerTubeOffset) / numPlates;
             for (int i = 0; i < numPlates; i++) {
                 CSG pl = plate.transformed(unity().translateZ(dt * i));
                 if (plates == null) {
@@ -136,7 +138,7 @@ public class QuadrocopterArm {
         
         double engineRadius = 13;
         double screwDistance = 12.5;
-        double screwRadius = 1.0;
+        double screwRadius = 1.25;
         double enginePlatformThickness = 2.0;
         double mainHoleRadius = 3.6;
         
@@ -144,7 +146,9 @@ public class QuadrocopterArm {
         int numInnerStructures = 32;
         double armThickness = 18;
         
-        CSG mainArm = mainArm(numInnerStructures, armLength, armThickness).transformed(unity().rotX(90).rotY(90));
+        double innerTubeOffset = engineRadius*2+5;
+        
+        CSG mainArm = mainArm(numInnerStructures, armLength, armThickness, innerTubeOffset).transformed(unity().rotX(90).rotY(90));
         
         CSG enginePlatformSphere = new Sphere(engineRadius*1.1,64,32).toCSG().transformed(unity().scaleX(2).translateZ(armThickness/2.0));
         
