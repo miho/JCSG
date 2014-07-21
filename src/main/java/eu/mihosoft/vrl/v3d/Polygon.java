@@ -272,7 +272,6 @@ public final class Polygon {
         
         if (transform.isMirror()) {
             // the transformation includes mirroring. flip polygon
-
             flip();
 
         }

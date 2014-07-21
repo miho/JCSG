@@ -97,7 +97,7 @@ import javafx.scene.shape.TriangleMesh;
 public class CSG {
 
     private List<Polygon> polygons;
-    private static OptType defaultOptType = OptType.POLYGON_BOUND;
+    private static OptType defaultOptType = OptType.NONE;
     private OptType optType = null;
     private PropertyStorage storage;
 

@@ -269,6 +269,9 @@ public class Transform {
      * @return this transform
      */
     public Transform mirror(Plane plane) {
+        
+        System.err.println("WARNING: I'm too dumb to implement the mirror() operation correctly. Please fix me!");
+        
         double nx = plane.normal.x;
         double ny = plane.normal.y;
         double nz = plane.normal.z;
@@ -461,8 +464,7 @@ public class Transform {
      * <code>false</code> otherwise
      */
     public boolean isMirror() {
-//        return m.m00 < 0 || m.m11 < 0 || m.m22 < 0 || m.m33 < 0;
-        return false;
+        return m.m00 < 0 || m.m11 < 0 || m.m22 < 0 || m.m33 < 0;
     }
 
     /**
