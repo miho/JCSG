@@ -74,10 +74,12 @@ public class Sphere implements Primitive {
     }
 
     /**
-     * Constructor. Creates a sphere with the specified radius, 16 slices and 8
-     * stacks and center [0,0,0].
+     * Constructor. Creates a sphere with the specified radius, number of slices
+     * and stacks.
      *
      * @param radius sphare radius
+     * @param numSlices number of slices
+     * @param numStacks number of stacks
      */
     public Sphere(double radius, int numSlices, int numStacks) {
         init();
@@ -87,8 +89,8 @@ public class Sphere implements Primitive {
     }
 
     /**
-     * Constructor. Creates a sphere with the specified radius, number of slices
-     * and stacks.
+     * Constructor. Creates a sphere with the specified center, radius, number
+     * of slices and stacks.
      *
      * @param center center of the sphere
      * @param radius sphere radius
