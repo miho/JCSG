@@ -237,7 +237,8 @@ public class CSG {
             case POLYGON_BOUND:
                 return _unionPolygonBoundsOpt(csg);
             default:
-                return _unionNoOpt(csg);
+                return _unionIntersectOpt(csg);
+//                return _unionNoOpt(csg);
         }
     }
 
@@ -349,6 +350,38 @@ public class CSG {
         return CSG.fromPolygons(allPolygons).optimization(getOptType());
     }
 
+    /**
+     * Optimizes for intersection. If csgs do not intersect create a new
+     * csg that consists of the polygon lists of this csg and the specified csg.
+     * In this case no further space partitioning is performed.
+     * 
+     * @param csg csg
+     * @return the union of this csg and the specified csg
+     */
+    private CSG _unionIntersectOpt(CSG csg) {
+        boolean intersects = false;
+
+        Bounds bounds = csg.getBounds();
+
+        for (Polygon p : polygons) {
+            if (bounds.intersects(p.getBounds())) {
+                intersects = true;
+                break;
+            }
+        }
+
+        List<Polygon> allPolygons = new ArrayList<>();
+
+        if (intersects) {
+            return _unionNoOpt(csg);
+        } else {
+            allPolygons.addAll(this.polygons);
+            allPolygons.addAll(csg.polygons);
+        }
+
+        return CSG.fromPolygons(allPolygons).optimization(getOptType());
+    }
+
     private CSG _unionNoOpt(CSG csg) {
         Node a = new Node(this.clone().polygons);
         Node b = new Node(csg.clone().polygons);
@@ -359,6 +392,70 @@ public class CSG {
         b.invert();
         a.build(b.allPolygons());
         return CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
+    }
+
+    /**
+     * Return a new CSG solid representing the difference of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
+     *
+     * <blockquote><pre>
+     * A.difference(B)
+     *
+     * +-------+            +-------+
+     * |       |            |       |
+     * |   A   |            |       |
+     * |    +--+----+   =   |    +--+
+     * +----+--+    |       +----+
+     *      |   B   |
+     *      |       |
+     *      +-------+
+     * </pre></blockquote>
+     *
+     * @param csgs other csgs
+     * @return difference of this csg and the specified csgs
+     */
+    public CSG difference(List<CSG> csgs) {
+
+        if (csgs.isEmpty()) {
+            return this.clone();
+        }
+
+        CSG csgsUnion = csgs.get(0);
+
+        for (int i = 1; i < csgs.size(); i++) {
+            csgsUnion = csgsUnion.union(csgs.get(i));
+        }
+
+        return difference(csgsUnion);
+    }
+
+    /**
+     * Return a new CSG solid representing the difference of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
+     *
+     * <blockquote><pre>
+     * A.difference(B)
+     *
+     * +-------+            +-------+
+     * |       |            |       |
+     * |   A   |            |       |
+     * |    +--+----+   =   |    +--+
+     * +----+--+    |       +----+
+     *      |   B   |
+     *      |       |
+     *      +-------+
+     * </pre></blockquote>
+     *
+     * @param csgs other csgs
+     * @return difference of this csg and the specified csgs
+     */
+    public CSG difference(CSG... csgs) {
+
+        return difference(Arrays.asList(csgs));
     }
 
     /**
@@ -716,7 +813,7 @@ public class CSG {
 
     // TODO finish experiment (20.7.2014)
     public MeshContainer toJavaFXMesh() {
-        
+
         if (true) {
             return toJavaFXMeshSimple();
         }
@@ -926,9 +1023,9 @@ public class CSG {
      * @return the optType
      */
     private OptType getOptType() {
-        return optType != null? optType : defaultOptType;
+        return optType != null ? optType : defaultOptType;
     }
-    
+
     /**
      * @param optType the optType to set
      */
