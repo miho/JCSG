@@ -315,6 +315,34 @@ public class CSG {
         return HullUtil.hull(this, storage);
     }
 
+    /**
+     * Returns the convex hull of this csg and the union of the specified csgs.
+     *
+     * @param csgs csgs
+     * @return the convex hull of this csg and the specified csgs
+     */
+    public CSG hull(List<CSG> csgs) {
+
+        CSG csgsUnion = this;
+
+        for (CSG csg : csgs) {
+            csgsUnion = csgsUnion.union(csg);
+        }
+
+        return csgsUnion.hull();
+    }
+
+    /**
+     * Returns the convex hull of this csg and the union of the specified csgs.
+     *
+     * @param csgs csgs
+     * @return the convex hull of this csg and the specified csgs
+     */
+    public CSG hull(CSG... csgs) {
+
+        return hull(Arrays.asList(csgs));
+    }
+
     private CSG _unionCSGBoundsOpt(CSG csg) {
         System.err.println("WARNING: using " + CSG.OptType.POLYGON_BOUND
                 + " since other optimization types missing for union operation.");
@@ -351,10 +379,10 @@ public class CSG {
     }
 
     /**
-     * Optimizes for intersection. If csgs do not intersect create a new
-     * csg that consists of the polygon lists of this csg and the specified csg.
-     * In this case no further space partitioning is performed.
-     * 
+     * Optimizes for intersection. If csgs do not intersect create a new csg
+     * that consists of the polygon lists of this csg and the specified csg. In
+     * this case no further space partitioning is performed.
+     *
      * @param csg csg
      * @return the union of this csg and the specified csg
      */
@@ -577,6 +605,72 @@ public class CSG {
         a.build(b.allPolygons());
         a.invert();
         return CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
+    }
+
+    /**
+     * Return a new CSG solid representing the intersection of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
+     *
+     * <blockquote><pre>
+     *     A.intersect(B)
+     *
+     *     +-------+
+     *     |       |
+     *     |   A   |
+     *     |    +--+----+   =   +--+
+     *     +----+--+    |       +--+
+     *          |   B   |
+     *          |       |
+     *          +-------+
+     * }
+     * </pre></blockquote>
+     *
+     * @param csgs other csgs
+     * @return intersection of this csg and the specified csgs
+     */
+    public CSG intersect(List<CSG> csgs) {
+
+        if (csgs.isEmpty()) {
+            return this.clone();
+        }
+
+        CSG csgsUnion = csgs.get(0);
+
+        for (int i = 1; i < csgs.size(); i++) {
+            csgsUnion = csgsUnion.union(csgs.get(i));
+        }
+
+        return intersect(csgsUnion);
+    }
+
+    /**
+     * Return a new CSG solid representing the intersection of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
+     *
+     * <blockquote><pre>
+     *     A.intersect(B)
+     *
+     *     +-------+
+     *     |       |
+     *     |   A   |
+     *     |    +--+----+   =   +--+
+     *     +----+--+    |       +--+
+     *          |   B   |
+     *          |       |
+     *          +-------+
+     * }
+     * </pre></blockquote>
+     *
+     * @param csgs other csgs
+     * @return intersection of this csg and the specified csgs
+     */
+    public CSG intersect(CSG... csgs) {
+
+        return intersect(Arrays.asList(csgs));
     }
 
     /**
@@ -814,21 +908,21 @@ public class CSG {
     // TODO finish experiment (20.7.2014)
     public MeshContainer toJavaFXMesh() {
 
-        if (true) {
+
             return toJavaFXMeshSimple();
-        }
 
-        try {
-            ObjImporter importer = new ObjImporter(toObj());
-
-            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
-            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
-                    meshes, new ArrayList<>(importer.getMaterialCollection()));
-        } catch (IOException ex) {
-            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        // we have no backup strategy for broken streams :(
-        return null;
+// TODO test obj approach with multiple materials
+//        try {
+//            ObjImporter importer = new ObjImporter(toObj());
+//
+//            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
+//            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
+//                    meshes, new ArrayList<>(importer.getMaterialCollection()));
+//        } catch (IOException ex) {
+//            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        // we have no backup strategy for broken streams :(
+//        return null;
     }
 
     /**
