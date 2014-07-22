@@ -1,4 +1,4 @@
-JavaCSG
+JCSG
 =======
 
 [![Build Status](https://travis-ci.org/miho/JavaCSG.png?branch=master)](https://travis-ci.org/miho/JavaCSG)
