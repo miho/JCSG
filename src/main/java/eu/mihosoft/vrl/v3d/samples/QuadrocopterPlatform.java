@@ -39,16 +39,18 @@ public class QuadrocopterPlatform {
         double platformThickness = 3;
         double platformBorderThickness = 4;
 
-        int numHoneycombs = 0;
+        int numHoneycombs = 14;
         double honeycombWallThickness = 2.5;
 
         CSG platform =  basePlatform(platformRadius, numHoneycombs, platformThickness, platformBorderThickness, honeycombWallThickness);
         
         double armHeight = 18;
         double armScaleFactor = 0.5;
-        double armCubeWidth = 18*2;
+        double armCubeWidth = armHeight;
+        double armCubeThickness = 4;
+        double holderPlatformRadius = 36;
         
-        CSG armHolderPrototype = new QuadrocopterArmHolder().toCSG(armHeight, armScaleFactor, armCubeWidth).transformed(unity().translateX(-platformRadius));
+        CSG armHolderPrototype = new QuadrocopterArmHolder().toCSG(armHeight, armScaleFactor, armCubeWidth, armCubeThickness, holderPlatformRadius, platformThickness).transformed(unity().translateX(-platformRadius));
         
         CSG armHolders = armHolderPrototype.clone();
         
