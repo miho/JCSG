@@ -1,7 +1,7 @@
-JavaCSG
+JCSG
 =======
 
-[![Build Status](https://travis-ci.org/miho/JavaCSG.png?branch=master)](https://travis-ci.org/miho/JavaCSG)
+[![Build Status](https://travis-ci.org/miho/JCSG.png?branch=master)](https://travis-ci.org/miho/JCSG)
 
 Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses an optimized CSG algorithm based on [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
 
@@ -17,11 +17,11 @@ In addition to CSG this library provides the following features:
 
 ![](/resources/screenshot2.png)
 
-To see what's possible with JavaCSG try [JavaFXScad](https://github.com/miho/JavaFXScad).
+To see what's possible with JCSG try [JFXScad](https://github.com/miho/JFXScad).
 
-![](https://raw.githubusercontent.com/miho/JavaFXScad/master/resources/img/screenshot-02.png)
+![](https://raw.githubusercontent.com/miho/JFXScad/master/resources/img/screenshot-02.png)
 
-## How to Build JavaCSG
+## How to Build JCSG
 
 ### Requirements
 
@@ -31,12 +31,12 @@ To see what's possible with JavaCSG try [JavaFXScad](https://github.com/miho/Jav
 
 ### IDE
 
-Open the `JavaCSG` [Gradle](http://www.gradle.org/) project in your favourite IDE (tested with NetBeans 7.4) and build it
+Open the `JCSG` [Gradle](http://www.gradle.org/) project in your favourite IDE (tested with NetBeans 7.4) and build it
 by calling the `assemble` task.
 
 ### Command Line
 
-Navigate to the [Gradle](http://www.gradle.org/) project (e.g., `path/to/JavaCSG`) and enter the following command
+Navigate to the [Gradle](http://www.gradle.org/) project (e.g., `path/to/JCSG`) and enter the following command
 
 #### Bash (Linux/OS X/Cygwin/other Unix-like shell)
 
