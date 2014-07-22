@@ -18,7 +18,7 @@ import java.nio.file.Paths;
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class QuadrocopterPlatform {
-
+    
     public static void main(String[] args) throws IOException {
 
         CSG result = new QuadrocopterPlatform().toCSG();
@@ -31,18 +31,41 @@ public class QuadrocopterPlatform {
 //        FileUtil.write(Paths.get("quadrocopter-arm-no-structure.stl"), resultNoStructure.toStlString());
 //        resultNoStructure.toObj().toFiles(Paths.get("quadrocopter-arm-no-structure.obj"));
     }
-
+    
+    
     private CSG toCSG() {
 
         double platformRadius = 150;
         double platformThickness = 3;
         double platformBorderThickness = 4;
 
-        int numHoneycombs = 12;
+        int numHoneycombs = 0;
         double honeycombWallThickness = 2.5;
 
-        double honeycombRadius = platformRadius / numHoneycombs;
+        CSG platform =  basePlatform(platformRadius, numHoneycombs, platformThickness, platformBorderThickness, honeycombWallThickness);
+        
+        double armHeight = 18;
+        double armScaleFactor = 0.5;
+        double armCubeWidth = 18*2;
+        
+        CSG armHolderPrototype = new QuadrocopterArmHolder().toCSG(armHeight, armScaleFactor, armCubeWidth).transformed(unity().translateX(-platformRadius));
+        
+        CSG armHolders = armHolderPrototype.clone();
+        
+        for( int i = 1; i < 4; i++) {
+            armHolders = armHolders.union(armHolderPrototype.transformed(unity().rotZ(i*90)));
+        }
+        
+        platform = platform.union(armHolders);
+        
+        return platform;
+    }
 
+    
+
+    private CSG basePlatform(double platformRadius, int numHoneycombs, double platformThickness, double platformBorderThickness, double honeycombWallThickness) {
+        double honeycombRadius = platformRadius / numHoneycombs;
+        
         CSG platform = new Cylinder(platformRadius, platformThickness, 64).toCSG();
         
         CSG innerPlatform = new Cylinder(platformRadius - platformBorderThickness, platformThickness, 64).toCSG();
@@ -85,7 +108,11 @@ public class QuadrocopterPlatform {
                 }
             }
         }
+        
+        if (hexagons!=null) {
+            platform = platform.difference(hexagons);
+        }
 
-        return platform.difference(hexagons).union(platformShell);
+        return platform.union(platformShell);
     }
 }

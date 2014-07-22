@@ -237,8 +237,8 @@ public class CSG {
             case POLYGON_BOUND:
                 return _unionPolygonBoundsOpt(csg);
             default:
-                return _unionIntersectOpt(csg);
-//                return _unionNoOpt(csg);
+//                return _unionIntersectOpt(csg);
+                return _unionNoOpt(csg);
         }
     }
 
