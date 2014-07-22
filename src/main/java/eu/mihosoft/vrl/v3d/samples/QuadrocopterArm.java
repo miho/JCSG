@@ -137,8 +137,8 @@ public class QuadrocopterArm {
         CSG.setDefaultOptType(CSG.OptType.NONE);
         
         double engineRadius = 13;
-        double screwDistance = 12.5;
-        double screwRadius = 1.25;
+        double screwDistance = 13;
+        double screwRadius = 1.5;
         double enginePlatformThickness = 2.0;
         double mainHoleRadius = 3.6;
         
