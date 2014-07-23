@@ -138,7 +138,7 @@ public class QuadrocopterArm {
         
         double engineRadius = 13;
         double screwDistance = 13;
-        double screwRadius = 1.5;
+        double screwRadius = 1.6;
         double enginePlatformThickness = 2.0;
         double mainHoleRadius = 3.6;
         
