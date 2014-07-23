@@ -6,6 +6,7 @@
 package eu.mihosoft.vrl.v3d.samples;
 
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.Cylinder;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Transform;
@@ -35,12 +36,12 @@ public class QuadrocopterPlatform {
     
     private CSG toCSG() {
 
-        double platformRadius = 150;
+        double platformRadius = 84;
         double platformThickness = 3;
         double platformBorderThickness = 4;
 
-        int numHoneycombs = 14;
-        double honeycombWallThickness = 2.5;
+        int numHoneycombs = 17;
+        double honeycombWallThickness = 1;
 
         CSG platform =  basePlatform(platformRadius, numHoneycombs, platformThickness, platformBorderThickness, honeycombWallThickness);
         
@@ -48,7 +49,7 @@ public class QuadrocopterPlatform {
         double armScaleFactor = 0.5;
         double armCubeWidth = armHeight;
         double armCubeThickness = 4;
-        double holderPlatformRadius = 36;
+        double holderPlatformRadius = 20;
         
         CSG armHolderPrototype = new QuadrocopterArmHolder().toCSG(armHeight, armScaleFactor, armCubeWidth, armCubeThickness, holderPlatformRadius, platformThickness).transformed(unity().translateX(-platformRadius));
         
@@ -58,7 +59,11 @@ public class QuadrocopterPlatform {
             armHolders = armHolders.union(armHolderPrototype.transformed(unity().rotZ(i*90)));
         }
         
-        platform = platform.union(armHolders);
+        CSG cross = new Cube(platformRadius*2, platformBorderThickness, platformThickness).toCSG().transformed(unity().translateZ(platformThickness/2.0));
+        
+        cross = cross.union(cross.transformed(unity().rotZ(90)));
+        
+        platform = platform.union(armHolders, cross);
         
         return platform;
     }
@@ -88,6 +93,8 @@ public class QuadrocopterPlatform {
         // to be sure we use numHoneyCombs*1.3
         
         numHoneycomb*=1.4;
+        
+        double centerOffset = 0;//+honeycombRadius-inradiusOfHexagon;
 
         for (int y = 0; y < numHoneycomb; y++) {
             for (int x = 0; x < numHoneycomb; x++) {
@@ -95,10 +102,10 @@ public class QuadrocopterPlatform {
                 double offset = inradiusOfHexagon * (x % 2);
 
                 double dx = -platformRadius + x * sideLength * 1.5;
-                double dy = -platformRadius + y * inradiusOfHexagon * 2.0 + offset;
+                double dy = -platformRadius + y * inradiusOfHexagon * 2.0 + offset - honeycombWallThickness/4.0;
 
-                dx += honeycombWallThickness*x;
-                dy += honeycombWallThickness*y  + honeycombWallThickness * (x % 2)/2;
+                dx += honeycombWallThickness*x +centerOffset - honeycombWallThickness/6.0;
+                dy += honeycombWallThickness*y  + honeycombWallThickness * (x % 2)/2 + centerOffset*1.75 - inradiusOfHexagon*0.5 +honeycombWallThickness/2.0;
 
                 CSG h = honeycombPrototype.transformed(unity().translate(
                         dx, dy, 0));
@@ -115,6 +122,6 @@ public class QuadrocopterPlatform {
             platform = platform.difference(hexagons);
         }
 
-        return platform.union(platformShell);
+        return platform.union(platformShell,honeycombPrototype.transformed(unity().scale(1.05,1.05,1)));
     }
 }
