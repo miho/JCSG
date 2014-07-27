@@ -147,7 +147,9 @@ public class RaspberryPiMount {
 
         // save union as stl
 //        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
-        FileUtil.write(Paths.get("sample.stl"), RaspberryPiMount.boardAndPegs().transformed(Transform.unity().rotX(180)).toStlString());
+        
+            CSG board = RaspberryPiMount.boardAndPegs().transformed(Transform.unity().rotX(180));
+            FileUtil.write(Paths.get("sample.stl"), board.toStlString());
 
     }
 }

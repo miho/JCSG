@@ -199,13 +199,13 @@ public class Vector3d {
     }
 
     /**
-     * Returns a normalized copy of this vector with {@code length}.
+     * Returns a normalized copy of this vector with length {@code 1}.
      *
      * <b>Note:</b> this vector is not modified.
      *
-     * @return a normalized copy of this vector with {@code length}
+     * @return a normalized copy of this vector with length {@code 1}
      */
-    public Vector3d unit() {
+    public Vector3d normalized() {
         return this.dividedBy(this.magnitude());
     }
 

@@ -32,7 +32,7 @@ import java.io.*;
  *
  * @author John E. Lloyd, Fall 2004
  */
-public class QuickHull3DTest
+class QuickHull3DTest
 {
 	static private final double DOUBLE_PREC = 2.2204460492503131e-16;
 

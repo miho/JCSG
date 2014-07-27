@@ -267,7 +267,7 @@ public final class Polygon {
         Vector3d b = this.vertices.get(1).pos;
         Vector3d c = this.vertices.get(2).pos;
 
-        this.plane.normal = b.minus(a).cross(c.minus(a)).unit();
+        this.plane.normal = b.minus(a).cross(c.minus(a)).normalized();
         this.plane.dist = this.plane.normal.dot(a);
         
         if (transform.isMirror()) {

@@ -179,12 +179,7 @@ public class Transform {
      * @return this transform
      */
     public Transform translate(Vector3d vec) {
-        double elemenents[] = {
-            1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, vec.x, vec.y, vec.z, 1
-        };
-        m.mul(new Matrix4d(elemenents));
-
-        return this;
+        return translate(vec.x, vec.y, vec.z);
     }
 
     /**
@@ -423,14 +418,14 @@ public class Transform {
     }
 
     /**
-     * Indicates whether this transform performs a mirror operation.
+     * Indicates whether this transform performs a mirror operation, i.e., 
+     * flips the orientation.
      *
      * @return <code>true</code> if this transform performs a mirror operation;
      * <code>false</code> otherwise
      */
     public boolean isMirror() {
-//        return m.m00 < 0 || m.m11 < 0 || m.m22 < 0 || m.m33 < 0;
-        return false;
+        return m.determinant() < 0;
     }
 
     /**

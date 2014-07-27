@@ -111,7 +111,7 @@ import java.io.*;
  * IllegalArgumentException will be thrown.
  *
  * @author John E. Lloyd, Fall 2004 */
-public class QuickHull3D
+class QuickHull3D
 {
 	/**
 	 * Specifies that (on output) vertex indices for a face should be

@@ -6,7 +6,7 @@ package eu.mihosoft.vrl.v3d.ext.quickhull3d;
  *   java quickhull3d.SimpleExample
  * </pre>
  */
-public class SimpleExample
+class SimpleExample
 {
 	/**
 	 * Run for a simple demonstration of QuickHull3D.

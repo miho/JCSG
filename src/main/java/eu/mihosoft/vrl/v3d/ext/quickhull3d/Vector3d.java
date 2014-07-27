@@ -23,7 +23,7 @@ import java.util.Random;
  *
  * @author John E. Lloyd, Fall 2004
  */
-public class Vector3d
+class Vector3d
 {
 	/**
 	 * Precision of a double.

@@ -80,20 +80,20 @@ public class Plane {
      * @param dist distance from origin
      */
     public Plane(Vector3d normal, double dist) {
-        this.normal = normal;
+        this.normal = normal.normalized();
         this.dist = dist;
     }
 
     /**
-     * Creates a nedist plane defined by the the specified points.
+     * Creates a plane defined by the the specified points.
      *
      * @param a first point
      * @param b second point
      * @param c third point
-     * @return a nedist plane
+     * @return a plane
      */
     public static Plane createFromPoints(Vector3d a, Vector3d b, Vector3d c) {
-        Vector3d n = b.minus(a).cross(c.minus(a)).unit();
+        Vector3d n = b.minus(a).cross(c.minus(a)).normalized();
         return new Plane(n, n.dot(a));
     }
 

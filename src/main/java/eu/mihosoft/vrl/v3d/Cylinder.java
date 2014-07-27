@@ -103,13 +103,13 @@ public class Cylinder implements Primitive {
         final Vector3d s = getStart();
         Vector3d e = getEnd();
         final Vector3d ray = e.minus(s);
-        final Vector3d axisZ = ray.unit();
+        final Vector3d axisZ = ray.normalized();
         boolean isY = (Math.abs(axisZ.y) > 0.5);
         final Vector3d axisX = new Vector3d(isY ? 1 : 0, !isY ? 1 : 0, 0).
-                cross(axisZ).unit();
-        final Vector3d axisY = axisX.cross(axisZ).unit();
+                cross(axisZ).normalized();
+        final Vector3d axisY = axisX.cross(axisZ).normalized();
         Vertex startV = new Vertex(s, axisZ.negated());
-        Vertex endV = new Vertex(e, axisZ.unit());
+        Vertex endV = new Vertex(e, axisZ.normalized());
         List<Polygon> polygons = new ArrayList<>();
 
         for (int i = 0; i < numSlices; i++) {
