@@ -23,17 +23,17 @@ import java.nio.file.Paths;
 public class WeightedTubeSample {
 
     public CSG toCSG() {
+        
+        
 
         WeightFunction weight = (v, csg) -> {
-            double w = (1 + Math.sin(v.z * 2) * Math.cos(v.z * 2)) / 2.0;
-
-            w = 0.1 * v.z * w;
+            double w = Math.max(1,1.0/(v.z*0.1+0.1));
 
             return w;
 
         };
         
-        CSG.setDefaultOptType(CSG.OptType.POLYGON_BOUND);
+//        CSG.setDefaultOptType(CSG.OptType.POLYGON_BOUND);
 
         CSG protoOuter = new Cylinder(1, 1, 16).toCSG();
         CSG protoInner = new Cylinder(0.5, 1, 16).toCSG();
@@ -47,7 +47,7 @@ public class WeightedTubeSample {
         }
         
         Transform scale = Transform.unity().scale(2, 2, 1);
-        Transform scaleInner = Transform.unity().scale(1.8, 1.8, 1);
+        Transform scaleInner = Transform.unity().scale(1.5, 1.5, 1);
 
         inner = inner.weighted(weight).transformed(scaleInner);
 
