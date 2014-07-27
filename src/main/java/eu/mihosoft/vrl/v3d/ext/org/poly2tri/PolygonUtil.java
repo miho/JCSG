@@ -88,7 +88,7 @@ public class PolygonUtil {
                     if (!cw) {
                         Collections.reverse(triPoints);
                     }
-                    eu.mihosoft.vrl.v3d.Polygon poly = new eu.mihosoft.vrl.v3d.Polygon(triPoints);
+                    eu.mihosoft.vrl.v3d.Polygon poly = new eu.mihosoft.vrl.v3d.Polygon(triPoints, concave.getStorage());
                     result.add(poly);
                     counter = 0;
                     triPoints = new ArrayList<>();

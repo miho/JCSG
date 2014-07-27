@@ -8,6 +8,7 @@ package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
+import eu.mihosoft.vrl.v3d.PropertyStorage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class HullUtil {
         throw new AssertionError("Don't instantiate me!", null);
     }
     
-    public static CSG hull(CSG csg) {
+    public static CSG hull(CSG csg, PropertyStorage storage) {
         
         List<eu.mihosoft.vrl.v3d.Vector3d> points = new ArrayList<>();
  
@@ -44,7 +45,7 @@ public class HullUtil {
                 vertices.add(points.get(hull.getVertexPointIndices()[i]));
             }
             
-            polygons.add(Polygon.fromPoints(vertices));
+            polygons.add(Polygon.fromPoints(vertices, storage));
             
             vertices.clear();
         }

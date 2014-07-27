@@ -97,10 +97,12 @@ import javafx.scene.shape.TriangleMesh;
 public class CSG {
 
     private List<Polygon> polygons;
-    private OptType optType = OptType.POLYGON_BOUND;
-    private PropertyStorage storage = new PropertyStorage();
+    private static OptType defaultOptType = OptType.NONE;
+    private OptType optType = null;
+    private PropertyStorage storage;
 
     private CSG() {
+        storage = new PropertyStorage();
     }
 
     /**
@@ -163,7 +165,7 @@ public class CSG {
     public CSG clone() {
         CSG csg = new CSG();
 
-        csg.optType = this.optType;
+        csg.setOptType(this.getOptType());
 
         // sequential code
 //        csg.polygons = new ArrayList<>();
@@ -199,7 +201,7 @@ public class CSG {
      * @return this CSG
      */
     public CSG optimization(OptType type) {
-        this.optType = type;
+        this.setOptType(type);
         return this;
     }
 
@@ -228,14 +230,79 @@ public class CSG {
      * @return union of this csg and the specified csg
      */
     public CSG union(CSG csg) {
-        switch (optType) {
+
+        switch (getOptType()) {
             case CSG_BOUND:
                 return _unionCSGBoundsOpt(csg);
             case POLYGON_BOUND:
                 return _unionPolygonBoundsOpt(csg);
             default:
+//                return _unionIntersectOpt(csg);
                 return _unionNoOpt(csg);
         }
+    }
+
+    /**
+     * Return a new CSG solid representing the union of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csg are modified.
+     *
+     * <blockquote><pre>
+     *    A.union(B)
+     *
+     *    +-------+            +-------+
+     *    |       |            |       |
+     *    |   A   |            |       |
+     *    |    +--+----+   =   |       +----+
+     *    +----+--+    |       +----+       |
+     *         |   B   |            |       |
+     *         |       |            |       |
+     *         +-------+            +-------+
+     * </pre></blockquote>
+     *
+     *
+     * @param csgs other csgs
+     *
+     * @return union of this csg and the specified csgs
+     */
+    public CSG union(List<CSG> csgs) {
+
+        CSG result = this;
+
+        for (CSG csg : csgs) {
+            result = result.union(csg);
+        }
+
+        return result;
+    }
+
+    /**
+     * Return a new CSG solid representing the union of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csg are modified.
+     *
+     * <blockquote><pre>
+     *    A.union(B)
+     *
+     *    +-------+            +-------+
+     *    |       |            |       |
+     *    |   A   |            |       |
+     *    |    +--+----+   =   |       +----+
+     *    +----+--+    |       +----+       |
+     *         |   B   |            |       |
+     *         |       |            |       |
+     *         +-------+            +-------+
+     * </pre></blockquote>
+     *
+     *
+     * @param csgs other csgs
+     *
+     * @return union of this csg and the specified csgs
+     */
+    public CSG union(CSG... csgs) {
+        return union(Arrays.asList(csgs));
     }
 
     /**
@@ -244,7 +311,36 @@ public class CSG {
      * @return the convex hull of this csg
      */
     public CSG hull() {
-        return HullUtil.hull(this);
+
+        return HullUtil.hull(this, storage);
+    }
+
+    /**
+     * Returns the convex hull of this csg and the union of the specified csgs.
+     *
+     * @param csgs csgs
+     * @return the convex hull of this csg and the specified csgs
+     */
+    public CSG hull(List<CSG> csgs) {
+
+        CSG csgsUnion = this;
+
+        for (CSG csg : csgs) {
+            csgsUnion = csgsUnion.union(csg);
+        }
+
+        return csgsUnion.hull();
+    }
+
+    /**
+     * Returns the convex hull of this csg and the union of the specified csgs.
+     *
+     * @param csgs csgs
+     * @return the convex hull of this csg and the specified csgs
+     */
+    public CSG hull(CSG... csgs) {
+
+        return hull(Arrays.asList(csgs));
     }
 
     private CSG _unionCSGBoundsOpt(CSG csg) {
@@ -279,7 +375,39 @@ public class CSG {
             allPolygons.addAll(csg.polygons);
         }
 
-        return CSG.fromPolygons(allPolygons).optimization(optType);
+        return CSG.fromPolygons(allPolygons).optimization(getOptType());
+    }
+
+    /**
+     * Optimizes for intersection. If csgs do not intersect create a new csg
+     * that consists of the polygon lists of this csg and the specified csg. In
+     * this case no further space partitioning is performed.
+     *
+     * @param csg csg
+     * @return the union of this csg and the specified csg
+     */
+    private CSG _unionIntersectOpt(CSG csg) {
+        boolean intersects = false;
+
+        Bounds bounds = csg.getBounds();
+
+        for (Polygon p : polygons) {
+            if (bounds.intersects(p.getBounds())) {
+                intersects = true;
+                break;
+            }
+        }
+
+        List<Polygon> allPolygons = new ArrayList<>();
+
+        if (intersects) {
+            return _unionNoOpt(csg);
+        } else {
+            allPolygons.addAll(this.polygons);
+            allPolygons.addAll(csg.polygons);
+        }
+
+        return CSG.fromPolygons(allPolygons).optimization(getOptType());
     }
 
     private CSG _unionNoOpt(CSG csg) {
@@ -291,7 +419,71 @@ public class CSG {
         b.clipTo(a);
         b.invert();
         a.build(b.allPolygons());
-        return CSG.fromPolygons(a.allPolygons()).optimization(optType);
+        return CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
+    }
+
+    /**
+     * Return a new CSG solid representing the difference of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
+     *
+     * <blockquote><pre>
+     * A.difference(B)
+     *
+     * +-------+            +-------+
+     * |       |            |       |
+     * |   A   |            |       |
+     * |    +--+----+   =   |    +--+
+     * +----+--+    |       +----+
+     *      |   B   |
+     *      |       |
+     *      +-------+
+     * </pre></blockquote>
+     *
+     * @param csgs other csgs
+     * @return difference of this csg and the specified csgs
+     */
+    public CSG difference(List<CSG> csgs) {
+
+        if (csgs.isEmpty()) {
+            return this.clone();
+        }
+
+        CSG csgsUnion = csgs.get(0);
+
+        for (int i = 1; i < csgs.size(); i++) {
+            csgsUnion = csgsUnion.union(csgs.get(i));
+        }
+
+        return difference(csgsUnion);
+    }
+
+    /**
+     * Return a new CSG solid representing the difference of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
+     *
+     * <blockquote><pre>
+     * A.difference(B)
+     *
+     * +-------+            +-------+
+     * |       |            |       |
+     * |   A   |            |       |
+     * |    +--+----+   =   |    +--+
+     * +----+--+    |       +----+
+     *      |   B   |
+     *      |       |
+     *      +-------+
+     * </pre></blockquote>
+     *
+     * @param csgs other csgs
+     * @return difference of this csg and the specified csgs
+     */
+    public CSG difference(CSG... csgs) {
+
+        return difference(Arrays.asList(csgs));
     }
 
     /**
@@ -317,7 +509,8 @@ public class CSG {
      * @return difference of this csg and the specified csg
      */
     public CSG difference(CSG csg) {
-        switch (optType) {
+
+        switch (getOptType()) {
             case CSG_BOUND:
                 return _differenceCSGBoundsOpt(csg);
             case POLYGON_BOUND:
@@ -333,7 +526,7 @@ public class CSG {
         CSG a1 = this._differenceNoOpt(csg.getBounds().toCSG());
         CSG a2 = this.intersect(csg.getBounds().toCSG());
 
-        return a2._differenceNoOpt(b).union(a1).optimization(optType);
+        return a2._differenceNoOpt(b).union(a1).optimization(getOptType());
     }
 
     private CSG _differencePolygonBoundsOpt(CSG csg) {
@@ -356,7 +549,7 @@ public class CSG {
         allPolygons.addAll(outer);
         allPolygons.addAll(innerCSG._differenceNoOpt(csg).polygons);
 
-        return CSG.fromPolygons(allPolygons).optimization(optType);
+        return CSG.fromPolygons(allPolygons).optimization(getOptType());
     }
 
     private CSG _differenceNoOpt(CSG csg) {
@@ -373,7 +566,7 @@ public class CSG {
         a.build(b.allPolygons());
         a.invert();
 
-        CSG csgA = CSG.fromPolygons(a.allPolygons()).optimization(optType);
+        CSG csgA = CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
         return csgA;
     }
 
@@ -401,6 +594,7 @@ public class CSG {
      * @return intersection of this csg and the specified csg
      */
     public CSG intersect(CSG csg) {
+
         Node a = new Node(this.clone().polygons);
         Node b = new Node(csg.clone().polygons);
         a.invert();
@@ -410,7 +604,73 @@ public class CSG {
         b.clipTo(a);
         a.build(b.allPolygons());
         a.invert();
-        return CSG.fromPolygons(a.allPolygons()).optimization(optType);
+        return CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
+    }
+
+    /**
+     * Return a new CSG solid representing the intersection of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
+     *
+     * <blockquote><pre>
+     *     A.intersect(B)
+     *
+     *     +-------+
+     *     |       |
+     *     |   A   |
+     *     |    +--+----+   =   +--+
+     *     +----+--+    |       +--+
+     *          |   B   |
+     *          |       |
+     *          +-------+
+     * }
+     * </pre></blockquote>
+     *
+     * @param csgs other csgs
+     * @return intersection of this csg and the specified csgs
+     */
+    public CSG intersect(List<CSG> csgs) {
+
+        if (csgs.isEmpty()) {
+            return this.clone();
+        }
+
+        CSG csgsUnion = csgs.get(0);
+
+        for (int i = 1; i < csgs.size(); i++) {
+            csgsUnion = csgsUnion.union(csgs.get(i));
+        }
+
+        return intersect(csgsUnion);
+    }
+
+    /**
+     * Return a new CSG solid representing the intersection of this csg and the
+     * specified csgs.
+     *
+     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
+     *
+     * <blockquote><pre>
+     *     A.intersect(B)
+     *
+     *     +-------+
+     *     |       |
+     *     |   A   |
+     *     |    +--+----+   =   +--+
+     *     +----+--+    |       +--+
+     *          |   B   |
+     *          |       |
+     *          +-------+
+     * }
+     * </pre></blockquote>
+     *
+     * @param csgs other csgs
+     * @return intersection of this csg and the specified csgs
+     */
+    public CSG intersect(CSG... csgs) {
+
+        return intersect(Arrays.asList(csgs));
     }
 
     /**
@@ -629,34 +889,40 @@ public class CSG {
      * @return a transformed copy of this CSG
      */
     public CSG transformed(Transform transform) {
+
+        if (polygons.isEmpty()) {
+            return clone();
+        }
+
         List<Polygon> newpolygons = this.polygons.stream().map(
                 p -> p.transformed(transform)
         ).collect(Collectors.toList());
 
-        CSG result = CSG.fromPolygons(newpolygons).optimization(optType);
-        
+        CSG result = CSG.fromPolygons(newpolygons).optimization(getOptType());
+
         result.storage = storage;
 
         return result;
     }
-    
-    public MeshContainer toJavaFXMesh() {
-        
-        if (true) {
-            return toJavaFXMeshSimple();
-        }
 
-        try {
-            ObjImporter importer =new ObjImporter(toObj());
-            
-            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
-            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
-                    meshes, new ArrayList<>(importer.getMaterialCollection()));
-        } catch (IOException ex) {
-            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        // we have no backup strategy for broken streams :(
-        return null;
+    // TODO finish experiment (20.7.2014)
+    public MeshContainer toJavaFXMesh() {
+
+
+            return toJavaFXMeshSimple();
+
+// TODO test obj approach with multiple materials
+//        try {
+//            ObjImporter importer = new ObjImporter(toObj());
+//
+//            List<Mesh> meshes = new ArrayList<>(importer.getMeshCollection());
+//            return new MeshContainer(getBounds().getMin(), getBounds().getMax(),
+//                    meshes, new ArrayList<>(importer.getMaterialCollection()));
+//        } catch (IOException ex) {
+//            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        // we have no backup strategy for broken streams :(
+//        return null;
     }
 
     /**
@@ -799,6 +1065,11 @@ public class CSG {
      * @return bouds of this csg
      */
     public Bounds getBounds() {
+
+        if (polygons.isEmpty()) {
+            return new Bounds(Vector3d.ZERO, Vector3d.ZERO);
+        }
+
         double minX = Double.POSITIVE_INFINITY;
         double minY = Double.POSITIVE_INFINITY;
         double minZ = Double.POSITIVE_INFINITY;
@@ -840,6 +1111,27 @@ public class CSG {
         return new Bounds(
                 new Vector3d(minX, minY, minZ),
                 new Vector3d(maxX, maxY, maxZ));
+    }
+
+    /**
+     * @return the optType
+     */
+    private OptType getOptType() {
+        return optType != null ? optType : defaultOptType;
+    }
+
+    /**
+     * @param optType the optType to set
+     */
+    public static void setDefaultOptType(OptType optType) {
+        defaultOptType = optType;
+    }
+
+    /**
+     * @param optType the optType to set
+     */
+    public void setOptType(OptType optType) {
+        this.optType = optType;
     }
 
     public static enum OptType {
