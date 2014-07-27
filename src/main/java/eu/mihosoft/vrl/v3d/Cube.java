@@ -176,6 +176,10 @@ public class Cube implements Primitive {
         return properties;
     }
 
+    /**
+     * Defines that this cube will not be centered.
+     * @return this cube
+     */
     public Cube noCenter() {
         centered = false;
         return this;
