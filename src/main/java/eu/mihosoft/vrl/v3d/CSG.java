@@ -209,9 +209,9 @@ public class CSG {
      * Return a new CSG solid representing the union of this csg and the
      * specified csg.
      *
-     * <b>Note:</b> Neither this csg nor the specified csg are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csg are weighted.
+
+ <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -246,9 +246,9 @@ public class CSG {
      * Return a new CSG solid representing the union of this csg and the
      * specified csgs.
      *
-     * <b>Note:</b> Neither this csg nor the specified csg are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csg are weighted.
+
+ <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -281,9 +281,9 @@ public class CSG {
      * Return a new CSG solid representing the union of this csg and the
      * specified csgs.
      *
-     * <b>Note:</b> Neither this csg nor the specified csg are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csg are weighted.
+
+ <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -426,9 +426,9 @@ public class CSG {
      * Return a new CSG solid representing the difference of this csg and the
      * specified csgs.
      *
-     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
+
+ <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -463,9 +463,9 @@ public class CSG {
      * Return a new CSG solid representing the difference of this csg and the
      * specified csgs.
      *
-     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
+
+ <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -490,9 +490,9 @@ public class CSG {
      * Return a new CSG solid representing the difference of this csg and the
      * specified csg.
      *
-     * <b>Note:</b> Neither this csg nor the specified csg are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csg are weighted.
+
+ <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -574,9 +574,9 @@ public class CSG {
      * Return a new CSG solid representing the intersection of this csg and the
      * specified csg.
      *
-     * <b>Note:</b> Neither this csg nor the specified csg are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csg are weighted.
+
+ <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -611,9 +611,9 @@ public class CSG {
      * Return a new CSG solid representing the intersection of this csg and the
      * specified csgs.
      *
-     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
+
+ <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -649,9 +649,9 @@ public class CSG {
      * Return a new CSG solid representing the intersection of this csg and the
      * specified csgs.
      *
-     * <b>Note:</b> Neither this csg nor the specified csgs are modified.
-     *
-     * <blockquote><pre>
+     * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
+
+ <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -880,6 +880,10 @@ public class CSG {
         StringBuilder sb = new StringBuilder();
         return toObjString(sb).toString();
     }
+    
+    public CSG weighted(WeightFunction f) {
+        return new Modifier(f).modified(this);
+    }
 
     /**
      * Returns a transformed copy of this CSG.
@@ -908,8 +912,7 @@ public class CSG {
     // TODO finish experiment (20.7.2014)
     public MeshContainer toJavaFXMesh() {
 
-
-            return toJavaFXMeshSimple();
+        return toJavaFXMeshSimple();
 
 // TODO test obj approach with multiple materials
 //        try {

@@ -49,6 +49,8 @@ public class Vertex {
      * Normal.
      */
     public Vector3d normal;
+    
+    private double weight = 1.0;
 
     /**
      * Constructor. Creates a vertex.
@@ -61,9 +63,23 @@ public class Vertex {
         this.normal = normal;
     }
 
+    
+        /**
+     * Constructor. Creates a vertex.
+     *
+     * @param pos position
+     * @param normal normal
+     * @param weight weight
+     */
+    private Vertex(Vector3d pos, Vector3d normal, double weight) {
+        this.pos = pos;
+        this.normal = normal;
+        this.weight = weight;
+    }
+
     @Override
     public Vertex clone() {
-        return new Vertex(pos.clone(), normal.clone());
+        return new Vertex(pos.clone(), normal.clone(), weight);
     }
 
     /**
@@ -133,7 +149,7 @@ public class Vertex {
      * @return this vertex
      */
     public Vertex transform(Transform transform) {
-        pos = pos.transform(transform);
+        pos = pos.transform(transform, weight);
         return this;
     }
 
@@ -145,5 +161,19 @@ public class Vertex {
      */
     public Vertex transformed(Transform transform) {
         return clone().transform(transform);
+    }
+
+    /**
+     * @return the weight
+     */
+    public double getWeight() {
+        return weight;
+    }
+
+    /**
+     * @param weight the weight to set
+     */
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 }

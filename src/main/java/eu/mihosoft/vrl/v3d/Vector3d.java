@@ -291,6 +291,30 @@ public class Vector3d {
     public Vector3d transformed(Transform transform) {
         return clone().transform(transform);
     }
+    
+        /**
+     * Applies the specified transformation to this vector.
+     *
+     * @param transform the transform to apply
+     *
+     * @return this vector
+     */
+    public Vector3d transform(Transform transform, double amount) {
+        return transform.transform(this,amount);
+    }
+
+    /**
+     * Returns a transformed copy of this vector.
+     *
+     * @param transform the transform to apply
+     *
+     * <b>Note:</b> this vector is not modified.
+     *
+     * @return a transformed copy of this vector
+     */
+    public Vector3d transformed(Transform transform, double amount) {
+        return clone().transform(transform, amount);
+    }
 
     @Override
     public String toString() {

@@ -416,6 +416,42 @@ public class Transform {
 
         return vec;
     }
+    
+    /**
+     * Applies this transform to the specified vector.
+     *
+     * @param vec vector to transform
+     * @param amount transform amount (0 = 0 %, 1 = 100%)
+     *
+     * @return the specified vector
+     */
+    public Vector3d transform(Vector3d vec, double amount) {
+        
+//        if (amount == 1.0) {
+//            return transform(vec);
+//        } else if (amount == 0) {
+//            return vec;
+//        }
+        
+        double prevX = vec.x;
+        double prevY = vec.y;
+        double prevZ = vec.z;
+        
+        final double x, y;
+        x = m.m00 * vec.x + m.m01 * vec.y + m.m02 * vec.z + m.m03;
+        y = m.m10 * vec.x + m.m11 * vec.y + m.m12 * vec.z + m.m13;
+        vec.z = m.m20 * vec.x + m.m21 * vec.y + m.m22 * vec.z + m.m23;
+        vec.x = x;
+        vec.y = y;
+        
+        vec.x = prevX + (vec.x-prevX)*amount;
+        vec.y = prevY + (vec.y-prevY)*amount;
+        vec.z = prevZ + (vec.z-prevZ)*amount;
+        
+//        System.out.println("amount: " +amount +  "prevY : " + prevY + ", newY: " + vec.y);
+
+        return vec;
+    }
 
 //    // Multiply a CSG.Vector3D (interpreted as 3 column, 1 row) by this matrix
 //	// (result = v*M)
