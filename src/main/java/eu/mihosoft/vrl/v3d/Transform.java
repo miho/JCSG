@@ -444,9 +444,25 @@ public class Transform {
         vec.x = x;
         vec.y = y;
         
-        vec.x = prevX + (vec.x-prevX)*amount;
-        vec.y = prevY + (vec.y-prevY)*amount;
-        vec.z = prevZ + (vec.z-prevZ)*amount;
+        double diffX = vec.x-prevX;
+        double diffY = vec.y-prevY;
+        double diffZ = vec.z-prevZ;
+        
+//        if (Math.abs(diffX) < Plane.EPSILON) {
+//            diffX = 0;
+//        }
+//        
+//        if (Math.abs(diffY) < Plane.EPSILON) {
+//            diffY = 0;
+//        }
+//        
+//        if (Math.abs(diffZ) < Plane.EPSILON) {
+//            diffZ = 0;
+//        }
+        
+        vec.x = prevX + (diffX)*amount;
+        vec.y = prevY + (diffY)*amount;
+        vec.z = prevZ + (diffZ)*amount;
         
 //        System.out.println("amount: " +amount +  "prevY : " + prevY + ", newY: " + vec.y);
 
