@@ -41,8 +41,8 @@ public class FractalStructure {
     int numberOfGroundEdges = 3;
     double height = 1.0;
     double thickness = 1.0;
-    double NextThickness = thickness / 5.0;
-////    CSG polyeder = null;
+    double NextThicknessDivider = 5.0;
+    double NextThickness = thickness / NextThicknessDivider;
 
     Vector3d groundCenter = null;
     Vector3d topCenter = null;
@@ -141,6 +141,8 @@ public class FractalStructure {
     public FractalStructure(Vector3d groundCenter, Vector3d topCenter,
             int numberOfGroundEdges, double thickness, int level) {
 
+        NextThickness = thickness / NextThicknessDivider;
+        
         if (numberOfGroundEdges < 3) {
             numberOfGroundEdges = 3;
             System.err.println("numberOfGroundEdges need to be at least 3 and is set therefore to 3.");
@@ -173,16 +175,18 @@ public class FractalStructure {
 
             //ground points
             p = new Vector3d(
-                    groundCenter.x + radius + radius * Math.cos(radians),
-                    groundCenter.y + radius + radius * Math.sin(radians),
+                    groundCenter.x + radius * Math.cos(radians),
+                    groundCenter.y + radius * Math.sin(radians),
                     groundCenter.z);
+            
+            System.out.println("p: " + p);
 
             groundPoints.add(p);
 
             //top points
             p = new Vector3d(
-                    topCenter.x + radius + radius * Math.cos(radians),
-                    topCenter.y + radius + radius * Math.sin(radians),
+                    topCenter.x + radius * Math.cos(radians),
+                    topCenter.y + radius * Math.sin(radians),
                     topCenter.z);
 
             topPoints.add(p);
@@ -196,10 +200,7 @@ public class FractalStructure {
         //here we want to save the substructures
         subStructures = new ArrayList<>();
 
-        if (level == 0) {
-//            polyeder = createStructure();
-//            subStructures.add(polyeder);
-            
+        if (level == 0) {            
             subStructures.add(createStructure());
         } else {
             ArrayList<FractalStructure> subFractals = createSubStructures();
@@ -264,8 +265,6 @@ public class FractalStructure {
 
         return CSG.fromPolygons(polygonList);
 
-//        return polyeder;
-
     }
 
     private ArrayList<FractalStructure> createSubStructures() {
@@ -280,26 +279,28 @@ public class FractalStructure {
 
         // is a bias the new center points needs to lie a bit more to the center
         // co the diameter of the fractal won't be increased.
-        double correction = NextThickness / 2.0;
+        double correction = -1* NextThickness / 2.0;
 
-        // create the edge subStructures and the one in the center
-        for (int i = 0; i < numberOfGroundEdges + 1; i++) {
+        // create the edge subStructures 
+        for (int i = 0; i < numberOfGroundEdges ; i++) {
 
             tmpGroundPoint = groundPoints.get(i);
 
             // one of the new a bit translated groundCenterpoint 
-            subGroundCenter = new Vector3d(
-                    tmpGroundPoint.x - correction * (groundCenter.x - tmpGroundPoint.x),
-                    tmpGroundPoint.y - correction * (groundCenter.y - tmpGroundPoint.y),
-                    tmpGroundPoint.z - correction * (groundCenter.z - tmpGroundPoint.z));
+//            subGroundCenter = new Vector3d(
+//                    tmpGroundPoint.x - correction * (groundCenter.x - tmpGroundPoint.x),
+//                    tmpGroundPoint.y - correction * (groundCenter.y - tmpGroundPoint.y),
+//                    tmpGroundPoint.z - correction * (groundCenter.z - tmpGroundPoint.z));
+            subGroundCenter = tmpGroundPoint.minus(groundCenter.minus(tmpGroundPoint).times(correction));
 
             tmpTopPoint = topPoints.get(i);
 
             // one of the new a bit translated topCenterpoint 
-            subTopCenter = new Vector3d(
-                    tmpTopPoint.x - correction * (topCenter.x - tmpTopPoint.x),
-                    tmpTopPoint.y - correction * (topCenter.y - tmpTopPoint.y),
-                    tmpTopPoint.z - correction * (topCenter.z - tmpTopPoint.z));
+//            subTopCenter = new Vector3d(
+//                    tmpTopPoint.x - correction * (topCenter.x - tmpTopPoint.x),
+//                    tmpTopPoint.y - correction * (topCenter.y - tmpTopPoint.y),
+//                    tmpTopPoint.z - correction * (topCenter.z - tmpTopPoint.z));
+            subTopCenter = tmpTopPoint.minus(topCenter.minus(tmpTopPoint).times(correction));
 
             // create the new subFractalStructure
             subFractalStructures.add(
@@ -310,6 +311,13 @@ public class FractalStructure {
                             level - 1));
 
         }
+        // create the subStructure in the center
+            subFractalStructures.add(
+                    new FractalStructure(groundCenter,
+                            topCenter,
+                            numberOfGroundEdges,
+                            NextThickness,
+                            level - 1));
         
         return subFractalStructures;
 
@@ -329,7 +337,7 @@ public class FractalStructure {
 //        FractalStructure frac = new FractalStructure();
 //        frac.collectGroundAndTopPoints();
 //         CSG csg =  new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 3, 2, 0).createStructure();
-        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 3, 2, 1).toCSG();
+        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 3).toCSG();
 
         FileUtil.write(Paths.get("fractal-structure.stl"), csg.toStlString());
 
