@@ -84,39 +84,55 @@ public class FractalStructure {
         double radians = 0.0;
         double radius = thickness / 2.0;
 
-//        Matrix3d rotationMatrix = null;
-//
-//        Vector3d rotationAxis = new Vector3d(
-//                topCenter.x - groundCenter.x,
-//                topCenter.y - groundCenter.y,
-//                topCenter.z - groundCenter.z).normalized();
-//
-//        //helper to reduce space and increase a little bit performance
-//        double OmCa = 0;
-//        double cosA = 0;
-//        double sinA = 0;
-//        double x = rotationAxis.x;
-//        double y = rotationAxis.y;
-//        double z = rotationAxis.z;
-//
-//        //we need one starting point which we can rotate on the circle        
-//        Vector3d orthoVecToRotAxis = null;
+        Matrix3d rotationMatrix = null;
+
+        Vector3d rotationAxis = new Vector3d(
+                topCenter.x - groundCenter.x,
+                topCenter.y - groundCenter.y,
+                topCenter.z - groundCenter.z).normalized();
+
+        //helper to reduce space and increase a little bit performance
+        double OmCa = 0;
+        double cosA = 0;
+        double sinA = 0;
+        double x = rotationAxis.x;
+        double y = rotationAxis.y;
+        double z = rotationAxis.z;
+
+        //we need one starting point which we can rotate on the circle        
+        Vector3d orthoVecToRotAxis = null;
 //        //http://www.gutefrage.net/tipp/orthogonalen-vektor-zu-einem-vektor-finden
 //        if (z != 0) {
-//            orthoVecToRotAxis = new Vector3d(y, x, -2 * x * y / z).normalized().times(radius);
+//            orthoVecToRotAxis = new Vector3d(y, x, -2 * x * y / z);
 //        } else if (y != 0) {
-//            orthoVecToRotAxis = new Vector3d(z, -2 * x * z / y, x).normalized().times(radius);
+//            orthoVecToRotAxis = new Vector3d(z, -2 * x * z / y, x);
 //        } else if (x != 0) {
-//            orthoVecToRotAxis = new Vector3d(-2 * y * z / x, z, y).normalized().times(radius);
+//            orthoVecToRotAxis = new Vector3d(-2 * y * z / x, z, y);
 //        } else {
 //            System.err.println("ERROR no orthogonal vector found");
 //        }
+
+        if (!rotationAxis.equals(Vector3d.X_ONE)) {
+            orthoVecToRotAxis = rotationAxis.cross(Vector3d.X_ONE);
+
+        } else if (!rotationAxis.equals(Vector3d.Y_ONE)) {
+            orthoVecToRotAxis = rotationAxis.cross(Vector3d.Y_ONE);
+
+        } else if (!rotationAxis.equals(Vector3d.Z_ONE)) {
+            orthoVecToRotAxis = rotationAxis.cross(Vector3d.Z_ONE);
+        }
+
+        orthoVecToRotAxis = orthoVecToRotAxis.normalized().times(radius);
+
+//        /// NEW TRY go in angle step sizes
+//        angel = 360.0 / numberOfGroundEdges;
 
         // add/create the points around the center 
         for (int i = 0; i < numberOfGroundEdges; i++) {
 
             angel = 360.0 * i / numberOfGroundEdges;
             radians = (angel - 90) * Math.PI / 180;
+//            angel *= i;
 
 //            OmCa = (1 - Math.cos(angel));
 //            cosA = Math.cos(angel);
@@ -127,20 +143,23 @@ public class FractalStructure {
 //                    x * x * OmCa + cosA, x * y * OmCa - z * sinA, x * z * OmCa + y * sinA,
 //                    y * x * OmCa + z * sinA, y * y * OmCa + cosA, y * z * OmCa - x * sinA,
 //                    z * x * OmCa - y * sinA, z * y * OmCa + x * sinA, z * z * OmCa + cosA);
-
-//             circlePoint = rotationMatrix.times(orthoVecToRotAxis) ;
-                    //ground points
+//
+//            circlePoint = rotationMatrix.times(orthoVecToRotAxis);
+//
+//            //ground points
 //            groundPoints.add(circlePoint.plus(groundCenter));
-                                circlePoint = new Vector3d(
-                                        groundCenter.x + radius * Math.cos(radians),
-                                        groundCenter.y + radius * Math.sin(radians),
-                                        groundCenter.z);
-                    //            System.out.println("p: " + pointOnCircle);
 
+            circlePoint = new Vector3d(
+                    groundCenter.x + radius * Math.cos(radians),
+                    groundCenter.y + radius * Math.sin(radians),
+                    groundCenter.z);
+            
             groundPoints.add(circlePoint);
+            System.out.println("ground circlePoint: " + circlePoint);
 
             //top points
 //            topPoints.add(circlePoint.plus(topCenter));
+
             circlePoint = new Vector3d(
                     topCenter.x + radius * Math.cos(radians),
                     topCenter.y + radius * Math.sin(radians),
@@ -293,8 +312,8 @@ public class FractalStructure {
 
 //        FractalStructure frac = new FractalStructure();
 //        frac.collectGroundAndTopPoints();
-//         CSG csg =  new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 3, 2, 0).createStructure();
-        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
+        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 5, 2, 0).createStructure();
+//        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
 //        CSG csg = new FractalStructure(Vector3d.ZERO, new Vector3d(5, 5, 1), 7, 2, 2).toCSG();
 
         FileUtil.write(Paths.get("fractal-structure.stl"), csg.toStlString());
