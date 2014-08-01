@@ -33,6 +33,8 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.util.Random;
+
 /**
  * 3D Vector3d.
  *
@@ -291,8 +293,8 @@ public class Vector3d {
     public Vector3d transformed(Transform transform) {
         return clone().transform(transform);
     }
-    
-        /**
+
+    /**
      * Applies the specified transformation to this vector.
      *
      * @param transform the transform to apply
@@ -300,7 +302,7 @@ public class Vector3d {
      * @return this vector
      */
     public Vector3d transform(Transform transform, double amount) {
-        return transform.transform(this,amount);
+        return transform.transform(this, amount);
     }
 
     /**
@@ -351,37 +353,165 @@ public class Vector3d {
         return hash;
     }
 
-     /**
+    /**
      * Creates a new vector with specified {@code x}
      *
      * @param x x value
-     * @return a new vector  {@code [x,0,0]}
-     * 
+     * @return a new vector {@code [x,0,0]}
+     *
      */
     public static Vector3d x(double x) {
         return new Vector3d(x, 0, 0);
     }
 
-     /**
+    /**
      * Creates a new vector with specified {@code y}
      *
      * @param y y value
      * @return a new vector {@code [0,y,0]}
-     * 
+     *
      */
     public static Vector3d y(double y) {
         return new Vector3d(0, y, 0);
     }
 
-     /**
+    /**
      * Creates a new vector with specified {@code z}
      *
      * @param z z value
      * @return a new vector {@code [0,0,z]}
-     * 
+     *
      */
     public static Vector3d z(double z) {
         return new Vector3d(0, 0, z);
+    }
+
+    /**
+     * Creates a new vector which is orthogonal to this.
+     *
+     * this_i , this_j , this_k => i,j,k € {1,2,3} permutation
+     *
+     * looking for orthogonal vector o to vector this: this_i * o_i + this_j *
+     * o_j + this_k * o_k = 0
+     *
+     * @return a new vector which is orthogonal to this
+     */
+    public Vector3d orthogonal() {
+
+        double o1 = 0.0;
+        double o2 = 0.0;
+        double o3 = 0.0;
+
+        Random r = new Random();
+
+        int numberOfZeroEntries = 0;
+
+        if (this.x == 0) {
+            numberOfZeroEntries++;
+            o1 = r.nextDouble();
+        }
+
+        if (this.y == 0) {
+            numberOfZeroEntries++;
+            o2 = r.nextDouble();
+        }
+
+        if (this.z == 0) {
+            numberOfZeroEntries++;
+            o3 = r.nextDouble();
+        }
+
+        switch (numberOfZeroEntries) {
+
+            case 0:
+                // all this_i != 0
+                //
+                //we do not want o3 to be zero
+                while (o3 == 0) {
+                    o3 = r.nextDouble();
+                }
+
+                //we do not want o2 to be zero
+                while (o2 == 0) {
+                    o2 = r.nextDouble();
+                }
+                // calculate or choose randomly ??
+//                o2 = -this.z * o3 / this.y;
+                
+                o1 = (-this.y * o2 - this.z * o3) / this.x;
+
+                break;
+
+            case 1:
+                // this_i = 0 , i € {1,2,3}
+                // this_j != 0 != this_k , j,k € {1,2,3}\{i}
+                // 
+                // choose one none zero randomly and calculate the other one
+
+                if (this.x == 0) {
+                    //we do not want o3 to be zero
+                    while (o3 == 0) {
+                        o3 = r.nextDouble();
+                    }
+
+                    o2 = -this.z * o3 / this.y;
+
+                } else if (this.y == 0) {
+
+                    //we do not want o3 to be zero
+                    while (o3 == 0) {
+                        o3 = r.nextDouble();
+                    }
+
+                    o1 = -this.z * o3 / this.y;
+
+                } else if (this.z == 0) {
+
+                    //we do not want o1 to be zero
+                    while (o1 == 0) {
+                        o1 = r.nextDouble();
+                    }
+
+                    o2 = -this.z * o1 / this.y;
+                }
+
+                break;
+
+            case 2:
+                // if two parts of this are 0 we can achieve orthogonality
+                // via setting the corressponding part of the orthogonal vector
+                // to zero this is ALREADY DONE in the init (o_i = 0.0)
+                // NO CODE NEEDED
+//                if (this.x == 0) {
+//                    o1 = 0;
+//                } else if (this.y == 0) {
+//                    o2 = 0;
+//                } else if (this.z == 0) {
+//                    o3 = 0;
+//                }
+                break;
+
+            case 3:
+                System.err.println("This vector is equal to (0,0,0). ");
+
+            default:
+                System.err.println("The orthogonal one is set randomly.");
+
+                o1 = r.nextDouble();
+                o2 = r.nextDouble();
+                o3 = r.nextDouble();
+        }
+
+        Vector3d result = new Vector3d(o1, o2, o3);
+
+        // check if the created vector is really orthogonal to this
+        // if not try one more time
+        while (this.dot(result) != 0.0) {
+            result = this.orthogonal();
+        }
+
+        return result;
+
     }
 
 }
