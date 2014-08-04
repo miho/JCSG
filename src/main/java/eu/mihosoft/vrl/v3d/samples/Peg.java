@@ -51,8 +51,8 @@ import eu.mihosoft.vrl.v3d.Vector3d;
  *      | |    bt
  *      | |__  _
  *      |    | bh
- *      ------ -
- *      |pw |
+ *      -------
+ *      |pw  |
  *   
  *      pw    = peg width
  *      bh    = board mounting height
