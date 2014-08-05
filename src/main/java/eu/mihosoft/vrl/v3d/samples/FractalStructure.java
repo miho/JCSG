@@ -27,6 +27,7 @@ public class FractalStructure {
     double NextThickness = thickness / NextThicknessDivider;
 
     int crossConnectionsRate = 25; //percent
+    int maxAngleForCrossConections = 45;
 
     Vector3d groundCenter = null;
     Vector3d topCenter = null;
@@ -90,23 +91,23 @@ public class FractalStructure {
         //the first point is the most in the north in the x-y-plane
         Vector3d circlePoint = null;
 
-        double angelStepSize = 360.0 / numberOfGroundEdges;
-        double angel = 0;
+        double angleStepSize = 360.0 / numberOfGroundEdges;
+        double angle = 0;
         double radians = 0;// needed for cos & sin
         double radius = thickness / 2.0;
         double x = 0;
         double y = 0;
 
-//        System.out.println(" angelStepSize = " + angelStepSize);
+//        System.out.println(" angleStepSize = " + angleStepSize);
         // add/create the points around the ground and top center 
         for (int i = 0; i < numberOfGroundEdges; i++) {
 
-            angel = i * angelStepSize;
-            radians = (angel - 90) * Math.PI / 180;
+            angle = i * angleStepSize;
+            radians = (angle - 90) * Math.PI / 180;
             x = radius * Math.cos(radians);
             y = radius * Math.sin(radians);
 
-//            System.out.println(" angel = " + angel);
+//            System.out.println(" angle = " + angle);
 //            System.out.println(" radians = " + radians);
 //            System.out.println(" Math.cos(radians) = " + Math.cos(radians));
 //            System.out.println(" Math.sin(radians) = " + Math.sin(radians));            
@@ -279,25 +280,26 @@ public class FractalStructure {
         //
         // PART 02 - creating stabilizing subStructures (cross connections)
         //
-        /* 
-         ET  CT
-         |  /|hCP2
-         | / |
-         hEP2 |/  |
-         |\  |
-         | \ |
-         |  \|
-         |  /|hCP1
-         | / |
-         __           hEP1 |/  |
-         |                    |\  |
-         sSoCL                | \ |
-         |  \|
-         |  /|hCP0
-         | / |
-         _|_          hEP0 |/  |
-         EG CG
-        
+        /**
+         * 
+         *               ET  CT
+         *                 |  /|hCP2
+         *                 | / |
+         *         hEP2  |/  |
+         *                 |\  |
+         *                 | \ |
+         *                 |  \|
+         *                 |  /|hCP1
+         *                 | / |
+         *    __  hEP1 |/  |
+         *     |           |\  |
+         *                 | \ |
+         *   sSoCL      |  \|
+         *                 |  /|hCP0
+         *                 | / |
+         *    _|_ hEP0 |/  |
+         *               EG  CG
+         * 
          */
         ArrayList<FractalStructure> crossSubFractalStructures = new ArrayList<>();
 
@@ -324,7 +326,7 @@ public class FractalStructure {
         Vector3d connectionLineVectorNormalized = connectionLineVector.normalized();
 
         //discribes where the help(Edge/Center)Points should lie on connection line of ground and top
-        double stepSizeOnConnectionLine = 10.0 / crossConnectionsRate * connectionLineVector.magnitude();
+        double stepSizeOnConnectionLine = 10.0 / crossConnectionsRate * connectionLineVector.magnitude(); // sSoCL
         double stepSizeOnConnectionLineHalf = stepSizeOnConnectionLine / 2.0;
 
         // create cross connections from all edge subStructures to the center subStructure
@@ -334,11 +336,46 @@ public class FractalStructure {
             tmpGroundPoint = tmpStructure.groundCenter;
 //            tmpTopPoint = tmpStructure.topCenter;
 
+            // optional part , needed to reduce cross connections with big increase
+            // 
+            // check maxAngleForCrossConections for angle a
+            // 
+            //                |    / |hCP0
+            //                |   /  |
+            //         hEP0 | /a  |
+            //              EG    CG
+            //
+            // in rectangular triangle EG, CG, hCP0
+            // cos(a) = | ANKATHETE | / | HYPOTHENUSE |
+            // cos(a) = | CG - EG | / | hCP0 - EG |
+            //
+            //hCP0
+            helpCenterPoint = connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf).plus(centerGroundPoint);
+            // tmpGroundPoint = EG
+            // centerGroundPoint = CG
+            
+            double ankathete = centerGroundPoint.minus(tmpGroundPoint).magnitude();
+            double hypothenuse = helpCenterPoint.minus(tmpGroundPoint).magnitude();
+            double angle = Math.toDegrees(Math.acos(ankathete/hypothenuse));
+            
+            //check maxAngleForCrossConections for angle a and recalculate stepsize until angle
+            while(angle>=maxAngleForCrossConections){
+//                System.out.println(" angle >= maxAngleForCrossConections");
+                stepSizeOnConnectionLine = stepSizeOnConnectionLineHalf;
+                stepSizeOnConnectionLineHalf /=2.0;
+                
+                helpCenterPoint = connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf).plus(centerGroundPoint);
+                hypothenuse = helpCenterPoint.minus(tmpGroundPoint).magnitude();
+                angle = Math.toDegrees(Math.acos(ankathete/hypothenuse));
+            }
+
             // create multiple cross connections from ONE edge subStructure to the center subStructure
             for (double j = 0; j < connectionLineVector.magnitude(); j += stepSizeOnConnectionLine) {
 
                 //from bottom left to top right beginning at the ground point position
+                //hEP0,2,4,....
                 helpEdgePoint = connectionLineVectorNormalized.times(j).plus(tmpGroundPoint);
+                //hCP0,1,2,....
                 helpCenterPoint = connectionLineVectorNormalized.times(j).plus(connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf)).plus(centerGroundPoint);
 
                 // collects the cross subStructure from bottom left to top right
@@ -350,10 +387,11 @@ public class FractalStructure {
                                 level - 1));
 
                 //from top left to bottom right beginning at the ground point position
+                //hEP1,3,5,....
                 helpEdgePoint = connectionLineVectorNormalized.times(j + stepSizeOnConnectionLine).plus(tmpGroundPoint);
 
                 if (connectionLineVector.magnitude() > helpEdgePoint.minus(tmpGroundPoint).magnitude()) {
-
+//
                     // collects the cross subStructure from top left to bottom right
                     crossSubFractalStructures.add(
                             new FractalStructure(helpEdgePoint,
@@ -363,7 +401,20 @@ public class FractalStructure {
                                     level - 1));
                 }
 
-            }
+            }//for cross connections to center
+
+//             //from bottom left to top right beginning at the ground point position
+//            // last step to save the if() in the inner for()
+//            double times = connectionLineVector.magnitude();
+//                helpEdgePoint = connectionLineVectorNormalized.times(times-stepSizeOnConnectionLine).plus(tmpGroundPoint);
+//                helpCenterPoint = connectionLineVectorNormalized.times(times).plus(connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf)).plus(centerGroundPoint);
+//
+//                crossSubFractalStructures.add(
+//                            new FractalStructure(helpEdgePoint,
+//                                    helpCenterPoint,
+//                                    numberOfGroundEdges,
+//                                    NextThickness,
+//                                    level - 1));
         }//for edges
 
         subFractalStructures.addAll(crossSubFractalStructures);
@@ -384,7 +435,7 @@ public class FractalStructure {
 
     public static void main(String[] args) throws IOException {
 
-        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(7), 6, 4, 2).toCSG();
+        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(10), 3, 10, 2).toCSG();
 //        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
 //        CSG csg = new FractalStructure(new Vector3d(-1, -1, -1), new Vector3d(1, 1, 1), 7, 4, 3).toCSG();
 
