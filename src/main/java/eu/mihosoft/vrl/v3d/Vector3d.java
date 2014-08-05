@@ -398,6 +398,10 @@ public class Vector3d {
      */
     public Vector3d orthogonal() {
 
+//        if ((this.x == Double.NaN) || (this.y == Double.NaN) || (this.z == Double.NaN)) {
+//            throw new IllegalStateException("NaN is not a valid entry for a vector.");
+//        }
+
         double o1 = 0.0;
         double o2 = 0.0;
         double o3 = 0.0;
@@ -437,7 +441,7 @@ public class Vector3d {
                 }
                 // calculate or choose randomly ??
 //                o2 = -this.z * o3 / this.y;
-                
+
                 o1 = (-this.y * o2 - this.z * o3) / this.x;
 
                 break;
@@ -503,6 +507,12 @@ public class Vector3d {
         }
 
         Vector3d result = new Vector3d(o1, o2, o3);
+
+//        if ((this.x ==Double.NaN) || (this.y == Double.NaN) || (this.z == Double.NaN)) {
+//            throw new IllegalStateException("NaN is not a valid entry for a vector.");
+//        }
+//        System.out.println(" this : "+ this);
+//        System.out.println(" result : "+ result);
 
         // check if the created vector is really orthogonal to this
         // if not try one more time
