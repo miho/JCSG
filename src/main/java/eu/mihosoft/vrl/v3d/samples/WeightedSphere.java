@@ -11,6 +11,8 @@ import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.UnityModifier;
+import eu.mihosoft.vrl.v3d.Vector3d;
+import eu.mihosoft.vrl.v3d.WeightFunction;
 import eu.mihosoft.vrl.v3d.XModifier;
 import eu.mihosoft.vrl.v3d.YModifier;
 import eu.mihosoft.vrl.v3d.ZModifier;
@@ -62,12 +64,15 @@ public class WeightedSphere {
         
         
 
-            CSG morphed = prototype.weighted((v, csg) -> {
+            CSG morphed = prototype.weighted(new WeightFunction() {
+
+            @Override
+            public double eval(Vector3d v, CSG csg) {
                 double w = (1 + Math.sin(v.z * 2)*Math.cos(v.z * 2)) / 2.0;
-
+                
                 return w;
-
-            }).transformed(Transform.unity().scale(0.1)).
+            }
+        }).transformed(Transform.unity().scale(0.1)).
 //                    weighted(new XModifier(true)).
 //                    weighted(new UnityModifier()).
                     transformed(Transform.unity().translateX(1).rotZ(90));

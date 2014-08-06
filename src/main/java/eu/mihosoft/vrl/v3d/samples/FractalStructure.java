@@ -468,7 +468,11 @@ public class FractalStructure {
 
         List<Polygon> polygons = new ArrayList<>();
 
-        subStructures.stream().forEach(csg -> polygons.addAll(csg.getPolygons()));
+//        subStructures.stream().forEach(csg -> polygons.addAll(csg.getPolygons()));
+        
+        for(CSG csg : subStructures) {
+            polygons.addAll(csg.getPolygons());
+        }
 
         return CSG.fromPolygons(polygons);
     }

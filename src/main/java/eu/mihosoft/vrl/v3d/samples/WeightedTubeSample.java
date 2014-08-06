@@ -12,6 +12,7 @@ import eu.mihosoft.vrl.v3d.Plane;
 import eu.mihosoft.vrl.v3d.RoundedCube;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.UnityModifier;
+import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.WeightFunction;
 import eu.mihosoft.vrl.v3d.ZModifier;
 import java.io.IOException;
@@ -27,11 +28,14 @@ public class WeightedTubeSample {
         
         
 
-        WeightFunction weight = (v, csg) -> {
-            double w = Math.max(1,1.0/(v.z*0.1+0.1));
+        WeightFunction weight = new WeightFunction() {
 
-            return w;
-
+            @Override
+            public double eval(Vector3d v, CSG csg) {
+                double w = Math.max(1,1.0/(v.z*0.1+0.1));
+                
+                return w;
+            }
         };
         
 //        CSG.setDefaultOptType(CSG.OptType.POLYGON_BOUND);

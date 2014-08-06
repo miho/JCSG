@@ -25,9 +25,23 @@ public class HullUtil {
         
         List<eu.mihosoft.vrl.v3d.Vector3d> points = new ArrayList<>();
  
-        csg.getPolygons().forEach((p)->p.vertices.forEach((v)->points.add(v.pos)));
+//        csg.getPolygons().forEach((p)->p.vertices.forEach((v)->points.add(v.pos)));
         
-        Point3d[] hullPoints = points.stream().map((vec)->new Point3d(vec.x, vec.y, vec.z)).toArray(Point3d[]::new);
+        for(Polygon p : csg.getPolygons()) {
+            for(eu.mihosoft.vrl.v3d.Vertex v : p.vertices) {
+                points.add(v.pos);
+            }
+        }
+        
+//        Point3d[] hullPoints = points.stream().map((vec)->new Point3d(vec.x, vec.y, vec.z)).toArray(Point3d[]::new);
+        
+        Point3d[] hullPoints = new Point3d[points.size()];
+        
+        
+        for (int i = 0; i < points.size();i++) {
+            eu.mihosoft.vrl.v3d.Vector3d vec = points.get(i);
+            hullPoints[i] = new Point3d(vec.x, vec.y, vec.z);
+        }
         
         QuickHull3D hull = new QuickHull3D();
         hull.build(hullPoints);
