@@ -31,7 +31,7 @@ public class FractalStructure {
     // the thickness of the child tubes in the next level
     double NextThickness = thickness / NextThicknessDivider;
     //
-    double minThicknessOnLastLevel = 0.07;
+    double minThicknessOnLastLevel = 0.1;
 
     // decides who many connections there should be in the next level between
     // two subFractalStructures (position parent edge and center)
