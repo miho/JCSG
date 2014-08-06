@@ -20,31 +20,59 @@ import java.util.List;
  */
 public class FractalStructure {
 
+    // decides which kind of polygon base should be created: triangle, hexagon, general n-polygon with n>2
     int numberOfGroundEdges = 3;
-    double height = 1.0;
+//    double height = 1.0;
     double thickness = 1.0;
-    double NextThicknessDivider = 8.0;
+    // divider 5 makes a good look for the structure
+    // divider bigger 5 makes the structure thinner, lower than 5 makes it wider
+    double NextThicknessDivider = 6.0;
+    // the thickness of the child tubes in the next level
     double NextThickness = thickness / NextThicknessDivider;
 
+    // decides who many connections there should be in the next level between
+    // two subFractalStructures (position parent edge and center)
     int crossConnectionsRate = 25; //percent
-    int maxAngleForCrossConections = 45;
+    // maxAngleForCrossConections dominates crossConnectionsRate
+    int maxAngleForCrossConections = 45;//degree
 
+    //the distance between groundCenter and topCenter decides about the height of the tu
+    //the center of the bottom polygon of the first FractalStructure (level=0) / tube
     Vector3d groundCenter = null;
+    //the center of the top polygon of the first FractalStructure (level=0) / tube
     Vector3d topCenter = null;
+
+    //collection of the bottom polygon points of a FractalStructure (edges & center)
+    //used for the new bottom centers of the child FractalStructures
     List<Vector3d> groundPoints = null;
+    //collection of the top polygon points of a FractalStructure (edges & center)
     List<Vector3d> topPoints = null;
 
+    //collection of all child tubes, together they build the fractal structure we want
     List<CSG> subStructures = null;
 
+    //how many recursion should be done before drawing (level 0), level 2 means draw after 2 refinments
     int level = 0;
 
-    /**
-     * 
-     * @param groundCenter
-     * @param topCenter
-     * @param numberOfGroundEdges
-     * @param thickness
-     * @param level 
+    /**  
+     *
+     *  EXAMPLE: 
+     *  FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(2), 6, 1, 0) creates a tube with a
+     *  top and botton polygon consist of 6 point, a length of 2. The orintation in space is that kind that
+     *  z axis goes through the center of the bottom and top polygon. Level 0 means draw these tube.
+     *  A Level bigger than 0 means create new tubes with one level decresed, same Lenght and same 
+     *  orintation in space in the edges and center.
+     *     1 ____6
+     *     /          \
+     *  2/      c      \5
+     *    \             /
+     *     \______/
+     *      3      4
+     * @param groundCenter the center point of the bottom polygon
+     * @param topCenter the center point of the top polygon
+     * @param numberOfGroundEdges  number which defines polygon should be created (circle divided in N equal parts)
+     * @param thickness the distance between the center and all edge points of the bottom and/or top polygon
+     * @param level is the number which defines how many recursion should be done
      */
     public FractalStructure(Vector3d groundCenter, Vector3d topCenter,
             int numberOfGroundEdges, double thickness, int level) {
@@ -114,6 +142,7 @@ public class FractalStructure {
 //            System.out.println("groundCenter = " + groundCenter);
 //            System.out.println("orthoVecToRotAxis1.times(x) = " + orthoVecToRotAxis1.times(x));
 //            System.out.println("orthoVecToRotAxis2.times(y) = " + orthoVecToRotAxis2.times(y));
+//            
             // Plane equation E(x,y) = S + P * x + Q * y
             // with P,Q orthogonal to the center rotation axis and
             // with x,y from the cirlce gives use the cirlce in 3d space
@@ -213,7 +242,8 @@ public class FractalStructure {
 
     /**
      * Helper methode which creates in the center and at the edges new smaller structures
-     * with the same orientation in space as the parent structure (one level above).
+     * with the same orientation in space as the parent structure (one level above) and cross
+     * connections between them.
      * Do NOT call this method by your self. This method is called by the constructor.
      * 
      * @return a list with smaller child structures
@@ -353,43 +383,50 @@ public class FractalStructure {
             helpCenterPoint = connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf).plus(centerGroundPoint);
             // tmpGroundPoint = EG
             // centerGroundPoint = CG
-            
+
             double ankathete = centerGroundPoint.minus(tmpGroundPoint).magnitude();
             double hypothenuse = helpCenterPoint.minus(tmpGroundPoint).magnitude();
-            double angle = Math.toDegrees(Math.acos(ankathete/hypothenuse));
-            
+            double angle = Math.toDegrees(Math.acos(ankathete / hypothenuse));
+
             //check maxAngleForCrossConections for angle a and recalculate stepsize until angle
-            while(angle>=maxAngleForCrossConections){
+            while (angle >= maxAngleForCrossConections) {
 //                System.out.println(" angle >= maxAngleForCrossConections");
                 stepSizeOnConnectionLine = stepSizeOnConnectionLineHalf;
-                stepSizeOnConnectionLineHalf /=2.0;
-                
+                stepSizeOnConnectionLineHalf /= 2.0;
+
                 helpCenterPoint = connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf).plus(centerGroundPoint);
                 hypothenuse = helpCenterPoint.minus(tmpGroundPoint).magnitude();
-                angle = Math.toDegrees(Math.acos(ankathete/hypothenuse));
+                angle = Math.toDegrees(Math.acos(ankathete / hypothenuse));
             }
+
+            // prevent that the cross connactions are to low in the bottom plane
+            Vector3d correctionInRotationAxisDirection = connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf / 2.0);
 
             // create multiple cross connections from ONE edge subStructure to the center subStructure
             for (double j = 0; j < connectionLineVector.magnitude(); j += stepSizeOnConnectionLine) {
 
                 //from bottom left to top right beginning at the ground point position
                 //hEP0,2,4,....
-                helpEdgePoint = connectionLineVectorNormalized.times(j).plus(tmpGroundPoint);
+                helpEdgePoint = connectionLineVectorNormalized.times(j).plus(tmpGroundPoint).plus(correctionInRotationAxisDirection);
                 //hCP0,1,2,....
-                helpCenterPoint = connectionLineVectorNormalized.times(j).plus(connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf)).plus(centerGroundPoint);
+                helpCenterPoint = connectionLineVectorNormalized.times(j).plus(connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf)).plus(centerGroundPoint).plus(correctionInRotationAxisDirection);
 
-                // collects the cross subStructure from bottom left to top right
-                crossSubFractalStructures.add(
-                        new FractalStructure(helpEdgePoint,
-                                helpCenterPoint,
-                                numberOfGroundEdges,
-                                NextThickness,
-                                level - 1));
+                // prevent that the last cross connactions from bottom left to top right has a to above end point in the top plane
+                if (connectionLineVector.magnitude() > helpCenterPoint.minus(centerGroundPoint).magnitude()) {
+                    // collects the cross subStructure from bottom left to top right
+                    crossSubFractalStructures.add(
+                            new FractalStructure(helpEdgePoint,
+                                    helpCenterPoint,
+                                    numberOfGroundEdges,
+                                    NextThickness,
+                                    level - 1));
+                }
 
                 //from top left to bottom right beginning at the ground point position
                 //hEP1,3,5,....
-                helpEdgePoint = connectionLineVectorNormalized.times(j + stepSizeOnConnectionLine).plus(tmpGroundPoint);
+                helpEdgePoint = connectionLineVectorNormalized.times(j + stepSizeOnConnectionLine).plus(tmpGroundPoint).plus(correctionInRotationAxisDirection);
 
+                // prevent that the last cross connactions from top left to bottom right has a to above end point in the top plane
                 if (connectionLineVector.magnitude() > helpEdgePoint.minus(tmpGroundPoint).magnitude()) {
 //
                     // collects the cross subStructure from top left to bottom right
@@ -435,7 +472,7 @@ public class FractalStructure {
 
     public static void main(String[] args) throws IOException {
 
-        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(10), 3, 10, 2).toCSG();
+        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(10), 4, 20, 3).toCSG();
 //        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
 //        CSG csg = new FractalStructure(new Vector3d(-1, -1, -1), new Vector3d(1, 1, 1), 7, 4, 3).toCSG();
 
