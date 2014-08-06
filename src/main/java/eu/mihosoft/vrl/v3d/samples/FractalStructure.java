@@ -8,6 +8,7 @@ package eu.mihosoft.vrl.v3d.samples;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Polygon;
+import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -26,11 +27,11 @@ public class FractalStructure {
     double thickness = 1.0;
     // divider 5 makes a good look for the structure
     // divider bigger 5 makes the structure thinner, lower than 5 makes it wider
-    double NextThicknessDivider = 4.0;
+    double NextThicknessDivider = 6.0;
     // the thickness of the child tubes in the next level
     double NextThickness = thickness / NextThicknessDivider;
     //
-    double minThicknessOnLastLevel = 0.02;
+    double minThicknessOnLastLevel = 0.07;
 
     // decides who many connections there should be in the next level between
     // two subFractalStructures (position parent edge and center)
@@ -474,7 +475,7 @@ public class FractalStructure {
 
     public static void main(String[] args) throws IOException {
 
-        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(10), 4, 15, 3).toCSG();
+        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(20), 3, 20, 3).toCSG().transformed(Transform.unity().scale(10));
 //        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
 //        CSG csg = new FractalStructure(new Vector3d(-1, -1, -1), new Vector3d(1, 1, 1), 7, 4, 3).toCSG();
 
