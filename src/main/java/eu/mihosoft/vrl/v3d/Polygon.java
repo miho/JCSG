@@ -49,7 +49,6 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
  */
 public final class Polygon {
 
-
     /**
      * Polygon vertices
      */
@@ -64,12 +63,11 @@ public final class Polygon {
      * <b>Note:</b> uses first three vertices to define the plane.
      */
     public final Plane plane;
-    
+
     void setStorage(PropertyStorage storage) {
         this.shared = storage;
     }
 
-    
     /**
      * Decomposes the specified concave polygon into convex polygons.
      *
@@ -81,7 +79,7 @@ public final class Polygon {
 
         return PolygonUtil.concaveToConvex(p);
     }
-    
+
     /**
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
@@ -135,9 +133,13 @@ public final class Polygon {
     @Override
     public Polygon clone() {
         List<Vertex> newVertices = new ArrayList<>();
-        this.vertices.forEach((vertex) -> {
+//        this.vertices.forEach((vertex) -> {
+//            newVertices.add(vertex.clone());
+//        });
+
+        for (Vertex vertex : vertices) {
             newVertices.add(vertex.clone());
-        });
+        }
         return new Polygon(newVertices, getStorage());
     }
 
@@ -147,9 +149,14 @@ public final class Polygon {
      * @return this polygon
      */
     public Polygon flip() {
-        vertices.forEach((vertex) -> {
+//        vertices.forEach((vertex) -> {
+//            vertex.flip();
+//        });
+
+        for (Vertex vertex : vertices) {
             vertex.flip();
-        });
+        }
+
         Collections.reverse(vertices);
 
         plane.flip();
@@ -219,16 +226,20 @@ public final class Polygon {
      * @return this polygon
      */
     public Polygon translate(Vector3d v) {
-        vertices.forEach((vertex) -> {
+//        vertices.forEach((vertex) -> {
+//            vertex.pos = vertex.pos.plus(v);
+//        });
+
+        for (Vertex vertex : vertices) {
             vertex.pos = vertex.pos.plus(v);
-        });
-        
-          Vector3d a = this.vertices.get(0).pos;
+        }
+
+        Vector3d a = this.vertices.get(0).pos;
         Vector3d b = this.vertices.get(1).pos;
         Vector3d c = this.vertices.get(2).pos;
 
         this.plane.normal = b.minus(a).cross(c.minus(a));
-        
+
         return this;
     }
 
@@ -257,11 +268,15 @@ public final class Polygon {
      */
     public Polygon transform(Transform transform) {
 
-        this.vertices.stream().forEach(
-                (v) -> {
-                    v.transform(transform);
-                }
-        );
+//        this.vertices.stream().forEach(
+//                (v) -> {
+//                    v.transform(transform);
+//                }
+//        );
+        
+        for (Vertex vertex : vertices) {
+            vertex.transform(transform);
+        }
 
         Vector3d a = this.vertices.get(0).pos;
         Vector3d b = this.vertices.get(1).pos;
@@ -269,7 +284,7 @@ public final class Polygon {
 
         this.plane.normal = b.minus(a).cross(c.minus(a)).normalized();
         this.plane.dist = this.plane.normal.dot(a);
-        
+
         if (transform.isMirror()) {
             // the transformation includes mirroring. flip polygon
             flip();
@@ -505,16 +520,15 @@ public final class Polygon {
 //
 ////        return result;
 //    }
-
     /**
      * @return the shared
      */
     public PropertyStorage getStorage() {
-        
+
         if (shared == null) {
             shared = new PropertyStorage();
         }
-        
+
         return shared;
     }
 }

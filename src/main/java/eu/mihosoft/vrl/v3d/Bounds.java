@@ -121,7 +121,15 @@ public class Bounds {
      * box; {@code false} otherwise
      */
     public boolean contains(Polygon p) {
-        return p.vertices.stream().allMatch(v -> contains(v));
+//        return p.vertices.stream().allMatch(v -> contains(v));
+
+        for (Vertex v : p.vertices) {
+            if (!contains(v)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

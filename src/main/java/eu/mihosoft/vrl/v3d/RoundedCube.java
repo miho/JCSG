@@ -193,5 +193,15 @@ public class RoundedCube implements Primitive {
         this.cornerRadius = cornerRadius;
         return this;
     }
+    
+    /**
+     * Returns this primitive as {@link CSG}.
+     *
+     * @return this primitive as {@link CSG}
+     */
+    @Override
+    public CSG toCSG() {
+        return CSG.fromPolygons(getProperties(), toPolygons());
+    }
 
 }

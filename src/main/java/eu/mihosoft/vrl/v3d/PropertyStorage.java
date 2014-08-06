@@ -68,7 +68,26 @@ public class PropertyStorage {
         map.put(key, property);
     }
 
-    /**
+//    /**
+//     * Returns a property.
+//     *
+//     * @param <T> property type
+//     * @param key key
+//     * @return the property; an empty {@link java.util.Optional} will be
+//     * returned if the property does not exist or the type does not match
+//     */
+//    public <T> Optional<T> getValue(String key) {
+//
+//        Object value = map.get(key);
+//
+//        try {
+//            return Optional.ofNullable((T) value);
+//        } catch (ClassCastException ex) {
+//            return Optional.empty();
+//        }
+//    }
+    
+        /**
      * Returns a property.
      *
      * @param <T> property type
@@ -76,14 +95,14 @@ public class PropertyStorage {
      * @return the property; an empty {@link java.util.Optional} will be
      * returned if the property does not exist or the type does not match
      */
-    public <T> Optional<T> getValue(String key) {
+    public <T> T getValue(String key) {
 
         Object value = map.get(key);
 
         try {
-            return Optional.ofNullable((T) value);
+            return(T) value;
         } catch (ClassCastException ex) {
-            return Optional.empty();
+            return null;
         }
     }
 
