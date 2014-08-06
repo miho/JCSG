@@ -172,16 +172,25 @@ public class CSG {
 //        polygons.forEach((polygon) -> {
 //            csg.polygons.add(polygon.clone());
 //        });
-        Stream<Polygon> polygonStream;
+        
+        // Java 8
+//        Stream<Polygon> polygonStream;
+//
+//        if (polygons.size() > 200) {
+//            polygonStream = polygons.parallelStream();
+//        } else {
+//            polygonStream = polygons.stream();
+//        }
 
-        if (polygons.size() > 200) {
-            polygonStream = polygons.parallelStream();
-        } else {
-            polygonStream = polygons.stream();
+//        csg.polygons = polygonStream.
+//                map((Polygon p) -> p.clone()).collect(Collectors.toList());
+        
+        csg.polygons = new ArrayList<>();
+        
+        for (Polygon p : polygons) {
+            csg.polygons.add(p.clone());
         }
 
-        csg.polygons = polygonStream.
-                map((Polygon p) -> p.clone()).collect(Collectors.toList());
 
         return csg;
     }
@@ -210,8 +219,8 @@ public class CSG {
      * specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -247,8 +256,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -282,8 +291,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -355,14 +364,21 @@ public class CSG {
 
         Bounds bounds = csg.getBounds();
 
-        this.polygons.stream().forEach((p) -> {
+        for (Polygon p : this.polygons) {
             if (bounds.intersects(p.getBounds())) {
                 inner.add(p);
             } else {
                 outer.add(p);
             }
-        });
+        }
 
+//        this.polygons.stream().forEach((p) -> {
+//            if (bounds.intersects(p.getBounds())) {
+//                inner.add(p);
+//            } else {
+//                outer.add(p);
+//            }
+//        });
         List<Polygon> allPolygons = new ArrayList<>();
 
         if (!inner.isEmpty()) {
@@ -427,8 +443,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -464,8 +480,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -491,8 +507,8 @@ public class CSG {
      * specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -535,13 +551,20 @@ public class CSG {
 
         Bounds bounds = csg.getBounds();
 
-        this.polygons.stream().forEach((p) -> {
+//        this.polygons.stream().forEach((p) -> {
+//            if (bounds.intersects(p.getBounds())) {
+//                inner.add(p);
+//            } else {
+//                outer.add(p);
+//            }
+//        });
+        for (Polygon p : this.polygons) {
             if (bounds.intersects(p.getBounds())) {
                 inner.add(p);
             } else {
                 outer.add(p);
             }
-        });
+        }
 
         CSG innerCSG = CSG.fromPolygons(inner);
 
@@ -575,8 +598,8 @@ public class CSG {
      * specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -612,8 +635,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -650,8 +673,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -693,10 +716,15 @@ public class CSG {
      */
     public StringBuilder toStlString(StringBuilder sb) {
         sb.append("solid v3d.csg\n");
-        this.polygons.stream().forEach(
-                (Polygon p) -> {
-                    p.toStlString(sb);
-                });
+//        this.polygons.stream().forEach(
+//                (Polygon p) -> {
+//                    p.toStlString(sb);
+//                });
+
+        for (Polygon p : this.polygons) {
+            p.toStlString(sb);
+        }
+
         sb.append("endsolid v3d.csg\n");
         return sb;
     }
@@ -747,7 +775,16 @@ public class CSG {
         for (Polygon p : polygons) {
             List<Integer> polyIndices = new ArrayList<>();
 
-            p.vertices.stream().forEach((v) -> {
+//            p.vertices.stream().forEach((v) -> {
+//                if (!vertices.contains(v)) {
+//                    vertices.add(v);
+//                    v.toObjString(objSb);
+//                    polyIndices.add(vertices.size());
+//                } else {
+//                    polyIndices.add(vertices.indexOf(v) + 1);
+//                }
+//            });
+            for (Vertex v : p.vertices) {
                 if (!vertices.contains(v)) {
                     vertices.add(v);
                     v.toObjString(objSb);
@@ -755,7 +792,7 @@ public class CSG {
                 } else {
                     polyIndices.add(vertices.indexOf(v) + 1);
                 }
-            });
+            }
 
             if (!materialNames.containsKey(p.getStorage())) {
                 materialIndex++;
@@ -773,8 +810,11 @@ public class CSG {
         for (PolygonStruct ps : indices) {
 
             // add mtl info
-            ps.storage.getValue("material:color").ifPresent(
-                    (v) -> objSb.append("usemtl ").append(ps.materialName).append("\n"));
+//            ps.storage.getValue("material:color").ifPresent(
+//                    (v) -> objSb.append("usemtl ").append(ps.materialName).append("\n"));
+            if (ps.storage.getValue("material:color") != null) {
+                objSb.append("usemtl ").append(ps.materialName).append("\n");
+            }
 
             // we triangulate the polygon to ensure 
             // compatibility with 3d printer software
@@ -795,12 +835,18 @@ public class CSG {
 
         StringBuilder mtlSb = new StringBuilder();
 
-        materialNames.keySet().forEach(s -> {
+//        materialNames.keySet().forEach(s -> {
+//            if (s.contains("material:color")) {
+//                mtlSb.append("newmtl material-").append(s.getValue("material:name").get()).append("\n");
+//                mtlSb.append("Kd ").append(s.getValue("material:color").get()).append("\n");
+//            }
+//        });
+        for (PropertyStorage s : materialNames.keySet()) {
             if (s.contains("material:color")) {
-                mtlSb.append("newmtl material-").append(s.getValue("material:name").get()).append("\n");
-                mtlSb.append("Kd ").append(s.getValue("material:color").get()).append("\n");
+                mtlSb.append("newmtl material-").append(s.getValue("material:name")).append("\n");
+                mtlSb.append("Kd ").append(s.getValue("material:color")).append("\n");
             }
-        });
+        }
 
         return new ObjFile(objSb.toString(), mtlSb.toString());
     }
@@ -836,7 +882,16 @@ public class CSG {
         for (Polygon p : polygons) {
             List<Integer> polyIndices = new ArrayList<>();
 
-            p.vertices.stream().forEach((v) -> {
+//            p.vertices.stream().forEach((v) -> {
+//                if (!vertices.contains(v)) {
+//                    vertices.add(v);
+//                    v.toObjString(sb);
+//                    polyIndices.add(vertices.size());
+//                } else {
+//                    polyIndices.add(vertices.indexOf(v) + 1);
+//                }
+//            });
+            for (Vertex v : p.vertices) {
                 if (!vertices.contains(v)) {
                     vertices.add(v);
                     v.toObjString(sb);
@@ -844,7 +899,7 @@ public class CSG {
                 } else {
                     polyIndices.add(vertices.indexOf(v) + 1);
                 }
-            });
+            }
 
         }
 
@@ -880,7 +935,7 @@ public class CSG {
         StringBuilder sb = new StringBuilder();
         return toObjString(sb).toString();
     }
-    
+
     public CSG weighted(WeightFunction f) {
         return new Modifier(f).modified(this);
     }
@@ -898,9 +953,14 @@ public class CSG {
             return clone();
         }
 
-        List<Polygon> newpolygons = this.polygons.stream().map(
-                p -> p.transformed(transform)
-        ).collect(Collectors.toList());
+//        List<Polygon> newpolygons = this.polygons.stream().map(
+//                p -> p.transformed(transform)
+//        ).collect(Collectors.toList());
+        List<Polygon> newpolygons = new ArrayList<>();
+
+        for (Polygon p : this.polygons) {
+            newpolygons.add(p.transformed(transform));
+        }
 
         CSG result = CSG.fromPolygons(newpolygons).optimization(getOptType());
 
