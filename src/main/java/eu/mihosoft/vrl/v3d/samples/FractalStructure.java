@@ -29,6 +29,8 @@ public class FractalStructure {
     double NextThicknessDivider = 6.0;
     // the thickness of the child tubes in the next level
     double NextThickness = thickness / NextThicknessDivider;
+    //
+    double minThicknessOnLastLevel = 0.08;
 
     // decides who many connections there should be in the next level between
     // two subFractalStructures (position parent edge and center)
@@ -122,7 +124,7 @@ public class FractalStructure {
         double angleStepSize = 360.0 / numberOfGroundEdges;
         double angle = 0;
         double radians = 0;// needed for cos & sin
-        double radius = thickness / 2.0;
+        double radius = Math.max(thickness / 2.0, minThicknessOnLastLevel);
         double x = 0;
         double y = 0;
 
@@ -472,7 +474,7 @@ public class FractalStructure {
 
     public static void main(String[] args) throws IOException {
 
-        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(10), 4, 20, 3).toCSG();
+        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(10), 4, 5, 2).toCSG();
 //        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
 //        CSG csg = new FractalStructure(new Vector3d(-1, -1, -1), new Vector3d(1, 1, 1), 7, 4, 3).toCSG();
 
