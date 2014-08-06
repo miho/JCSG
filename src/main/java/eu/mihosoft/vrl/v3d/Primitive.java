@@ -48,15 +48,13 @@ public interface Primitive {
      * @return al list of polygons that define this primitive
      */
     public List<Polygon> toPolygons();
-
-    /**
+    
+        /**
      * Returns this primitive as {@link CSG}.
      *
      * @return this primitive as {@link CSG}
      */
-    public default CSG toCSG() {
-        return CSG.fromPolygons(getProperties(),toPolygons());
-    }
+    public CSG toCSG();
     
     /**
      * Returns the property storage of this primitive.
