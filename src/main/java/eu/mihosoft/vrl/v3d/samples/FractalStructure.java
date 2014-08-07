@@ -58,7 +58,7 @@ public class FractalStructure {
     //how many recursion should be done before drawing (level 0), level 2 means draw after 2 refinments
     int level = 0;
 
-    static{
+    static {
         thicknessList = new ArrayList<>();
         thicknessList.add(0.02);//level 0
         thicknessList.add(0.1);//level 1
@@ -66,7 +66,13 @@ public class FractalStructure {
         thicknessList.add(2.5);//level 3
         thicknessList.add(12.5);//level 4
     }
-    
+
+    //we need two vectors which span the plane where the circle lies in       
+    Vector3d orthoVecToRotAxis1 = null;
+    Vector3d orthoVecToRotAxis2 = null;
+    //if dot of two vectors is lower than threshhold we assume they are orthogonal
+    double orthoThreshhold = 1E-16;
+
     /**  
      *
      *  EXAMPLE: 
@@ -86,9 +92,12 @@ public class FractalStructure {
      * @param numberOfGroundEdges  number which defines polygon should be created (circle divided in N equal parts)
      * @param thickness the distance between the center and all edge points of the bottom and/or top polygon
      * @param level is the number which defines how many recursion should be done
+     * @param orthoVecToRotAxis1 
+     * @param orthoVecToRotAxis2 
      */
     public FractalStructure(Vector3d groundCenter, Vector3d topCenter,
-            int numberOfGroundEdges, double thickness, int level) {
+            int numberOfGroundEdges, double thickness, int level,
+            Vector3d orthoVecToRotAxis1, Vector3d orthoVecToRotAxis2) {
 
         NextThickness = thickness / NextThicknessDivider;
 
@@ -120,11 +129,34 @@ public class FractalStructure {
                 topCenter.y - groundCenter.y,
                 topCenter.z - groundCenter.z).normalized();
 
-        //we need two vectors which span the plane where the circle lies in       
-        Vector3d orthoVecToRotAxis1 = rotationAxis.orthogonal().normalized();
-//        Vector3d orthoVecToRotAxis1ortho = rotationAxis.orthogonal();
-//        Vector3d orthoVecToRotAxis1 = orthoVecToRotAxis1ortho.normalized();
-        Vector3d orthoVecToRotAxis2 = rotationAxis.cross(orthoVecToRotAxis1).normalized();
+        //        
+        //we need two vectors which span the plane where the circle lies in   
+        //        
+        //if the user did not give us an orthogonal vector to the rotation axis we need to calculate one
+        if (orthoVecToRotAxis1 != null) {
+
+            //checking EQUAL to ZERO is a BAD IDEA
+            if (Math.abs(orthoVecToRotAxis1.dot(rotationAxis)) < orthoThreshhold) {
+                this.orthoVecToRotAxis1 = orthoVecToRotAxis1.normalized();
+            } else {
+                this.orthoVecToRotAxis1 = rotationAxis.orthogonal().normalized();
+            }
+        } else {
+            this.orthoVecToRotAxis1 = rotationAxis.orthogonal().normalized();
+        }
+
+        //if the user did not give us an second orthogonal vector to the rotation axis and orthoVecToRotAxis1 we need to calculate one
+        if (orthoVecToRotAxis2 != null) {
+            //checking EQUAL to ZERO is a BAD IDEA
+            if ((Math.abs(orthoVecToRotAxis2.dot(this.orthoVecToRotAxis1)) < orthoThreshhold)
+                    && Math.abs(orthoVecToRotAxis2.dot(rotationAxis)) < orthoThreshhold) {
+                this.orthoVecToRotAxis2 = orthoVecToRotAxis2.normalized();
+            }else{
+                this.orthoVecToRotAxis2 = rotationAxis.cross(this.orthoVecToRotAxis1).normalized();
+            }
+        } else {
+            this.orthoVecToRotAxis2 = rotationAxis.cross(this.orthoVecToRotAxis1).normalized();
+        }
 
 //        System.out.println(" orthoVecToRotAxis1 = " + orthoVecToRotAxis1);
 //        System.out.println(" orthoVecToRotAxis2 = " + orthoVecToRotAxis2);
@@ -137,13 +169,13 @@ public class FractalStructure {
         double radians = 0;// needed for cos & sin
 //        double radius = Math.max(thickness / 2.0, minThicknessOnLastLevel);
         double radius = thickness / 2.0;
-        
+
         try {
             radius = thicknessList.get(level);
         } catch (Exception e) {
-            System.out.println("no entry found in thicknessList for level = "+level+", therefore rule used: radius = thickness / 2.0");
+            System.out.println("no entry found in thicknessList for level = " + level + ", therefore rule used: radius = thickness / 2.0");
         }
-        
+
         double x = 0;
         double y = 0;
 
@@ -168,13 +200,13 @@ public class FractalStructure {
             // with P,Q orthogonal to the center rotation axis and
             // with x,y from the cirlce gives use the cirlce in 3d space
             //ground points
-            circlePoint = groundCenter.plus(orthoVecToRotAxis1.times(x)).plus(orthoVecToRotAxis2.times(y));
+            circlePoint = groundCenter.plus(this.orthoVecToRotAxis1.times(x)).plus(this.orthoVecToRotAxis2.times(y));
 
             groundPoints.add(circlePoint);
 
 //            System.out.println("ground circlePoint " + i + ": " + circlePoint);
             //top points
-            circlePoint = topCenter.plus(orthoVecToRotAxis1.times(x)).plus(orthoVecToRotAxis2.times(y));
+            circlePoint = topCenter.plus(this.orthoVecToRotAxis1.times(x)).plus(this.orthoVecToRotAxis2.times(y));
 
             topPoints.add(circlePoint);
         }
@@ -190,6 +222,7 @@ public class FractalStructure {
         if (level == 0) {
             subStructures.add(createStructure());
         } else {
+
             ArrayList<FractalStructure> subFractals = createSubStructures();
 
             for (int i = 0; i < subFractals.size(); i++) {
@@ -317,7 +350,9 @@ public class FractalStructure {
                             subTopCenter,
                             numberOfGroundEdges,
                             NextThickness,
-                            level - 1));
+                            level - 1,
+                            orthoVecToRotAxis1,
+                            orthoVecToRotAxis2));
 
         }
         // create the subStructure in the center
@@ -326,7 +361,9 @@ public class FractalStructure {
                         topCenter,
                         numberOfGroundEdges,
                         NextThickness,
-                        level - 1));
+                        level - 1,
+                        orthoVecToRotAxis1,
+                        orthoVecToRotAxis2));
 
         //
         // PART 02 - creating stabilizing subStructures (cross connections)
@@ -440,7 +477,8 @@ public class FractalStructure {
                                     helpCenterPoint,
                                     numberOfGroundEdges,
                                     NextThickness,
-                                    level - 1));
+                                    level - 1,
+                                    null, null));
                 }
 
                 //from top left to bottom right beginning at the ground point position
@@ -456,7 +494,8 @@ public class FractalStructure {
                                     helpCenterPoint,
                                     numberOfGroundEdges,
                                     NextThickness,
-                                    level - 1));
+                                    level - 1,
+                                    null, null));
                 }
 
             }//for cross connections to center
@@ -493,7 +532,10 @@ public class FractalStructure {
 
     public static void main(String[] args) throws IOException {
 
-        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(2), 4, 15, 2).toCSG();
+        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(1), 4, 15, 2,
+                //                Vector3d.X_ONE, Vector3d.Y_ONE
+                null, null
+        ).toCSG();
 //        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
 //        CSG csg = new FractalStructure(new Vector3d(-1, -1, -1), new Vector3d(1, 1, 1), 7, 4, 3).toCSG();
 

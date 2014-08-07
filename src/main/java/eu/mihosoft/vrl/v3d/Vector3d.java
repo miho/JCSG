@@ -467,7 +467,7 @@ public class Vector3d {
                         o3 = r.nextDouble();
                     }
 
-                    o1 = -this.z * o3 / this.y;
+                    o1 = -this.z * o3 / this.x;
 
                 } else if (this.z == 0) {
 
