@@ -459,6 +459,9 @@ public class FractalStructure {
 
             // prevent that the cross connactions are to low in the bottom plane
             Vector3d correctionInRotationAxisDirection = connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf / 2.0);
+            
+            //help vector to reduce the calculations of second orthogonal vector and make the orientation of the cross connections 'north pole'
+            Vector3d secondOrthoVec = null;
 
             // create multiple cross connections from ONE edge subStructure to the center subStructure
             for (double j = 0; j < connectionLineVector.magnitude(); j += stepSizeOnConnectionLine) {
@@ -469,6 +472,10 @@ public class FractalStructure {
                 //hCP0,1,2,....
                 helpCenterPoint = connectionLineVectorNormalized.times(j).plus(connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf)).plus(centerGroundPoint).plus(correctionInRotationAxisDirection);
 
+                if(secondOrthoVec == null){
+                    secondOrthoVec = connectionLineVectorNormalized.cross(helpCenterPoint.minus(helpEdgePoint));
+                }
+                
                 // prevent that the last cross connactions from bottom left to top right has a to above end point in the top plane
                 if (connectionLineVector.magnitude() > helpCenterPoint.minus(centerGroundPoint).magnitude()) {
                     // collects the cross subStructure from bottom left to top right
@@ -478,7 +485,7 @@ public class FractalStructure {
                                     numberOfGroundEdges,
                                     NextThickness,
                                     level - 1,
-                                    null, null));
+                                    connectionLineVectorNormalized, secondOrthoVec));
                 }
 
                 //from top left to bottom right beginning at the ground point position
@@ -495,7 +502,7 @@ public class FractalStructure {
                                     numberOfGroundEdges,
                                     NextThickness,
                                     level - 1,
-                                    null, null));
+                                    connectionLineVectorNormalized, secondOrthoVec));
                 }
 
             }//for cross connections to center
