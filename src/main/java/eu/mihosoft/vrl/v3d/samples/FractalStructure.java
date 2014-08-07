@@ -29,8 +29,10 @@ public class FractalStructure {
     double NextThicknessDivider = 4.0;
     // the thickness of the child tubes in the next level
     double NextThickness = thickness / NextThicknessDivider;
+//    // allows to set manuel the thickness which will be used to draw the sturctures
+//    double minThicknessOnLastLevel = 0.02;
     //
-    double minThicknessOnLastLevel = 0.02;
+    static ArrayList<Double> thicknessList = null;
 
     // decides who many connections there should be in the next level between
     // two subFractalStructures (position parent edge and center)
@@ -56,6 +58,15 @@ public class FractalStructure {
     //how many recursion should be done before drawing (level 0), level 2 means draw after 2 refinments
     int level = 0;
 
+    static{
+        thicknessList = new ArrayList<>();
+        thicknessList.add(0.02);//level 0
+        thicknessList.add(0.1);//level 1
+        thicknessList.add(0.5);//level 2
+        thicknessList.add(2.5);//level 3
+        thicknessList.add(12.5);//level 4
+    }
+    
     /**  
      *
      *  EXAMPLE: 
@@ -124,7 +135,15 @@ public class FractalStructure {
         double angleStepSize = 360.0 / numberOfGroundEdges;
         double angle = 0;
         double radians = 0;// needed for cos & sin
-        double radius = Math.max(thickness / 2.0, minThicknessOnLastLevel);
+//        double radius = Math.max(thickness / 2.0, minThicknessOnLastLevel);
+        double radius = thickness / 2.0;
+        
+        try {
+            radius = thicknessList.get(level);
+        } catch (Exception e) {
+            System.out.println("no entry found in thicknessList for level = "+level+", therefore rule used: radius = thickness / 2.0");
+        }
+        
         double x = 0;
         double y = 0;
 
@@ -474,7 +493,7 @@ public class FractalStructure {
 
     public static void main(String[] args) throws IOException {
 
-        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(10), 4, 15, 3).toCSG();
+        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(2), 4, 15, 2).toCSG();
 //        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
 //        CSG csg = new FractalStructure(new Vector3d(-1, -1, -1), new Vector3d(1, 1, 1), 7, 4, 3).toCSG();
 
