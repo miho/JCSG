@@ -9,6 +9,7 @@ import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.Cylinder;
 import eu.mihosoft.vrl.v3d.FileUtil;
+import eu.mihosoft.vrl.v3d.RoundedCube;
 import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Transform;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class QuadrocopterArm {
 
         double maxXYOffset = outerRadius;
 
-        double innerRadius = 3.2;
+        double innerRadius = 4.5;
         double innerWallThickness = 0.5;
 
         double numPlates = 0;
@@ -172,10 +173,10 @@ public class QuadrocopterArm {
         double screwDistanceSmall = 8;
         double screwRadius = 1.6;
         double enginePlatformThickness = 2.0;
-        double mainHoleRadius = 3.6;
+        double mainHoleRadius = 3.8;
         
         double washerWallThickness = 1;
-        double washerHeight = 1;
+        double washerHeight = 2;
 
         double armLength = 120;
         int numInnerStructures = 32;
@@ -202,9 +203,9 @@ public class QuadrocopterArm {
 
         enginePlatform = enginePlatform.union(secondCyl).hull();
 
-        CSG mainHole = new Cylinder(mainHoleRadius, enginePlatformThickness, 16).toCSG();
+        CSG mainHole = new Cylinder(mainHoleRadius, enginePlatformThickness*5, 16).toCSG().transformed(Transform.unity().translateZ(-enginePlatformThickness));
 
-        CSG screwHolePrototype = new Cylinder(screwRadius, enginePlatformThickness+washerHeight, 16).toCSG();
+        CSG screwHolePrototype = new Cylinder(screwRadius, enginePlatformThickness+washerHeight+10, 16).toCSG().transformed(Transform.unity().translateZ(-5));
 
 
         CSG screwHole1 = screwHolePrototype.transformed(unity().translateX(screwDistanceBig)).transformed(unity().rotZ(-45));
@@ -213,6 +214,8 @@ public class QuadrocopterArm {
         CSG screwHole4 = screwHolePrototype.transformed(unity().translateX(screwDistanceSmall)).transformed(unity().rotZ(-135));
         
         CSG washerPrototype = new Cylinder(screwRadius+washerWallThickness, washerHeight, 16).toCSG();
+        
+        CSG washerHole = washerPrototype.clone();
         
         washerPrototype = washerPrototype.weighted(new ZModifier()).transformed(unity().scale(1.35,1.35,1)).weighted(new UnityModifier());
         
@@ -224,6 +227,18 @@ public class QuadrocopterArm {
         CSG washer2 = washerPrototype.transformed(unity().translateX(screwDistanceBig)).transformed(unity().rotZ(135));
         CSG washer3 = washerPrototype.transformed(unity().translateX(screwDistanceSmall)).transformed(unity().rotZ(45));
         CSG washer4 = washerPrototype.transformed(unity().translateX(screwDistanceSmall)).transformed(unity().rotZ(-135));
+        
+        
+        CSG washerHole1 = washerHole.transformed(unity().translateX(screwDistanceBig)).transformed(unity().rotZ(-45)).transformed(Transform.unity().translateZ(-washerHeight*2));
+        CSG washerHole2 = washerHole.transformed(unity().translateX(screwDistanceBig)).transformed(unity().rotZ(135)).transformed(Transform.unity().translateZ(-washerHeight*2));
+        CSG washerHole3 = washerHole.transformed(unity().translateX(screwDistanceSmall)).transformed(unity().rotZ(45)).transformed(Transform.unity().translateZ(-washerHeight*2));
+        CSG washerHole4 = washerHole.transformed(unity().translateX(screwDistanceSmall)).transformed(unity().rotZ(-135)).transformed(Transform.unity().translateZ(-washerHeight*2));
+        
+//        CSG hullCube = new RoundedCube(20,5,3.8).cornerRadius(1).toCSG().transformed(Transform.unity().translate(-10,-2.5,-3.8/2.0-enginePlatformThickness));
+        
+        CSG hullCube = new Cylinder(3,20,16).toCSG().transformed(Transform.unity().rotY(90)).transformed(Transform.unity().translate(0,0,-0.8));
+        
+        enginePlatform = enginePlatform.union(hullCube).hull().difference(washerHole1,washerHole2,washerHole3,washerHole4);
 
         enginePlatform = enginePlatform.difference(mainHole, screwHole1, screwHole2, screwHole3, screwHole4).union(washer1,washer2,washer3,washer4);
 
