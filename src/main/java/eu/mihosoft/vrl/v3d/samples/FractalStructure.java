@@ -54,11 +54,11 @@ public class FractalStructure {
 
     static {
         thicknessList = new ArrayList<>();
-        thicknessList.add(0.02);//level 0
+        thicknessList.add(0.01);//level 0
         thicknessList.add(0.1);//level 1
-        thicknessList.add(0.5);//level 2
-        thicknessList.add(2.5);//level 3
-        thicknessList.add(12.5);//level 4
+        thicknessList.add(4.0);//level 2
+        thicknessList.add(80.0);//level 3
+        thicknessList.add(160.0);//level 4
     }
 
     //we need two vectors which span the plane where the circle lies in       
