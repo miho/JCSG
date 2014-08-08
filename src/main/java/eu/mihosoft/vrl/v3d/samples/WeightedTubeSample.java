@@ -11,6 +11,7 @@ import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Plane;
 import eu.mihosoft.vrl.v3d.RoundedCube;
 import eu.mihosoft.vrl.v3d.Transform;
+import eu.mihosoft.vrl.v3d.UnityModifier;
 import eu.mihosoft.vrl.v3d.WeightFunction;
 import eu.mihosoft.vrl.v3d.ZModifier;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class WeightedTubeSample {
         Transform scale = Transform.unity().scale(2, 2, 1);
         Transform scaleInner = Transform.unity().scale(1.5, 1.5, 1);
 
-        inner = inner.weighted(weight).transformed(scaleInner);
+        inner = inner.weighted(weight).transformed(scaleInner).weighted(new UnityModifier());
 
         return outer.weighted(weight).
                 transformed(scale).difference(inner);

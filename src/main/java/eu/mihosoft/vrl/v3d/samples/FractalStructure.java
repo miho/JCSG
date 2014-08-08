@@ -3,6 +3,7 @@ package eu.mihosoft.vrl.v3d.samples;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Polygon;
+import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -21,7 +22,7 @@ public class FractalStructure {
     double thickness = 1.0;
     // divider 5 makes a good look for the structure
     // divider bigger 5 makes the structure thinner, lower than 5 makes it wider
-    double NextThicknessDivider = 4.0;
+    double NextThicknessDivider = 6.0;
     // the thickness of the child tubes in the next level
     double NextThickness = thickness / NextThicknessDivider;
     // list which gives the user the controll of thickness in each level

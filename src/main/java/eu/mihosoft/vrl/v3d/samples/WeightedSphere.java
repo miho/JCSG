@@ -6,11 +6,14 @@
 package eu.mihosoft.vrl.v3d.samples;
 
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.UnityModifier;
 import eu.mihosoft.vrl.v3d.XModifier;
+import eu.mihosoft.vrl.v3d.YModifier;
+import eu.mihosoft.vrl.v3d.ZModifier;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -24,31 +27,53 @@ public class WeightedSphere {
 
         CSG prototype = new Sphere(3, 128, 64).toCSG().optimization(CSG.OptType.POLYGON_BOUND);
 
-//        CSG result = new Cube(3).toCSG();
-//        return result.weighted(new YModifier(true)).
-//                transformed(Transform.unity().scale(0.1)).weighted(new XModifier(true)).
-//                transformed(Transform.unity().scale(0.1)).weighted(new ZModifier(true)).
-//                transformed(Transform.unity().scale(0.1));
-        CSG result = prototype;
+//        CSG result = new Sphere(3, 128, 64).toCSG();
+//        return result.
+//                
+//                weighted(new ZModifier(true)).transformed(Transform.unity().scale(0.1)).
+//                weighted(new YModifier(true)).transformed(Transform.unity().scale(0.1)).
+//                weighted(new XModifier(true)).transformed(Transform.unity().scale(0.1)).
+//                transformed(Transform.unity().translateX(1)).weighted(new UnityModifier());
+                
 
-        double dt = 0.1;
-        for (int i = 0; i < 10; i++) {
-            final int index = i+1;
-            System.out.println("index: " + index + ", dt: " + (dt*index));
+        CSG result = prototype;
+        
+        
+
+//        double dt = 0.1;
+//        for (int i = 0; i < 10; i++) {
+//            final int index = i+1;
+//            System.out.println("index: " + index + ", dt: " + (dt*index));
+//            CSG morphed = prototype.weighted((v, csg) -> {
+//                double w = (1 + Math.sin(v.z * 2)*Math.cos(v.z * 2)) / 2.0;
+//
+//                w = w * dt* index;
+//
+//                return w;
+//
+//            }).transformed(Transform.unity().scale(0.1)).
+//                    weighted(new XModifier(true)).
+////                    weighted(new UnityModifier()).
+//                    transformed(Transform.unity().translateX(8+(i+1) * (8)));
+//
+//            result = result.union(morphed);
+//        }
+//        return result;
+        
+        
+
             CSG morphed = prototype.weighted((v, csg) -> {
                 double w = (1 + Math.sin(v.z * 2)*Math.cos(v.z * 2)) / 2.0;
-
-                w = w * dt* index;
 
                 return w;
 
             }).transformed(Transform.unity().scale(0.1)).
-                    weighted(new XModifier(true)).
-                    weighted(new UnityModifier()).
-                    transformed(Transform.unity().translateX(8+(i+1) * (8)));
+//                    weighted(new XModifier(true)).
+//                    weighted(new UnityModifier()).
+                    transformed(Transform.unity().translateX(1).rotZ(90));
 
-            result = result.union(morphed);
-        }
+            result = morphed;
+
         return result;
     }
 

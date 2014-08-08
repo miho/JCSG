@@ -21,7 +21,7 @@ public class RoundedCubeSample {
    
     public CSG toCSG() {
 
-        return new RoundedCube(3).cornerRadius(0.1).toCSG();
+        return new RoundedCube(3).resolution(8).cornerRadius(0.2).toCSG();
     }
 
     public static void main(String[] args) throws IOException {

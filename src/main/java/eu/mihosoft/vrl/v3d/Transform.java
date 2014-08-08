@@ -426,13 +426,7 @@ public class Transform {
      * @return the specified vector
      */
     public Vector3d transform(Vector3d vec, double amount) {
-        
-//        if (amount == 1.0) {
-//            return transform(vec);
-//        } else if (amount == 0) {
-//            return vec;
-//        }
-        
+
         double prevX = vec.x;
         double prevY = vec.y;
         double prevZ = vec.z;
@@ -448,23 +442,10 @@ public class Transform {
         double diffY = vec.y-prevY;
         double diffZ = vec.z-prevZ;
         
-//        if (Math.abs(diffX) < Plane.EPSILON) {
-//            diffX = 0;
-//        }
-//        
-//        if (Math.abs(diffY) < Plane.EPSILON) {
-//            diffY = 0;
-//        }
-//        
-//        if (Math.abs(diffZ) < Plane.EPSILON) {
-//            diffZ = 0;
-//        }
-        
         vec.x = prevX + (diffX)*amount;
         vec.y = prevY + (diffY)*amount;
         vec.z = prevZ + (diffZ)*amount;
-        
-//        System.out.println("amount: " +amount +  "prevY : " + prevY + ", newY: " + vec.y);
+
 
         return vec;
     }

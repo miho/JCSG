@@ -123,24 +123,24 @@ public class RaspberryPiMount {
         
         CSG board = board();
         
-        CSG peg1 = Peg.peg().transformed(Transform.unity().translate(0,bh-8,-bottom_thickness));
+        CSG peg1 = RaspberryPeg.peg().transformed(Transform.unity().translate(0,bh-8,-bottom_thickness));
 
-        CSG peg2 = Peg.peg().transformed(Transform.unity().translate(8,bh,-bottom_thickness).rotZ(90));
+        CSG peg2 = RaspberryPeg.peg().transformed(Transform.unity().translate(8,bh,-bottom_thickness).rotZ(90));
         
         
-        CSG peg3 = Peg.peg().transformed(Transform.unity().translate(bw/2,bh,-bottom_thickness).rotZ(90));
+        CSG peg3 = RaspberryPeg.peg().transformed(Transform.unity().translate(bw/2,bh,-bottom_thickness).rotZ(90));
         
 //        translate([bw,outer_offset,0])
 //rotate([0,0,180])
-        CSG peg4 = Peg.peg().transformed(Transform.unity().translate(bw,bh-outer_offset,-bottom_thickness).rotZ(180));
+        CSG peg4 = RaspberryPeg.peg().transformed(Transform.unity().translate(bw,bh-outer_offset,-bottom_thickness).rotZ(180));
         
 //        translate([bw-12,bh,0])
 //rotate([0,0,270])
-        CSG peg5 = Peg.peg().transformed(Transform.unity().translate(bw-12,0,-bottom_thickness).rotZ(270));
+        CSG peg5 = RaspberryPeg.peg().transformed(Transform.unity().translate(bw-12,0,-bottom_thickness).rotZ(270));
         
 //        translate([30,bh,0])
 //rotate([0,0,270])
-        CSG peg6 = Peg.peg().transformed(Transform.unity().translate(30,0,-bottom_thickness).rotZ(270));
+        CSG peg6 = RaspberryPeg.peg().transformed(Transform.unity().translate(30,0,-bottom_thickness).rotZ(270));
         
         CSG union = board.union(peg1).union(peg2).union(peg3).union(peg4).union(peg5).union(peg6);
         
