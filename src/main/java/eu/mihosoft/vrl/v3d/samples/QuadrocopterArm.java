@@ -25,7 +25,7 @@ import eu.mihosoft.vrl.v3d.ZModifier;
  */
 public class QuadrocopterArm {
 
-    public CSG mainArm(int numInnerStructures, double length, double armThickness, double innerTubeOffset) {
+    public CSG mainArm(int numInnerStructures, double length, double armThickness, double innerTubeOffset, double armCubeThickness) {
 
         double outerRadius = armThickness / 2.0;
         double wallThickness = 0.4;
@@ -37,7 +37,7 @@ public class QuadrocopterArm {
 
         double maxXYOffset = outerRadius;
 
-        double innerRadius = 4.5;
+        double innerRadius = 6;
         double innerWallThickness = 0.5;
 
         double numPlates = 0;
@@ -111,9 +111,9 @@ public class QuadrocopterArm {
             finalGeometry = finalGeometry.union(plates);
         }
 
-        CSG cube = new Cube(outerRadius * 2, outerRadius * 2, outerRadius / 2.0).
+        CSG cube = new Cube(outerRadius * 2, outerRadius * 2, armCubeThickness).
                 toCSG().difference(innerCyl).
-                transformed(unity().translateZ(length - outerRadius / 4.0));
+                transformed(unity().translateZ(length - armCubeThickness/2.0));
 
         finalGeometry = finalGeometry.union(cube);
 
@@ -168,7 +168,7 @@ public class QuadrocopterArm {
         // optimization seems to cause problems
         CSG.setDefaultOptType(CSG.OptType.NONE);
 
-        double engineRadius = 13;
+        double engineRadius = 16;
         double screwDistanceBig = 9.5;
         double screwDistanceSmall = 8;
         double screwRadius = 1.6;
@@ -178,17 +178,18 @@ public class QuadrocopterArm {
         double washerWallThickness = 1;
         double washerHeight = 2;
 
-        double armLength = 120;
+        double armLength = 55;
         int numInnerStructures = 32;
-        double armThickness = 18;
+        double armThickness = 25;
+        double armCubeThickness = 4;
 
         double innerTubeOffset = engineRadius * 2 + 5;
 
-        CSG mainArm = mainArm(numInnerStructures, armLength, armThickness, innerTubeOffset).transformed(unity().rotX(90).rotY(90));
+        CSG mainArm = mainArm(numInnerStructures, armLength, armThickness, innerTubeOffset, armCubeThickness).transformed(unity().rotX(90).rotY(90));
 
-        CSG enginePlatformSphere = new Sphere(engineRadius * 1.1, 64, 32).toCSG().transformed(unity().scaleX(2).translateZ(armThickness / 2.0));
+        CSG enginePlatformSphere = new Sphere(engineRadius * 1.1, 64, 32).toCSG().transformed(unity().scaleX(2).translateZ(armThickness * 0.5));
 
-        Transform engineTransform = unity().translateX(-mainHoleRadius).translateZ(-armThickness * 0.28);
+        Transform engineTransform = unity().translateX(-mainHoleRadius).translateZ(-armThickness * 0.28).translateX(12);
 
         CSG mainHole = new Cylinder(mainHoleRadius, enginePlatformThickness, 16).toCSG().transformed(engineTransform);
         CSG enginePlatform = enginePlatform(engineRadius, enginePlatformThickness, mainHoleRadius, screwRadius, screwDistanceBig, screwDistanceSmall,washerWallThickness, washerHeight).transformed(engineTransform);
@@ -199,7 +200,7 @@ public class QuadrocopterArm {
     private CSG enginePlatform(double engineRadius, double enginePlatformThickness, double mainHoleRadius, double screwRadius, double screwDistanceBig, double screwDistanceSmall,double washerWallThickness, double washerHeight) {
         CSG enginePlatform = new Cylinder(engineRadius, enginePlatformThickness, 32).toCSG();
 
-        CSG secondCyl = new Cylinder(engineRadius * 0.3, enginePlatformThickness, 3).toCSG().transformed(unity().translateX(-engineRadius * 2));
+        CSG secondCyl = new Cylinder(engineRadius * 0.3, enginePlatformThickness, 3).toCSG().transformed(unity().translateX(-engineRadius * 2.7));
 
         enginePlatform = enginePlatform.union(secondCyl).hull();
 
@@ -236,7 +237,7 @@ public class QuadrocopterArm {
         
 //        CSG hullCube = new RoundedCube(20,5,3.8).cornerRadius(1).toCSG().transformed(Transform.unity().translate(-10,-2.5,-3.8/2.0-enginePlatformThickness));
         
-        CSG hullCube = new Cylinder(3,20,16).toCSG().transformed(Transform.unity().rotY(90)).transformed(Transform.unity().translate(0,0,-0.8));
+        CSG hullCube = new Cylinder(3,20,16).toCSG().transformed(Transform.unity().rotY(90)).transformed(Transform.unity().translate(0,0,-2));
         
         enginePlatform = enginePlatform.union(hullCube).hull().difference(washerHole1,washerHole2,washerHole3,washerHole4);
 

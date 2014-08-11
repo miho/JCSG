@@ -36,12 +36,6 @@ public class Naze32Holder {
         int resolution = 16;
 
         CSG base = basePlatform(r, thickness, resolution, w, h);
-
-//        CSG pegPrototype = new Peg().setBoardMountingHeight(2).setOverlap(0.6).
-//                setPegDepth(4).setOuterOffset(2).toCSG();
-//
-//        CSG peg1 = pegPrototype.transformed(Transform.unity().rotX(180).translate(-w / 2.0, -h / 4.0, 0));
-//        CSG peg2 = pegPrototype.transformed(Transform.unity().rotX(180).mirror(Plane.YZ_PLANE).translate(-w / 2.0, 0, 0));
         
         CSG screCylPrototype = new Cylinder(screwR,screwHolderHeight, resolution).toCSG().transformed(Transform.unity().translateZ(thickness));
         CSG cyl1 = screCylPrototype.transformed(Transform.unity().translateX(-wInner / 2.0).translateY(-hInner / 2.0));
