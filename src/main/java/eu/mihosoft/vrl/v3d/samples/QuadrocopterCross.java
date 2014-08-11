@@ -62,8 +62,8 @@ public class QuadrocopterCross {
         double innerHoleRadius = 40;
         double platformThickness = 3; // deprecated
 
-        double armHeight = 24;
-        double armScaleFactor = 0.5;
+        double armHeight = 18;
+        double armScaleFactor = 0.6;
         double armCubeWidth = armHeight;
         double armCubeThickness = 4;
         double holderPlatformRadius = 20;
