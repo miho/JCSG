@@ -210,8 +210,8 @@ public class CSG {
      * specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -247,8 +247,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -282,8 +282,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *    A.union(B)
      *
      *    +-------+            +-------+
@@ -323,13 +323,25 @@ public class CSG {
      */
     public CSG hull(List<CSG> csgs) {
 
-        CSG csgsUnion = this;
+        CSG csgsUnion = new CSG();
+        csgsUnion.storage = storage;
+        csgsUnion.optType = optType;
+        csgsUnion.polygons = this.clone().polygons;
 
-        for (CSG csg : csgs) {
-            csgsUnion = csgsUnion.union(csg);
-        }
+        csgs.stream().forEach((csg) -> {
+            csgsUnion.polygons.addAll(csg.clone().polygons);
+        });
 
+        csgsUnion.polygons.forEach(p -> p.setStorage(storage));
         return csgsUnion.hull();
+
+//        CSG csgsUnion = this;
+//
+//        for (CSG csg : csgs) {
+//            csgsUnion = csgsUnion.union(csg);
+//        }
+//
+//        return csgsUnion.hull();
     }
 
     /**
@@ -427,8 +439,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -464,8 +476,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -491,8 +503,8 @@ public class CSG {
      * specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      * A.difference(B)
      *
      * +-------+            +-------+
@@ -575,8 +587,8 @@ public class CSG {
      * specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -612,8 +624,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -650,8 +662,8 @@ public class CSG {
      * specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
-
- <blockquote><pre>
+     *
+     * <blockquote><pre>
      *     A.intersect(B)
      *
      *     +-------+
@@ -880,7 +892,7 @@ public class CSG {
         StringBuilder sb = new StringBuilder();
         return toObjString(sb).toString();
     }
-    
+
     public CSG weighted(WeightFunction f) {
         return new Modifier(f).modified(this);
     }
