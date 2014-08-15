@@ -42,15 +42,28 @@ public class QuadrocopterCross {
         double holderCubeDepth = armOverlap + armCubeThickness + holderWallThickness;
 
         double armWidth = armHeight * armScaleFactor;
+        
+        Transform xTransform = unity().translateX(-holderWallThickness *2);
+        Transform yTransform = unity().translateY(-armCubeThickness / 2.0 - armOverlap / 2.0 + holderWallThickness);
 
         CSG armCube = new Cube(armCubeWidth + widthTol, armCubeThickness, armHeight).
-                toCSG().transformed(unity().translateY(-armCubeThickness / 2.0 - armOverlap / 2.0 + holderWallThickness));
+                toCSG().transformed(yTransform);
         CSG arm = new Cube(armWidth, holderCubeDepth, armHeight).toCSG().
                 transformed(unity().translateZ(armHeight / 2.0));
         arm = new Cylinder(armHeight / 2.0, holderCubeDepth, 32).
                 toCSG().transformed(unity().rotX(90).
                         translate(0, 0, -holderCubeDepth / 2.0).scaleX(armScaleFactor)).union(arm);
         CSG holder = armCube.union(arm).transformed(unity().rotZ(90));
+        
+                        
+        double sideArmHight = 150 / 2.0;
+        double sideArmGroundDist = 25;
+        double sideArmRadius = armHeight / 6.0;
+        double sideArmShrinkFactor = 0.6;
+        
+//        CSG sideArms = QuadrocopterArm.sideArms(sideArmGroundDist, sideArmHight, sideArmRadius, sideArmShrinkFactor, armCubeThickness,armWidth).transformed(xTransform);
+        
+//        return holder.union(sideArms);
 
         return holder;
 
@@ -58,26 +71,26 @@ public class QuadrocopterCross {
 
     public CSG toCSG2() {
 
-        double platformRadius = 70;
-        double innerHoleRadius = 40;
+        double platformRadius = 80;
+        double innerHoleRadius = 50;
         double platformThickness = 3; // deprecated
 
         double armHeight = 18;
-        double armScaleFactor = 0.6;
+        double armScaleFactor = 0.65;
         double armCubeWidth = armHeight;
         double armCubeThickness = 4;
         double holderPlatformRadius = 20;
 
-        double distToInnerHole = 10;
+        double distToInnerHole = 5;
 
         CSG armHolderPrototype = toCSG(armHeight, armScaleFactor, armCubeWidth,
-                armCubeThickness, holderPlatformRadius, platformThickness).transformed(unity().translateX(58).translateZ(14));
+                armCubeThickness, holderPlatformRadius, platformThickness).transformed(unity().translateX(68).translateZ(14));
 
         CSG armHolders = armHolderPrototype.clone();
 
         CSG quarterPrototype = new RoundedCube(platformRadius).cornerRadius(10)
                 .resolution(16).toCSG()
-                .transformed(unity().rotZ(45))
+                .transformed(unity().rotZ(45)).transformed(unity().scaleY(3))
                 .transformed(unity().translate(
                                 innerHoleRadius + distToInnerHole, 0, -armHeight / 2.0))
                 .transformed(unity().rotZ(-45));
