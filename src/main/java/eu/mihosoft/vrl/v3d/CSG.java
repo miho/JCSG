@@ -356,9 +356,9 @@ public class CSG {
     }
 
     private CSG _unionCSGBoundsOpt(CSG csg) {
-        System.err.println("WARNING: using " + CSG.OptType.POLYGON_BOUND
+        System.err.println("WARNING: using " + CSG.OptType.NONE
                 + " since other optimization types missing for union operation.");
-        return _unionPolygonBoundsOpt(csg);
+        return _unionIntersectOpt(csg);
     }
 
     private CSG _unionPolygonBoundsOpt(CSG csg) {
@@ -538,7 +538,7 @@ public class CSG {
         CSG a1 = this._differenceNoOpt(csg.getBounds().toCSG());
         CSG a2 = this.intersect(csg.getBounds().toCSG());
 
-        return a2._differenceNoOpt(b).union(a1).optimization(getOptType());
+        return a2._differenceNoOpt(b)._unionIntersectOpt(a1).optimization(getOptType());
     }
 
     private CSG _differencePolygonBoundsOpt(CSG csg) {
