@@ -20,14 +20,23 @@ import java.nio.file.Paths;
  */
 public class MoebiusStairs {
 
-    private double n = 90;
+    private double n = 45;
     private double twists = 1;
     private double tilt = 0;
+
+    public MoebiusStairs resolution(double n) {
+        this.n = n;
+        return this;
+    }
+
+    public MoebiusStairs twists(double twists) {
+        this.twists = twists;
+        return this;
+    }
 
     public CSG toCSG() {
 
 //        CSG.setDefaultOptType(CSG.OptType.POLYGON_BOUND);
-
         CSG result = null;
 
         CSG firstCube = null;
@@ -71,16 +80,14 @@ public class MoebiusStairs {
                 CSG union = cube.hull(prevCube);
                 result = result.union(union);
             }
-            
-            if (i == n*2) {
+
+            if (i == n * 2) {
                 CSG union = firstCube.hull(prevCube);
                 result = result.union(union);
             }
 
             prevCube = cube;
         } // end for
-        
-        
 
         return result.transformed(unity().translateZ(8 + 4 / 2));
     }
