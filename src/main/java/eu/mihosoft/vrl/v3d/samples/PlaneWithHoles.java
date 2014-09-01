@@ -74,6 +74,8 @@ public class PlaneWithHoles {
     }
 
     public static void main(String[] args) throws IOException {
+        
+        CSG.setDefaultOptType(CSG.OptType.CSG_BOUND);
 
         PlaneWithHoles planeWithHoles = new PlaneWithHoles();
 

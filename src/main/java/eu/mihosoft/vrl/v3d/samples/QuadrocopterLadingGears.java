@@ -72,7 +72,7 @@ public class QuadrocopterLadingGears {
             } else {
                 double val =  0.9+v.y * v.y/ ((gearLegHeight * gearLegHeight) + gearLegHeight*10);
                 
-                System.out.println("val: " + val + ", " + Math.min(1,val));
+//                System.out.println("val: " + val + ", " + Math.min(1,val));
                 
                 return val;
             }
