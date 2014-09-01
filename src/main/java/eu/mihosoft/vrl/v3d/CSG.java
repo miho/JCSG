@@ -361,30 +361,45 @@ public class CSG {
         return _unionPolygonBoundsOpt(csg);
     }
 
-    private CSG _unionPolygonBoundsOpt(CSG csg) {
-        List<Polygon> inner = new ArrayList<>();
-        List<Polygon> outer = new ArrayList<>();
+    private CSG _unionPolygonBoundsOpt(CSG other) {
+        List<Polygon> ourInner = new ArrayList<>();
+        List<Polygon> ourOuter = new ArrayList<>();
 
-        Bounds bounds = csg.getBounds();
+        Bounds otherBounds = other.getBounds();
 
         this.polygons.stream().forEach((p) -> {
-            if (bounds.intersects(p.getBounds())) {
-                inner.add(p);
+            if (otherBounds.intersects(p.getBounds())) {
+                ourInner.add(p.clone());
             } else {
-                outer.add(p);
+                ourOuter.add(p.clone());
+            }
+        });
+
+        List<Polygon> otherInner = new ArrayList<>();
+        List<Polygon> otherOuter = new ArrayList<>();
+
+        Bounds ourBounds = this.getBounds();
+
+        other.polygons.stream().forEach((p) -> {
+            if (ourBounds.intersects(p.getBounds())) {
+                otherInner.add(p.clone());
+            } else {
+                otherOuter.add(p.clone());
             }
         });
 
         List<Polygon> allPolygons = new ArrayList<>();
 
-        if (!inner.isEmpty()) {
-            CSG innerCSG = CSG.fromPolygons(inner);
+        if (!ourInner.isEmpty() && !otherInner.isEmpty()) {
+            CSG ourInnerCSG = CSG.fromPolygons(ourInner);
+            CSG otherInnerCSG = CSG.fromPolygons(otherInner);
 
-            allPolygons.addAll(outer);
-            allPolygons.addAll(innerCSG._unionNoOpt(csg).polygons);
+            allPolygons.addAll(ourOuter);
+            allPolygons.addAll(otherOuter);
+            allPolygons.addAll(ourInnerCSG._unionNoOpt(otherInnerCSG).polygons);
         } else {
-            allPolygons.addAll(this.polygons);
-            allPolygons.addAll(csg.polygons);
+            allPolygons.addAll(this.clone().polygons);
+            allPolygons.addAll(other.clone().polygons);
         }
 
         return CSG.fromPolygons(allPolygons).optimization(getOptType());
