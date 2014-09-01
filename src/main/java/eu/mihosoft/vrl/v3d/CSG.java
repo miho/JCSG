@@ -356,50 +356,35 @@ public class CSG {
     }
 
     private CSG _unionCSGBoundsOpt(CSG csg) {
-        System.err.println("WARNING: using " + CSG.OptType.POLYGON_BOUND
+        System.err.println("WARNING: using " + CSG.OptType.NONE
                 + " since other optimization types missing for union operation.");
-        return _unionPolygonBoundsOpt(csg);
+        return _unionIntersectOpt(csg);
     }
 
-    private CSG _unionPolygonBoundsOpt(CSG other) {
-        List<Polygon> ourInner = new ArrayList<>();
-        List<Polygon> ourOuter = new ArrayList<>();
+    private CSG _unionPolygonBoundsOpt(CSG csg) {
+        List<Polygon> inner = new ArrayList<>();
+        List<Polygon> outer = new ArrayList<>();
 
-        Bounds otherBounds = other.getBounds();
+        Bounds bounds = csg.getBounds();
 
         this.polygons.stream().forEach((p) -> {
-            if (otherBounds.intersects(p.getBounds())) {
-                ourInner.add(p.clone());
+            if (bounds.intersects(p.getBounds())) {
+                inner.add(p);
             } else {
-                ourOuter.add(p.clone());
-            }
-        });
-
-        List<Polygon> otherInner = new ArrayList<>();
-        List<Polygon> otherOuter = new ArrayList<>();
-
-        Bounds ourBounds = this.getBounds();
-
-        other.polygons.stream().forEach((p) -> {
-            if (ourBounds.intersects(p.getBounds())) {
-                otherInner.add(p.clone());
-            } else {
-                otherOuter.add(p.clone());
+                outer.add(p);
             }
         });
 
         List<Polygon> allPolygons = new ArrayList<>();
 
-        if (!ourInner.isEmpty() && !otherInner.isEmpty()) {
-            CSG ourInnerCSG = CSG.fromPolygons(ourInner);
-            CSG otherInnerCSG = CSG.fromPolygons(otherInner);
+        if (!inner.isEmpty()) {
+            CSG innerCSG = CSG.fromPolygons(inner);
 
-            allPolygons.addAll(ourOuter);
-            allPolygons.addAll(otherOuter);
-            allPolygons.addAll(ourInnerCSG._unionNoOpt(otherInnerCSG).polygons);
+            allPolygons.addAll(outer);
+            allPolygons.addAll(innerCSG._unionNoOpt(csg).polygons);
         } else {
-            allPolygons.addAll(this.clone().polygons);
-            allPolygons.addAll(other.clone().polygons);
+            allPolygons.addAll(this.polygons);
+            allPolygons.addAll(csg.polygons);
         }
 
         return CSG.fromPolygons(allPolygons).optimization(getOptType());
@@ -553,7 +538,7 @@ public class CSG {
         CSG a1 = this._differenceNoOpt(csg.getBounds().toCSG());
         CSG a2 = this.intersect(csg.getBounds().toCSG());
 
-        return a2._differenceNoOpt(b).union(a1).optimization(getOptType());
+        return a2._differenceNoOpt(b)._unionIntersectOpt(a1).optimization(getOptType());
     }
 
     private CSG _differencePolygonBoundsOpt(CSG csg) {
