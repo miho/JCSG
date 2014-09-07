@@ -82,6 +82,18 @@ public final class Polygon {
         return PolygonUtil.concaveToConvex(p);
     }
     
+        /**
+     * Decomposes the specified concave polygon into convex polygons.
+     *
+     * @param points the points that define the polygon
+     * @return the decomposed concave polygon (list of convex polygons)
+     */
+    public static List<Polygon> fromConcavePoints(List<Vector3d> points) {
+        Polygon p = fromPoints(points);
+
+        return PolygonUtil.concaveToConvex(p);
+    }
+    
     /**
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.

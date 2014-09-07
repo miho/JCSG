@@ -33,6 +33,10 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.acos;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import java.util.Random;
 
 /**
@@ -332,16 +336,27 @@ public class Vector3d {
             return false;
         }
         final Vector3d other = (Vector3d) obj;
-        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
+        if (abs(this.x - other.x) > Plane.EPSILON) {
             return false;
         }
-        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
+        if (abs(this.y - other.y) > Plane.EPSILON) {
             return false;
         }
-        if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
+        if (abs(this.z - other.z) > Plane.EPSILON) {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Returns the angle between this and the specified vector.
+     *
+     * @param v vector
+     * @return angle in radians
+     */
+    public double angle(Vector3d v) {
+        double val = this.dot(v) / (this.magnitude() * v.magnitude());
+        return acos(max(min(val, 1), -1)); // compensate rounding errors
     }
 
     @Override
@@ -353,6 +368,26 @@ public class Vector3d {
         return hash;
     }
 
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (getClass() != obj.getClass()) {
+//            return false;
+//        }
+//        final Vector3d other = (Vector3d) obj;
+//        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
+//            return false;
+//        }
+//        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
+//            return false;
+//        }
+//        if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
+//            return false;
+//        }
+//        return true;
+//    }
     /**
      * Creates a new vector with specified {@code x}
      *
@@ -401,7 +436,6 @@ public class Vector3d {
 //        if ((this.x == Double.NaN) || (this.y == Double.NaN) || (this.z == Double.NaN)) {
 //            throw new IllegalStateException("NaN is not a valid entry for a vector.");
 //        }
-
         double o1 = 0.0;
         double o2 = 0.0;
         double o3 = 0.0;
@@ -513,7 +547,6 @@ public class Vector3d {
 //        }
 //        System.out.println(" this : "+ this);
 //        System.out.println(" result : "+ result);
-
         // check if the created vector is really orthogonal to this
         // if not try one more time
         while (this.dot(result) != 0.0) {
