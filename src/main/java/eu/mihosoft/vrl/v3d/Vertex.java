@@ -33,6 +33,8 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.util.Objects;
+
 /**
  * Represents a vertex of a polygon. This class provides {@link #normal} so
  * primitives like {@link Cube} can return a smooth vertex normal, but
@@ -176,4 +178,33 @@ public class Vertex {
     public void setWeight(double weight) {
         this.weight = weight;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.pos);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Vertex other = (Vertex) obj;
+        if (!Objects.equals(this.pos, other.pos)) {
+            return false;
+        }
+        return true;
+    }
+
+  @Override
+    public String toString() {
+        return pos.toString();
+    }
+    
+    
 }
