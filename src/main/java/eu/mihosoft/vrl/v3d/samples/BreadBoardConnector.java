@@ -27,22 +27,24 @@ public class BreadBoardConnector {
 
     private double breadBoardThickness = 9;
 
-    private double connectorDepth = 8;
+    private double connectorDepth = 20;
 
     private double pegHeight = 1;
     private double pegToothHeight = 0.3;
     private double pegOverlap = 0.6;
 
-    private double boardMountingWidth = 8;
+    private double boardMountingWidth = 8.1;
 
-    private double breadBoardMountLength = 20;
+    private double breadBoardToPiMountDistance = 31;
 
+//    private double breadBoardMountLength = 20;
     public CSG toCSG() {
 
         double th = 2;
         double smh = boardMountingWidth;
         double bmth = boardMountingThickness;
-        double bbth = breadBoardThickness -th;
+        double bbpbd = breadBoardToPiMountDistance ;
+        double bbth = breadBoardThickness - th;
 
         double pth = pegToothHeight;
         double ph = pegHeight;
@@ -59,17 +61,24 @@ public class BreadBoardConnector {
                 new Vector3d(smh, bmth),
                 new Vector3d(smh, bmth + th),
                 new Vector3d(0, bmth + th),
-                new Vector3d(0, bmth + th + bbth),
-                new Vector3d(smh, bmth + th + bbth),
-                new Vector3d(smh, bmth + th + bbth + th),
-                new Vector3d(0, bmth + th + bbth + th),
-                new Vector3d(-th, bmth + th + bbth + th)
-        ).union(Extrude.points(new Vector3d(0, 0, breadBoardMountLength),
-                new Vector3d(-th, bmth + th + bbth),
-                new Vector3d(smh, bmth + th + bbth),
-                new Vector3d(smh, bmth + th + bbth + th),
-                new Vector3d(0, bmth + th + bbth + th),
-                new Vector3d(-th, bmth + th + bbth + th)).transformed(Transform.unity().translateZ(connectorDepth)));
+                new Vector3d(0, bmth +bbpbd-th),
+                new Vector3d(smh, bmth +bbpbd-th),
+                new Vector3d(smh, bmth + th + bbpbd - th),
+                new Vector3d(0, bmth + th + bbpbd - th),
+//                new Vector3d(-th, bmth + th + bbpbd - th),
+                //
+                new Vector3d(0, bmth + th + bbpbd + bbth),
+                new Vector3d(smh, bmth + th +bbpbd + bbth),
+                new Vector3d(smh, bmth + th +bbpbd + bbth + th),
+                new Vector3d(0, bmth + th +bbpbd + bbth + th),
+                new Vector3d(-th, bmth + th +bbpbd + bbth + th)
+        );
+//                .union(Extrude.points(new Vector3d(0, 0, breadBoardMountLength),
+//                new Vector3d(-th, bmth + th + bbth),
+//                new Vector3d(smh, bmth + th + bbth),
+//                new Vector3d(smh, bmth + th + bbth + th),
+//                new Vector3d(0, bmth + th + bbth + th),
+//                new Vector3d(-th, bmth + th + bbth + th)).transformed(Transform.unity().translateZ(connectorDepth)));
     }
 
     public static void main(String[] args) throws IOException {
@@ -77,7 +86,7 @@ public class BreadBoardConnector {
         BreadBoardConnector arConnect = new BreadBoardConnector();
 
         // save union as stl
-        FileUtil.write(Paths.get("sample.stl"), arConnect.toCSG().transformed(Transform.unity().mirror(Plane.XY_PLANE).rotY(180)).toStlString());
+        FileUtil.write(Paths.get("bread-board-connector.stl"), arConnect.toCSG().transformed(Transform.unity().mirror(Plane.XY_PLANE).rotY(180)).toStlString());
 
     }
 }

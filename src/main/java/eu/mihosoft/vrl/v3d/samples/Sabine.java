@@ -11,6 +11,8 @@ import eu.mihosoft.vrl.v3d.Cylinder;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Sphere;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
+import eu.mihosoft.vrl.v3d.UnityModifier;
+import eu.mihosoft.vrl.v3d.ZModifier;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -35,7 +37,7 @@ public class Sabine {
 
         CSG beam = new Cylinder(1, 10, 32).toCSG();
 
-        CSG beam1 = beam.transformed(unity().translate(w / 2.0 - offset, h / 2.0 - offset, 0));
+        CSG beam1 = beam.weighted(new ZModifier()).transformed(unity().scale(0.5, 0.5, 1)).weighted(new UnityModifier()).transformed(unity().translate(w / 2.0 - offset, h / 2.0 - offset, 0));
         CSG beam2 = beam.transformed(unity().translate(-(w / 2.0 - offset), h / 2.0 - offset, 0));
         CSG beam3 = beam.transformed(unity().translate(-(w / 2.0 - offset), -(h / 2.0 - offset), 0));
         CSG beam4 = beam.transformed(unity().translate(w / 2.0 - offset, -(h / 2.0 - offset), 0));

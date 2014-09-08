@@ -31,12 +31,12 @@ public class ServoMount {
     private double servoThickness = 19.0;
     private double borderThickness = 2;
     private double overlap = 3;
-    private double servoMountHeight = 10;
+    private double servoMountHeight = 20;
 
     private double boardMountingThickness = 2;
-    private double boardHolderLength = 5;
+    private double boardHolderLength = 10;
     
-    private double boardMountingWidth = 8;
+    private double boardMountingWidth = 8.1;
     
     private double pegHeight= 1;
     private double pegToothHeight = 0.6;
@@ -60,7 +60,7 @@ public class ServoMount {
 
     public CSG toCSG() {
         CSG bm1 = boardMount().transformed(Transform.unity().rotY(90).rotZ(90).translate(borderThickness, borderThickness, -boardHolderLength + borderThickness));
-        CSG bm2 = bm1.transformed(Transform.unity().translateX(servoWidth - borderThickness/2.0));
+        CSG bm2 = bm1.transformed(Transform.unity().translateX(servoWidth -boardHolderLength + borderThickness*2));
         CSG sm = toCSGSimple();
 
         return sm.union(bm1).union(bm2);//.transformed(Transform.unity().scale(0.08));
@@ -92,7 +92,7 @@ public class ServoMount {
 
         // save union as stl
 //        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
-        FileUtil.write(Paths.get("sample.stl"), sMount.toCSG().toStlString());
+        FileUtil.write(Paths.get("servo-mount.stl"), sMount.toCSG().toStlString());
 
     }
 }
