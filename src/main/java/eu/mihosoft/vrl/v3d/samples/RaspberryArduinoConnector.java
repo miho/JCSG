@@ -76,7 +76,7 @@ public class RaspberryArduinoConnector {
 
         // save union as stl
 //        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
-        FileUtil.write(Paths.get("sample.stl"), arConnect.toCSG().toStlString());
+        FileUtil.write(Paths.get("pi-arduino-connector.stl"), arConnect.toCSG().toStlString());
 
     }
 }
