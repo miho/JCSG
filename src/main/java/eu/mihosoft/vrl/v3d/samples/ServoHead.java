@@ -115,7 +115,7 @@ public class ServoHead {
 
         CSG headFinal = cyl1.difference(cyl2).difference(head);
 
-        return headFinal.transformed(unity().rotX(180));
+        return headFinal.transformed(unity().rotX(180).translateZ(-headHeight-headThickness));
     }
     
     

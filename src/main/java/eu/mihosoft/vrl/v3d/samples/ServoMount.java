@@ -34,7 +34,7 @@ public class ServoMount {
     private double servoMountHeight = 20;
 
     private double boardMountingThickness = 2;
-    private double boardHolderLength = 10;
+    private double boardHolderLength = 12;
     
     private double boardMountingWidth = 8.1;
     

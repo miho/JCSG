@@ -35,7 +35,7 @@ public class BreadBoardConnector {
 
     private double boardMountingWidth = 8.1;
 
-    private double breadBoardToPiMountDistance = 31;
+    private double breadBoardToPiMountDistance = 21;
 
 //    private double breadBoardMountLength = 20;
     public CSG toCSG() {
