@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceCompatibility = '1.7'
+sourceCompatibility = '1.6'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 //apply from: 'http://gradle-plugins.mihosoft.eu/latest/vlicenseheader.gradle'
@@ -20,6 +20,9 @@ mainClassName = mainClass
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 
@@ -28,6 +31,13 @@ dependencies {
     compile group: 'java3d', name: 'vecmath', version: '1.3.1'
     compile 'org.slf4j:slf4j-simple:1.6.1'
     //compile group: 'java3d', name: 'vecmath', version: '1.3.1' , classifier: "javadoc"
+    
+    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.6-SNAPSHOT')
+    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.6-SNAPSHOT', classifier: 'sources')
+    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.2.8.6-SNAPSHOT', classifier: 'javadoc')
+
+    
+    compile fileTree(dir: 'libs/javafx', include: '*.jar')
 }
 
 // create a fat-jar (class files plus dependencies
