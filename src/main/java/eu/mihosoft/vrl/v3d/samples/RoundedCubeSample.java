@@ -8,6 +8,7 @@ package eu.mihosoft.vrl.v3d.samples;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.RoundedCube;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -26,9 +27,9 @@ public class RoundedCubeSample {
 
     public static void main(String[] args) throws IOException {
 
-        FileUtil.write(Paths.get("rounded-cube.stl"), new RoundedCubeSample().toCSG().toStlString());
+        FileUtil.write(new File("rounded-cube.stl"), new RoundedCubeSample().toCSG().toStlString());
 
-        new RoundedCubeSample().toCSG().toObj().toFiles(Paths.get("rounded-cube.obj"));
+        new RoundedCubeSample().toCSG().toObj().toFiles(new File("rounded-cube.obj"));
 
     }
 

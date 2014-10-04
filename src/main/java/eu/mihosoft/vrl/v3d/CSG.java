@@ -177,7 +177,7 @@ public class CSG {
 //        csg.polygons = polygonStream.
 //                map((Polygon p) -> p.clone()).collect(Collectors.toList());
         
-        csg.polygons = new ArrayList<>();
+        csg.polygons = new ArrayList<Polygon>();
         
         for (Polygon p : polygons) {
             csg.polygons.add(p.clone());
@@ -351,8 +351,8 @@ public class CSG {
     }
 
     private CSG _unionPolygonBoundsOpt(CSG csg) {
-        List<Polygon> inner = new ArrayList<>();
-        List<Polygon> outer = new ArrayList<>();
+        List<Polygon> inner = new ArrayList<Polygon>();
+        List<Polygon> outer = new ArrayList<Polygon>();
 
         Bounds bounds = csg.getBounds();
 
@@ -371,7 +371,7 @@ public class CSG {
 //                outer.add(p);
 //            }
 //        });
-        List<Polygon> allPolygons = new ArrayList<>();
+        List<Polygon> allPolygons = new ArrayList<Polygon>();
 
         if (!inner.isEmpty()) {
             CSG innerCSG = CSG.fromPolygons(inner);
@@ -406,7 +406,7 @@ public class CSG {
             }
         }
 
-        List<Polygon> allPolygons = new ArrayList<>();
+        List<Polygon> allPolygons = new ArrayList<Polygon>();
 
         if (intersects) {
             return _unionNoOpt(csg);
@@ -538,8 +538,8 @@ public class CSG {
     }
 
     private CSG _differencePolygonBoundsOpt(CSG csg) {
-        List<Polygon> inner = new ArrayList<>();
-        List<Polygon> outer = new ArrayList<>();
+        List<Polygon> inner = new ArrayList<Polygon>();
+        List<Polygon> outer = new ArrayList<Polygon>();
 
         Bounds bounds = csg.getBounds();
 
@@ -560,7 +560,7 @@ public class CSG {
 
         CSG innerCSG = CSG.fromPolygons(inner);
 
-        List<Polygon> allPolygons = new ArrayList<>();
+        List<Polygon> allPolygons = new ArrayList<Polygon>();
         allPolygons.addAll(outer);
         allPolygons.addAll(innerCSG._differenceNoOpt(csg).polygons);
 
@@ -755,17 +755,17 @@ public class CSG {
             }
         }
 
-        List<Vertex> vertices = new ArrayList<>();
-        List<PolygonStruct> indices = new ArrayList<>();
+        List<Vertex> vertices = new ArrayList<Vertex>();
+        List<PolygonStruct> indices = new ArrayList<PolygonStruct>();
 
         objSb.append("\n# Vertices\n");
 
-        Map<PropertyStorage, Integer> materialNames = new HashMap<>();
+        Map<PropertyStorage, Integer> materialNames = new HashMap<PropertyStorage, Integer>();
 
         int materialIndex = 0;
 
         for (Polygon p : polygons) {
-            List<Integer> polyIndices = new ArrayList<>();
+            List<Integer> polyIndices = new ArrayList<Integer>();
 
 //            p.vertices.stream().forEach((v) -> {
 //                if (!vertices.contains(v)) {
@@ -866,13 +866,13 @@ public class CSG {
             }
         }
 
-        List<Vertex> vertices = new ArrayList<>();
-        List<PolygonStruct> indices = new ArrayList<>();
+        List<Vertex> vertices = new ArrayList<Vertex>();
+        List<PolygonStruct> indices = new ArrayList<PolygonStruct>();
 
         sb.append("\n# Vertices\n");
 
         for (Polygon p : polygons) {
-            List<Integer> polyIndices = new ArrayList<>();
+            List<Integer> polyIndices = new ArrayList<Integer>();
 
 //            p.vertices.stream().forEach((v) -> {
 //                if (!vertices.contains(v)) {
@@ -948,7 +948,7 @@ public class CSG {
 //        List<Polygon> newpolygons = this.polygons.stream().map(
 //                p -> p.transformed(transform)
 //        ).collect(Collectors.toList());
-        List<Polygon> newpolygons = new ArrayList<>();
+        List<Polygon> newpolygons = new ArrayList<Polygon>();
 
         for (Polygon p : this.polygons) {
             newpolygons.add(p.transformed(transform));

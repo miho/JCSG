@@ -11,8 +11,8 @@ import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -49,7 +49,7 @@ public class SurfacePro2PenHolder {
     
      public static void main(String[] args) throws IOException {
 
-        FileUtil.write(Paths.get("surfac2penholder.stl"), new SurfacePro2PenHolder().toCSG().toStlString());
+        FileUtil.write(new File("surfac2penholder.stl"), new SurfacePro2PenHolder().toCSG().toStlString());
 
     }
 }

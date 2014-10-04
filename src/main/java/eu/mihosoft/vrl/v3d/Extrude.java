@@ -77,13 +77,13 @@ public class Extrude {
      */
     public static CSG points(Vector3d dir, List<Vector3d> points) {
 
-        List<Vector3d> newList = new ArrayList<>(points);
+        List<Vector3d> newList = new ArrayList<Vector3d>(points);
 
         return extrude(dir, Polygon.fromPoints(toCCW(newList)));
     }
     
     private static CSG extrude(Vector3d dir, Polygon polygon1) {
-        List<Polygon> newPolygons = new ArrayList<>();
+        List<Polygon> newPolygons = new ArrayList<Polygon>();
         
         if (dir.z<0) {
             throw new IllegalArgumentException("z < 0 currently not supported for extrude: " + dir);
@@ -119,7 +119,7 @@ public class Extrude {
 
     static List<Vector3d> toCCW(List<Vector3d> points) {
 
-        List<Vector3d> result = new ArrayList<>(points);
+        List<Vector3d> result = new ArrayList<Vector3d>(points);
 
         if (!isCCW(Polygon.fromPoints(result))) {
             Collections.reverse(result);
@@ -130,7 +130,7 @@ public class Extrude {
 
     static List<Vector3d> toCW(List<Vector3d> points) {
 
-        List<Vector3d> result = new ArrayList<>(points);
+        List<Vector3d> result = new ArrayList<Vector3d>(points);
 
         if (isCCW(Polygon.fromPoints(result))) {
             Collections.reverse(result);

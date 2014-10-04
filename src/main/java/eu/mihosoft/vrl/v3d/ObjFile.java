@@ -6,11 +6,10 @@
 package eu.mihosoft.vrl.v3d;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  *
@@ -30,11 +29,11 @@ public final class ObjFile {
         this.mtl = mtl;
     }
 
-    public void toFiles(Path p) throws IOException {
+    public void toFiles(File p) throws IOException {
 
-        Path parent = p.getParent();
+        File parent = p.getParentFile();
 
-        String fileName = p.getFileName().toString();
+        String fileName = p.getAbsolutePath();
 
         if (fileName.toLowerCase().endsWith(".obj")
                 || fileName.toLowerCase().endsWith(".mtl")) {
@@ -48,11 +47,11 @@ public final class ObjFile {
         objStream = null;
 
         if (parent == null) {
-            FileUtil.write(Paths.get(objName), obj);
-            FileUtil.write(Paths.get(mtlName), mtl);
+            FileUtil.write(new File(objName), obj);
+            FileUtil.write(new File(mtlName), mtl);
         } else {
-            FileUtil.write(Paths.get(parent.toString(), objName), obj);
-            FileUtil.write(Paths.get(parent.toString(), mtlName), mtl);
+            FileUtil.write(new File(parent.toString(), objName), obj);
+            FileUtil.write(new File(parent.toString(), mtlName), mtl);
         }
 
     }

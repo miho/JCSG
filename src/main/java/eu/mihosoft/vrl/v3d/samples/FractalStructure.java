@@ -10,8 +10,8 @@ import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,7 +167,7 @@ public class FractalStructure {
         topPoints.add(topCenter);
 
         //here we want to save the substructures
-        subStructures = new ArrayList<>();
+        subStructures = new ArrayList<CSG>();
 
         if (level == 0) {
             subStructures.add(createStructure());
@@ -229,7 +229,7 @@ public class FractalStructure {
         polygonList.add(Polygon.fromPoints(groundP1, groundP2, topP2, topP1));
 
         //clear tmp list
-        tmpList = new ArrayList<>();
+        tmpList = new ArrayList<Vector3d>();
 
         //all top points without the center point
         for (int i = 0; i < topPoints.size() - 1; i++) {
@@ -259,7 +259,7 @@ public class FractalStructure {
         Vector3d subGroundCenter = null;
         Vector3d subTopCenter = null;
 
-        ArrayList<FractalStructure> subFractalStructures = new ArrayList<>();
+        ArrayList<FractalStructure> subFractalStructures = new ArrayList<FractalStructure>();
 
         Vector3d tmpGroundPoint = null;
         Vector3d tmpTopPoint = null;
@@ -334,7 +334,7 @@ public class FractalStructure {
          *               EG  CG
          * 
          */
-        ArrayList<FractalStructure> crossSubFractalStructures = new ArrayList<>();
+        ArrayList<FractalStructure> crossSubFractalStructures = new ArrayList<FractalStructure>();
 
         FractalStructure centerStructure = subFractalStructures.get(subFractalStructures.size() - 1);
         FractalStructure tmpStructure = null;
@@ -466,7 +466,7 @@ public class FractalStructure {
 
     public CSG toCSG() {
 
-        List<Polygon> polygons = new ArrayList<>();
+        List<Polygon> polygons = new ArrayList<Polygon>();
 
 //        subStructures.stream().forEach(csg -> polygons.addAll(csg.getPolygons()));
         
@@ -483,9 +483,9 @@ public class FractalStructure {
 //        CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE, 7, 2, 1).toCSG();
 //        CSG csg = new FractalStructure(new Vector3d(-1, -1, -1), new Vector3d(1, 1, 1), 7, 4, 3).toCSG();
 
-        FileUtil.write(Paths.get("fractal-structure.stl"), csg.toStlString());
+        FileUtil.write(new File("fractal-structure.stl"), csg.toStlString());
 
-        csg.toObj().toFiles(Paths.get("fractal-structure.obj"));
+        csg.toObj().toFiles(new File("fractal-structure.obj"));
 
     }
 

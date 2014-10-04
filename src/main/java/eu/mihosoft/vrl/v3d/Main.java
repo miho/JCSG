@@ -33,10 +33,8 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.paint.Color;
 
 /**
@@ -69,9 +67,9 @@ public class Main {
                 union(cubeIntersectSphere.transformed(Transform.unity().translateX(15))).
                 union(cubeIntersectSphereCyl.transformed(Transform.unity().translateX(18)));
         
-        FileUtil.write(Paths.get("sample.stl"), union.toStlString());
+        FileUtil.write(new File("sample.stl"), union.toStlString());
         
-        union.toObj().toFiles(Paths.get("sample-color.obj"));
+        union.toObj().toFiles(new File("sample-color.obj"));
 
     }
 }

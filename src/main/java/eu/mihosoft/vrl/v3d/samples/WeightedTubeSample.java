@@ -8,15 +8,12 @@ package eu.mihosoft.vrl.v3d.samples;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cylinder;
 import eu.mihosoft.vrl.v3d.FileUtil;
-import eu.mihosoft.vrl.v3d.Plane;
-import eu.mihosoft.vrl.v3d.RoundedCube;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.UnityModifier;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.WeightFunction;
-import eu.mihosoft.vrl.v3d.ZModifier;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -62,9 +59,9 @@ public class WeightedTubeSample {
 
     public static void main(String[] args) throws IOException {
 
-        FileUtil.write(Paths.get("weighted-tube.stl"), new WeightedTubeSample().toCSG().toStlString());
+        FileUtil.write(new File("weighted-tube.stl"), new WeightedTubeSample().toCSG().toStlString());
 
-        new WeightedTubeSample().toCSG().toObj().toFiles(Paths.get("weighted-tube.obj"));
+        new WeightedTubeSample().toCSG().toObj().toFiles(new File("weighted-tube.obj"));
 
     }
 

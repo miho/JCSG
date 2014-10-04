@@ -6,18 +6,13 @@
 package eu.mihosoft.vrl.v3d.samples;
 
 import eu.mihosoft.vrl.v3d.CSG;
-import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Transform;
-import eu.mihosoft.vrl.v3d.UnityModifier;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.WeightFunction;
-import eu.mihosoft.vrl.v3d.XModifier;
-import eu.mihosoft.vrl.v3d.YModifier;
-import eu.mihosoft.vrl.v3d.ZModifier;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -84,9 +79,9 @@ public class WeightedSphere {
 
     public static void main(String[] args) throws IOException {
 
-        FileUtil.write(Paths.get("rounded-cube-mod.stl"), new WeightedSphere().toCSG().toStlString());
+        FileUtil.write(new File("rounded-cube-mod.stl"), new WeightedSphere().toCSG().toStlString());
 
-        new WeightedSphere().toCSG().toObj().toFiles(Paths.get("rounded-cube-mod.obj"));
+        new WeightedSphere().toCSG().toObj().toFiles(new File("rounded-cube-mod.obj"));
 
     }
 

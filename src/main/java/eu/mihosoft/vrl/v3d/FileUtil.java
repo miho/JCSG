@@ -30,12 +30,13 @@
 
 package eu.mihosoft.vrl.v3d;
 
-import java.io.BufferedWriter;
+import eu.mihosoft.vrl.io.IOUtil;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 /**
  * File util class.
@@ -51,16 +52,18 @@ public class FileUtil {
     /**
      * Writes the specified string to a file.
      *
-     * @param p file destination (existing files will be overwritten)
+     * @param f file destination (existing files will be overwritten)
      * @param s string to save
      * 
      * @throws IOException if writing to file fails
      */
-    public static void write(Path p, String s) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(p, Charset.forName("UTF-8"),
-                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-            writer.write(s, 0, s.length());
-        }
+    public static void write(File f, String s) throws IOException {
+//        try (BufferedWriter writer = Files.newBufferedWriter(p, Charset.forName("UTF-8"),
+//                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+//            writer.write(s, 0, s.length());
+//        }
+        
+        IOUtil.saveStreamToFile(new ByteArrayInputStream(s.getBytes("UTF-8")), f);
     }
 
     /**

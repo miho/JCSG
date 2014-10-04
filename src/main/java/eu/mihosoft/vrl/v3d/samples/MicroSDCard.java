@@ -9,10 +9,8 @@ import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -64,7 +62,7 @@ public class MicroSDCard {
 
     public static void main(String[] args) throws IOException {
 
-        FileUtil.write(Paths.get("mircosd.stl"), new MicroSDCard().toCSG().toStlString());
+        FileUtil.write(new File("mircosd.stl"), new MicroSDCard().toCSG().toStlString());
 
     }
 

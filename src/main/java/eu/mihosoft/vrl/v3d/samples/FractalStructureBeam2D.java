@@ -11,8 +11,8 @@ import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -26,9 +26,9 @@ public class FractalStructureBeam2D {
         
         result = result.union(new Sphere(Vector3d.ZERO, 1, 4, 4).toCSG());
 
-        FileUtil.write(Paths.get("fractal-structure-beam-2d.stl"), result.toStlString());
+        FileUtil.write(new File("fractal-structure-beam-2d.stl"), result.toStlString());
 
-        result.toObj().toFiles(Paths.get("fractal-structure-beam-2d.stl"));
+        result.toObj().toFiles(new File("fractal-structure-beam-2d.stl"));
 
     }
 

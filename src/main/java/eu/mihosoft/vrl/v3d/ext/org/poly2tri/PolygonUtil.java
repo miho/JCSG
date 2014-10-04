@@ -50,7 +50,7 @@ public class PolygonUtil {
 
     public static List<eu.mihosoft.vrl.v3d.Polygon> concaveToConvex(eu.mihosoft.vrl.v3d.Polygon concave) {
 
-        List<eu.mihosoft.vrl.v3d.Polygon> result = new ArrayList<>();
+        List<eu.mihosoft.vrl.v3d.Polygon> result = new ArrayList<eu.mihosoft.vrl.v3d.Polygon>();
 
         Vector3d normal = concave.vertices.get(0).normal.clone();
 
@@ -60,7 +60,7 @@ public class PolygonUtil {
         
         boolean cw = !Extrude.isCCW(concave);
 
-        List< PolygonPoint> points = new ArrayList<>();
+        List< PolygonPoint> points = new ArrayList<PolygonPoint>();
 
         for (Vertex v : concave.vertices) {
             PolygonPoint vp = new PolygonPoint(v.pos.x, v.pos.y, v.pos.z);
@@ -73,7 +73,7 @@ public class PolygonUtil {
 
         List<DelaunayTriangle> triangles = p.getTriangles();
 
-        List<Vertex> triPoints = new ArrayList<>();
+        List<Vertex> triPoints = new ArrayList<Vertex>();
 
         for (DelaunayTriangle t : triangles) {
 
@@ -91,7 +91,7 @@ public class PolygonUtil {
                     eu.mihosoft.vrl.v3d.Polygon poly = new eu.mihosoft.vrl.v3d.Polygon(triPoints, concave.getStorage());
                     result.add(poly);
                     counter = 0;
-                    triPoints = new ArrayList<>();
+                    triPoints = new ArrayList<Vertex>();
 
                 } else {
                     counter++;

@@ -9,10 +9,9 @@ import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.Cylinder;
 import eu.mihosoft.vrl.v3d.FileUtil;
-import eu.mihosoft.vrl.v3d.Transform;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -24,13 +23,13 @@ public class QuadrocopterPlatform {
 
         CSG result = new QuadrocopterPlatform().toCSG();
 
-        FileUtil.write(Paths.get("quadrocopter-platform.stl"), result.toStlString());
-        result.toObj().toFiles(Paths.get("quadrocopter-platform.obj"));
+        FileUtil.write(new File("quadrocopter-platform.stl"), result.toStlString());
+        result.toObj().toFiles(new File("quadrocopter-platform.obj"));
 
 //        CSG resultNoStructure = new QuadrocopterArm().toCSG();
 //
-//        FileUtil.write(Paths.get("quadrocopter-arm-no-structure.stl"), resultNoStructure.toStlString());
-//        resultNoStructure.toObj().toFiles(Paths.get("quadrocopter-arm-no-structure.obj"));
+//        FileUtil.write(new File("quadrocopter-arm-no-structure.stl"), resultNoStructure.toStlString());
+//        resultNoStructure.toObj().toFiles(new File("quadrocopter-arm-no-structure.obj"));
     }
     
     

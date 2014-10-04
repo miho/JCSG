@@ -124,11 +124,11 @@ public class Sphere implements Primitive {
 
     @Override
     public List<Polygon> toPolygons() {
-        List<Polygon> polygons = new ArrayList<>();
+        List<Polygon> polygons = new ArrayList<Polygon>();
 
         for (int i = 0; i < numSlices; i++) {
             for (int j = 0; j < numStacks; j++) {
-                final List<Vertex> vertices = new ArrayList<>();
+                final List<Vertex> vertices = new ArrayList<Vertex>();
 
                 vertices.add(
                         sphereVertex(center, radius, i / (double) numSlices,

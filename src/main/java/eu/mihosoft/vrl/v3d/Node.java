@@ -72,7 +72,7 @@ final class Node {
      * @param polygons polygons
      */
     public Node(List<Polygon> polygons) {
-        this.polygons = new ArrayList<>();
+        this.polygons = new ArrayList<Polygon>();
         if (polygons != null) {
             this.build(polygons);
         }
@@ -107,7 +107,7 @@ final class Node {
 //        node.polygons = polygonStream.
 //                map(p -> p.clone()).collect(Collectors.toList());
         
-        node.polygons = new ArrayList<>();
+        node.polygons = new ArrayList<Polygon>();
         
         for(Polygon p : polygons) {
             node.polygons.add(p.clone());
@@ -170,11 +170,11 @@ final class Node {
     private List<Polygon> clipPolygons(List<Polygon> polygons) {
 
         if (this.plane == null) {
-            return new ArrayList<>(polygons);
+            return new ArrayList<Polygon>(polygons);
         }
 
-        List<Polygon> frontP = new ArrayList<>();
-        List<Polygon> backP = new ArrayList<>();
+        List<Polygon> frontP = new ArrayList<Polygon>();
+        List<Polygon> backP = new ArrayList<Polygon>();
 
         for (Polygon polygon : polygons) {
             this.plane.splitPolygon(polygon, frontP, backP, frontP, backP);
@@ -185,7 +185,7 @@ final class Node {
         if (this.back != null) {
             backP = this.back.clipPolygons(backP);
         } else {
-            backP = new ArrayList<>(0);
+            backP = new ArrayList<Polygon>(0);
         }
 
         frontP.addAll(backP);
@@ -218,7 +218,7 @@ final class Node {
      * @return a list of all polygons in this BSP tree
      */
     public List<Polygon> allPolygons() {
-        List<Polygon> localPolygons = new ArrayList<>(this.polygons);
+        List<Polygon> localPolygons = new ArrayList<Polygon>(this.polygons);
         if (this.front != null) {
             localPolygons.addAll(this.front.allPolygons());
 //            polygons = Utils.concat(polygons, this.front.allPolygons());
@@ -247,8 +247,8 @@ final class Node {
             this.plane = polygons.get(0).plane.clone();
         }
 
-        List<Polygon> frontP = new ArrayList<>();
-        List<Polygon> backP = new ArrayList<>();
+        List<Polygon> frontP = new ArrayList<Polygon>();
+        List<Polygon> backP = new ArrayList<Polygon>();
 
         // parellel version does not work here
 //        polygons.forEach((polygon) -> {

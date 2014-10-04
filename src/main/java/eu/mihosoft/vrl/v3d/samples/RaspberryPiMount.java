@@ -36,8 +36,8 @@ import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -152,10 +152,10 @@ public class RaspberryPiMount {
         public static void main(String[] args) throws IOException {
 
         // save union as stl
-//        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
+//        FileUtil.write(new File("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
         
             CSG board = RaspberryPiMount.boardAndPegs().transformed(Transform.unity().rotX(180));
-            FileUtil.write(Paths.get("sample.stl"), board.toStlString());
+            FileUtil.write(new File("sample.stl"), board.toStlString());
 
     }
 }

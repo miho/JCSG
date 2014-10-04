@@ -8,11 +8,9 @@ package eu.mihosoft.vrl.v3d.samples;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cylinder;
 import eu.mihosoft.vrl.v3d.FileUtil;
-import eu.mihosoft.vrl.v3d.Plane;
-import eu.mihosoft.vrl.v3d.RoundedCube;
 import eu.mihosoft.vrl.v3d.Transform;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -64,9 +62,9 @@ public class Naze32Holder {
 
     public static void main(String[] args) throws IOException {
 
-        FileUtil.write(Paths.get("naze32-mount.stl"), new Naze32Holder().toCSG().toStlString());
+        FileUtil.write(new File("naze32-mount.stl"), new Naze32Holder().toCSG().toStlString());
 
-        new Naze32Holder().toCSG().toObj().toFiles(Paths.get("naze32-mount.obj"));
+        new Naze32Holder().toCSG().toObj().toFiles(new File("naze32-mount.obj"));
 
     }
 

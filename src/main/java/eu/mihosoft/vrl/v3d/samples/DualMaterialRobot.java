@@ -10,10 +10,8 @@ import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.STL;
 import eu.mihosoft.vrl.v3d.Transform;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -26,7 +24,7 @@ public class DualMaterialRobot {
     public static CSG middleToCSG() throws IOException {
 
         if (robot == null) {
-            robot = STL.file(java.nio.file.Paths.get("/home/miho/CuraExamples/UltimakerRobot_support.stl"));
+            robot = STL.file(new File("/home/miho/CuraExamples/UltimakerRobot_support.stl"));
         }
 
 //        return robot.getBounds().toCSG().transformed(Transform.unity().scale(1.1,0.5,1.1).translateY(10).translateZ(-1.5)).difference(robot);
@@ -40,7 +38,7 @@ public class DualMaterialRobot {
     public static CSG topBottomCSG() throws IOException {
 
         if (robot == null) {
-            robot = STL.file(java.nio.file.Paths.get("/home/miho/CuraExamples/UltimakerRobot_support.stl"));
+            robot = STL.file(new File("/home/miho/CuraExamples/UltimakerRobot_support.stl"));
         }
 
         Bounds robotBounds = robot.getBounds();
@@ -53,13 +51,13 @@ public class DualMaterialRobot {
 
     public static void main(String[] args) throws IOException {
 
-//        FileUtil.write(Paths.get("robot-color-1.stl"), DualMaterialRobot.topBottomCSG().toStlString());
-//        FileUtil.write(Paths.get("robot-color-2.stl"), DualMaterialRobot.middleToCSG().toStlString());
+//        FileUtil.write(new File("robot-color-1.stl"), DualMaterialRobot.topBottomCSG().toStlString());
+//        FileUtil.write(new File("robot-color-2.stl"), DualMaterialRobot.middleToCSG().toStlString());
         
-        robot = STL.file(java.nio.file.Paths.get("/home/miho/CuraExamples/UltimakerRobot_support.stl"));
+        robot = STL.file(new File("/home/miho/CuraExamples/UltimakerRobot_support.stl"));
         
         
-        FileUtil.write(Paths.get("robot-ascii.stl"), robot.toStlString());
+        FileUtil.write(new File("robot-ascii.stl"), robot.toStlString());
 
     }
 }

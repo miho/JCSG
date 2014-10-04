@@ -10,8 +10,8 @@ import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -91,8 +91,8 @@ public class ServoMount {
         ServoMount sMount = new ServoMount();
 
         // save union as stl
-//        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
-        FileUtil.write(Paths.get("sample.stl"), sMount.toCSG().toStlString());
+//        FileUtil.write(new File("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
+        FileUtil.write(new File("sample.stl"), sMount.toCSG().toStlString());
 
     }
 }

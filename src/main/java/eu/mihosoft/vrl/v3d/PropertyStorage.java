@@ -45,7 +45,7 @@ import javafx.scene.paint.Color;
  */
 public class PropertyStorage {
 
-    private final Map<String, Object> map = new HashMap<>();
+    private final Map<String, Object> map = new HashMap<String, Object>();
 
     private static final Color[] colors = {
         Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE, Color.MAGENTA,

@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import static eu.mihosoft.vrl.v3d.Transform.*;
 import eu.mihosoft.vrl.v3d.UnityModifier;
 import eu.mihosoft.vrl.v3d.ZModifier;
+import java.io.File;
 
 /**
  *
@@ -265,13 +266,13 @@ public class QuadrocopterArm {
 
         CSG result = new QuadrocopterArm().toCSG();
 
-        FileUtil.write(Paths.get("quadrocopter-arm.stl"), result.toStlString());
-        result.toObj().toFiles(Paths.get("quadrocopter-arm.obj"));
+        FileUtil.write(new File("quadrocopter-arm.stl"), result.toStlString());
+        result.toObj().toFiles(new File("quadrocopter-arm.obj"));
 
 //        CSG resultNoStructure = new QuadrocopterArm().toCSG();
 //
-//        FileUtil.write(Paths.get("quadrocopter-arm-no-structure.stl"), resultNoStructure.toStlString());
-//        resultNoStructure.toObj().toFiles(Paths.get("quadrocopter-arm-no-structure.obj"));
+//        FileUtil.write(new File("quadrocopter-arm-no-structure.stl"), resultNoStructure.toStlString());
+//        resultNoStructure.toObj().toFiles(new File("quadrocopter-arm-no-structure.obj"));
     }
 
 }

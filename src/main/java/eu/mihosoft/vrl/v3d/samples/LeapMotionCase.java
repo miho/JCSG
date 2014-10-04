@@ -11,9 +11,9 @@ import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import static eu.mihosoft.vrl.v3d.Transform.*;
+import java.io.File;
 
 /**
  *
@@ -136,9 +136,9 @@ public class LeapMotionCase {
 
     public static void main(String[] args) throws IOException {
 
-        FileUtil.write(Paths.get("leapmotion.stl"), new LeapMotionCase().toCSG().toStlString());
+        FileUtil.write(new File("leapmotion.stl"), new LeapMotionCase().toCSG().toStlString());
 
-        new LeapMotionCase().toCSG().toObj().toFiles(Paths.get("leapmotion.obj"));
+        new LeapMotionCase().toCSG().toObj().toFiles(new File("leapmotion.obj"));
 
     }
 

@@ -11,6 +11,7 @@ import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -27,7 +28,7 @@ public class PlaneWithHoles {
 
 //        CSG result = null;
 //        try {
-//            result = STL.file(Paths.get("box_refined-01.stl")).transformed(Transform.unity().scale(30, 30, 0.5)).optimization(CSG.OptType.POLYGON_BOUND);
+//            result = STL.file(new File("box_refined-01.stl")).transformed(Transform.unity().scale(30, 30, 0.5)).optimization(CSG.OptType.POLYGON_BOUND);
 //        } catch (IOException ex) {
 //            Logger.getLogger(PlaneWithHoles.class.getName()).log(Level.SEVERE, null, ex);
 //        }
@@ -61,7 +62,7 @@ public class PlaneWithHoles {
         }
         
         try {
-            FileUtil.write(Paths.get("cyl.stl"), spheres.toStlString());
+            FileUtil.write(new File("cyl.stl"), spheres.toStlString());
         } catch (IOException ex) {
             Logger.getLogger(PlaneWithHoles.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -78,8 +79,8 @@ public class PlaneWithHoles {
         PlaneWithHoles planeWithHoles = new PlaneWithHoles();
 
         // save union as stl
-//        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
-        FileUtil.write(Paths.get("sample.stl"), planeWithHoles.toCSG().toStlString());
+//        FileUtil.write(new File("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
+        FileUtil.write(new File("sample.stl"), planeWithHoles.toCSG().toStlString());
 
     }
 }

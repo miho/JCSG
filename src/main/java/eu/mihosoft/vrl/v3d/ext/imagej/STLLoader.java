@@ -47,7 +47,7 @@ public class STLLoader {
     BufferedReader in;
 
     // attributes of the currently read mesh
-    private ArrayList<Point3f> vertices = new ArrayList<>();
+    private ArrayList<Point3f> vertices = new ArrayList<Point3f>();
     private Point3f normal = new Point3f(0.0f, 0.0f, 0.0f); //to be used for file checking
     private FileInputStream fis;
     private int triangles;
@@ -95,7 +95,7 @@ public class STLLoader {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        vertices = new ArrayList<>();
+        vertices = new ArrayList<Point3f>();
         try {
             while ((line = in.readLine()) != null) {
                 String[] numbers = line.trim().split("\\s+");

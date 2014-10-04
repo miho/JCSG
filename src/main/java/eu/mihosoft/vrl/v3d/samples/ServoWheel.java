@@ -11,8 +11,8 @@ import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -132,7 +132,7 @@ public class ServoWheel {
         
         System.out.println("RUNNING");
 
-        FileUtil.write(Paths.get("servo-wheel.stl"), new ServoWheel().toCSG().toStlString());
+        FileUtil.write(new File("servo-wheel.stl"), new ServoWheel().toCSG().toStlString());
 
     }
 }

@@ -70,7 +70,7 @@ class PointSet implements Triangulatable
     
     public PointSet( List<TriangulationPoint> points )
     {
-        _points = new ArrayList<>();
+        _points = new ArrayList<TriangulationPoint>();
         _points.addAll( points );
     }
     

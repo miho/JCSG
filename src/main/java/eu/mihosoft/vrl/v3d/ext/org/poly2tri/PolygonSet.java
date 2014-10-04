@@ -64,7 +64,7 @@ import java.util.List;
 
 class PolygonSet
 {
-    protected ArrayList<Polygon> _polygons = new ArrayList<>();
+    protected ArrayList<Polygon> _polygons = new ArrayList<Polygon>();
     
     public PolygonSet()
     {

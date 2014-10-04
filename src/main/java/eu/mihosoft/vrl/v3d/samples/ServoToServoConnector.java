@@ -10,8 +10,8 @@ import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -64,8 +64,8 @@ public class ServoToServoConnector {
         ServoToServoConnector servo2ServoConnector = new ServoToServoConnector();
 
         // save union as stl
-//        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
-        FileUtil.write(Paths.get("sample.stl"), servo2ServoConnector.toCSG().toStlString());
+//        FileUtil.write(new File("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
+        FileUtil.write(new File("sample.stl"), servo2ServoConnector.toCSG().toStlString());
 
     }
 }

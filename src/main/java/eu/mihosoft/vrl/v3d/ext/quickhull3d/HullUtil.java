@@ -37,9 +37,9 @@ public class HullUtil {
 
         int[][] faces = hull.getFaces();
 
-        List<Polygon> polygons = new ArrayList<>();
+        List<Polygon> polygons = new ArrayList<Polygon>();
 
-        List<eu.mihosoft.vrl.v3d.Vector3d> vertices = new ArrayList<>();
+        List<eu.mihosoft.vrl.v3d.Vector3d> vertices = new ArrayList<eu.mihosoft.vrl.v3d.Vector3d>();
 
         for (int[] verts : faces) {
 
@@ -57,7 +57,7 @@ public class HullUtil {
 
     public static CSG hull(CSG csg, PropertyStorage storage) {
 
-        List<eu.mihosoft.vrl.v3d.Vector3d> points = new ArrayList<>(csg.getPolygons().size() * 3);
+        List<eu.mihosoft.vrl.v3d.Vector3d> points = new ArrayList<eu.mihosoft.vrl.v3d.Vector3d>(csg.getPolygons().size() * 3);
         return hull(points, storage);
     }
 }

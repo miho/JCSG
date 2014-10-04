@@ -11,6 +11,7 @@ import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -122,8 +123,8 @@ public class ServoHead {
         
         System.out.println("RUNNING");
 
-        FileUtil.write(Paths.get("servo-head-female.stl"), new ServoHead().servoHeadFemale().toStlString());
-         FileUtil.write(Paths.get("servo-head-male.stl"), new ServoHead().servoHeadMale().toStlString());
+        FileUtil.write(new File("servo-head-female.stl"), new ServoHead().servoHeadFemale().toStlString());
+         FileUtil.write(new File("servo-head-male.stl"), new ServoHead().servoHeadMale().toStlString());
 
     }
 }

@@ -132,7 +132,7 @@ public final class Polygon {
 
     @Override
     public Polygon clone() {
-        List<Vertex> newVertices = new ArrayList<>();
+        List<Vertex> newVertices = new ArrayList<Vertex>();
 //        this.vertices.forEach((vertex) -> {
 //            newVertices.add(vertex.clone());
 //        });
@@ -354,7 +354,7 @@ public final class Polygon {
         Vector3d normal
                 = (plane != null) ? plane.normal.clone() : new Vector3d(0, 0, 0);
 
-        List<Vertex> vertices = new ArrayList<>();
+        List<Vertex> vertices = new ArrayList<Vertex>();
 
         for (Vector3d p : points) {
             Vector3d vec = p.clone();

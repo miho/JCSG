@@ -10,9 +10,8 @@ import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.Cylinder;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
-import eu.mihosoft.vrl.v3d.Vector3d;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  *
@@ -67,7 +66,7 @@ public class QuadrocopterArmHolder {
     public static void main(String[] args) throws IOException {
         CSG result = new QuadrocopterArmHolder().toCSG(18, 0.5, 18, 4, 20, 3);
 
-        FileUtil.write(Paths.get("quadrocopter-arm-holder.stl"), result.toStlString());
-        result.toObj().toFiles(Paths.get("quadrocopter-arm-holder.obj"));
+        FileUtil.write(new File("quadrocopter-arm-holder.stl"), result.toStlString());
+        result.toObj().toFiles(new File("quadrocopter-arm-holder.obj"));
     }
 }
