@@ -51,5 +51,30 @@ jar {
 
     // project class files compiled from source
     from files(sourceSets.main.output.classesDir)
+}
 
+def loadProperties(String sourceFileName) {
+    
+    def config = new Properties()
+    def propFile = new File(projectDir,sourceFileName)
+    
+    if (propFile.isFile()) {
+        config.load(new FileInputStream(propFile))
+        for (Map.Entry property in config) {
+            ext.set(property.key, property.value)
+        }
+    }
+}
+
+// loads the property file
+loadProperties('build.properties')
+
+// compiles and installs the vrl plugin to the specified folder
+task installVRLPlugin(dependsOn: [clean,jar]) << {
+    println(">> copying vrl plugin to: " + vrldir+"/plugin-updates")
+    copy {
+        from buildDir.getPath()+"/libs/"+rootProject.name + ".jar"
+        into vrldir+"/plugin-updates"
+        include '**/*.jar'
+    }
 }
