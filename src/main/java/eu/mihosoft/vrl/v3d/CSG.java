@@ -241,6 +241,29 @@ public class CSG {
                 return _unionNoOpt(csg);
         }
     }
+    
+    /**
+     * Returns a csg consisting of the polygons of this csg and the specified csg.
+     * 
+     * The purpose of this method is to allow fast union operations for objects
+     * that do not intersect. 
+     * 
+     * <p><b>WARNING:</b> this method does not apply the csg algorithms. Therefore,
+     * please ensure that this csg and the specified csg do not intersect.
+     * 
+     * @param csg csg
+     * 
+     * @return a csg consisting of the polygons of this csg and the specified csg
+     */
+    public CSG dumbUnion(CSG csg) {
+        
+        CSG result = this.clone();
+        CSG other = csg.clone();
+        
+        result.polygons.addAll(other.polygons);
+        
+        return result;
+    }
 
     /**
      * Return a new CSG solid representing the union of this csg and the
@@ -920,6 +943,7 @@ public class CSG {
 
         return result;
     }
+ 
 
     // TODO finish experiment (20.7.2014)
     public MeshContainer toJavaFXMesh() {
