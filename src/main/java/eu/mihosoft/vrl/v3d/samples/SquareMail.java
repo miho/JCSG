@@ -17,7 +17,7 @@ import java.nio.file.Paths;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class Chainmail {
+public class SquareMail {
 
     private CSG toCSG(int numX, int numY) {
 
@@ -103,6 +103,6 @@ public class Chainmail {
     }
 
     public static void main(String[] args) throws IOException {
-        FileUtil.write(Paths.get("chainmail-tiles.stl"), new Chainmail().toCSG(10,10).toStlString());
+        FileUtil.write(Paths.get("squaremail.stl"), new SquareMail().toCSG(12,12).toStlString());
     }
 }
