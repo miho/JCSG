@@ -79,9 +79,9 @@ public class SquareMail {
 
         CSG result = null;
 
-        for (int y = 0; y < numX; y++) {
+        for (int y = 0; y < numY; y++) {
 
-            for (int x = 0; x < numY; x++) {
+            for (int x = 0; x < numX; x++) {
 
                 double translateX
                         = (-partBounds.x + jointRadius + jointRadius * hingeHoleScale) * x;
@@ -103,6 +103,6 @@ public class SquareMail {
     }
 
     public static void main(String[] args) throws IOException {
-        FileUtil.write(Paths.get("squaremail.stl"), new SquareMail().toCSG(12,12).toStlString());
+        FileUtil.write(Paths.get("squaremail.stl"), new SquareMail().toCSG(12,4).toStlString());
     }
 }
