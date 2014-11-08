@@ -3,11 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.mihosoft.vrl.v3d;
+package eu.mihosoft.vrl.v3d.vplugin;
 
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import eu.mihosoft.vrl.io.IOUtil;
+import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.FileUtil;
+import eu.mihosoft.vrl.v3d.PropertyStorage;
+import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
 import java.io.File;
 import java.io.IOException;

@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * the front and/or back subtrees. This is not a leafy BSP tree since there is
  * no distinction between internal and leaf nodes.
  */
-final class Node {
+final class CSGNode {
 
     /**
      * Polygons.
@@ -58,11 +58,11 @@ final class Node {
     /**
      * Polygons in front of the plane.
      */
-    private Node front;
+    private CSGNode front;
     /**
      * Polygons in back of the plane.
      */
-    private Node back;
+    private CSGNode back;
 
     /**
      * Constructor.
@@ -71,7 +71,7 @@ final class Node {
      *
      * @param polygons polygons
      */
-    public Node(List<Polygon> polygons) {
+    public CSGNode(List<Polygon> polygons) {
         this.polygons = new ArrayList<Polygon>();
         if (polygons != null) {
             this.build(polygons);
@@ -81,13 +81,13 @@ final class Node {
     /**
      * Constructor. Creates a node without polygons.
      */
-    public Node() {
+    public CSGNode() {
         this(null);
     }
 
     @Override
-    public Node clone() {
-        Node node = new Node();
+    public CSGNode clone() {
+        CSGNode node = new CSGNode();
         node.plane = this.plane == null ? null : this.plane.clone();
         node.front = this.front == null ? null : this.front.clone();
         node.back = this.back == null ? null : this.back.clone();
@@ -152,7 +152,7 @@ final class Node {
         if (this.back != null) {
             this.back.invert();
         }
-        Node temp = this.front;
+        CSGNode temp = this.front;
         this.front = this.back;
         this.back = temp;
     }
@@ -202,7 +202,7 @@ final class Node {
      *
      * @param bsp bsp that shall be used for clipping
      */
-    public void clipTo(Node bsp) {
+    public void clipTo(CSGNode bsp) {
         this.polygons = bsp.clipPolygons(this.polygons);
         if (this.front != null) {
             this.front.clipTo(bsp);
@@ -263,13 +263,13 @@ final class Node {
 
         if (frontP.size() > 0) {
             if (this.front == null) {
-                this.front = new Node();
+                this.front = new CSGNode();
             }
             this.front.build(frontP);
         }
         if (backP.size() > 0) {
             if (this.back == null) {
-                this.back = new Node();
+                this.back = new CSGNode();
             }
             this.back.build(backP);
         }

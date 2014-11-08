@@ -419,8 +419,8 @@ public class CSG {
     }
 
     private CSG _unionNoOpt(CSG csg) {
-        Node a = new Node(this.clone().polygons);
-        Node b = new Node(csg.clone().polygons);
+        CSGNode a = new CSGNode(this.clone().polygons);
+        CSGNode b = new CSGNode(csg.clone().polygons);
         a.clipTo(b);
         b.clipTo(a);
         b.invert();
@@ -569,8 +569,8 @@ public class CSG {
 
     private CSG _differenceNoOpt(CSG csg) {
 
-        Node a = new Node(this.clone().polygons);
-        Node b = new Node(csg.clone().polygons);
+        CSGNode a = new CSGNode(this.clone().polygons);
+        CSGNode b = new CSGNode(csg.clone().polygons);
 
         a.invert();
         a.clipTo(b);
@@ -610,8 +610,8 @@ public class CSG {
      */
     public CSG intersect(CSG csg) {
 
-        Node a = new Node(this.clone().polygons);
-        Node b = new Node(csg.clone().polygons);
+        CSGNode a = new CSGNode(this.clone().polygons);
+        CSGNode b = new CSGNode(csg.clone().polygons);
         a.invert();
         b.clipTo(a);
         b.invert();

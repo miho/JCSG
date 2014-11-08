@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.mihosoft.vrl.v3d;
+package eu.mihosoft.vrl.v3d.vplugin;
 
 import eu.mihosoft.vrl.system.InitPluginAPI;
 import eu.mihosoft.vrl.system.PluginAPI;
@@ -33,7 +33,7 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
        // copyright info
        setCopyrightInfo("JCSG",
                "(c) Michael Hoffer",
-               "www.mihosoft.eu", "BSD", "License Text...");
+               "www.mihosoft.eu", "BSD", "");
 
        // specify dependencies
        // addDependency(new PluginDependency("VRL", "0.4.0", "0.4.0"));
@@ -66,6 +66,7 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
            // vapi.addTypeRepresentation(MyType.class);
            
            vapi.addComponent(PointCloud2ConvexHull.class);
+           vapi.addComponent(JCSGSample01.class);
        }
    }
 
