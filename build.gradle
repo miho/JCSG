@@ -12,7 +12,7 @@ task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper
 }
 
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'eu.mihosoft.vrl.v3d.Main'
+    ext.mainClass = 'eu.mihosoft.vrl.v3d.jcsg.Main'
 }
 
 applicationDefaultJvmArgs = ["-Xss515m"]
