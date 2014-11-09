@@ -45,7 +45,6 @@ public class Hinge {
         
         CSG conesAndCyl = sideCones.hull();
 
-
         CSG cylinderHole = new Cube(getJointRadius() * 2, getJointHoleLength() * 2, getJointHoleLength()).toCSG().
                 transformed(Transform.unity().translate(getJointConnectionThickness(), 0, -getJointHoleLength() * 0.0));
 

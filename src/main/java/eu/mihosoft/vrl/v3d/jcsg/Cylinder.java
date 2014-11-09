@@ -153,7 +153,7 @@ public class Cylinder implements Primitive {
         final Vector3d axisY = axisX.cross(axisZ).normalized();
         Vertex startV = new Vertex(s, axisZ.negated());
         Vertex endV = new Vertex(e, axisZ.normalized());
-        List<Polygon> polygons = new ArrayList<>();
+        List<Polygon> polygons = new ArrayList<Polygon>();
 
         for (int i = 0; i < numSlices; i++) {
             double t0 = i / (double) numSlices, t1 = (i + 1) / (double) numSlices;

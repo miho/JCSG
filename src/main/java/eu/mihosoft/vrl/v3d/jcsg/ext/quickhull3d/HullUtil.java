@@ -58,6 +58,15 @@ public class HullUtil {
     public static CSG hull(CSG csg, PropertyStorage storage) {
 
         List<eu.mihosoft.vrl.v3d.jcsg.Vector3d> points = new ArrayList<eu.mihosoft.vrl.v3d.jcsg.Vector3d>(csg.getPolygons().size() * 3);
+
+        for(Polygon p : csg.getPolygons()) {
+            for(eu.mihosoft.vrl.v3d.jcsg.Vertex v : p.vertices) {
+                points.add(v.pos);
+            }
+        }
+        
+//        csg.getPolygons().forEach((p) -> p.vertices.forEach((v) -> points.add(v.pos)));
+        
         return hull(points, storage);
     }
 }

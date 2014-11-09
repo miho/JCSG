@@ -78,7 +78,7 @@ public class PolyMailTile {
                 translateX(apothem + hingePrototype.getJointRadius()
                         + getPinLength()));
 
-        List<CSG> hinges = new ArrayList<>();
+        List<CSG> hinges = new ArrayList<CSG>();
 
         hinges.add(hinge1);
 
@@ -99,7 +99,7 @@ public class PolyMailTile {
             hingeHole1 = hingeHole1.transformed(unity().rotZ(initialRot));
         }
 
-        List<CSG> hingeHoles = new ArrayList<>();
+        List<CSG> hingeHoles = new ArrayList<CSG>();
 
         hingeHoles.add(hingeHole1);
 
