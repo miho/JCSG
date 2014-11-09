@@ -75,7 +75,7 @@ public class ServoMount {
                 new Vector3d(boardMountingThickness + borderThickness, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness, h + pegToothHeight+pegHeight),
                 new Vector3d(boardMountingThickness - pegOverlap, h + pegToothHeight),
-                 new Vector3d(boardMountingThickness, h),
+                new Vector3d(boardMountingThickness, h),
                 new Vector3d(boardMountingThickness, 0)
         );
         
