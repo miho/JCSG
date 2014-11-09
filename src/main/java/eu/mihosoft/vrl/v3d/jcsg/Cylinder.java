@@ -48,7 +48,8 @@ public class Cylinder implements Primitive {
 
     private Vector3d start;
     private Vector3d end;
-    private double radius;
+    private double startRadius;
+    private double endRadius;
     private int numSlices;
 
     private final PropertyStorage properties = new PropertyStorage();
@@ -61,7 +62,8 @@ public class Cylinder implements Primitive {
     public Cylinder() {
         this.start = new Vector3d(0, -0.5, 0);
         this.end = new Vector3d(0, 0.5, 0);
-        this.radius = 1;
+        this.startRadius = 1;
+        this.endRadius = 1;
         this.numSlices = 16;
     }
 
@@ -78,14 +80,35 @@ public class Cylinder implements Primitive {
     public Cylinder(Vector3d start, Vector3d end, double radius, int numSlices) {
         this.start = start;
         this.end = end;
-        this.radius = radius;
+        this.startRadius = radius;
+        this.endRadius = radius;
         this.numSlices = numSlices;
     }
 
     /**
-     * Constructor. Creates a cylinder ranging from {@code [0,0,0]} to {@code [0,0,height]}
-     * with the specified {@code radius} and {@code height}. The resolution of the tessellation can
+     * Constructor. Creates a cylinder ranging from {@code start} to {@code end}
+     * with the specified {@code radius}. The resolution of the tessellation can
      * be controlled with {@code numSlices}.
+     *
+     * @param start cylinder start
+     * @param end cylinder end
+     * @param startRadius cylinder start radius
+     * @param endRadius cylinder end radius
+     * @param numSlices number of slices (used for tessellation)
+     */
+    public Cylinder(Vector3d start, Vector3d end, double startRadius, double endRadius, int numSlices) {
+        this.start = start;
+        this.end = end;
+        this.startRadius = startRadius;
+        this.endRadius = endRadius;
+        this.numSlices = numSlices;
+    }
+
+    /**
+     * Constructor. Creates a cylinder ranging from {@code [0,0,0]} to
+     * {@code [0,0,height]} with the specified {@code radius} and
+     * {@code height}. The resolution of the tessellation can be controlled with
+     * {@code numSlices}.
      *
      * @param radius cylinder radius
      * @param height cylinder height
@@ -94,7 +117,27 @@ public class Cylinder implements Primitive {
     public Cylinder(double radius, double height, int numSlices) {
         this.start = Vector3d.ZERO;
         this.end = Vector3d.Z_ONE.times(height);
-        this.radius = radius;
+        this.startRadius = radius;
+        this.endRadius = radius;
+        this.numSlices = numSlices;
+    }
+
+    /**
+     * Constructor. Creates a cylinder ranging from {@code [0,0,0]} to
+     * {@code [0,0,height]} with the specified {@code radius} and
+     * {@code height}. The resolution of the tessellation can be controlled with
+     * {@code numSlices}.
+     *
+     * @param startRadius cylinder start radius
+     * @param endRadius cylinder end radius
+     * @param height cylinder height
+     * @param numSlices number of slices (used for tessellation)
+     */
+    public Cylinder(double startRadius, double endRadius, double height, int numSlices) {
+        this.start = Vector3d.ZERO;
+        this.end = Vector3d.Z_ONE.times(height);
+        this.startRadius = startRadius;
+        this.endRadius = endRadius;
         this.numSlices = numSlices;
     }
 
@@ -110,31 +153,30 @@ public class Cylinder implements Primitive {
         final Vector3d axisY = axisX.cross(axisZ).normalized();
         Vertex startV = new Vertex(s, axisZ.negated());
         Vertex endV = new Vertex(e, axisZ.normalized());
-        List<Polygon> polygons = new ArrayList<Polygon>();
+        List<Polygon> polygons = new ArrayList<>();
 
         for (int i = 0; i < numSlices; i++) {
             double t0 = i / (double) numSlices, t1 = (i + 1) / (double) numSlices;
             polygons.add(new Polygon(Arrays.asList(
                     startV,
-                    cylPoint(axisX, axisY, axisZ, ray, s, radius, 0, t0, -1),
-                    cylPoint(axisX, axisY, axisZ, ray, s, radius, 0, t1, -1)),
+                    cylPoint(axisX, axisY, axisZ, ray, s, startRadius, 0, t0, -1),
+                    cylPoint(axisX, axisY, axisZ, ray, s, startRadius, 0, t1, -1)),
                     properties
             ));
             polygons.add(new Polygon(Arrays.asList(
-                    cylPoint(axisX, axisY, axisZ, ray, s, radius, 0, t1, 0),
-                    cylPoint(axisX, axisY, axisZ, ray, s, radius, 0, t0, 0),
-                    cylPoint(axisX, axisY, axisZ, ray, s, radius, 1, t0, 0),
-                    cylPoint(axisX, axisY, axisZ, ray, s, radius, 1, t1, 0)),
+                    cylPoint(axisX, axisY, axisZ, ray, s, startRadius, 0, t1, 0),
+                    cylPoint(axisX, axisY, axisZ, ray, s, startRadius, 0, t0, 0),
+                    cylPoint(axisX, axisY, axisZ, ray, s, endRadius, 1, t0, 0),
+                    cylPoint(axisX, axisY, axisZ, ray, s, endRadius, 1, t1, 0)),
                     properties
             ));
             polygons.add(new Polygon(
                     Arrays.asList(
                             endV,
-                            cylPoint(axisX, axisY, axisZ, ray, s, radius, 1, t1, 1),
-                            cylPoint(axisX, axisY, axisZ, ray, s, radius, 1, t0, 1)),
+                            cylPoint(axisX, axisY, axisZ, ray, s, endRadius, 1, t1, 1),
+                            cylPoint(axisX, axisY, axisZ, ray, s, endRadius, 1, t0, 1)),
                     properties
-            )
-            );
+            ));
         }
 
         return polygons;
@@ -181,15 +223,29 @@ public class Cylinder implements Primitive {
     /**
      * @return the radius
      */
-    public double getRadius() {
-        return radius;
+    public double getStartRadius() {
+        return startRadius;
     }
 
     /**
      * @param radius the radius to set
      */
-    public void setRadius(double radius) {
-        this.radius = radius;
+    public void setStartRadius(double radius) {
+        this.startRadius = radius;
+    }
+
+    /**
+     * @return the radius
+     */
+    public double getEndRadius() {
+        return endRadius;
+    }
+
+    /**
+     * @param radius the radius to set
+     */
+    public void setEndRadius(double radius) {
+        this.endRadius = radius;
     }
 
     /**
@@ -210,14 +266,10 @@ public class Cylinder implements Primitive {
     public PropertyStorage getProperties() {
         return properties;
     }
-    
-        /**
-     * Returns this primitive as {@link CSG}.
-     *
-     * @return this primitive as {@link CSG}
-     */
+
+    @Override
     public CSG toCSG() {
-        return CSG.fromPolygons(getProperties(),toPolygons());
+        return CSG.fromPolygons(getProperties(), toPolygons());
     }
 
 }
