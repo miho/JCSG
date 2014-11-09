@@ -17,7 +17,9 @@ import java.io.IOException;
  */
 public class HexaMail {
 
-    public CSG toCSG(int numEdges, int numX, int numY) {
+    public CSG toCSG(int numX, int numY) {
+        
+        int numEdges = 6;
 
         PolyMailTile tile = new PolyMailTile().setNumEdges(numEdges).setHingeHoleScale(1.2);
 
@@ -76,6 +78,6 @@ public class HexaMail {
     }
 
     public static void main(String[] args) throws IOException {
-        FileUtil.write(new File("hexamail.stl"), new HexaMail().toCSG(6, 3, 3).toStlString());
+        FileUtil.write(new File("hexamail.stl"), new HexaMail().toCSG(3, 3).toStlString());
     }
 }
