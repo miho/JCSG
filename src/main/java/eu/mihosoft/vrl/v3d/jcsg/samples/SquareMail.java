@@ -28,11 +28,11 @@ public class SquareMail {
 
         double jointRadius = 1.1;
         double coneLength = 1.8;
-        double hingeHoleScale = 1.15;
+        double hingeHoleScale = 1.30;
         
         double h = w;
-        double pinLength = 0.8;
-        double pinThickness = 1.2;
+        double pinLength = 1.2;
+        double pinThickness = 1.3;
         
         CSG mainCube = new Cube(w, h, d).toCSG();
 
@@ -103,6 +103,6 @@ public class SquareMail {
     }
 
     public static void main(String[] args) throws IOException {
-        FileUtil.write(new File("squaremail.stl"), new SquareMail().toCSG(12,4).toStlString());
+        FileUtil.write(new File("squaremail.stl"), new SquareMail().toCSG(16,4).toStlString());
     }
 }
