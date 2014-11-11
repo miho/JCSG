@@ -33,13 +33,17 @@
  */
 package eu.mihosoft.vrl.v3d.jcsg;
 
+import java.io.Serializable;
+
 /**
  * Represents a vertex of a polygon. This class provides {@link #normal} so
  * primitives like {@link Cube} can return a smooth vertex normal, but
  * {@link #normal} is not used anywhere else.
  */
-public class Vertex {
+public class Vertex implements Serializable{
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      * Vertex position.
      */

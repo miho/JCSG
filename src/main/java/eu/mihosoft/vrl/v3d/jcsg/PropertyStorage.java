@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d.jcsg;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +44,7 @@ import javafx.scene.paint.Color;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class PropertyStorage {
+public class PropertyStorage implements Serializable{
 
     private final Map<String, Object> map = new HashMap<String, Object>();
 

@@ -33,8 +33,10 @@
  */
 package eu.mihosoft.vrl.v3d.jcsg;
 
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.v3d.VTriangleArray;
 import eu.mihosoft.vrl.v3d.jcsg.ext.quickhull3d.HullUtil;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,7 +89,10 @@ import javafx.scene.paint.Color;
  * is {@code A & B =
  * ~(~A | ~B)} where {@code ~} is the complement operator.
  */
-public class CSG {
+@ComponentInfo(name="CSG", category="JCSG")
+public class CSG implements Serializable{
+    
+    private static final long serialVersionUID =1L;
 
     private List<Polygon> polygons;
     private static OptType defaultOptType = OptType.NONE;

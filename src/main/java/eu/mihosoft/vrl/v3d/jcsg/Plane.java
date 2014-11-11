@@ -34,6 +34,7 @@
 package eu.mihosoft.vrl.v3d.jcsg;
 
 // # class Plane
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,9 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class Plane {
+public class Plane implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     /**
      * EPSILON is the tolerance used by {@link #splitPolygon(eu.mihosoft.vrl.v3d.Polygon, java.util.List, java.util.List, java.util.List, java.util.List)

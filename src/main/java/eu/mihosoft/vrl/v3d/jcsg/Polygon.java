@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import eu.mihosoft.vrl.v3d.jcsg.ext.org.poly2tri.PolygonUtil;
+import java.io.Serializable;
 import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 
@@ -51,7 +52,9 @@ import javax.vecmath.Point3f;
  * same polygon. This can be used to define per-polygon properties (such as
  * surface color).
  */
-public final class Polygon {
+public final class Polygon implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
 
     /**
      * Polygon vertices
