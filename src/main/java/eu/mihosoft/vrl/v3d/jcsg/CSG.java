@@ -99,7 +99,7 @@ public class CSG implements Serializable{
     private OptType optType = null;
     private PropertyStorage storage;
 
-    private CSG() {
+    public CSG() {
         storage = new PropertyStorage();
     }
 

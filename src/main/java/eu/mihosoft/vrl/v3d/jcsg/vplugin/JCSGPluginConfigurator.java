@@ -85,8 +85,10 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
            vapi.addComponent(PointCloud2ConvexHull.class);
            vapi.addComponent(JCSGSample01.class);
            
+           vapi.addTypeRepresentation(SilentCSGInputType.class);
            vapi.addTypeRepresentation(CSGOutputType.class);
            vapi.addTypeRepresentation(SilentCSGType.class);
+           
        }
    }
 

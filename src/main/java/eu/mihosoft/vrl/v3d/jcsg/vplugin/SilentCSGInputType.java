@@ -13,10 +13,10 @@ import eu.mihosoft.vrl.v3d.jcsg.CSG;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-@TypeInfo(type=CSG.class, input = true, output = true, style="silent")
-public class SilentCSGType extends TypeTemplate{
+@TypeInfo(type=CSG.class, input = true, output = false, style="default")
+public class SilentCSGInputType extends TypeTemplate{
 
-    public SilentCSGType() {
+    public SilentCSGInputType() {
         setValueName("CSG");
     }
     

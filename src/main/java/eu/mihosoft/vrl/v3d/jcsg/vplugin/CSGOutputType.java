@@ -6,7 +6,6 @@
 package eu.mihosoft.vrl.v3d.jcsg.vplugin;
 
 import eu.mihosoft.vrl.annotation.TypeInfo;
-import eu.mihosoft.vrl.types.VGeometry3DType;
 import eu.mihosoft.vrl.v3d.VGeometry3D;
 import eu.mihosoft.vrl.v3d.jcsg.CSG;
 import java.awt.Color;
@@ -24,6 +23,7 @@ public class CSGOutputType extends VGeometry3DType{
     public void setViewValue(Object o) {
         if (o instanceof CSG) {
             CSG csg = (CSG) o;
+            viewValue = csg;
             super.setViewValue(new VGeometry3D(
                     csg.toVTriangleArray(), Color.RED, null, 1.0f, false));
         }
