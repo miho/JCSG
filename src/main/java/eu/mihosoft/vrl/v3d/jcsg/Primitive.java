@@ -30,6 +30,7 @@
 
 package eu.mihosoft.vrl.v3d.jcsg;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public interface Primitive {
+public interface Primitive extends Serializable {
 
     /**
      * Returns the polygons that define this primitive.

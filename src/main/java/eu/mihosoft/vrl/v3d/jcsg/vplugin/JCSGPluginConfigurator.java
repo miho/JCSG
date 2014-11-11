@@ -11,6 +11,12 @@ import eu.mihosoft.vrl.system.PluginDependency;
 import eu.mihosoft.vrl.system.PluginIdentifier;
 import eu.mihosoft.vrl.system.VPluginAPI;
 import eu.mihosoft.vrl.system.VPluginConfigurator;
+import eu.mihosoft.vrl.v3d.jcsg.Cube;
+import eu.mihosoft.vrl.v3d.jcsg.Cylinder;
+import eu.mihosoft.vrl.v3d.jcsg.Extrude;
+import eu.mihosoft.vrl.v3d.jcsg.STL;
+import eu.mihosoft.vrl.v3d.jcsg.Sphere;
+import eu.mihosoft.vrl.v3d.jcsg.Transform;
 
 /**
  *
@@ -66,8 +72,18 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
            // vapi.addComponent(MyComponent.class);
            // vapi.addTypeRepresentation(MyType.class);
            
+           vapi.addComponent(Cube.class);
+           vapi.addComponent(Sphere.class);
+           vapi.addComponent(Cylinder.class);
+           vapi.addComponent(Extrude.class);
+           vapi.addComponent(STL.class);
+           vapi.addComponent(Transform.class);
+           
            vapi.addComponent(PointCloud2ConvexHull.class);
            vapi.addComponent(JCSGSample01.class);
+           
+           vapi.addTypeRepresentation(CSGOutputType.class);
+           vapi.addTypeRepresentation(SilentCSGType.class);
        }
    }
 

@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d.jcsg;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**
@@ -40,7 +41,9 @@ import java.util.Random;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class Vector3d {
+public class Vector3d implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     public double x;
     public double y;

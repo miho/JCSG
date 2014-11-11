@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d.jcsg;
 
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +45,10 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
+@ComponentInfo(name="Cylinder", category="JCSG")
 public class Cylinder implements Primitive {
+    
+    private static final long serialVersionUID = 1L;
 
     private Vector3d start;
     private Vector3d end;

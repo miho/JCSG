@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d.jcsg;
 
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.v3d.jcsg.ext.org.poly2tri.PolygonUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,10 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
+@ComponentInfo(name="Extrude", category="JCSG")
 public class Extrude {
+    
+    private static final long serialVersionUID = 1L;
 
     private Extrude() {
         throw new AssertionError("Don't instantiate me!", null);

@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d.jcsg;
 
+import eu.mihosoft.vrl.annotation.ComponentInfo;
 import javax.vecmath.Matrix4d;
 
 /**
@@ -54,7 +55,10 @@ import javax.vecmath.Matrix4d;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
+@ComponentInfo(name="Transform", category="JCSG")
 public class Transform {
+    
+    private static final long serialVersionUID = 1L;
 
     /**
      * Internal 4x4 matrix.

@@ -138,7 +138,7 @@ public class LeapMotionCase {
 
         FileUtil.write(new File("leapmotion.stl"), new LeapMotionCase().toCSG().toStlString());
 
-        new LeapMotionCase().toCSG().toObj().toFiles(new File("leapmotion.obj"));
+//        new LeapMotionCase().toCSG().toObj().toFiles(new File("leapmotion.obj"));
 
     }
 
