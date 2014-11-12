@@ -43,7 +43,7 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-@ComponentInfo(name="Cube", category="JCSG")
+@ComponentInfo(name="Cube", category="JCSG/Primitives")
 public class Cube implements Primitive {
     private static final long serialVersionUID = 1L;
     /**

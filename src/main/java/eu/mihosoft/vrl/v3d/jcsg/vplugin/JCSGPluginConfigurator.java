@@ -73,17 +73,26 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
            // vapi.addComponent(MyComponent.class);
            // vapi.addTypeRepresentation(MyType.class);
            
-           
            vapi.addComponent(Cube.class);
            vapi.addComponent(Sphere.class);
            vapi.addComponent(Cylinder.class);
+           
            vapi.addComponent(Extrude.class);
            vapi.addComponent(CSG.class);
            vapi.addComponent(STL.class);
            vapi.addComponent(Transform.class);
            
-           vapi.addComponent(PointCloud2ConvexHull.class);
-           vapi.addComponent(JCSGSample01.class);
+           vapi.addComponent(CubeCreator.class);
+           vapi.addComponent(CylinderCreator.class);
+           vapi.addComponent(SphereCreator.class);
+           
+           vapi.addComponent(Union.class);
+           vapi.addComponent(Difference.class);
+           vapi.addComponent(Intersection.class);
+           vapi.addComponent(Hull.class);
+           vapi.addComponent(Transformation.class);
+           
+           vapi.addComponent(STL.class);
            
            vapi.addTypeRepresentation(SilentCSGInputType.class);
            vapi.addTypeRepresentation(CSGOutputType.class);

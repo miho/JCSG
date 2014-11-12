@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-@ComponentInfo(name="Sphere", category="JCSG")
+@ComponentInfo(name="Sphere", category="JCSG/Primitives")
 public class Sphere implements Primitive {
     
     private static final long serialVersionUID = 1L;

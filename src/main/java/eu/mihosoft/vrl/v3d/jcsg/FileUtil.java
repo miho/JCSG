@@ -35,8 +35,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * File util class.
@@ -64,17 +62,5 @@ public class FileUtil {
 //        }
         
         IOUtil.saveStreamToFile(new ByteArrayInputStream(s.getBytes("UTF-8")), f);
-    }
-
-    /**
-     * Reads the specified file to a string.
-     *
-     * @param p file to read
-     * @return the content of the file
-     * 
-     * @throws IOException if reading from file failed
-     */
-    public static String read(Path p) throws IOException {
-        return new String(Files.readAllBytes(p), Charset.forName("UTF-8"));
     }
 }

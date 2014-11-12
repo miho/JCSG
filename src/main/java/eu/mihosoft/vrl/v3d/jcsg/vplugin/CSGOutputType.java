@@ -41,4 +41,11 @@ public class CSGOutputType extends VGeometry3DType{
     public Object getViewValue() {
         return viewValue;
     }
+
+    @Override
+    public boolean preferBinarySerialization() {
+        return true;
+    }
+    
+    
 }

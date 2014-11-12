@@ -1221,6 +1221,7 @@ public class CSG implements Serializable{
 
     public VTriangleArray toVTriangleArray() {
         VTriangleArray result = new VTriangleArray();
+
         for (Polygon p : this.polygons) {
             result.addAll(p.toVTriangles());
         }
