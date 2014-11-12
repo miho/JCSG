@@ -15,9 +15,7 @@ import eu.mihosoft.vrl.v3d.jcsg.CSG;
 import eu.mihosoft.vrl.v3d.jcsg.Cube;
 import eu.mihosoft.vrl.v3d.jcsg.Cylinder;
 import eu.mihosoft.vrl.v3d.jcsg.Extrude;
-import eu.mihosoft.vrl.v3d.jcsg.STL;
 import eu.mihosoft.vrl.v3d.jcsg.Sphere;
-import eu.mihosoft.vrl.v3d.jcsg.Transform;
 
 /**
  *
@@ -79,8 +77,7 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
            
            vapi.addComponent(Extrude.class);
            vapi.addComponent(CSG.class);
-           vapi.addComponent(STL.class);
-           vapi.addComponent(Transform.class);
+//           vapi.addComponent(Transform.class);
            
            vapi.addComponent(CubeCreator.class);
            vapi.addComponent(CylinderCreator.class);
@@ -91,8 +88,7 @@ public class JCSGPluginConfigurator extends VPluginConfigurator{
            vapi.addComponent(Intersection.class);
            vapi.addComponent(Hull.class);
            vapi.addComponent(Transformation.class);
-           
-           vapi.addComponent(STL.class);
+           vapi.addComponent(STLSaver.class);
            
            vapi.addTypeRepresentation(SilentCSGInputType.class);
            vapi.addTypeRepresentation(CSGOutputType.class);

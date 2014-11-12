@@ -17,9 +17,9 @@ import java.io.Serializable;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-@ComponentInfo(name="STL", category="JCSG")
-public class STL implements Serializable{
-    public File save(@ParamInfo(name="File", style="save-dialog", options="endings=[\".stl\"], description=\"STL-Files (*.stl)\"") File f, CSG csg) throws IOException {
+@ComponentInfo(name="STL-Saver", category="JCSG")
+public class STLSaver implements Serializable{
+    public File save(@ParamInfo(name="File", style="save-dialog", options="endings=[\".stl\"]; description=\"STL-Files (*.stl)\"") File f, CSG csg) throws IOException {
         
         FileUtil.write(f, csg.toStlString());
         
