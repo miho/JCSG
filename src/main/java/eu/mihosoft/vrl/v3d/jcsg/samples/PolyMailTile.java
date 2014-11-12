@@ -67,7 +67,8 @@ public class PolyMailTile {
 
         hinge1 = hinge1.transformed(unity().rotX(90));
 
-        CSG pin = new Cube(getPinLength() + hingePrototype.getJointRadius(), getPinThickness(), getThickness()).toCSG().transformed(unity().
+        CSG pin = new Cube(getPinLength() + hingePrototype.getJointRadius(),
+                getPinThickness(), getThickness()).toCSG().transformed(unity().
                 translateX(-(jointRadius + pinLength) * 0.5));
 
         hinge1 = hinge1.union(pin);
