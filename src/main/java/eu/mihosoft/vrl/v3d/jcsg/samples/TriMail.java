@@ -38,28 +38,35 @@ public class TriMail {
         CSG femalePart = tile.setFemale().toCSG().transformed(
                 unity().rotZ(360.0 / numEdges * 0.25));
 
-        femalePart = femalePart.transformed(unity().translate(side / 2, radius / 2, 0));
+        femalePart = femalePart.transformed(unity().translate(0, radius / 2, 0));
 
         double xOffset = Math.acos(Math.toRadians(30)) * pinOffset;
         double yOffset = Math.asin(Math.toRadians(30)) * pinOffset;
 
-        femalePart = femalePart.transformed(unity().translate(xOffset, yOffset, 0));
-        
-        CSG prototype = malePart.union(femalePart);
-        double xStep = side + xOffset*2;
+        femalePart = femalePart.transformed(unity().translate(0, yOffset, 0));
+
+        double xStep = side*0.5 + xOffset;
         double yStep = femalePart.getBounds().getBounds().y + yOffset + pinOffset;
 
         CSG result = null;
 
         for (int y = 0; y < numY; y++) {
-            for (int x = 0; x < numX; x++) {
-                if (result == null) {
-                    result = prototype;
+            for (int x = 0; x < numX*2; x++) {
+                
+                CSG part;
+                
+                if (x%2==0) {
+                    part = malePart;
                 } else {
-                    
+                    part = femalePart;
+                }
+                
+                if (result == null) {
+                    result = malePart;
+                } else {
                     double xRowOffset = side*0.5 + xOffset;
                     
-                    result = result.dumbUnion(prototype.transformed(unity().
+                    result = result.dumbUnion(part.transformed(unity().
                             translate(x*xStep+y*xRowOffset, y*yStep,0)));
                 }
             }
