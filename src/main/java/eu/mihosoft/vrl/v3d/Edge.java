@@ -107,12 +107,12 @@ public class Edge {
                     filter(e -> finalEdge.p2.equals(e.p1)).findFirst().get());
 
             if (used[nextEdgeIndex]) {
-                System.out.println("nexIndex: " + nextEdgeIndex);
+//                System.out.println("nexIndex: " + nextEdgeIndex);
                 break;
             }
-            System.out.print("edge: " + edge.p2.pos);
+//            System.out.print("edge: " + edge.p2.pos);
             edge = boundaryEdges.get(nextEdgeIndex);
-            System.out.println("-> edge: " + edge.p1.pos);
+//            System.out.println("-> edge: " + edge.p1.pos);
             used[nextEdgeIndex] = true;
         }
 
