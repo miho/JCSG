@@ -13,11 +13,15 @@ import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Sphere;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Average Chicken Egg.
@@ -26,36 +30,41 @@ import java.util.List;
  */
 public class EdgeTest {
 
-    public CSG toCSG() {
+    public CSG toCSG(boolean optimized) {
         double radius = 22;
         double stretch = 1.50;
         int resolution = 64;
 
         CSG cylinder = new Cylinder(1, 0.3, 8).toCSG();
-        
-        CSG sphere = new Sphere(0.1,8,4).toCSG().transformed(unity().translateZ(0.15));
-        
+
+        CSG sphere = new Sphere(0.1, 8, 4).toCSG().transformed(unity().translateZ(0.15));
+
         CSG csg = cylinder.union(sphere);
 
-        List<List<Polygon>> planeGroups = searchPlangeGroups(csg);
+        if (!optimized) {
+            return csg;
+        } else {
 
-        List<Polygon> boundaryPolygons = boundaryPolygons(planeGroups);
+            List<List<Polygon>> planeGroups = searchPlangeGroups(csg);
 
-        System.out.println("#groups: " + boundaryPolygons.size());
+            List<Polygon> boundaryPolygons = boundaryPolygons(planeGroups);
+
+            System.out.println("#groups: " + boundaryPolygons.size());
 
 //        List<Polygon> polys = boundaryPolygons.stream().peek(p->System.out.println("verts: "+p.vertices)).map(p->PolygonUtil.concaveToConvex(p)).flatMap(pList->pList.stream()).collect(Collectors.toList());
-//        return CSG.fromPolygons(boundaryPolygons);
-        
-        return csg;
+            return CSG.fromPolygons(boundaryPolygons);
+        }
+
+//        return csg;
     }
-    
+
     private List<Polygon> boundaryPolygons(List<List<Polygon>> planeGroups) {
         List<Polygon> result = new ArrayList<>();
-        
+
         for (List<Polygon> polygonGroup : planeGroups) {
             result.add(boundaryPolygon(polygonGroup));
         }
-        
+
         return result;
     }
 
@@ -68,6 +77,7 @@ public class EdgeTest {
             edges.addAll(pEdges);
         }
 
+        // find boundary edges, i.e., edges that occur once (freq=1)
         List<Edge> boundaryEdges = new ArrayList<>();
         edges.stream().forEachOrdered((e) -> {
             int count = Collections.frequency(edges, e);
@@ -76,9 +86,31 @@ public class EdgeTest {
             }
         });
 
-        System.out.println("#bnd-edges: " + boundaryEdges.size() + ",#edges: " +edges.size());
+        // now find "false boundary" edges end remove them from the 
+        // boundary-edge-list
+        // 
+        // thanks to Susanne Höllbacher for the idea :)
+        List<Edge> delList = new ArrayList<>();
 
-        return Edge.toPolygons(boundaryEdges,planeGroup.get(0).plane).get(0);
+        for (Edge be : boundaryEdges) {
+            for (Edge e : edges) {
+                if (e.getP1().pos.equals(be.getP1().pos)
+                        || e.getP1().pos.equals(be.getP2().pos)
+                        || e.getP2().pos.equals(be.getP1().pos)
+                        || e.getP2().pos.equals(be.getP2().pos)) {
+                    continue;
+                }
+                if (be.contains(e.getP1().pos) || be.contains(e.getP2().pos)) {
+                    delList.add(be);
+                }
+            }
+        }
+
+        boundaryEdges.removeAll(delList);
+
+        System.out.println("#bnd-edges: " + boundaryEdges.size() + ",#edges: " + edges.size() + ", #del-bnd-edges: " + delList.size());
+
+        return Edge.toPolygons(boundaryEdges, planeGroup.get(0).plane).get(0);
     }
 
     private List<List<Polygon>> searchPlangeGroups(CSG cylinder) {
@@ -126,6 +158,7 @@ public class EdgeTest {
     }
 
     public static void main(String[] args) throws IOException {
-        FileUtil.write(Paths.get("edge-test.stl"), new EdgeTest().toCSG().toStlString());
+        FileUtil.write(Paths.get("edge-test.stl"), new EdgeTest().toCSG(true).toStlString());
+        FileUtil.write(Paths.get("edge-test-orig.stl"), new EdgeTest().toCSG(false).toStlString());
     }
 }
