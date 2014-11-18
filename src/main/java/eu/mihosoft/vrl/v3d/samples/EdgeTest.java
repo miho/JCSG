@@ -128,7 +128,7 @@ public class EdgeTest {
 
         // we use the plane of the first polygon in the group since we know that
         // all polygons of the group share the same plane
-        return Edge.toPolygons(boundaryEdgesOfPlaneGroup(planeGroup), planeGroup.get(0).plane);
+        return Edge._toPolygons(boundaryEdgesOfPlaneGroup(planeGroup), planeGroup.get(0).plane);
     }
 
     private boolean falseBounbdaryEdgeSharedWithOtherEdge(Edge fbe, Edge e) {

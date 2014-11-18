@@ -87,11 +87,251 @@ public class Edge {
 //        if (p.plane.normal.angle(plane.normal) > 0.1) {
 //            p.flip();
 //        }
-
         return p;
     }
 
     public static List<Polygon> toPolygons(List<Edge> boundaryEdges, Plane plane) {
+
+        List<Vector3d> boundaryPath = new ArrayList<>();
+
+        boolean[] used = new boolean[boundaryEdges.size()];
+        Edge edge = boundaryEdges.get(0);
+        used[0] = true;
+        while (true) {
+            Edge finalEdge = edge;
+
+            boundaryPath.add(finalEdge.p1.pos);
+
+            int nextEdgeIndex = boundaryEdges.indexOf(boundaryEdges.stream().
+                    filter(e -> finalEdge.p2.equals(e.p1)).findFirst().get());
+
+            if (used[nextEdgeIndex]) {
+//                System.out.println("nexIndex: " + nextEdgeIndex);
+                break;
+            }
+//            System.out.print("edge: " + edge.p2.pos);
+            edge = boundaryEdges.get(nextEdgeIndex);
+//            System.out.println("-> edge: " + edge.p1.pos);
+            used[nextEdgeIndex] = true;
+        }
+
+        List<Polygon> result = new ArrayList<>();
+
+        System.out.println("#bnd-path-length: " + boundaryPath.size());
+
+        result.add(toPolygon(boundaryPath, plane));
+
+        return result;
+    }
+
+    private static class Node<T> {
+
+        private Node parent;
+        private final List<Node> children = new ArrayList<>();
+        private final int index;
+        private final T value;
+        private boolean isHole;
+
+        public Node(int index, T value) {
+            this.index = index;
+            this.value = value;
+        }
+
+        public void addChild(int index, T value) {
+            children.add(new Node(index, value));
+        }
+
+        public List<Node> getChildren() {
+            return this.children;
+        }
+
+        /**
+         * @return the parent
+         */
+        public Node getParent() {
+            return parent;
+        }
+
+        /**
+         * @return the index
+         */
+        public int getIndex() {
+            return index;
+        }
+
+        /**
+         * @return the value
+         */
+        public T getValue() {
+            return value;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 67 * hash + this.index;
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Node<?> other = (Node<?>) obj;
+            if (this.index != other.index) {
+                return false;
+            }
+            return true;
+        }
+
+        public int distanceToRoot() {
+            int dist = 0;
+
+            Node pNode = getParent();
+
+            while (pNode != null) {
+                dist++;
+                pNode = getParent();
+            }
+
+            return dist;
+        }
+
+        /**
+         * @return the isHole
+         */
+        public boolean isIsHole() {
+            return isHole;
+        }
+
+        /**
+         * @param isHole the isHole to set
+         */
+        public void setIsHole(boolean isHole) {
+            this.isHole = isHole;
+        }
+
+    }
+
+    private static final String KEY_POLYGON_HOLE = "jcsg:edge:polygon-hole";
+
+    private static List<Polygon> boundaryPathsWithHoles(List<Polygon> boundaryPaths) {
+        
+        List<Polygon> result = boundaryPaths.stream().map(p->p.clone()).collect(Collectors.toList());
+
+        List<List<Integer>> parents = new ArrayList<>();
+        boolean[] isHole = new boolean[result.size()];
+
+        for (int i = 0; i < result.size(); i++) {
+            Polygon p1 = result.get(i);
+            List<Integer> parentsOfI = new ArrayList<>();
+            parents.add(parentsOfI);
+            for (int j = 0; j < result.size(); j++) {
+                Polygon p2 = result.get(j);
+                if (i != j) {
+                    if (p2.contains(p1)) {
+                        parentsOfI.add(j);
+                    }
+                }
+            }
+            isHole[i] = parentsOfI.size() % 2 != 0;
+        }
+
+        int[] parent = new int[result.size()];
+        
+        for(int i = 0; i < parent.length;i++) {
+            parent[i] = -1;
+        }
+
+        for (int i = 0; i < parents.size(); i++) {
+            List<Integer> par = parents.get(i);
+
+            int max = 0;
+            int maxIndex = 0;
+            for (int pIndex : par) {
+
+                int pSize = parents.get(pIndex).size();
+
+                if (max < pSize) {
+                    max = pSize;
+                    maxIndex = pIndex;
+                }
+            }
+
+            parent[i] = maxIndex;
+            
+            if (!isHole[maxIndex] && isHole[i]) {
+                result.get(maxIndex).getStorage().set(KEY_POLYGON_HOLE, result.get(i));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns a list of all boundary paths.
+     *
+     * @param boundaryEdges boundary edges (all paths must be closed)
+     * @return
+     */
+    private static List<Polygon> boundaryPaths(List<Edge> boundaryEdges) {
+        List<Polygon> result = new ArrayList<>();
+
+        boolean[] used = new boolean[boundaryEdges.size()];
+        int startIndex = 0;
+        Edge edge = boundaryEdges.get(startIndex);
+        used[startIndex] = true;
+
+        while (startIndex > 0) {
+            List<Vector3d> boundaryPath = new ArrayList<>();
+            while (true) {
+                Edge finalEdge = edge;
+
+                boundaryPath.add(finalEdge.p1.pos);
+
+                int nextEdgeIndex = boundaryEdges.indexOf(boundaryEdges.stream().
+                        filter(e -> finalEdge.p2.equals(e.p1)).findFirst().get());
+
+                if (used[nextEdgeIndex]) {
+//                System.out.println("nexIndex: " + nextEdgeIndex);
+                    break;
+                }
+//            System.out.print("edge: " + edge.p2.pos);
+                edge = boundaryEdges.get(nextEdgeIndex);
+//            System.out.println("-> edge: " + edge.p1.pos);
+                used[nextEdgeIndex] = true;
+            }
+            result.add(Polygon.fromPoints(boundaryPath));
+
+            startIndex = nextUnused(used);
+            edge = boundaryEdges.get(startIndex);
+            used[startIndex] = true;
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the next unused index as specified in the given boolean array.
+     *
+     * @param usage the usage array
+     * @return the next unused index or a value &lt; 0 if all indices are used
+     */
+    private static int nextUnused(boolean[] usage) {
+        for (int i = 0; i < usage.length; i++) {
+            if (usage[i] == false) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public static List<Polygon> _toPolygons(List<Edge> boundaryEdges, Plane plane) {
 
         List<Vector3d> boundaryPath = new ArrayList<>();
 
