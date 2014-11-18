@@ -42,13 +42,12 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 /**
  * Represents a convex polygon.
  *
- * Each convex polygon has a {@code shared} property, disthich is shared
- * betdisteen all polygons that are clones of each other or where split from the
- * same polygon. This can be used to define per-polygon properties (such as
- * surface color).
+ * Each convex polygon has a {@code shared} property, which is shared between
+ * all polygons that are clones of each other or where split from the same
+ * polygon. This can be used to define per-polygon properties (such as surface
+ * color).
  */
 public final class Polygon {
-
 
     /**
      * Polygon vertices
@@ -64,12 +63,11 @@ public final class Polygon {
      * <b>Note:</b> uses first three vertices to define the plane.
      */
     public final Plane plane;
-    
+
     void setStorage(PropertyStorage storage) {
         this.shared = storage;
     }
 
-    
     /**
      * Decomposes the specified concave polygon into convex polygons.
      *
@@ -81,8 +79,8 @@ public final class Polygon {
 
         return PolygonUtil.concaveToConvex(p);
     }
-    
-        /**
+
+    /**
      * Decomposes the specified concave polygon into convex polygons.
      *
      * @param points the points that define the polygon
@@ -93,7 +91,7 @@ public final class Polygon {
 
         return PolygonUtil.concaveToConvex(p);
     }
-    
+
     /**
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
@@ -234,13 +232,13 @@ public final class Polygon {
         vertices.forEach((vertex) -> {
             vertex.pos = vertex.pos.plus(v);
         });
-        
-          Vector3d a = this.vertices.get(0).pos;
+
+        Vector3d a = this.vertices.get(0).pos;
         Vector3d b = this.vertices.get(1).pos;
         Vector3d c = this.vertices.get(2).pos;
 
         this.plane.normal = b.minus(a).cross(c.minus(a));
-        
+
         return this;
     }
 
@@ -281,7 +279,7 @@ public final class Polygon {
 
         this.plane.normal = b.minus(a).cross(c.minus(a)).normalized();
         this.plane.dist = this.plane.normal.dot(a);
-        
+
         if (transform.isMirror()) {
             // the transformation includes mirroring. flip polygon
             flip();
@@ -407,6 +405,40 @@ public final class Polygon {
                 new Vector3d(maxX, maxY, maxZ));
     }
 
+    public boolean contains(Vector3d p) {
+        // taken from http://www.java-gaming.org/index.php?topic=26013.0
+        // and http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+        double px = p.x;
+        double py = p.y;
+        boolean oddNodes = false;
+        double x2 = vertices.get(vertices.size() - 1).pos.x;
+        double y2 = vertices.get(vertices.size() - 1).pos.y;
+        double x1, y1;
+        for (int i = 0; i < vertices.size(); x2 = x1, y2 = y1, ++i) {
+            x1 = vertices.get(i).pos.x;
+            y1 = vertices.get(i).pos.y;
+            if (((y1 < py) && (y2 >= py))
+                    || (y1 >= py) && (y2 < py)) {
+                if ((py - y1) / (y2 - y1)
+                        * (x2 - x1) < (px - x1)) {
+                    oddNodes = !oddNodes;
+                }
+            }
+        }
+        return oddNodes;
+    }
+    
+    public boolean contains(Polygon p) {
+        
+        for (Vertex v : p.vertices) {
+            if (!contains(v.pos)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
 //    private static List<Polygon> concaveToConvex(Polygon concave) {
 //        List<Polygon> result = new ArrayList<>();
 //
@@ -517,16 +549,15 @@ public final class Polygon {
 //
 ////        return result;
 //    }
-
     /**
      * @return the shared
      */
     public PropertyStorage getStorage() {
-        
+
         if (shared == null) {
             shared = new PropertyStorage();
         }
-        
+
         return shared;
     }
 }
