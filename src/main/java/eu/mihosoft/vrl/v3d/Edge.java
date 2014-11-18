@@ -77,7 +77,6 @@ public class Edge {
 
 //        List<Vector3d> points = edges.stream().().map(e -> e.p1.pos).
 //                collect(Collectors.toList());
-
         Polygon p = Polygon.fromPoints(points);
 
         p.vertices.stream().forEachOrdered((vertex) -> {
@@ -101,9 +100,9 @@ public class Edge {
         used[0] = true;
         while (true) {
             Edge finalEdge = edge;
-            
+
             boundaryPath.add(finalEdge.p1.pos);
-            
+
             int nextEdgeIndex = boundaryEdges.indexOf(boundaryEdges.stream().
                     filter(e -> finalEdge.p2.equals(e.p1)).findFirst().get());
 
@@ -116,14 +115,54 @@ public class Edge {
             System.out.println("-> edge: " + edge.p1.pos);
             used[nextEdgeIndex] = true;
         }
-        
+
         List<Polygon> result = new ArrayList<>();
-        
+
         System.out.println("#bnd-path-length: " + boundaryPath.size());
-        
+
         result.add(toPolygon(boundaryPath, plane));
-        
+
         return result;
+    }
+
+    /**
+     * Determines whether the specified point lies on tthis edge.
+     *
+     * @param p point to check
+     * @param TOL tolerance
+     * @return <code>true</code> if the specified point lies on this line
+     * segment; <code>false</code> otherwise
+     */
+    public boolean contains(Vector3d p, double TOL) {
+
+        double x = p.x;
+        double x1 = this.p1.pos.x;
+        double x2 = this.p2.pos.x;
+
+        double y = p.y;
+        double y1 = this.p1.pos.y;
+        double y2 = this.p2.pos.y;
+
+        double z = p.z;
+        double z1 = this.p1.pos.z;
+        double z2 = this.p2.pos.z;
+
+        double AB = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
+        double AP = Math.sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1) + (z - z1) * (z - z1));
+        double PB = Math.sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y) + (z2 - z) * (z2 - z));
+
+        return Math.abs(AB - (AP + PB)) < TOL;
+    }
+
+    /**
+     * Determines whether the specified point lies on tthis edge.
+     *
+     * @param p point to check
+     * @return <code>true</code> if the specified point lies on this line
+     * segment; <code>false</code> otherwise
+     */
+    public boolean contains(Vector3d p) {
+        return contains(p, Plane.EPSILON);
     }
 
     @Override
