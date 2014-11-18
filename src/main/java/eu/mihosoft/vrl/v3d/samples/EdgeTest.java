@@ -13,15 +13,13 @@ import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Sphere;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
 import eu.mihosoft.vrl.v3d.Vector3d;
-import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Average Chicken Egg.
@@ -72,14 +70,29 @@ public class EdgeTest {
 
         List<Edge> edges = new ArrayList<>();
 
-        for (Polygon p : planeGroup) {
-            List<Edge> pEdges = Edge.fromPolygon(p);
-            edges.addAll(pEdges);
-        }
+        Stream<Polygon> pStream;
 
-        // find boundary edges, i.e., edges that occur once (freq=1)
+//        if (planeGroup.size() > 200) {
+//            pStream = planeGroup.parallelStream();
+//        } else {
+            pStream = planeGroup.stream();
+//        }
+
+        pStream.map((p) -> Edge.fromPolygon(p)).forEach((pEdges) -> {
+            edges.addAll(pEdges);
+        });
+
+        Stream<Edge> edgeStream;
+
+//        if (edges.size() > 200) {
+//            edgeStream = edges.parallelStream();
+//        } else {
+            edgeStream = edges.stream();
+//        }
+
+        // find potential boundary edges, i.e., edges that occur once (freq=1)
         List<Edge> boundaryEdges = new ArrayList<>();
-        edges.stream().forEachOrdered((e) -> {
+        edgeStream.forEachOrdered((e) -> {
             int count = Collections.frequency(edges, e);
             if (count == 1) {
                 boundaryEdges.add(e);
@@ -90,27 +103,40 @@ public class EdgeTest {
         // boundary-edge-list
         // 
         // thanks to Susanne Höllbacher for the idea :)
-        List<Edge> delList = new ArrayList<>();
+        Stream<Edge> bndEdgeStream;
 
-        for (Edge be : boundaryEdges) {
-            for (Edge e : edges) {
-                if (e.getP1().pos.equals(be.getP1().pos)
-                        || e.getP1().pos.equals(be.getP2().pos)
-                        || e.getP2().pos.equals(be.getP1().pos)
-                        || e.getP2().pos.equals(be.getP2().pos)) {
-                    continue;
-                }
-                if (be.contains(e.getP1().pos) || be.contains(e.getP2().pos)) {
-                    delList.add(be);
-                }
-            }
+//        if (boundaryEdges.size() > 200) {
+//            bndEdgeStream = boundaryEdges.parallelStream();
+//        } else {
+            bndEdgeStream = boundaryEdges.stream();
+//        }
+
+        List<Edge> realBndEdges = bndEdgeStream.
+                filter(be -> edgeStream.filter(
+                                e -> falseBounbdaryEdgeSharedWithOtherEdge(be, e)).count() == 0).
+                collect(Collectors.toList());
+
+        System.out.println("#bnd-edges: " + realBndEdges.size()
+                + ",#edges: " + edges.size()
+                + ", #del-bnd-edges: " + (boundaryEdges.size() - realBndEdges.size()));
+
+        return Edge.toPolygons(realBndEdges, planeGroup.get(0).plane).get(0);
+    }
+
+    private boolean falseBounbdaryEdgeSharedWithOtherEdge(Edge fbe, Edge e) {
+
+        // we don't consider edges with shared end-points since we are only
+        // interested in "false-boundary-edge"-cases
+        boolean sharedEndPoints = e.getP1().pos.equals(fbe.getP1().pos)
+                || e.getP1().pos.equals(fbe.getP2().pos)
+                || e.getP2().pos.equals(fbe.getP1().pos)
+                || e.getP2().pos.equals(fbe.getP2().pos);
+
+        if (sharedEndPoints) {
+            return false;
         }
 
-        boundaryEdges.removeAll(delList);
-
-        System.out.println("#bnd-edges: " + boundaryEdges.size() + ",#edges: " + edges.size() + ", #del-bnd-edges: " + delList.size());
-
-        return Edge.toPolygons(boundaryEdges, planeGroup.get(0).plane).get(0);
+        return fbe.contains(e.getP1().pos) || fbe.contains(e.getP2().pos);
     }
 
     private List<List<Polygon>> searchPlangeGroups(CSG cylinder) {
