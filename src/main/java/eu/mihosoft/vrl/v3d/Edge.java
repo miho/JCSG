@@ -83,10 +83,10 @@ public class Edge {
             vertex.normal = plane.normal.clone();
         });
 
-        // we try to detect wrong orientation by comparing normals
-        if (p.plane.normal.angle(plane.normal) > 0.1) {
-            p.flip();
-        }
+//        // we try to detect wrong orientation by comparing normals
+//        if (p.plane.normal.angle(plane.normal) > 0.1) {
+//            p.flip();
+//        }
 
         return p;
     }

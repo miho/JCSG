@@ -37,7 +37,9 @@ public class EdgeTest {
 
         CSG sphere = new Sphere(0.1, 8, 4).toCSG().transformed(unity().translateZ(0.15));
 
-        CSG csg = cylinder.union(sphere);
+        CSG cyl = new Cylinder(0.08, 0.3, 8).toCSG();
+
+        CSG csg = cylinder.difference(cyl).union(sphere);
 
         if (!optimized) {
             return csg;
@@ -60,23 +62,22 @@ public class EdgeTest {
         List<Polygon> result = new ArrayList<>();
 
         for (List<Polygon> polygonGroup : planeGroups) {
-            result.add(boundaryPolygon(polygonGroup));
+            result.addAll(boundaryPolygonsOfPlaneGroup(polygonGroup));
         }
 
         return result;
     }
 
-    private Polygon boundaryPolygon(List<Polygon> planeGroup) {
-
+    private List<Edge> boundaryEdgesOfPlaneGroup(List<Polygon> planeGroup) {
         List<Edge> edges = new ArrayList<>();
 
         Stream<Polygon> pStream;
 
-//        if (planeGroup.size() > 200) {
-//            pStream = planeGroup.parallelStream();
-//        } else {
+        if (planeGroup.size() > 200) {
+            pStream = planeGroup.parallelStream();
+        } else {
             pStream = planeGroup.stream();
-//        }
+        }
 
         pStream.map((p) -> Edge.fromPolygon(p)).forEach((pEdges) -> {
             edges.addAll(pEdges);
@@ -84,18 +85,18 @@ public class EdgeTest {
 
         Stream<Edge> edgeStream;
 
-//        if (edges.size() > 200) {
-//            edgeStream = edges.parallelStream();
-//        } else {
+        if (edges.size() > 200) {
+            edgeStream = edges.parallelStream();
+        } else {
             edgeStream = edges.stream();
-//        }
+        }
 
         // find potential boundary edges, i.e., edges that occur once (freq=1)
-        List<Edge> boundaryEdges = new ArrayList<>();
+        List<Edge> potentialBoundaryEdges = new ArrayList<>();
         edgeStream.forEachOrdered((e) -> {
             int count = Collections.frequency(edges, e);
             if (count == 1) {
-                boundaryEdges.add(e);
+                potentialBoundaryEdges.add(e);
             }
         });
 
@@ -105,22 +106,29 @@ public class EdgeTest {
         // thanks to Susanne Höllbacher for the idea :)
         Stream<Edge> bndEdgeStream;
 
-//        if (boundaryEdges.size() > 200) {
-//            bndEdgeStream = boundaryEdges.parallelStream();
-//        } else {
-            bndEdgeStream = boundaryEdges.stream();
-//        }
+        if (potentialBoundaryEdges.size() > 200) {
+            bndEdgeStream = potentialBoundaryEdges.parallelStream();
+        } else {
+            bndEdgeStream = potentialBoundaryEdges.stream();
+        }
 
         List<Edge> realBndEdges = bndEdgeStream.
-                filter(be -> edgeStream.filter(
+                filter(be -> edges.stream().filter(
                                 e -> falseBounbdaryEdgeSharedWithOtherEdge(be, e)).count() == 0).
                 collect(Collectors.toList());
 
-        System.out.println("#bnd-edges: " + realBndEdges.size()
-                + ",#edges: " + edges.size()
-                + ", #del-bnd-edges: " + (boundaryEdges.size() - realBndEdges.size()));
+        //
+//        System.out.println("#bnd-edges: " + realBndEdges.size()
+//                + ",#edges: " + edges.size()
+//                + ", #del-bnd-edges: " + (boundaryEdges.size() - realBndEdges.size()));
+        return realBndEdges;
+    }
 
-        return Edge.toPolygons(realBndEdges, planeGroup.get(0).plane).get(0);
+    private List<Polygon> boundaryPolygonsOfPlaneGroup(List<Polygon> planeGroup) {
+
+        // we use the plane of the first polygon in the group since we know that
+        // all polygons of the group share the same plane
+        return Edge.toPolygons(boundaryEdgesOfPlaneGroup(planeGroup), planeGroup.get(0).plane);
     }
 
     private boolean falseBounbdaryEdgeSharedWithOtherEdge(Edge fbe, Edge e) {
