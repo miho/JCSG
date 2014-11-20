@@ -205,6 +205,17 @@ public class Vector3d {
     }
 
     /**
+     * Returns the squared magnitude of this vector (<code>this.dot(this)</code>).
+     *
+     * <b>Note:</b> this vector is not modified.
+     *
+     * @return the squared magnitude of this vector
+     */
+    double magnitudeSq() {
+        return this.dot(this);
+    }
+
+    /**
      * Returns a normalized copy of this vector with length {@code 1}.
      *
      * <b>Note:</b> this vector is not modified.
