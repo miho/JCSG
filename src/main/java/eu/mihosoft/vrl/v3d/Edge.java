@@ -6,9 +6,9 @@
 package eu.mihosoft.vrl.v3d;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -17,12 +17,16 @@ import java.util.stream.Collectors;
  */
 public class Edge {
 
-    private Vertex p1;
-    private Vertex p2;
+    private final Vertex p1;
+    private final Vertex p2;
+    private final Vector3d direction;
+    
 
     public Edge(Vertex p1, Vertex p2) {
         this.p1 = p1;
         this.p2 = p2;
+        
+        direction = p2.pos.minus(p1.pos).normalized();
     }
 
     /**
@@ -32,12 +36,12 @@ public class Edge {
         return p1;
     }
 
-    /**
-     * @param p1 the p1 to set
-     */
-    public void setP1(Vertex p1) {
-        this.p1 = p1;
-    }
+//    /**
+//     * @param p1 the p1 to set
+//     */
+//    public void setP1(Vertex p1) {
+//        this.p1 = p1;
+//    }
 
     /**
      * @return the p2
@@ -46,12 +50,12 @@ public class Edge {
         return p2;
     }
 
-    /**
-     * @param p2 the p2 to set
-     */
-    public void setP2(Vertex p2) {
-        this.p2 = p2;
-    }
+//    /**
+//     * @param p2 the p2 to set
+//     */
+//    public void setP2(Vertex p2) {
+//        this.p2 = p2;
+//    }
 
     public static List<Edge> fromPolygon(Polygon poly) {
         List<Edge> result = new ArrayList<>();
@@ -217,11 +221,12 @@ public class Edge {
 
     }
 
-    private static final String KEY_POLYGON_HOLE = "jcsg:edge:polygon-hole";
+    private static final String KEY_POLYGON_HOLES = "jcsg:edge:polygon-holes";
 
     private static List<Polygon> boundaryPathsWithHoles(List<Polygon> boundaryPaths) {
-        
-        List<Polygon> result = boundaryPaths.stream().map(p->p.clone()).collect(Collectors.toList());
+
+        List<Polygon> result = boundaryPaths.stream().
+                map(p -> p.clone()).collect(Collectors.toList());
 
         List<List<Integer>> parents = new ArrayList<>();
         boolean[] isHole = new boolean[result.size()];
@@ -242,8 +247,8 @@ public class Edge {
         }
 
         int[] parent = new int[result.size()];
-        
-        for(int i = 0; i < parent.length;i++) {
+
+        for (int i = 0; i < parent.length; i++) {
             parent[i] = -1;
         }
 
@@ -263,9 +268,23 @@ public class Edge {
             }
 
             parent[i] = maxIndex;
-            
+
             if (!isHole[maxIndex] && isHole[i]) {
-                result.get(maxIndex).getStorage().set(KEY_POLYGON_HOLE, result.get(i));
+
+                List<Polygon> holes;
+
+                Optional<List<Polygon>> holesOpt = result.get(maxIndex).
+                        getStorage().getValue(KEY_POLYGON_HOLES);
+
+                if (holesOpt.isPresent()) {
+                    holes = holesOpt.get();
+                } else {
+                    holes = new ArrayList<>();
+                    result.get(maxIndex).getStorage().
+                            set(KEY_POLYGON_HOLES, holes);
+                }
+
+                holes.add(result.get(i));
             }
         }
 
@@ -429,6 +448,84 @@ public class Edge {
             return false;
         }
         return true;
+    }
+
+    public Vector3d getDirection() {
+        return direction;
+    }
+
+    /**
+     * Returns the the point of this edge that is closest to the specified edge. 
+     * 
+     * <b>NOTE:</b> returns an empty optional if the edges are parallel
+     * 
+     * @param e the edge to check
+     * @return the the point of this edge that is closest to the specified edge
+     */
+    public Optional<Vector3d> getClosestPoint(Edge e) {
+        
+        // algorithm from:
+        // org.apache.commons.math3.geometry.euclidean.threed/Line.java.html
+
+        Vector3d ourDir = getDirection();
+
+        double cos = ourDir.dot(e.getDirection());
+        double n = 1 - cos * cos;
+        
+        if (n < Plane.EPSILON) {
+            // the lines are parallel
+            return Optional.empty();
+        }
+        
+        final Vector3d delta = p2.pos.minus(p1.pos);
+        final double norm2 = delta.magnitudeSq();
+
+        // line points above the origin
+        Vector3d thisZero = p1.pos.plus(delta.times(-p1.pos.dot(delta)/ norm2));
+        Vector3d eZero = e.p1.pos.plus(delta.times(-e.p1.pos.dot(delta)/ norm2));
+        
+        final Vector3d delta0 = eZero.minus(thisZero);
+        final double a = delta0.dot(direction);
+        final double b = delta0.dot(e.direction);
+        
+        Vector3d closestP = thisZero.plus(direction.times(a-b * cos));
+        
+        if (!contains(closestP)) {
+            if (closestP.minus(p1.pos).magnitudeSq()
+                    < closestP.minus(p2.pos).magnitudeSq()) {
+                Optional.of(closestP);
+            }
+        }
+
+        return Optional.of(closestP);
+    }
+    
+    
+    /**
+     * Returns the intersection point between this edge and the specified edge.
+     * 
+     *  <b>NOTE:</b> returns an empty optional if the edges are parallel or if
+     * the intersection point is not inside the specified edge segment
+     * 
+     * @param e edge to intersect
+     * @return the intersection point between this edge and the specified edge
+     */
+    public Optional<Vector3d> getIntersection(Edge e) {
+        Optional<Vector3d> closestPOpt = getClosestPoint(e);
+        
+        if (!closestPOpt.isPresent()) {
+            // edges are parallel
+            return Optional.empty();
+        }
+        
+        Vector3d closestP = closestPOpt.get();
+        
+        if (e.contains(closestP)) {
+            return closestPOpt;
+        } else {
+            // intersection point outside of segment
+            return Optional.empty();
+        }
     }
 
 }
