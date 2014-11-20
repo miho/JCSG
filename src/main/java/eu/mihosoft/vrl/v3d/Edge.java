@@ -477,23 +477,28 @@ public class Edge {
             return Optional.empty();
         }
         
-        final Vector3d delta = p2.pos.minus(p1.pos);
-        final double norm2 = delta.magnitudeSq();
+        final Vector3d thisDelta = p2.pos.minus(p1.pos);
+        final double norm2This = thisDelta.magnitudeSq();
+        
+        final Vector3d eDelta = e.p2.pos.minus(e.p1.pos);
+        final double norm2E = eDelta.magnitudeSq();
 
         // line points above the origin
-        Vector3d thisZero = p1.pos.plus(delta.times(-p1.pos.dot(delta)/ norm2));
-        Vector3d eZero = e.p1.pos.plus(delta.times(-e.p1.pos.dot(delta)/ norm2));
+        Vector3d thisZero = p1.pos.plus(thisDelta.times(-p1.pos.dot(thisDelta)/ norm2This));
+        Vector3d eZero = e.p1.pos.plus(eDelta.times(-e.p1.pos.dot(eDelta)/ norm2E));
         
         final Vector3d delta0 = eZero.minus(thisZero);
         final double a = delta0.dot(direction);
         final double b = delta0.dot(e.direction);
         
-        Vector3d closestP = thisZero.plus(direction.times(a-b * cos));
+        Vector3d closestP = thisZero.plus(direction.times((a-b * cos)/n));
         
         if (!contains(closestP)) {
             if (closestP.minus(p1.pos).magnitudeSq()
                     < closestP.minus(p2.pos).magnitudeSq()) {
-                Optional.of(closestP);
+                return Optional.of(p1.pos);
+            } else {
+                return Optional.of(p2.pos);
             }
         }
 
