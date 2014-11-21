@@ -106,7 +106,9 @@ public class HoleDetectionTest {
                 new Vector3d(3, 4)
         );
 
-        createNumHolesTest(Arrays.asList(p3, p3Hole1, p3Hole2, p3p1, p3p1Hole), 2, 0, 0, 1, 0);
+        createNumHolesTest(
+                Arrays.asList(p3, p3Hole1, p3Hole2, p3p1, p3p1Hole),
+                2, 0, 0, 1, 0);
     }
 
     private static void createNumHolesTest(
