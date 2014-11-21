@@ -64,7 +64,7 @@ public class HoleDetectionTest {
 
         createNumHolesTest(Arrays.asList(p2, p2Hole1, p2Hole2), 2, 0, 0);
         
-        // one polygon with two holes, one ogf the holes contains another
+        // one polygon with two holes, one of the holes contains another
         // polygon with one hole
         Polygon p3 = Polygon.fromPoints(
                 new Vector3d(1, 1),
