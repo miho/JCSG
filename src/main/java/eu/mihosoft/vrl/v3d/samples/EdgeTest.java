@@ -39,15 +39,15 @@ public class EdgeTest {
 
         CSG cyl = new Cylinder(0.08, 0.3, 8).toCSG();
 
-        CSG csg = cylinder.difference(cyl).union(sphere);
+//        CSG csg = cylinder.difference(cyl).union(sphere);
+        CSG csg = cylinder.difference(cyl);
+//        CSG csg = cylinder.union(sphere);
 
         if (!optimized) {
             return csg;
         } else {
 
-            List<List<Polygon>> planeGroups = searchPlangeGroups(csg);
-
-            List<Polygon> boundaryPolygons = boundaryPolygons(planeGroups);
+            List<Polygon> boundaryPolygons = Edge.boundaryPolygons(csg);
 
             System.out.println("#groups: " + boundaryPolygons.size());
 
@@ -56,139 +56,6 @@ public class EdgeTest {
         }
 
 //        return csg;
-    }
-
-    private List<Polygon> boundaryPolygons(List<List<Polygon>> planeGroups) {
-        List<Polygon> result = new ArrayList<>();
-
-        for (List<Polygon> polygonGroup : planeGroups) {
-            result.addAll(boundaryPolygonsOfPlaneGroup(polygonGroup));
-        }
-
-        return result;
-    }
-
-    private List<Edge> boundaryEdgesOfPlaneGroup(List<Polygon> planeGroup) {
-        List<Edge> edges = new ArrayList<>();
-
-        Stream<Polygon> pStream;
-
-        if (planeGroup.size() > 200) {
-            pStream = planeGroup.parallelStream();
-        } else {
-            pStream = planeGroup.stream();
-        }
-
-        pStream.map((p) -> Edge.fromPolygon(p)).forEach((pEdges) -> {
-            edges.addAll(pEdges);
-        });
-
-        Stream<Edge> edgeStream;
-
-        if (edges.size() > 200) {
-            edgeStream = edges.parallelStream();
-        } else {
-            edgeStream = edges.stream();
-        }
-
-        // find potential boundary edges, i.e., edges that occur once (freq=1)
-        List<Edge> potentialBoundaryEdges = new ArrayList<>();
-        edgeStream.forEachOrdered((e) -> {
-            int count = Collections.frequency(edges, e);
-            if (count == 1) {
-                potentialBoundaryEdges.add(e);
-            }
-        });
-
-        // now find "false boundary" edges end remove them from the 
-        // boundary-edge-list
-        // 
-        // thanks to Susanne Höllbacher for the idea :)
-        Stream<Edge> bndEdgeStream;
-
-        if (potentialBoundaryEdges.size() > 200) {
-            bndEdgeStream = potentialBoundaryEdges.parallelStream();
-        } else {
-            bndEdgeStream = potentialBoundaryEdges.stream();
-        }
-
-        List<Edge> realBndEdges = bndEdgeStream.
-                filter(be -> edges.stream().filter(
-                                e -> falseBounbdaryEdgeSharedWithOtherEdge(be, e)).count() == 0).
-                collect(Collectors.toList());
-
-        //
-//        System.out.println("#bnd-edges: " + realBndEdges.size()
-//                + ",#edges: " + edges.size()
-//                + ", #del-bnd-edges: " + (boundaryEdges.size() - realBndEdges.size()));
-        return realBndEdges;
-    }
-
-    private List<Polygon> boundaryPolygonsOfPlaneGroup(List<Polygon> planeGroup) {
-
-        // we use the plane of the first polygon in the group since we know that
-        // all polygons of the group share the same plane
-        return Edge._toPolygons(boundaryEdgesOfPlaneGroup(planeGroup), planeGroup.get(0).plane);
-    }
-
-    private boolean falseBounbdaryEdgeSharedWithOtherEdge(Edge fbe, Edge e) {
-
-        // we don't consider edges with shared end-points since we are only
-        // interested in "false-boundary-edge"-cases
-        boolean sharedEndPoints = e.getP1().pos.equals(fbe.getP1().pos)
-                || e.getP1().pos.equals(fbe.getP2().pos)
-                || e.getP2().pos.equals(fbe.getP1().pos)
-                || e.getP2().pos.equals(fbe.getP2().pos);
-
-        if (sharedEndPoints) {
-            return false;
-        }
-
-        return fbe.contains(e.getP1().pos) || fbe.contains(e.getP2().pos);
-    }
-
-    private List<List<Polygon>> searchPlangeGroups(CSG cylinder) {
-        List<List<Polygon>> planeGroups = new ArrayList<>();
-        boolean[] used = new boolean[cylinder.getPolygons().size()];
-        System.out.println("#polys: " + cylinder.getPolygons().size());
-        for (int pOuterI = 0; pOuterI < cylinder.getPolygons().size(); pOuterI++) {
-
-            if (used[pOuterI]) {
-                continue;
-            }
-
-            Polygon pOuter = cylinder.getPolygons().get(pOuterI);
-
-            List<Polygon> otherPolysInPlane = new ArrayList<>();
-
-            otherPolysInPlane.add(pOuter);
-
-            for (int pInnerI = 0; pInnerI < cylinder.getPolygons().size(); pInnerI++) {
-
-                Polygon pInner = cylinder.getPolygons().get(pInnerI);
-
-                if (pOuter.equals(pInner)) {
-                    continue;
-                }
-
-                Vector3d nOuter = pOuter.plane.normal;
-                Vector3d nInner = pInner.plane.normal;
-
-                double angle = nOuter.angle(nInner);
-
-//                System.out.println("angle: " + angle + " between " + pOuterI+" -> " + pInnerI);
-                if (angle < 0.01 /*&& abs(pOuter.plane.dist - pInner.plane.dist) < 0.1*/) {
-                    otherPolysInPlane.add(pInner);
-                    used[pInnerI] = true;
-                    System.out.println("used: " + pOuterI + " -> " + pInnerI);
-                }
-            }
-
-            if (!otherPolysInPlane.isEmpty()) {
-                planeGroups.add(otherPolysInPlane);
-            }
-        }
-        return planeGroups;
     }
 
     public static void main(String[] args) throws IOException {

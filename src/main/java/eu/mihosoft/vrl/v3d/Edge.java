@@ -6,10 +6,12 @@
 package eu.mihosoft.vrl.v3d;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -20,12 +22,11 @@ public class Edge {
     private final Vertex p1;
     private final Vertex p2;
     private final Vector3d direction;
-    
 
     public Edge(Vertex p1, Vertex p2) {
         this.p1 = p1;
         this.p2 = p2;
-        
+
         direction = p2.pos.minus(p1.pos).normalized();
     }
 
@@ -42,7 +43,6 @@ public class Edge {
 //    public void setP1(Vertex p1) {
 //        this.p1 = p1;
 //    }
-
     /**
      * @return the p2
      */
@@ -56,7 +56,6 @@ public class Edge {
 //    public void setP2(Vertex p2) {
 //        this.p2 = p2;
 //    }
-
     public static List<Edge> fromPolygon(Polygon poly) {
         List<Edge> result = new ArrayList<>();
 
@@ -305,31 +304,55 @@ public class Edge {
         Edge edge = boundaryEdges.get(startIndex);
         used[startIndex] = true;
 
+        startIndex = 1;
+
         while (startIndex > 0) {
             List<Vector3d> boundaryPath = new ArrayList<>();
+
             while (true) {
                 Edge finalEdge = edge;
 
                 boundaryPath.add(finalEdge.p1.pos);
 
-                int nextEdgeIndex = boundaryEdges.indexOf(boundaryEdges.stream().
-                        filter(e -> finalEdge.p2.equals(e.p1)).findFirst().get());
+                System.out.print("edge: " + edge.p2.pos);
 
-                if (used[nextEdgeIndex]) {
-//                System.out.println("nexIndex: " + nextEdgeIndex);
+                Optional<Edge> nextEdgeResult = boundaryEdges.stream().
+                        filter(e -> finalEdge.p2.equals(e.p1)).findFirst();
+
+                if (!nextEdgeResult.isPresent()) {
+                    System.out.println("ERROR: unclosed path:"
+                            + " no edge found with " + finalEdge.p2);
                     break;
                 }
-//            System.out.print("edge: " + edge.p2.pos);
-                edge = boundaryEdges.get(nextEdgeIndex);
-//            System.out.println("-> edge: " + edge.p1.pos);
+
+                Edge nextEdge = nextEdgeResult.get();
+
+                int nextEdgeIndex = boundaryEdges.indexOf(nextEdge);
+
+                if (used[nextEdgeIndex]) {
+                    break;
+                }
+
+                edge = nextEdge;
+                System.out.println("-> edge: " + edge.p1.pos);
                 used[nextEdgeIndex] = true;
             }
-            result.add(Polygon.fromPoints(boundaryPath));
 
+            if (boundaryPath.size() < 3) {
+                break;
+            }
+
+            result.add(Polygon.fromPoints(boundaryPath));
             startIndex = nextUnused(used);
-            edge = boundaryEdges.get(startIndex);
-            used[startIndex] = true;
+
+            if (startIndex > 0) {
+                edge = boundaryEdges.get(startIndex);
+                used[startIndex] = true;
+            }
+            
         }
+
+        System.out.println("paths: " + result.size());
 
         return result;
     }
@@ -455,44 +478,43 @@ public class Edge {
     }
 
     /**
-     * Returns the the point of this edge that is closest to the specified edge. 
-     * 
+     * Returns the the point of this edge that is closest to the specified edge.
+     *
      * <b>NOTE:</b> returns an empty optional if the edges are parallel
-     * 
+     *
      * @param e the edge to check
      * @return the the point of this edge that is closest to the specified edge
      */
     public Optional<Vector3d> getClosestPoint(Edge e) {
-        
+
         // algorithm from:
         // org.apache.commons.math3.geometry.euclidean.threed/Line.java.html
-
         Vector3d ourDir = getDirection();
 
         double cos = ourDir.dot(e.getDirection());
         double n = 1 - cos * cos;
-        
+
         if (n < Plane.EPSILON) {
             // the lines are parallel
             return Optional.empty();
         }
-        
+
         final Vector3d thisDelta = p2.pos.minus(p1.pos);
         final double norm2This = thisDelta.magnitudeSq();
-        
+
         final Vector3d eDelta = e.p2.pos.minus(e.p1.pos);
         final double norm2E = eDelta.magnitudeSq();
 
         // line points above the origin
-        Vector3d thisZero = p1.pos.plus(thisDelta.times(-p1.pos.dot(thisDelta)/ norm2This));
-        Vector3d eZero = e.p1.pos.plus(eDelta.times(-e.p1.pos.dot(eDelta)/ norm2E));
-        
+        Vector3d thisZero = p1.pos.plus(thisDelta.times(-p1.pos.dot(thisDelta) / norm2This));
+        Vector3d eZero = e.p1.pos.plus(eDelta.times(-e.p1.pos.dot(eDelta) / norm2E));
+
         final Vector3d delta0 = eZero.minus(thisZero);
         final double a = delta0.dot(direction);
         final double b = delta0.dot(e.direction);
-        
-        Vector3d closestP = thisZero.plus(direction.times((a-b * cos)/n));
-        
+
+        Vector3d closestP = thisZero.plus(direction.times((a - b * cos) / n));
+
         if (!contains(closestP)) {
             if (closestP.minus(p1.pos).magnitudeSq()
                     < closestP.minus(p2.pos).magnitudeSq()) {
@@ -504,33 +526,216 @@ public class Edge {
 
         return Optional.of(closestP);
     }
-    
-    
+
     /**
      * Returns the intersection point between this edge and the specified edge.
-     * 
-     *  <b>NOTE:</b> returns an empty optional if the edges are parallel or if
+     *
+     * <b>NOTE:</b> returns an empty optional if the edges are parallel or if
      * the intersection point is not inside the specified edge segment
-     * 
+     *
      * @param e edge to intersect
      * @return the intersection point between this edge and the specified edge
      */
     public Optional<Vector3d> getIntersection(Edge e) {
         Optional<Vector3d> closestPOpt = getClosestPoint(e);
-        
+
         if (!closestPOpt.isPresent()) {
             // edges are parallel
             return Optional.empty();
         }
-        
+
         Vector3d closestP = closestPOpt.get();
-        
+
         if (e.contains(closestP)) {
             return closestPOpt;
         } else {
             // intersection point outside of segment
             return Optional.empty();
         }
+    }
+
+    public static List<Polygon> boundaryPolygons(CSG csg) {
+        List<Polygon> result = new ArrayList<>();
+
+        for (List<Polygon> polygonGroup : searchPlaneGroups(csg.getPolygons())) {
+            result.addAll(boundaryPolygonsOfPlaneGroup(polygonGroup));
+        }
+
+        return result;
+    }
+
+    private static List<Edge> boundaryEdgesOfPlaneGroup(List<Polygon> planeGroup) {
+        List<Edge> edges = new ArrayList<>();
+
+        Stream<Polygon> pStream;
+
+        if (planeGroup.size() > 200) {
+            pStream = planeGroup.parallelStream();
+        } else {
+            pStream = planeGroup.stream();
+        }
+
+        pStream.map((p) -> Edge.fromPolygon(p)).forEach((pEdges) -> {
+            edges.addAll(pEdges);
+        });
+
+        Stream<Edge> edgeStream;
+
+        if (edges.size() > 200) {
+            edgeStream = edges.parallelStream();
+        } else {
+            edgeStream = edges.stream();
+        }
+
+        // find potential boundary edges, i.e., edges that occur once (freq=1)
+        List<Edge> potentialBoundaryEdges = new ArrayList<>();
+        edgeStream.forEachOrdered((e) -> {
+            int count = Collections.frequency(edges, e);
+            if (count == 1) {
+                potentialBoundaryEdges.add(e);
+            }
+        });
+
+        // now find "false boundary" edges end remove them from the 
+        // boundary-edge-list
+        // 
+        // thanks to Susanne Höllbacher for the idea :)
+        Stream<Edge> bndEdgeStream;
+
+        if (potentialBoundaryEdges.size() > 200) {
+            bndEdgeStream = potentialBoundaryEdges.parallelStream();
+        } else {
+            bndEdgeStream = potentialBoundaryEdges.stream();
+        }
+
+        List<Edge> realBndEdges = bndEdgeStream.
+                filter(be -> edges.stream().filter(
+                                e -> falseBoundaryEdgeSharedWithOtherEdge(be, e)
+                ).count() == 0).collect(Collectors.toList());
+
+        //
+//        System.out.println("#bnd-edges: " + realBndEdges.size()
+//                + ",#edges: " + edges.size()
+//                + ", #del-bnd-edges: " + (boundaryEdges.size() - realBndEdges.size()));
+        return realBndEdges;
+    }
+
+    private static List<Polygon> boundaryPolygonsOfPlaneGroup(
+            List<Polygon> planeGroup) {
+
+        List<Polygon> polygons = boundaryPathsWithHoles(
+                boundaryPaths(boundaryEdgesOfPlaneGroup(planeGroup)));
+
+        System.out.println("polygons: " + polygons.size());
+
+        List<Polygon> result = new ArrayList<>(polygons.size());
+
+        for (Polygon p : polygons) {
+
+            Optional<List<Polygon>> holesOfPresult
+                    = p.
+                    getStorage().getValue(Edge.KEY_POLYGON_HOLES);
+
+            if (!holesOfPresult.isPresent()) {
+                result.add(p);
+                continue;
+            }
+
+            List<Polygon> holesOfP = holesOfPresult.get();
+
+            List<Polygon> simplePs = new ArrayList<>();
+            simplePs.add(p);
+
+            for (Polygon hP : holesOfP) {
+                Bounds b = hP.getBounds();
+                Vector3d p1 = b.getMin();
+                Vector3d p2 = b.getMax();
+                Vector3d p3 = Vector3d.ZERO;
+                Plane cutPlane = Plane.createFromPoints(p1, p2, p3);
+
+                List<Polygon> coplanar = new ArrayList<>();
+                List<Polygon> frontAndBack = new ArrayList<>();
+
+                for (Polygon sP : simplePs) {
+                    // does not work
+                    cutPlane.splitPolygon(sP, coplanar, coplanar, frontAndBack, frontAndBack);
+                }
+
+                simplePs = frontAndBack;
+
+                System.out.println("simple: " + simplePs.size() + ", front&back: " + frontAndBack.size() + ", colpanar: " + coplanar.size());
+
+            }
+
+            if (holesOfP.isEmpty()) {
+                result.add(p);
+            } else {
+                result.addAll(simplePs);
+            }
+
+        }
+
+        return result;
+    }
+
+    private static boolean falseBoundaryEdgeSharedWithOtherEdge(Edge fbe, Edge e) {
+
+        // we don't consider edges with shared end-points since we are only
+        // interested in "false-boundary-edge"-cases
+        boolean sharedEndPoints = e.getP1().pos.equals(fbe.getP1().pos)
+                || e.getP1().pos.equals(fbe.getP2().pos)
+                || e.getP2().pos.equals(fbe.getP1().pos)
+                || e.getP2().pos.equals(fbe.getP2().pos);
+
+        if (sharedEndPoints) {
+            return false;
+        }
+
+        return fbe.contains(e.getP1().pos) || fbe.contains(e.getP2().pos);
+    }
+
+    private static List<List<Polygon>> searchPlaneGroups(List<Polygon> polygons) {
+        List<List<Polygon>> planeGroups = new ArrayList<>();
+        boolean[] used = new boolean[polygons.size()];
+        System.out.println("#polys: " + polygons.size());
+        for (int pOuterI = 0; pOuterI < polygons.size(); pOuterI++) {
+
+            if (used[pOuterI]) {
+                continue;
+            }
+
+            Polygon pOuter = polygons.get(pOuterI);
+
+            List<Polygon> otherPolysInPlane = new ArrayList<>();
+
+            otherPolysInPlane.add(pOuter);
+
+            for (int pInnerI = 0; pInnerI < polygons.size(); pInnerI++) {
+
+                Polygon pInner = polygons.get(pInnerI);
+
+                if (pOuter.equals(pInner)) {
+                    continue;
+                }
+
+                Vector3d nOuter = pOuter.plane.normal;
+                Vector3d nInner = pInner.plane.normal;
+
+                double angle = nOuter.angle(nInner);
+
+//                System.out.println("angle: " + angle + " between " + pOuterI+" -> " + pInnerI);
+                if (angle < 0.01 /*&& abs(pOuter.plane.dist - pInner.plane.dist) < 0.1*/) {
+                    otherPolysInPlane.add(pInner);
+                    used[pInnerI] = true;
+                    System.out.println("used: " + pOuterI + " -> " + pInnerI);
+                }
+            }
+
+            if (!otherPolysInPlane.isEmpty()) {
+                planeGroups.add(otherPolysInPlane);
+            }
+        }
+        return planeGroups;
     }
 
 }
