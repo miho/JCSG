@@ -221,9 +221,9 @@ public class Edge {
 
     }
 
-    private static final String KEY_POLYGON_HOLES = "jcsg:edge:polygon-holes";
+    public static final String KEY_POLYGON_HOLES = "jcsg:edge:polygon-holes";
 
-    private static List<Polygon> boundaryPathsWithHoles(List<Polygon> boundaryPaths) {
+    public static List<Polygon> boundaryPathsWithHoles(List<Polygon> boundaryPaths) {
 
         List<Polygon> result = boundaryPaths.stream().
                 map(p -> p.clone()).collect(Collectors.toList());
