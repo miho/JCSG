@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 
 /**
  *
@@ -282,7 +283,7 @@ public class Edge {
                     result.get(maxIndex).getStorage().
                             set(KEY_POLYGON_HOLES, holes);
                 }
-
+                
                 holes.add(result.get(i));
             }
         }
@@ -349,7 +350,7 @@ public class Edge {
                 edge = boundaryEdges.get(startIndex);
                 used[startIndex] = true;
             }
-            
+
         }
 
         System.out.println("paths: " + result.size());
@@ -611,7 +612,7 @@ public class Edge {
         List<Edge> realBndEdges = bndEdgeStream.
                 filter(be -> edges.stream().filter(
                                 e -> falseBoundaryEdgeSharedWithOtherEdge(be, e)
-                ).count() == 0).collect(Collectors.toList());
+                        ).count() == 0).collect(Collectors.toList());
 
         //
 //        System.out.println("#bnd-edges: " + realBndEdges.size()
@@ -638,41 +639,9 @@ public class Edge {
 
             if (!holesOfPresult.isPresent()) {
                 result.add(p);
-                continue;
-            }
-
-            List<Polygon> holesOfP = holesOfPresult.get();
-
-            List<Polygon> simplePs = new ArrayList<>();
-            simplePs.add(p);
-
-            for (Polygon hP : holesOfP) {
-                Bounds b = hP.getBounds();
-                Vector3d p1 = b.getMin();
-                Vector3d p2 = b.getMax();
-                Vector3d p3 = Vector3d.ZERO;
-                Plane cutPlane = Plane.createFromPoints(p1, p2, p3);
-
-                List<Polygon> coplanar = new ArrayList<>();
-                List<Polygon> frontAndBack = new ArrayList<>();
-
-                for (Polygon sP : simplePs) {
-                    // does not work
-                    cutPlane.splitPolygon(sP, coplanar, coplanar, frontAndBack, frontAndBack);
-                }
-
-                simplePs = frontAndBack;
-
-                System.out.println("simple: " + simplePs.size() + ", front&back: " + frontAndBack.size() + ", colpanar: " + coplanar.size());
-
-            }
-
-            if (holesOfP.isEmpty()) {
-                result.add(p);
             } else {
-                result.addAll(simplePs);
+                result.addAll(PolygonUtil.concaveToConvex(p));
             }
-
         }
 
         return result;
