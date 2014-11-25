@@ -36,7 +36,6 @@ package eu.mihosoft.vrl.v3d.jcsg;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import javafx.scene.paint.Color;
 
 /**
