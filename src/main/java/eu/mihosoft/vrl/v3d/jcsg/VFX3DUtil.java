@@ -25,16 +25,9 @@
 package eu.mihosoft.vrl.v3d.jcsg;
 
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Node;
 
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.TriangleMesh;
-import javafx.scene.shape.MeshView;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.DrawMode;
-import javafx.scene.shape.CullFace;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.transform.Rotate;
