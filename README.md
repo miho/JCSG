@@ -40,7 +40,7 @@ Navigate to the [Gradle](http://www.gradle.org/) project (e.g., `path/to/JCSG`) 
 
 #### Bash (Linux/OS X/Cygwin/other Unix-like shell)
 
-    sh gradlew assemble
+    bash gradlew assemble
     
 #### Windows (CMD)
 
