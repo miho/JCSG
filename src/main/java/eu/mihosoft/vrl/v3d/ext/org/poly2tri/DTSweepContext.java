@@ -63,8 +63,8 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 
 
@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
  */
 class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 {
-    private final static Logger logger = LoggerFactory.getLogger( DTSweepContext.class );
+//    private final static Logger //logger = LoggerFactory.getLogger( DTSweepContext.class );
 
     // Inital triangle factor, seed triangle will extend 30% of 
     // PointSet width to both left and right.
@@ -283,7 +283,7 @@ class DTSweepContext extends TriangulationContext<DTSweepDebugContext>
 //        long time = System.nanoTime();
         // Sort the points along y-axis
         Collections.sort( _points, _comparator );
-//        logger.info( "Triangulation setup [{}ms]", ( System.nanoTime() - time ) / 1e6 );
+//        //logger.info( "Triangulation setup [{}ms]", ( System.nanoTime() - time ) / 1e6 );
     }
 
 

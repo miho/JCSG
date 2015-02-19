@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="lib" path="gradle/wrapper/gradle-wrapper.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="/JFXScad/libs/jfxrt.jar"/>
+	<classpathentry kind="lib" path="/JFXScad/libs/jfxswt.jar"/>
+	<classpathentry kind="lib" path="/NRSDK/lib_addons/vecmath.jar"/>
+	<classpathentry kind="lib" path="/JFXScad/libs/commons-io-2.4.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

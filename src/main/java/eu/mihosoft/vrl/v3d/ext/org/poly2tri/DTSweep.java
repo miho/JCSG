@@ -72,8 +72,8 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint;
 import eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationUtil.Orientation;
 import eu.mihosoft.vrl.v3d.ext.org.poly2tri.DelaunayTriangle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 /**
  * Sweep-line, Constrained Delauney Triangulation (CDT) See: Domiter, V. and
@@ -86,7 +86,7 @@ import org.slf4j.LoggerFactory;
  */
 class DTSweep {
 
-    private final static Logger logger = LoggerFactory.getLogger(DTSweep.class);
+//    private final static //logger //logger = //loggerFactory.get//logger(DTSweep.class);
 
     private final static double PI_div2 = Math.PI / 2;
     private final static double PI_3div4 = 3 * Math.PI / 4;
@@ -359,7 +359,7 @@ class DTSweep {
 
             edgeEvent(tcx, edge.p, edge.q, node.triangle, edge.q);
         } catch (PointOnEdgeException e) {
-            logger.warn("Skipping edge: {}", e.getMessage());
+            //logger.warn("Skipping edge: {}", e.getMessage());
         }
     }
 
@@ -549,7 +549,7 @@ class DTSweep {
                 throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
             }
             if (tcx.isDebugEnabled()) {
-                logger.info("EdgeEvent - Point on constrained edge");
+                //logger.info("EdgeEvent - Point on constrained edge");
             }
             return;
         }
@@ -568,7 +568,7 @@ class DTSweep {
                 throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
             }
             if (tcx.isDebugEnabled()) {
-                logger.info("EdgeEvent - Point on constrained edge");
+                //logger.info("EdgeEvent - Point on constrained edge");
             }
             return;
         }

@@ -61,13 +61,13 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
  */
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 
 class DelaunayTriangle
 {
-    private final static Logger logger    = LoggerFactory.getLogger( DelaunayTriangle.class );
+    //private final static Logger logger    = LoggerFactory.getLogger( DelaunayTriangle.class );
 
     /** Neighbor pointers */
     public final DelaunayTriangle[]   neighbors = new DelaunayTriangle[3];
@@ -160,7 +160,7 @@ class DelaunayTriangle
         }
         else
         {
-            logger.error( "Neighbor error, please report!" );
+            //logger.error( "Neighbor error, please report!" );
             // throw new Exception("Neighbor error, please report!");
         }
     }
@@ -185,7 +185,7 @@ class DelaunayTriangle
         }
         else
         {
-            logger.error( "markNeighbor failed" );
+            //logger.error( "markNeighbor failed" );
         }
     }
 
@@ -295,7 +295,7 @@ class DelaunayTriangle
         {
             return points[0];
         }
-        logger.error( "point location error" );
+        //logger.error( "point location error" );
         throw new RuntimeException("[FIXME] point location error");
     }
 
@@ -314,7 +314,7 @@ class DelaunayTriangle
         {
             return points[1];
         }
-        logger.error( "point location error" );
+        //logger.error( "point location error" );
         throw new RuntimeException("[FIXME] point location error");
     }
 
@@ -341,7 +341,7 @@ class DelaunayTriangle
         }
         else
         {
-            logger.error( "legalization error" );
+            //logger.error( "legalization error" );
             throw new RuntimeException("legalization bug");
         }
     }

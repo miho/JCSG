@@ -61,12 +61,12 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
  */
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 class Poly2Tri
 {
-    private final static Logger logger = LoggerFactory.getLogger( Poly2Tri.class );
+//    private final static Logger logger = LoggerFactory.getLogger( Poly2Tri.class );
 
     private static final TriangulationAlgorithm _defaultAlgorithm = TriangulationAlgorithm.DTSweep;
     

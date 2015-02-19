@@ -60,8 +60,8 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
  */
 class DTSweepConstraint extends TriangulationConstraint
 {
-    private final static Logger logger = LoggerFactory.getLogger( DTSweepConstraint.class );
+    //private final static Logger //logger = LoggerFactory.getLogger( DTSweepConstraint.class );
 
     public TriangulationPoint p;
     public TriangulationPoint q;
@@ -101,7 +101,7 @@ class DTSweepConstraint extends TriangulationConstraint
             }
             else if( p1.getX() == p2.getX() )
             {
-                logger.info( "Failed to create constraint {}={}", p1, p2 );
+                //logger.info( "Failed to create constraint {}={}", p1, p2 );
 //                throw new DuplicatePointException( p1 + "=" + p2 );
 //                return;
             }

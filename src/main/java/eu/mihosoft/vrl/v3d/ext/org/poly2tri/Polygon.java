@@ -64,12 +64,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 class Polygon implements Triangulatable
 {
-    private final static Logger logger = LoggerFactory.getLogger( Polygon.class );
+//    private final static Logger //logger = LoggerFactory.getLogger( Polygon.class );
 
     protected ArrayList<TriangulationPoint> _points = new ArrayList<TriangulationPoint>();
     protected ArrayList<TriangulationPoint> _steinerPoints;
@@ -110,7 +110,7 @@ class Polygon implements Triangulatable
         // Its something that often happen when importing polygon data from other formats
         if( points.get(0).equals( points.get(points.size()-1) ) )
         {
-            logger.warn( "Removed duplicate point");
+            //logger.warn( "Removed duplicate point");
             points.remove( points.size()-1 );
         }
         _points.addAll( points );
