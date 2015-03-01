@@ -114,7 +114,7 @@ public class CSG {
     public static CSG fromPolygons(List<Polygon> polygons) {
 
         CSG csg = new CSG();
-        csg.polygons = polygons;
+        csg.setPolygons(polygons);
 
         return csg;
     }
@@ -139,7 +139,7 @@ public class CSG {
     public static CSG fromPolygons(PropertyStorage storage, List<Polygon> polygons) {
 
         CSG csg = new CSG();
-        csg.polygons = polygons;
+        csg.setPolygons(polygons);
 
         csg.storage = storage;
 
@@ -174,14 +174,14 @@ public class CSG {
 //        });
         Stream<Polygon> polygonStream;
 
-        if (polygons.size() > 200) {
-            polygonStream = polygons.parallelStream();
+        if (getPolygons().size() > 200) {
+            polygonStream = getPolygons().parallelStream();
         } else {
-            polygonStream = polygons.stream();
+            polygonStream = getPolygons().stream();
         }
 
-        csg.polygons = polygonStream.
-                map((Polygon p) -> p.clone()).collect(Collectors.toList());
+        csg.setPolygons(polygonStream.
+                map((Polygon p) -> p.clone()).collect(Collectors.toList()));
 
         return csg;
     }
@@ -260,7 +260,7 @@ public class CSG {
         CSG result = this.clone();
         CSG other = csg.clone();
         
-        result.polygons.addAll(other.polygons);
+        result.getPolygons().addAll(other.getPolygons());
         
         return result;
     }
@@ -349,13 +349,13 @@ public class CSG {
         CSG csgsUnion = new CSG();
         csgsUnion.storage = storage;
         csgsUnion.optType = optType;
-        csgsUnion.polygons = this.clone().polygons;
+        csgsUnion.setPolygons(this.clone().getPolygons());
 
         csgs.stream().forEach((csg) -> {
-            csgsUnion.polygons.addAll(csg.clone().polygons);
+            csgsUnion.getPolygons().addAll(csg.clone().getPolygons());
         });
 
-        csgsUnion.polygons.forEach(p -> p.setStorage(storage));
+        csgsUnion.getPolygons().forEach(p -> p.setStorage(storage));
         return csgsUnion.hull();
 
 //        CSG csgsUnion = this;
@@ -390,7 +390,7 @@ public class CSG {
 
         Bounds bounds = csg.getBounds();
 
-        this.polygons.stream().forEach((p) -> {
+        this.getPolygons().stream().forEach((p) -> {
             if (bounds.intersects(p.getBounds())) {
                 inner.add(p);
             } else {
@@ -404,10 +404,10 @@ public class CSG {
             CSG innerCSG = CSG.fromPolygons(inner);
 
             allPolygons.addAll(outer);
-            allPolygons.addAll(innerCSG._unionNoOpt(csg).polygons);
+            allPolygons.addAll(innerCSG._unionNoOpt(csg).getPolygons());
         } else {
-            allPolygons.addAll(this.polygons);
-            allPolygons.addAll(csg.polygons);
+            allPolygons.addAll(this.getPolygons());
+            allPolygons.addAll(csg.getPolygons());
         }
 
         return CSG.fromPolygons(allPolygons).optimization(getOptType());
@@ -426,7 +426,7 @@ public class CSG {
 
         Bounds bounds = csg.getBounds();
 
-        for (Polygon p : polygons) {
+        for (Polygon p : getPolygons()) {
             if (bounds.intersects(p.getBounds())) {
                 intersects = true;
                 break;
@@ -438,16 +438,16 @@ public class CSG {
         if (intersects) {
             return _unionNoOpt(csg);
         } else {
-            allPolygons.addAll(this.polygons);
-            allPolygons.addAll(csg.polygons);
+            allPolygons.addAll(this.getPolygons());
+            allPolygons.addAll(csg.getPolygons());
         }
 
         return CSG.fromPolygons(allPolygons).optimization(getOptType());
     }
 
     private CSG _unionNoOpt(CSG csg) {
-        Node a = new Node(this.clone().polygons);
-        Node b = new Node(csg.clone().polygons);
+        Node a = new Node(this.clone().getPolygons());
+        Node b = new Node(csg.clone().getPolygons());
         a.clipTo(b);
         b.clipTo(a);
         b.invert();
@@ -570,7 +570,7 @@ public class CSG {
 
         Bounds bounds = csg.getBounds();
 
-        this.polygons.stream().forEach((p) -> {
+        this.getPolygons().stream().forEach((p) -> {
             if (bounds.intersects(p.getBounds())) {
                 inner.add(p);
             } else {
@@ -582,15 +582,15 @@ public class CSG {
 
         List<Polygon> allPolygons = new ArrayList<>();
         allPolygons.addAll(outer);
-        allPolygons.addAll(innerCSG._differenceNoOpt(csg).polygons);
+        allPolygons.addAll(innerCSG._differenceNoOpt(csg).getPolygons());
 
         return CSG.fromPolygons(allPolygons).optimization(getOptType());
     }
 
     private CSG _differenceNoOpt(CSG csg) {
 
-        Node a = new Node(this.clone().polygons);
-        Node b = new Node(csg.clone().polygons);
+        Node a = new Node(this.clone().getPolygons());
+        Node b = new Node(csg.clone().getPolygons());
 
         a.invert();
         a.clipTo(b);
@@ -630,8 +630,8 @@ public class CSG {
      */
     public CSG intersect(CSG csg) {
 
-        Node a = new Node(this.clone().polygons);
-        Node b = new Node(csg.clone().polygons);
+        Node a = new Node(this.clone().getPolygons());
+        Node b = new Node(csg.clone().getPolygons());
         a.invert();
         b.clipTo(a);
         b.invert();
@@ -728,7 +728,7 @@ public class CSG {
      */
     public StringBuilder toStlString(StringBuilder sb) {
         sb.append("solid v3d.csg\n");
-        this.polygons.stream().forEach(
+        this.getPolygons().stream().forEach(
                 (Polygon p) -> {
                     p.toStlString(sb);
                 });
@@ -779,7 +779,7 @@ public class CSG {
 
         int materialIndex = 0;
 
-        for (Polygon p : polygons) {
+        for (Polygon p : getPolygons()) {
             List<Integer> polyIndices = new ArrayList<>();
 
             p.vertices.stream().forEach((v) -> {
@@ -868,7 +868,7 @@ public class CSG {
 
         sb.append("\n# Vertices\n");
 
-        for (Polygon p : polygons) {
+        for (Polygon p : getPolygons()) {
             List<Integer> polyIndices = new ArrayList<>();
 
             p.vertices.stream().forEach((v) -> {
@@ -929,11 +929,11 @@ public class CSG {
      */
     public CSG transformed(Transform transform) {
 
-        if (polygons.isEmpty()) {
+        if (getPolygons().isEmpty()) {
             return clone();
         }
 
-        List<Polygon> newpolygons = this.polygons.stream().map(
+        List<Polygon> newpolygons = this.getPolygons().stream().map(
                 p -> p.transformed(transform)
         ).collect(Collectors.toList());
 
@@ -1105,7 +1105,7 @@ public class CSG {
      */
     public Bounds getBounds() {
 
-        if (polygons.isEmpty()) {
+        if (getPolygons().isEmpty()) {
             return new Bounds(Vector3d.ZERO, Vector3d.ZERO);
         }
 
@@ -1173,7 +1173,11 @@ public class CSG {
         this.optType = optType;
     }
 
-    public static enum OptType {
+    public void setPolygons(List<Polygon> polygons) {
+		this.polygons = polygons;
+	}
+
+	public static enum OptType {
 
         CSG_BOUND,
         POLYGON_BOUND,
