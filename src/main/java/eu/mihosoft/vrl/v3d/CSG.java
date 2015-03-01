@@ -35,6 +35,7 @@ package eu.mihosoft.vrl.v3d;
 
 import eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.ObjImporter;
 import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.neuronrobotics.interaction.CadInteractionEvent;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Mesh;
 import javafx.scene.shape.TriangleMesh;
@@ -946,9 +950,9 @@ public class CSG {
  
 
     // TODO finish experiment (20.7.2014)
-    public MeshContainer toJavaFXMesh() {
+    public MeshContainer toJavaFXMesh(CadInteractionEvent interact) {
 
-        return toJavaFXMeshSimple();
+        return toJavaFXMeshSimple(interact);
 
 // TODO test obj approach with multiple materials
 //        try {
@@ -966,10 +970,11 @@ public class CSG {
 
     /**
      * Returns the CSG as JavaFX triangle mesh.
+     * @param interact 
      *
      * @return the CSG as JavaFX triangle mesh
      */
-    public MeshContainer toJavaFXMeshSimple() {
+    public MeshContainer toJavaFXMeshSimple(CadInteractionEvent interact) {
 
         TriangleMesh mesh = new TriangleMesh();
 
