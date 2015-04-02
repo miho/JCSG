@@ -15,7 +15,6 @@ if (!hasProperty('mainClass')) {
     ext.mainClass = 'eu.mihosoft.vrl.v3d.Main'
 }
 
-applicationDefaultJvmArgs = ["-Xss515m"]
 mainClassName = mainClass
 
 repositories {
