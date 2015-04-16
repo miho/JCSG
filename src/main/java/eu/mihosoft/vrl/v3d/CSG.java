@@ -104,9 +104,49 @@ public class CSG {
     private static OptType defaultOptType = OptType.NONE;
     private OptType optType = null;
     private PropertyStorage storage;
+    private MeshView current;
+	private Color color;
+	private Affine manipulator;
 
     private CSG() {
         storage = new PropertyStorage();
+    }
+    
+        
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+		if(current!=null){
+			PhongMaterial m = new PhongMaterial(getColor());
+			current.setMaterial(m);
+		}
+	}
+    
+    public Affine setManipulator(Affine manipulator){
+    	Affine old = manipulator;
+		this.manipulator = manipulator;
+		if(manipulator!=null)
+			getMesh().getTransforms().add(manipulator);
+		return old;
+    }
+ 
+    public MeshView getMesh(){
+    	if(current != null)
+    		return current;
+    	 MeshContainer meshContainer = toJavaFXMesh(null);
+  
+        current = meshContainer.getAsMeshViews().get(0);
+        if(getColor() == null)
+        	setColor(Color.RED);
+        
+        if(manipulator!=null)
+        	current.getTransforms().add(manipulator);
+		
+		current.setCullFace(CullFace.NONE);
+        return current;
     }
 
     /**
