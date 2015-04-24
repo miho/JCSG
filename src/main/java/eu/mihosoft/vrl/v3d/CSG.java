@@ -132,8 +132,10 @@ public class CSG {
     public Affine setManipulator(Affine manipulator){
     	Affine old = manipulator;
 		this.manipulator = manipulator;
-		if(manipulator!=null)
-			getMesh().getTransforms().add(manipulator);
+	 	if(current != null){
+	 		current.getTransforms().clear();
+	 		current.getTransforms().add(manipulator);
+	 	}
 		return old;
     }
  
@@ -145,9 +147,15 @@ public class CSG {
         current = meshContainer.getAsMeshViews().get(0);
         if(getColor() == null)
         	setColor(Color.RED);
+        else{
+        	PhongMaterial m = new PhongMaterial(getColor());
+			current.setMaterial(m);
+        }
         
-        if(manipulator!=null)
+        if(manipulator!=null){
+        	current.getTransforms().clear();
         	current.getTransforms().add(manipulator);
+        }
 		
 		current.setCullFace(CullFace.NONE);
         return current;
