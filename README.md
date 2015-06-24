@@ -15,6 +15,8 @@ In addition to CSG this library provides the following features:
 - OBJ export including material information (see screenshot below)
 - supports conversion of CSG's to `JavaFX 3D` nodes
 
+**JCSG** on [stackoverflow](http://stackoverflow.com/search?q=jcsg).
+
 ![](/resources/screenshot2.png)
 
 To see what's possible with JCSG try [JFXScad](https://github.com/miho/JFXScad).
