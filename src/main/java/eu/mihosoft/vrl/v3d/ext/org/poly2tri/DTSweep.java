@@ -124,8 +124,10 @@ class DTSweep {
         points = tcx.getPoints();
 
         for (int i = 1; i < points.size(); i++) {
+        	if(i==49)
+        		System.out.println("Danger area");
             point = points.get(i);
-
+            
             node = pointEvent(tcx, point);
 
             if (point.hasEdges()) {
