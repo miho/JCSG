@@ -22,10 +22,10 @@ public class TriMail {
         final int numEdges = 3;
 
         PolyMailTile tile = new PolyMailTile().setNumEdges(numEdges).
-                setRadius(10).
+                setRadius(7).
                 setPinThickness(1.3).
-                setPinLength(1.2).
-                setHingeHoleScale(1.28).
+                setPinLength(1.25).
+                setHingeHoleScale(1.27).
                 setConeLength(1.8).
                 setJointRadius(1.1);
 
@@ -80,7 +80,7 @@ public class TriMail {
     }
 
     public static void main(String[] args) throws IOException {
-        FileUtil.write(new File("trimail.stl"), new TriMail().
+        FileUtil.write(new File("trimail-8x8.stl"), new TriMail().
                 toCSG(8, 8).toStlString());
     }
 }

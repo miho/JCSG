@@ -103,6 +103,6 @@ public class SquareMail {
     }
 
     public static void main(String[] args) throws IOException {
-        FileUtil.write(new File("squaremail-6x6.stl"), new SquareMail().toCSG(6,6).toStlString());
+        FileUtil.write(new File("squaremail-3x3.stl"), new SquareMail().toCSG(3,3).toStlString());
     }
 }
