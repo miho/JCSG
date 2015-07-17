@@ -32,10 +32,20 @@
 package eu.mihosoft.vrl.v3d;
 
 import eu.mihosoft.vrl.v3d.ext.imagej.STLLoader;
+
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.vecmath.Point3f;
 
 /**
@@ -44,6 +54,21 @@ import javax.vecmath.Point3f;
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class STL {
+	/**
+     * Loads a CSG from stl.
+     * @param path file path
+     * @return CSG
+     * @throws IOException if loading failed
+	 * @throws URISyntaxException 
+     */
+    public static CSG file(URL path) throws IOException, URISyntaxException {
+    	final URI uri =path.toURI();
+    	Map<String, String> env = new HashMap<>(); 
+    	env.put("create", "true");
+    	FileSystem zipfs = FileSystems.newFileSystem(uri, env);
+    	Path myFolderPath = Paths.get(uri);
+        return file(myFolderPath);
+    }
     /**
      * Loads a CSG from stl.
      * @param path file path
