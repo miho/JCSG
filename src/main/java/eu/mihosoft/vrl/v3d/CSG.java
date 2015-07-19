@@ -112,9 +112,47 @@ public class CSG {
 	private Color color;
 	private Affine manipulator;
 
-    private CSG() {
+	public CSG() {
         storage = new PropertyStorage();
     }
+    
+    public CSG toZMin(CSG target){
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMin().z));
+	}
+	public CSG toZMax(CSG target){
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMax().z));
+	}
+	public CSG toXMin(CSG target){
+		return this.transformed(new Transform().translateX(-target.getBounds().getMin().x));
+	}
+	public CSG toXMax(CSG target){
+		return this.transformed(new Transform().translateX(-target.getBounds().getMax().x));
+	}
+	public CSG toYMin(CSG target){
+		return this.transformed(new Transform().translateY(-target.getBounds().getMin().y));
+	}
+	public CSG toYMax(CSG target){
+		return this.transformed(new Transform().translateY(-target.getBounds().getMax().y));
+	}
+	
+	public CSG toZMin(){
+		return toZMin(this);
+	}
+	public CSG toZMax(){
+		return toZMax(this);
+	}
+	public CSG toXMin(){
+		return toXMin(this);
+	}
+	public CSG toXMax(){
+		return toXMax(this);
+	}
+	public CSG toYMin(){
+		return toYMin(this);
+	}
+	public CSG toYMax(){
+		return toYMax(this);
+	}
     
         
 	public Color getColor() {
