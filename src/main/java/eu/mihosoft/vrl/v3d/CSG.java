@@ -154,7 +154,41 @@ public class CSG {
 	public CSG toYMax(){
 		return toYMax(this);
 	}
-    
+	
+	//Helper/wrapper functions for movement
+	CSG movey(double howFarToMove){
+		return this.transformed(Transform.unity().translateY(howFarToMove));	
+	}
+	CSG movez(double howFarToMove ){
+		return this.transformed(Transform.unity().translateZ(howFarToMove));	
+	}
+	CSG movex(double howFarToMove ){
+		return this.transformed(Transform.unity().translateX(howFarToMove));	
+	}
+	//Rotation function, rotates the object
+	CSG rotz(double degreesToRotate ){
+		return this.transformed(new Transform().rotZ(degreesToRotate));	
+	}
+	CSG roty(double degreesToRotate ){
+		return this.transformed(new Transform().rotY(degreesToRotate));	
+	}
+	CSG rotx(double degreesToRotate ){
+		return this.transformed(new Transform().rotX(degreesToRotate));	
+	}
+	
+	//Scale function, scales the object
+	CSG scalez(double scaleValue ){
+		return this.transformed(new Transform().scaleZ(scaleValue));	
+	}
+	CSG scaley(double scaleValue ){
+		return this.transformed(new Transform().scaleY(scaleValue));	
+	}
+	CSG scalex(double scaleValue ){
+		return this.transformed(new Transform().scaleX(scaleValue));	
+	}
+	CSG scale(double scaleValue ){
+		return this.transformed(new Transform().scale(scaleValue));	
+	}
         
 	public Color getColor() {
 		return color;

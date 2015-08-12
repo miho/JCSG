@@ -124,10 +124,8 @@ class DTSweep {
         points = tcx.getPoints();
 
         for (int i = 1; i < points.size(); i++) {
-        	if(i==49)
-        		System.out.println("Danger area");
             point = points.get(i);
-            
+
             node = pointEvent(tcx, point);
 
             if (point.hasEdges()) {
@@ -510,14 +508,16 @@ class DTSweep {
             TriangulationPoint ep,
             TriangulationPoint eq) {
         int index;
-        index = triangle.edgeIndex(ep, eq);
-        if (index != -1) {
-            triangle.markConstrainedEdge(index);
-            triangle = triangle.neighbors[ index];
-            if (triangle != null) {
-                triangle.markConstrainedEdge(ep, eq);
-            }
-            return true;
+        if(triangle !=null){
+	        index = triangle.edgeIndex(ep, eq);
+	        if (index != -1) {
+	            triangle.markConstrainedEdge(index);
+	            triangle = triangle.neighbors[ index];
+	            if (triangle != null) {
+	                triangle.markConstrainedEdge(ep, eq);
+	            }
+	            return true;
+	        }
         }
         return false;
     }
@@ -527,6 +527,7 @@ class DTSweep {
             TriangulationPoint eq,
             DelaunayTriangle triangle,
             TriangulationPoint point) {
+
         TriangulationPoint p1, p2;
 
         if (tcx.isDebugEnabled()) {
@@ -536,7 +537,8 @@ class DTSweep {
         if (isEdgeSideOfTriangle(triangle, ep, eq)) {
             return;
         }
-
+    	if(triangle==null)
+    		return;
         p1 = triangle.pointCCW(point);
         Orientation o1 = orient2d(eq, p1, ep);
         if (o1 == Orientation.Collinear) {
@@ -609,7 +611,7 @@ class DTSweep {
         }
 
         if (t.getConstrainedEdgeAcross(p)) {
-            throw new RuntimeException("Intersecting Constraints");
+            throw new RuntimeException("Intersecting Constraints "+t+" is constrained Edge accross "+p);
         }
 
         if (tcx.isDebugEnabled()) {
