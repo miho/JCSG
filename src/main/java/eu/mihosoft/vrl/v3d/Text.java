@@ -105,3 +105,5 @@ public class Text {
     
     
 }
+
+//return Text.text(10.0, "Hello", new Font("Helvedica", Font.PLAIN, 18));
