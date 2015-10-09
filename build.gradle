@@ -8,7 +8,7 @@ sourceCompatibility = '1.8'
 //repairHeaders.licenseHeaderText = new File(projectDir,'./license-template.txt')
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '1.11'
+    gradleVersion = '2.7'
 }
 
 if (!hasProperty('mainClass')) {
