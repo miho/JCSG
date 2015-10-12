@@ -28,7 +28,7 @@ public class ServoMountPixy {
 //    private double servoThickness = 12.0;
 //    
     //standard servo
-    private double servoWidth = 40.0;
+    private double servoWidth = 40.5;
     private double servoThickness = 19.0;
     private double borderThickness = 3.0;
     private double overlap = 3;
