@@ -30,13 +30,13 @@ public class ServoMountPixy {
     //standard servo
     private double servoWidth = 40.0;
     private double servoThickness = 19.0;
-    private double borderThickness = 2;
+    private double borderThickness = 3.0;
     private double overlap = 3;
     private double servoMountHeight = 20;
 
     private double boardMountingThickness = 2;
     private double boardHolder1Length = 12;
-    private double boardHolder2Length = 20;
+    private double boardHolder2Length = 16;
 
     private double boardMountingWidth = 8.1;
 
@@ -114,19 +114,20 @@ public class ServoMountPixy {
         double camWidth = 53;
         double outerPiMountWidth = 60;
         double camOverlap = 10;
+        double upperCamOverlap = 3;
         double camHolderWidth = 10;
 
         double breadBoardHeight = 26;
         double breadBoardThickness = 9;
         
-        double breadBoardOverlap = 8.5;
+        double breadBoardOverlap = 14.5;
         
         double bottomThickness = 3;
 
         List<Vector3d> points = Arrays.asList(
                 new Vector3d(boardMountingThickness + borderThickness, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness + camHeight + camHolderHeight, -borderThickness),
-                new Vector3d(boardMountingThickness + borderThickness + camHeight + camHolderHeight, 0),
+                new Vector3d(boardMountingThickness + borderThickness + camHeight + camHolderHeight, 0 + upperCamOverlap),
                 new Vector3d(boardMountingThickness + borderThickness + camHeight, (outerPiMountWidth - camWidth) + camOverlap),
                 new Vector3d(boardMountingThickness + borderThickness + camHeight - borderThickness, (outerPiMountWidth - camWidth) + camOverlap),
                 new Vector3d(boardMountingThickness + borderThickness + camHeight - borderThickness - camHolderWidth, 0),
@@ -163,6 +164,7 @@ public class ServoMountPixy {
                 new Vector3d(0, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness + bottomThickness, -borderThickness),
                 new Vector3d(boardMountingThickness + borderThickness, h + pegToothHeight + pegHeight),
+                new Vector3d(boardMountingThickness - pegOverlap, h + pegToothHeight+pegHeight*0.25),
                 new Vector3d(boardMountingThickness - pegOverlap, h + pegToothHeight),
                 new Vector3d(boardMountingThickness, h),
                 new Vector3d(boardMountingThickness, 0)
