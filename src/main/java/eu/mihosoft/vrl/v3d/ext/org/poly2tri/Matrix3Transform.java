@@ -1,7 +1,7 @@
 /**
  * Matrix3Transform.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,7 +25,7 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
@@ -63,10 +63,18 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 import java.util.List;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Matrix3Transform.
+ */
 abstract class Matrix3Transform implements CoordinateTransform {
 
+    /** The m22. */
     protected double m00, m01, m02, m10, m11, m12, m20, m21, m22;
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.CoordinateTransform#transform(eu.mihosoft.vrl.v3d.ext.org.poly2tri.Point, eu.mihosoft.vrl.v3d.ext.org.poly2tri.Point)
+     */
     @Override
     public void transform(Point p, Point store) {
         final double px = p.getX();
@@ -77,6 +85,9 @@ abstract class Matrix3Transform implements CoordinateTransform {
                 m20 * px + m21 * py + m22 * pz);
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.CoordinateTransform#transform(eu.mihosoft.vrl.v3d.ext.org.poly2tri.Point)
+     */
     public void transform(Point p) {
         final double px = p.getX();
         final double py = p.getY();
@@ -86,6 +97,9 @@ abstract class Matrix3Transform implements CoordinateTransform {
                 m20 * px + m21 * py + m22 * pz);
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.CoordinateTransform#transform(java.util.List)
+     */
     public void transform(List<? extends Point> list) {
         for (Point p : list) {
             transform(p);

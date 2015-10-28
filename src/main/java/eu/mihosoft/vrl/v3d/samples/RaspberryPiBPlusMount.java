@@ -1,7 +1,7 @@
 /**
  * RaspberryPiMount.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,7 +25,7 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.samples;
@@ -40,13 +40,20 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class RaspberryPiBPlusMount.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class RaspberryPiBPlusMount {
     
 
+    /**
+     * Board.
+     *
+     * @return the csg
+     */
     public static CSG board() {
         double board_thickness = 2;
         double bottom_thickness = 2;
@@ -111,6 +118,11 @@ public class RaspberryPiBPlusMount {
         return outer.difference(inner).transformed(Transform.unity().rotX(180).translateY(-bh));
     }
     
+    /**
+     * Board and pegs.
+     *
+     * @return the csg
+     */
     public static CSG boardAndPegs() {
         
         double board_width = 85.6;
@@ -147,6 +159,12 @@ public class RaspberryPiBPlusMount {
 //        return peg1;
     }
     
+        /**
+         * The main method.
+         *
+         * @param args the arguments
+         * @throws IOException Signals that an I/O exception has occurred.
+         */
         public static void main(String[] args) throws IOException {
 
         // save union as stl

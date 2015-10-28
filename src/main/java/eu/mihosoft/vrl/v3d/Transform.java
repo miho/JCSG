@@ -1,7 +1,7 @@
 /**
  * Transform.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,12 +29,13 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
 import javax.vecmath.Matrix4d;
 
+// TODO: Auto-generated Javadoc
 /**
  * Transform. Transformations (translation, rotation, scale) can be applied to
  * geometrical objects like {@link CSG}, {@link Polygon}, {@link Vertex} and
@@ -43,14 +44,14 @@ import javax.vecmath.Matrix4d;
  * This transform class uses the builder pattern to define combined
  * transformations.<br><br>
  *
- * <b>Example:</b>
+ *  Example: 
  *
- * <blockquote><pre>
+ *   
  * // t applies rotation and translation
  * Transform t = Transform.unity().rotX(45).translate(2,1,0);
- * </pre></blockquote>
+ *   
  *
- * <b>TODO:</b> use quaternions for rotations.
+ *  TODO:  use quaternions for rotations.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
@@ -477,7 +478,7 @@ public class Transform {
      * factors, the largest of the x, y, and z scale factors distill be
      * returned.
      *
-     * <b>Note:</b> this transformation is not modified.
+     *  Note:  this transformation is not modified.
      *
      * @return the scale factor of this transformation
      */
@@ -508,6 +509,9 @@ public class Transform {
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return m.toString();

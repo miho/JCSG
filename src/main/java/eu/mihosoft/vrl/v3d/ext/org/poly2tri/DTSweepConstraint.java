@@ -1,7 +1,7 @@
 /**
  * DTSweepConstraint.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,10 +25,11 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
+// TODO: Auto-generated Javadoc
 /* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
@@ -64,23 +65,26 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 //import org.slf4j.LoggerFactory;
 
 /**
- * 
- * @author Thomas ???, thahlen@gmail.com
+ * The Class DTSweepConstraint.
  *
+ * @author Thomas ???, thahlen@gmail.com
  */
 class DTSweepConstraint extends TriangulationConstraint
 {
     //private final static Logger //logger = LoggerFactory.getLogger( DTSweepConstraint.class );
 
+    /** The p. */
     public TriangulationPoint p;
+    
+    /** The q. */
     public TriangulationPoint q;
     
     /**
      * Give two points in any order. Will always be ordered so
      * that q.y > p.y and q.x > p.x if same y value 
-     * 
-     * @param p1
-     * @param p2
+     *
+     * @param p1 the p1
+     * @param p2 the p2
      */
     public DTSweepConstraint( TriangulationPoint p1, TriangulationPoint p2 )
 //        throws DuplicatePointException
@@ -122,11 +126,17 @@ class DTSweepConstraint extends TriangulationConstraint
 //        return new TPoint( bax, bay );
 //    }
 
-    public TriangulationPoint getP()
+    /* (non-Javadoc)
+ * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationConstraint#getP()
+ */
+public TriangulationPoint getP()
     {
         return p;
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationConstraint#getQ()
+     */
     public TriangulationPoint getQ()
     {
         return q;

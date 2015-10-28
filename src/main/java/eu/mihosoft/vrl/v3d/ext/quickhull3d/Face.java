@@ -16,35 +16,63 @@ package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
 import java.util.*;
 
+// TODO: Auto-generated Javadoc
 /**
  * Basic triangular face used to form the hull.
  *
- * <p>The information stored for each face consists of a planar
+ *  The information stored for each face consists of a planar
  * normal, a planar offset, and a doubly-linked list of three <a
- * href=HalfEdge>HalfEdges</a> which surround the face in a
+ * href=HalfEdge>HalfEdges  which surround the face in a
  * counter-clockwise direction.
  *
  * @author John E. Lloyd, Fall 2004 */
 class Face
 {
+	
+	/** The he0. */
 	HalfEdge he0;
+	
+	/** The normal. */
 	private Vector3d normal;
+	
+	/** The area. */
 	double area;
+	
+	/** The centroid. */
 	private Point3d centroid;
+	
+	/** The plane offset. */
 	double planeOffset;
+	
+	/** The index. */
 	int index;
+	
+	/** The num verts. */
 	int numVerts;
 
+	/** The next. */
 	Face next;
 
+	/** The Constant VISIBLE. */
 	static final int VISIBLE = 1;
+	
+	/** The Constant NON_CONVEX. */
 	static final int NON_CONVEX = 2;
+	
+	/** The Constant DELETED. */
 	static final int DELETED = 3;
 
+	/** The mark. */
 	int mark = VISIBLE;
 
+	/** The outside. */
 	Vertex outside;
 
+	/**
+	 * Compute centroid.
+	 *
+	 * @param centroid the centroid
+	 */
 	public void computeCentroid (Point3d centroid)
 	 {
 	   centroid.setZero();
@@ -57,6 +85,12 @@ class Face
 	   centroid.scale (1/(double)numVerts);
 	 }
 
+	/**
+	 * Compute normal.
+	 *
+	 * @param normal the normal
+	 * @param minArea the min area
+	 */
 	public void computeNormal (Vector3d normal, double minArea)
 	 {
 	   computeNormal(normal);
@@ -94,6 +128,11 @@ class Face
 	    }
 	 }
 
+	/**
+	 * Compute normal.
+	 *
+	 * @param normal the normal
+	 */
 	public void computeNormal (Vector3d normal)
 	 {
 	   HalfEdge he1 = he0.next;
@@ -133,6 +172,9 @@ class Face
 	   normal.scale (1/area);
 	 }
 
+	/**
+	 * Compute normal and centroid.
+	 */
 	private void computeNormalAndCentroid()
 	 {
 	   computeNormal (normal);
@@ -151,6 +193,11 @@ class Face
 	    }
 	 }
 
+	/**
+	 * Compute normal and centroid.
+	 *
+	 * @param minArea the min area
+	 */
 	private void computeNormalAndCentroid(double minArea)
 	 {
 	   computeNormal (normal, minArea);
@@ -158,6 +205,14 @@ class Face
 	   planeOffset = normal.dot(centroid);
 	 }
 
+	/**
+	 * Creates the triangle.
+	 *
+	 * @param v0 the v0
+	 * @param v1 the v1
+	 * @param v2 the v2
+	 * @return the face
+	 */
 	public static Face createTriangle (Vertex v0, Vertex v1, Vertex v2)
 	 {
 	   return createTriangle (v0, v1, v2, 0);
@@ -169,6 +224,8 @@ class Face
 	 * @param v0 first vertex
 	 * @param v1 second vertex
 	 * @param v2 third vertex
+	 * @param minArea the min area
+	 * @return the face
 	 */
 	public static Face createTriangle (Vertex v0, Vertex v1, Vertex v2,
 					   double minArea)
@@ -192,6 +249,13 @@ class Face
 	   return face;
 	 }
 
+	/**
+	 * Creates the.
+	 *
+	 * @param vtxArray the vtx array
+	 * @param indices the indices
+	 * @return the face
+	 */
 	public static Face create (Vertex[] vtxArray, int[] indices)
 	 {
 	   Face face = new Face();
@@ -215,6 +279,9 @@ class Face
 	   return face;	   
 	 }
 
+	/**
+	 * Instantiates a new face.
+	 */
 	public Face ()
 	 { 
 	   normal = new Vector3d();
@@ -242,6 +309,11 @@ class Face
 	   return he;
 	 }
 
+	/**
+	 * Gets the first edge.
+	 *
+	 * @return the first edge
+	 */
 	public HalfEdge getFirstEdge()
 	 { return he0;
 	 }
@@ -289,16 +361,31 @@ class Face
 	   return normal;
 	 }
 
+	/**
+	 * Gets the centroid.
+	 *
+	 * @return the centroid
+	 */
 	public Point3d getCentroid ()
 	 {
 	   return centroid;
 	 }
 
+	/**
+	 * Num vertices.
+	 *
+	 * @return the int
+	 */
 	public int numVertices()
 	 {
 	   return numVerts;
 	 }
 
+	/**
+	 * Gets the vertex string.
+	 *
+	 * @return the vertex string
+	 */
 	public String getVertexString ()
 	 {
 	   String s = null;
@@ -316,6 +403,11 @@ class Face
 	   return s;
 	 }
 
+	/**
+	 * Gets the vertex indices.
+	 *
+	 * @param idxs the idxs
+	 */
 	public void getVertexIndices (int[] idxs)
 	 {
 	   HalfEdge he = he0;
@@ -327,6 +419,13 @@ class Face
 	   while (he != he0);
 	 }
 
+	/**
+	 * Connect half edges.
+	 *
+	 * @param hedgePrev the hedge prev
+	 * @param hedge the hedge
+	 * @return the face
+	 */
 	private Face connectHalfEdges (
 	   HalfEdge hedgePrev, HalfEdge hedge)
 	 {
@@ -373,6 +472,9 @@ class Face
 	   return discardedFace;
 	 }
 
+	/**
+	 * Check consistency.
+	 */
 	void checkConsistency()
 	 {
 	   // do a sanity check on the face
@@ -433,6 +535,13 @@ class Face
 
 	 }
 
+	/**
+	 * Merge adjacent face.
+	 *
+	 * @param hedgeAdj the hedge adj
+	 * @param discarded the discarded
+	 * @return the int
+	 */
 	public int mergeAdjacentFace (HalfEdge hedgeAdj,
 				      Face[] discarded)
 	 {
@@ -489,6 +598,13 @@ class Face
 	   return numDiscarded;
 	 }
 
+	/**
+	 * Area squared.
+	 *
+	 * @param hedge0 the hedge0
+	 * @param hedge1 the hedge1
+	 * @return the double
+	 */
 	private double areaSquared (HalfEdge hedge0, HalfEdge hedge1)
 	 {
 	   // return the squared area of the triangle defined
@@ -514,6 +630,12 @@ class Face
 	   return x*x + y*y + z*z;	   
 	 }
 
+	/**
+	 * Triangulate.
+	 *
+	 * @param newFaces the new faces
+	 * @param minArea the min area
+	 */
 	public void triangulate (FaceList newFaces, double minArea)
 	 {
 	   HalfEdge hedge;

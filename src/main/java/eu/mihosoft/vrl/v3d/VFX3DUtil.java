@@ -27,7 +27,6 @@ package eu.mihosoft.vrl.v3d;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Node;
-
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.TriangleMesh;
@@ -39,16 +38,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.transform.Rotate;
 
+// TODO: Auto-generated Javadoc
 /**
- * Utility class that allows to visualize meshes created with null {@link MathUtil#evaluateFunction(
- *   eu.mihosoft.vrl.javaone2013.math.Function2D,
- *   int, int, float, float, float, double, double, double, double)
- * }.
+ * Utility class that allows to visualize meshes created with null .
  *
- * @author Michael Hoffer <info@michaelhoffer.de>
+ * @author Michael Hoffer info@michaelhoffer.de
  */
 public class VFX3DUtil {
 
+    /**
+     * Instantiates a new VF x3 d util.
+     */
     private VFX3DUtil() {
         throw new AssertionError("don't instanciate me!");
     }

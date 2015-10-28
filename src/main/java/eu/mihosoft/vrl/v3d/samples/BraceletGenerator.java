@@ -15,12 +15,19 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class BraceletGenerator.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class BraceletGenerator {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public static CSG toCSG() {
 
         double sphereRadius = 10;
@@ -66,6 +73,12 @@ public class BraceletGenerator {
 
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         
         FileUtil.write(Paths.get("sample.stl"), toCSG().toStlString());

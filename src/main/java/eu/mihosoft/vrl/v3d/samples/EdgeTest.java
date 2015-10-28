@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO: Auto-generated Javadoc
 /**
  * Average Chicken Egg.
  *
@@ -28,6 +29,12 @@ import java.util.stream.Stream;
  */
 public class EdgeTest {
 
+    /**
+     * To csg.
+     *
+     * @param optimized the optimized
+     * @return the csg
+     */
     public CSG toCSG(boolean optimized) {
         double radius = 22;
         double stretch = 1.50;
@@ -58,6 +65,12 @@ public class EdgeTest {
 //        return csg;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("edge-test.stl"), new EdgeTest().toCSG(true).toStlString());
         FileUtil.write(Paths.get("edge-test-orig.stl"), new EdgeTest().toCSG(false).toStlString());

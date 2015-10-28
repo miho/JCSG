@@ -15,31 +15,53 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class BatteryHolder.
  *
  * @author miho
  */
 public class BatteryHolder {
 
+    /** The mounting thickness. */
     private double mountingThickness = 2.0;
 
+    /** The board to board spacing. */
     private double boardToBoardSpacing = 30.0;
 
+    /** The connector depth. */
     private double connectorDepth = 15;
 
+    /** The peg height. */
     private double pegHeight = 1;
+    
+    /** The peg tooth height. */
     private double pegToothHeight = 0.3;
+    
+    /** The peg overlap. */
     private double pegOverlap = 0.6;
 
+    /** The board mounting width. */
     private double boardMountingWidth = 8.11;
 
+    /** The battery height. */
     private double batteryHeight = 22;
+    
+    /** The battery length. */
     private double batteryLength = 54;
 
+    /** The foot height. */
     private double footHeight = 25;
+    
+    /** The foot size. */
     private double footSize = 10;
 
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         double th = 2;
@@ -76,6 +98,12 @@ public class BatteryHolder {
         );
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         BatteryHolder arConnect = new BatteryHolder();

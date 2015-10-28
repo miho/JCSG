@@ -1,15 +1,27 @@
 package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class QhullTest.
+ */
 class QhullTest
 {
+	
+	/** The coords. */
 	static double[] coords = new double[] 
 	{
 	};
 
+	/** The faces. */
 	static int[][] faces = new int[][]
 	{
 	};
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main (String[] args)
 	 {
  	   QuickHull3D hull = new QuickHull3D ();

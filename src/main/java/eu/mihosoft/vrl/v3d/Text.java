@@ -7,6 +7,10 @@ import java.awt.font.TextLayout;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Text.
+ */
 public class Text {
     /**
      * Extrudes the specified path (convex or concave polygon without holes or

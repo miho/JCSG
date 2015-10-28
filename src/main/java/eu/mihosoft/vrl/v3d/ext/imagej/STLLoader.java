@@ -21,6 +21,10 @@ import java.util.ArrayList;
 
 import javax.vecmath.Point3f;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class STLLoader.
+ */
 public class STLLoader {
 
 //        /**
@@ -39,23 +43,43 @@ public class STLLoader {
 //                return sl.meshes;
 //        }
 //
+/**
+ * Instantiates a new STL loader.
+ */
 //        private HashMap<String, CustomMesh> meshes;
     public STLLoader() {
     }
 
+    /** The line. */
     String line;
+    
+    /** The in. */
     BufferedReader in;
 
+    /** The vertices. */
     // attributes of the currently read mesh
     private ArrayList<Point3f> vertices = new ArrayList<>();
+    
+    /** The normal. */
     private Point3f normal = new Point3f(0.0f, 0.0f, 0.0f); //to be used for file checking
+    
+    /** The fis. */
     private FileInputStream fis;
+    
+    /** The triangles. */
     private int triangles;
 //    private DecimalFormat decimalFormat = new DecimalFormat("0.0E0");
 
 
 
-    public ArrayList<Point3f> parse(File f) throws IOException {
+    /**
+ * Parses the.
+ *
+ * @param f the f
+ * @return the array list
+ * @throws IOException Signals that an I/O exception has occurred.
+ */
+public ArrayList<Point3f> parse(File f) throws IOException {
         vertices.clear();
 
                 // determine if this is a binary or ASCII STL
@@ -89,6 +113,11 @@ public class STLLoader {
         return vertices;
     }
 
+    /**
+     * Parses the ascii.
+     *
+     * @param f the f
+     */
     private void parseAscii(File f) {
         try {
             in = new BufferedReader(new FileReader(f));
@@ -119,6 +148,11 @@ public class STLLoader {
         }
     }
 
+    /**
+     * Parses the binary.
+     *
+     * @param f the f
+     */
     private void parseBinary(File f) {
         vertices = new ArrayList<Point3f>();
         try {
@@ -162,11 +196,27 @@ public class STLLoader {
 //        return decimalFormat.parse(string).floatValue();
 //    }
     
-    private float parseFloat(String string) throws ParseException {
+    /**
+ * Parses the float.
+ *
+ * @param string the string
+ * @return the float
+ * @throws ParseException the parse exception
+ */
+private float parseFloat(String string) throws ParseException {
 
         return Float.parseFloat(string);
     }
 
+    /**
+     * Le bytes to float.
+     *
+     * @param b0 the b0
+     * @param b1 the b1
+     * @param b2 the b2
+     * @param b3 the b3
+     * @return the float
+     */
     private float leBytesToFloat(byte b0, byte b1, byte b2, byte b3) {
         return Float.intBitsToFloat((((b3 & 0xff) << 24) | ((b2 & 0xff) << 16)
                 | ((b1 & 0xff) << 8) | (b0 & 0xff)));

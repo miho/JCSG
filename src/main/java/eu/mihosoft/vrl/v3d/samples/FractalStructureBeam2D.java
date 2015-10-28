@@ -14,12 +14,20 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class FractalStructureBeam2D.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class FractalStructureBeam2D {
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         CSG result = new FractalStructureBeam2D().toCSG();
@@ -32,10 +40,24 @@ public class FractalStructureBeam2D {
 
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     private CSG toCSG() {
         return createBeam(5, new Vector3d(0, 0), new Vector3d(10, 0), 2);
     }
 
+    /**
+     * Creates the beam.
+     *
+     * @param b the b
+     * @param start the start
+     * @param stop the stop
+     * @param i the i
+     * @return the csg
+     */
     private CSG createBeam(double b, Vector3d start, Vector3d stop, int i) {
         if (i == 0) {
             return createBeamTerminal(b, start, stop);
@@ -112,6 +134,14 @@ public class FractalStructureBeam2D {
 //        }
     }
 
+    /**
+     * Creates the beam terminal.
+     *
+     * @param b the b
+     * @param start the start
+     * @param stop the stop
+     * @return the csg
+     */
     private CSG createBeamTerminal(double b, Vector3d start, Vector3d stop) {
         return new Cylinder(start, stop, b / 2.0, 4).toCSG();
     }

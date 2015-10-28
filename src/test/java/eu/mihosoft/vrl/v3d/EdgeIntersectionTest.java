@@ -9,12 +9,17 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class EdgeIntersectionTest.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class EdgeIntersectionTest {
 
+    /**
+     * Closest point test.
+     */
     @Test
     public void closestPointTest() {
 
@@ -45,6 +50,9 @@ public class EdgeIntersectionTest {
                 new Vector3d(4, 3, 6.5));
     }
 
+    /**
+     * Intersection test.
+     */
     @Test
     public void intersectionTest() {
         // closest point is e1p2 which does not exist on e2. thus, the expected
@@ -75,6 +83,15 @@ public class EdgeIntersectionTest {
                 new Vector3d(4, 3, 6.5));
     }
 
+    /**
+     * Creates the intersection test.
+     *
+     * @param e1p1 the e1p1
+     * @param e1p2 the e1p2
+     * @param e2p1 the e2p1
+     * @param e2p2 the e2p2
+     * @param expectedPoint the expected point
+     */
     private static void createIntersectionTest(
             Vector3d e1p1, Vector3d e1p2,
             Vector3d e2p1, Vector3d e2p2,
@@ -107,6 +124,15 @@ public class EdgeIntersectionTest {
         }
     }
 
+    /**
+     * Creates the closest point test.
+     *
+     * @param e1p1 the e1p1
+     * @param e1p2 the e1p2
+     * @param e2p1 the e2p1
+     * @param e2p2 the e2p2
+     * @param expectedPoint the expected point
+     */
     private static void createClosestPointTest(
             Vector3d e1p1, Vector3d e1p2,
             Vector3d e2p1, Vector3d e2p2,

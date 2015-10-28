@@ -46,51 +46,52 @@ import java.util.RandomAccess;
 import java.util.Vector;
 
 
+// TODO: Auto-generated Javadoc
 /**
- * Resizable-array implementation of the <tt>List&lt;Integer&gt;</tt> interface.  Implements all optional list
- * operations, and doesn't permit <tt>null</tt>s.  In addition to implementing the <tt>List</tt> interface, this class
+ * Resizable-array implementation of the  List&lt;Integer&gt;  interface.  Implements all optional list
+ * operations, and doesn't permit  null s.  In addition to implementing the  List  interface, this class
  * provides methods to manipulate the size of the array that is used internally to store the list.  (This class is
- * roughly equivalent to <tt>Vector</tt>, except that it is unsynchronized.)
- * <p/>
- * <p>The <tt>size</tt>, <tt>isEmpty</tt>, <tt>get</tt>, <tt>set</tt>, <tt>iterator</tt>, and <tt>listIterator</tt>
- * operations run in constant time.  The <tt>add</tt> operation runs in <i>amortized constant time</i>, that is, adding
+ * roughly equivalent to  Vector , except that it is unsynchronized.)
+ *  
+ *  The  size ,  isEmpty ,  get ,  set ,  iterator , and  listIterator 
+ * operations run in constant time.  The  add  operation runs in  amortized constant time , that is, adding
  * n elements requires O(n) time.  All of the other operations run in linear time (roughly speaking).  The constant
- * factor is low compared to that for the <tt>LinkedList</tt> implementation.
- * <p/>
- * <p>Each <tt>ArrayList</tt> instance has a <i>capacity</i>.  The capacity is the size of the array used to store the
+ * factor is low compared to that for the  LinkedList  implementation.
+ *  
+ *  Each  ArrayList  instance has a  capacity .  The capacity is the size of the array used to store the
  * elements in the list.  It is always at least as large as the list size.  As elements are added to an ArrayList, its
  * capacity grows automatically.  The details of the growth policy are not specified beyond the fact that adding an
  * element has constant amortized time cost.
- * <p/>
- * <p>An application can increase the capacity of an <tt>ArrayList</tt> instance before adding a large number of
- * elements using the <tt>ensureCapacity</tt> operation.  This may reduce the amount of incremental reallocation.
- * <p/>
- * <p><strong>Note that this implementation is not synchronized.</strong> If multiple threads access an
- * <tt>ArrayList</tt> instance concurrently, and at least one of the threads modifies the list structurally, it
- * <i>must</i> be synchronized externally.  (A structural modification is any operation that adds or deletes one or more
+ *  
+ *  An application can increase the capacity of an  ArrayList  instance before adding a large number of
+ * elements using the  ensureCapacity  operation.  This may reduce the amount of incremental reallocation.
+ *  
+ *   Note that this implementation is not synchronized.  If multiple threads access an
+ *  ArrayList  instance concurrently, and at least one of the threads modifies the list structurally, it
+ *  must  be synchronized externally.  (A structural modification is any operation that adds or deletes one or more
  * elements, or explicitly resizes the backing array; merely setting the value of an element is not a structural
  * modification.)  This is typically accomplished by synchronizing on some object that naturally encapsulates the list.
- * <p/>
+ *  
  * If no such object exists, the list should be "wrapped" using the {@link Collections#synchronizedList
  * Collections.synchronizedList} method.  This is best done at creation time, to prevent accidental
- * unsynchronized access to the list:<pre>
- *   List list = Collections.synchronizedList(new ArrayList(...));</pre>
- * <p/>
- * <p><a name="fail-fast"/> The iterators returned by this class's {@link #iterator() iterator} and {@link
- * #listIterator(int) listIterator} methods are <em>fail-fast</em>: if the list is structurally modified at any time
+ * unsynchronized access to the list: 
+ *   List list = Collections.synchronizedList(new ArrayList(...)); 
+ *  
+ *    name="fail-fast" The iterators returned by this class's {@link #iterator() iterator} and {@link
+ * #listIterator(int) listIterator} methods are  fail-fast : if the list is structurally modified at any time
  * after the iterator is created, in any way except through the iterator's own {@link ListIterator#remove() remove} or
  * {@link ListIterator#add(Object) add} methods, the iterator will throw a {@link ConcurrentModificationException}.
  * Thus, in the face of concurrent modification, the iterator fails quickly and cleanly, rather than risking arbitrary,
  * non-deterministic behavior at an undetermined time in the future.
- * <p/>
- * <p>Note that the fail-fast behavior of an iterator cannot be guaranteed as it is, generally speaking, impossible to
+ *  
+ *  Note that the fail-fast behavior of an iterator cannot be guaranteed as it is, generally speaking, impossible to
  * make any hard guarantees in the presence of unsynchronized concurrent modification.  Fail-fast iterators throw {@code
  * ConcurrentModificationException} on a best-effort basis. Therefore, it would be wrong to write a program that
- * depended on this exception for its correctness:  <i>the fail-fast behavior of iterators should be used only to detect
- * bugs.</i>
- * <p/>
- * <p>This class is a member of the <a href="{@docRoot}/../technotes/guides/collections/index.html"> Java Collections
- * Framework</a>.
+ * depended on this exception for its correctness:   the fail-fast behavior of iterators should be used only to detect
+ * bugs. 
+ *  
+ *  This class is a member of the  ="{@docRoot}/../technotes/guides/collections/ index.html" Java Collections
+ * Framework .
  *
  * @see Collection
  * @see List
@@ -154,8 +155,8 @@ public class IntegerArrayList extends AbstractList<Integer>
     }
 
     /**
-     * Trims the capacity of this <tt>ArrayList</tt> instance to be the list current size.  An application can use this
-     * operation to minimize the storage of an <tt>ArrayList</tt> instance.
+     * Trims the capacity of this  ArrayList  instance to be the list current size.  An application can use this
+     * operation to minimize the storage of an  ArrayList  instance.
      */
     public void trimToSize() {
         modCount++;
@@ -166,7 +167,7 @@ public class IntegerArrayList extends AbstractList<Integer>
     }
 
     /**
-     * Increases the capacity of this <tt>ArrayList</tt> instance, if necessary, to ensure that it can hold at least the
+     * Increases the capacity of this  ArrayList  instance, if necessary, to ensure that it can hold at least the
      * number of elements specified by the minimum capacity argument.
      *
      * @param minCapacity the desired minimum capacity
@@ -177,6 +178,11 @@ public class IntegerArrayList extends AbstractList<Integer>
         }
     }
 
+    /**
+     * Ensure capacity internal.
+     *
+     * @param minCapacity the min capacity
+     */
     private void ensureCapacityInternal(int minCapacity) {
         modCount++;
         // overflow-conscious code
@@ -209,6 +215,12 @@ public class IntegerArrayList extends AbstractList<Integer>
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
 
+    /**
+     * Huge capacity.
+     *
+     * @param minCapacity the min capacity
+     * @return the int
+     */
     private static int hugeCapacity(int minCapacity) {
         if (minCapacity < 0) // overflow
             throw new OutOfMemoryError();
@@ -227,20 +239,20 @@ public class IntegerArrayList extends AbstractList<Integer>
     }
 
     /**
-     * Returns <tt>true</tt> if this list contains no elements.
+     * Returns  true  if this list contains no elements.
      *
-     * @return <tt>true</tt> if this list contains no elements
+     * @return  true  if this list contains no elements
      */
     @Override public boolean isEmpty() {
         return size == 0;
     }
 
     /**
-     * Returns <tt>true</tt> if this list contains the specified element. More formally, returns <tt>true</tt> if and
-     * only if this list contains at least one element <tt>e</tt> such that <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
+     * Returns  true  if this list contains the specified element. More formally, returns  true  if and
+     * only if this list contains at least one element  e  such that  (o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e)) .
      *
      * @param o element whose presence in this list is to be tested
-     * @return <tt>true</tt> if this list contains the specified element
+     * @return  true  if this list contains the specified element
      */
     @Override public boolean contains(Object o) {
         return indexOf(o) >= 0;
@@ -248,8 +260,11 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Returns the index of the first occurrence of the specified element in this list, or -1 if this list does not
-     * contain the element. More formally, returns the lowest index <tt>i</tt> such that
-     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>, or -1 if there is no such index.
+     * contain the element. More formally, returns the lowest index  i  such that
+     *  (o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i))) , or -1 if there is no such index.
+     *
+     * @param o the o
+     * @return the int
      */
     @Override public int indexOf(Object o) {
         if (o instanceof Integer) {
@@ -264,8 +279,11 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Returns the index of the last occurrence of the specified element in this list, or -1 if this list does not
-     * contain the element. More formally, returns the highest index <tt>i</tt> such that
-     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>, or -1 if there is no such index.
+     * contain the element. More formally, returns the highest index  i  such that
+     *  (o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i))) , or -1 if there is no such index.
+     *
+     * @param o the o
+     * @return the int
      */
     @Override public int lastIndexOf(Object o) {
         if (o instanceof Integer) {
@@ -277,9 +295,9 @@ public class IntegerArrayList extends AbstractList<Integer>
     }
 
     /**
-     * Returns a shallow copy of this <tt>ArrayList</tt> instance.  (The elements themselves are not copied.)
+     * Returns a shallow copy of this  ArrayList  instance.  (The elements themselves are not copied.)
      *
-     * @return a clone of this <tt>ArrayList</tt> instance
+     * @return a clone of this  ArrayList  instance
      */
     @Override public Object clone() {
         try {
@@ -296,11 +314,11 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Returns an array containing all of the elements in this list in proper sequence (from first to last element).
-     * <p/>
-     * <p>The returned array will be "safe" in that no references to it are maintained by this list.  (In other words,
+     *  
+     *  The returned array will be "safe" in that no references to it are maintained by this list.  (In other words,
      * this method must allocate a new array).  The caller is thus free to modify the returned array.
-     * <p/>
-     * <p>This method acts as bridge between array-based and collection-based APIs.
+     *  
+     *  This method acts as bridge between array-based and collection-based APIs.
      *
      * @return an array containing all of the elements in this list in proper sequence
      */
@@ -317,12 +335,13 @@ public class IntegerArrayList extends AbstractList<Integer>
      * runtime type of the returned array is that of the specified array.  If the list fits in the specified array, it
      * is returned therein.  Otherwise, a new array is allocated with the runtime type of the specified array and the
      * size of this list.
-     * <p/>
-     * <p>If the list fits in the specified array with room to spare (i.e., the array has more elements than the list),
-     * the element in the array immediately following the end of the collection is set to <tt>null</tt>.  (This is
-     * useful in determining the length of the list <i>only</i> if the caller knows that the list does not contain any
+     *  
+     *  If the list fits in the specified array with room to spare (i.e., the array has more elements than the list),
+     * the element in the array immediately following the end of the collection is set to  null .  (This is
+     * useful in determining the length of the list  only  if the caller knows that the list does not contain any
      * null elements.)
      *
+     * @param <T> the generic type
      * @param a the array into which the elements of the list are to be stored, if it is big enough; otherwise, a new
      *          array of the same runtime type is allocated for this purpose.
      * @return an array containing the elements of the list
@@ -342,6 +361,11 @@ public class IntegerArrayList extends AbstractList<Integer>
         return a;
     }
 
+    /**
+     * To int array.
+     *
+     * @return the int[]
+     */
     public int[] toIntArray() {
         int[] res = new int[size];
         System.arraycopy(elementData, 0, res, 0, size);
@@ -350,6 +374,12 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     // Positional Access Operations
 
+    /**
+     * Element data.
+     *
+     * @param index the index
+     * @return the integer
+     */
     @SuppressWarnings("unchecked") Integer elementData(int index) {
         return (Integer) elementData[index];
     }
@@ -387,7 +417,7 @@ public class IntegerArrayList extends AbstractList<Integer>
      * Appends the specified element to the end of this list.
      *
      * @param e element to be appended to this list
-     * @return <tt>true</tt> (as specified by {@link Collection#add})
+     * @return  true  (as specified by {@link Collection#add})
      */
     @Override public boolean add(Integer e) {
         ensureCapacityInternal(size + 1);  // Increments modCount!!
@@ -440,13 +470,13 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Removes the first occurrence of the specified element from this list, if it is present.  If the list does not
-     * contain the element, it is unchanged.  More formally, removes the element with the lowest index <tt>i</tt> such
-     * that <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt> (if such an element exists).
-     * Returns <tt>true</tt> if this list contained the specified element (or equivalently, if this list changed as a
+     * contain the element, it is unchanged.  More formally, removes the element with the lowest index  i  such
+     * that  (o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))  (if such an element exists).
+     * Returns  true  if this list contained the specified element (or equivalently, if this list changed as a
      * result of the call).
      *
      * @param o element to be removed from this list, if present
-     * @return <tt>true</tt> if this list contained the specified element
+     * @return  true  if this list contained the specified element
      */
     @Override public boolean remove(Object o) {
         if (o instanceof Integer) {
@@ -459,6 +489,11 @@ public class IntegerArrayList extends AbstractList<Integer>
         return false;
     }
 
+    /**
+     * Fast remove.
+     *
+     * @param index the index
+     */
     /*
      * Private remove method that skips bounds checking and does not
      * return the value removed.
@@ -491,7 +526,7 @@ public class IntegerArrayList extends AbstractList<Integer>
      * undefined if the specified collection is this list, and this list is nonempty.)
      *
      * @param c collection containing elements to be added to this list
-     * @return <tt>true</tt> if this list changed as a result of the call
+     * @return  true  if this list changed as a result of the call
      * @throws NullPointerException if the specified collection is null
      */
     @Override public boolean addAll(Collection<? extends Integer> c) {
@@ -511,7 +546,7 @@ public class IntegerArrayList extends AbstractList<Integer>
      *
      * @param index index at which to insert the first element from the specified collection
      * @param c     collection containing elements to be added to this list
-     * @return <tt>true</tt> if this list changed as a result of the call
+     * @return  true  if this list changed as a result of the call
      * @throws IndexOutOfBoundsException {@inheritDoc}
      * @throws NullPointerException      if the specified collection is null
      */
@@ -538,6 +573,8 @@ public class IntegerArrayList extends AbstractList<Integer>
      * toIndex}, exclusive. Shifts any succeeding elements to the left (reduces their index). This call shortens the
      * list by {@code (toIndex - fromIndex)} elements. (If {@code toIndex==fromIndex}, this operation has no effect.)
      *
+     * @param fromIndex the from index
+     * @param toIndex the to index
      * @throws IndexOutOfBoundsException if {@code fromIndex} or {@code toIndex} is out of range ({@code fromIndex < 0
      *                                   || fromIndex >= size() || toIndex > size() || toIndex < fromIndex})
      */
@@ -558,13 +595,19 @@ public class IntegerArrayList extends AbstractList<Integer>
      * Checks if the given index is in range.  If not, throws an appropriate runtime exception.  This method does *not*
      * check if the index is negative: It is always used immediately prior to an array access, which throws an
      * ArrayIndexOutOfBoundsException if index is negative.
+     *
+     * @param index the index
      */
     private void rangeCheck(int index) {
         if (index >= size)
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
     }
 
-    /** A version of rangeCheck used by add and addAll. */
+    /**
+     *  A version of rangeCheck used by add and addAll.
+     *
+     * @param index the index
+     */
     private void rangeCheckForAdd(int index) {
         if (index > size || index < 0)
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
@@ -573,6 +616,9 @@ public class IntegerArrayList extends AbstractList<Integer>
     /**
      * Constructs an IndexOutOfBoundsException detail message. Of the many possible refactorings of the error handling
      * code, this "outlining" performs best with both server and client VMs.
+     *
+     * @param index the index
+     * @return the string
      */
     private String outOfBoundsMsg(int index) {
         return "Index: " + index + ", Size: " + size;
@@ -584,9 +630,9 @@ public class IntegerArrayList extends AbstractList<Integer>
      * @param c collection containing elements to be removed from this list
      * @return {@code true} if this list changed as a result of the call
      * @throws ClassCastException   if the class of an element of this list is incompatible with the specified
-     *                              collection (<a href="Collection.html#optional-restrictions">optional</a>)
+     *                              collection ( ="Collection.html#optional-restrictions"optional )
      * @throws NullPointerException if this list contains a null element and the specified collection does not permit
-     *                              null elements (<a href="Collection.html#optional-restrictions">optional</a>), or if
+     *                              null elements ( ="Collection.html#optional-restrictions"optional ), or if
      *                              the specified collection is null
      * @see Collection#contains(Object)
      */
@@ -601,9 +647,9 @@ public class IntegerArrayList extends AbstractList<Integer>
      * @param c collection containing elements to be retained in this list
      * @return {@code true} if this list changed as a result of the call
      * @throws ClassCastException   if the class of an element of this list is incompatible with the specified
-     *                              collection (<a href="Collection.html#optional-restrictions">optional</a>)
+     *                              collection ( ="Collection.html#optional-restrictions"optional )
      * @throws NullPointerException if this list contains a null element and the specified collection does not permit
-     *                              null elements (<a href="Collection.html#optional-restrictions">optional</a>), or if
+     *                              null elements ( ="Collection.html#optional-restrictions"optional ), or if
      *                              the specified collection is null
      * @see Collection#contains(Object)
      */
@@ -611,6 +657,13 @@ public class IntegerArrayList extends AbstractList<Integer>
         return batchRemove(c, true);
     }
 
+    /**
+     * Batch remove.
+     *
+     * @param c the c
+     * @param complement the complement
+     * @return true, if successful
+     */
     private boolean batchRemove(Collection<?> c, boolean complement) {
         final int[] elementData = this.elementData;
         int r = 0, w = 0;
@@ -641,10 +694,11 @@ public class IntegerArrayList extends AbstractList<Integer>
     }
 
     /**
-     * Save the state of the <tt>ArrayList</tt> instance to a stream (that is, serialize it).
+     * Save the state of the  ArrayList  instance to a stream (that is, serialize it).
      *
-     * @serialData The length of the array backing the <tt>ArrayList</tt> instance is emitted (int), followed by all of
-     * its elements (each an <tt>Object</tt>) in the proper order.
+     * @param s the s
+     * @serialData The length of the array backing the  ArrayList  instance is emitted (int), followed by all of
+     * its elements (each an  Object ) in the proper order.
      */
     private void writeObject(java.io.ObjectOutputStream s)
             throws java.io.IOException {
@@ -665,7 +719,12 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     }
 
-    /** Reconstitute the <tt>ArrayList</tt> instance from a stream (that is, deserialize it). */
+    /**
+     *  Reconstitute the  ArrayList  instance from a stream (that is, deserialize it).
+     *
+     * @param s the s
+     * @throws ClassNotFoundException the class not found exception
+     */
     private void readObject(java.io.ObjectInputStream s)
             throws java.io.IOException, ClassNotFoundException {
         // Read in size, and any hidden stuff
@@ -685,9 +744,11 @@ public class IntegerArrayList extends AbstractList<Integer>
      * in the list. The specified index indicates the first element that would be returned by an initial call to {@link
      * ListIterator#next next}. An initial call to {@link ListIterator#previous previous} would return the element with
      * the specified index minus one.
-     * <p/>
-     * <p>The returned list iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
+     *  
+     *  The returned list iterator is  ="#fail-fast" fail-fast  .
      *
+     * @param index the index
+     * @return the list iterator
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     @Override public ListIterator<Integer> listIterator(int index) {
@@ -698,9 +759,10 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Returns a list iterator over the elements in this list (in proper sequence).
-     * <p/>
-     * <p>The returned list iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
+     *  
+     *  The returned list iterator is  ="#fail-fast" fail-fast  .
      *
+     * @return the list iterator
      * @see #listIterator(int)
      */
     @Override public ListIterator<Integer> listIterator() {
@@ -709,8 +771,8 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Returns an iterator over the elements in this list in proper sequence.
-     * <p/>
-     * <p>The returned iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
+     *  
+     *  The returned iterator is  ="#fail-fast"  fail-fast  .
      *
      * @return an iterator over the elements in this list in proper sequence
      */
@@ -720,14 +782,26 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /** An optimized version of AbstractList.Itr */
     private class Itr implements Iterator<Integer> {
+        
+        /** The cursor. */
         int cursor;       // index of next element to return
+        
+        /** The last ret. */
         int lastRet = -1; // index of last element returned; -1 if no such
+        
+        /** The expected mod count. */
         int expectedModCount = modCount;
 
+        /* (non-Javadoc)
+         * @see java.util.Iterator#hasNext()
+         */
         @Override public boolean hasNext() {
             return cursor != size;
         }
 
+        /* (non-Javadoc)
+         * @see java.util.Iterator#next()
+         */
         @SuppressWarnings("unchecked")
         @Override public Integer next() {
             checkForComodification();
@@ -741,6 +815,9 @@ public class IntegerArrayList extends AbstractList<Integer>
             return (Integer) elementData[lastRet = i];
         }
 
+        /* (non-Javadoc)
+         * @see java.util.Iterator#remove()
+         */
         @Override public void remove() {
             if (lastRet < 0)
                 throw new IllegalStateException();
@@ -756,6 +833,9 @@ public class IntegerArrayList extends AbstractList<Integer>
             }
         }
 
+        /**
+         * Check for comodification.
+         */
         final void checkForComodification() {
             if (modCount != expectedModCount)
                 throw new ConcurrentModificationException();
@@ -764,23 +844,41 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /** An optimized version of AbstractList.ListItr */
     private class ListItr extends Itr implements ListIterator<Integer> {
+        
+        /**
+         * Instantiates a new list itr.
+         *
+         * @param index the index
+         */
         ListItr(int index) {
             super();
             cursor = index;
         }
 
+        /* (non-Javadoc)
+         * @see java.util.ListIterator#hasPrevious()
+         */
         @Override public boolean hasPrevious() {
             return cursor != 0;
         }
 
+        /* (non-Javadoc)
+         * @see java.util.ListIterator#nextIndex()
+         */
         @Override public int nextIndex() {
             return cursor;
         }
 
+        /* (non-Javadoc)
+         * @see java.util.ListIterator#previousIndex()
+         */
         @Override public int previousIndex() {
             return cursor - 1;
         }
 
+        /* (non-Javadoc)
+         * @see java.util.ListIterator#previous()
+         */
         @SuppressWarnings("unchecked")
         @Override public Integer previous() {
             checkForComodification();
@@ -794,6 +892,9 @@ public class IntegerArrayList extends AbstractList<Integer>
             return (Integer) elementData[lastRet = i];
         }
 
+        /* (non-Javadoc)
+         * @see java.util.ListIterator#set(java.lang.Object)
+         */
         @Override public void set(Integer e) {
             if (lastRet < 0)
                 throw new IllegalStateException();
@@ -806,6 +907,9 @@ public class IntegerArrayList extends AbstractList<Integer>
             }
         }
 
+        /* (non-Javadoc)
+         * @see java.util.ListIterator#add(java.lang.Object)
+         */
         @Override public void add(Integer e) {
             checkForComodification();
 
@@ -826,21 +930,24 @@ public class IntegerArrayList extends AbstractList<Integer>
      * toIndex}, exclusive.  (If {@code fromIndex} and {@code toIndex} are equal, the returned list is empty.)  The
      * returned list is backed by this list, so non-structural changes in the returned list are reflected in this list,
      * and vice-versa. The returned list supports all of the optional list operations.
-     * <p/>
-     * <p>This method eliminates the need for explicit range operations (of the sort that commonly exist for arrays).
+     *  
+     *  This method eliminates the need for explicit range operations (of the sort that commonly exist for arrays).
      * Any operation that expects a list can be used as a range operation by passing a subList view instead of a whole
      * list.  For example, the following idiom removes a range of elements from a list:
-     * <pre>
+     *  
      *      list.subList(from, to).clear();
-     * </pre>
+     *  
      * Similar idioms may be constructed for {@link #indexOf(Object)} and {@link #lastIndexOf(Object)}, and all of the
      * algorithms in the {@link Collections} class can be applied to a subList.
-     * <p/>
-     * <p>The semantics of the list returned by this method become undefined if the backing list (i.e., this list) is
-     * <i>structurally modified</i> in any way other than via the returned list.  (Structural modifications are those
+     *  
+     *  The semantics of the list returned by this method become undefined if the backing list (i.e., this list) is
+     *  structurally modified  in any way other than via the returned list.  (Structural modifications are those
      * that change the size of this list, or otherwise perturb it in such a fashion that iterations in progress may
      * yield incorrect results.)
      *
+     * @param fromIndex the from index
+     * @param toIndex the to index
+     * @return the list
      * @throws IndexOutOfBoundsException {@inheritDoc}
      * @throws IllegalArgumentException  {@inheritDoc}
      */
@@ -849,6 +956,13 @@ public class IntegerArrayList extends AbstractList<Integer>
         return new IntegerArrayList.SubList(this, 0, fromIndex, toIndex);
     }
 
+    /**
+     * Sub list range check.
+     *
+     * @param fromIndex the from index
+     * @param toIndex the to index
+     * @param size the size
+     */
     static void subListRangeCheck(int fromIndex, int toIndex, int size) {
         if (fromIndex < 0)
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
@@ -860,12 +974,31 @@ public class IntegerArrayList extends AbstractList<Integer>
                             ") > toIndex(" + toIndex + ")");
     }
 
+    /**
+     * The Class SubList.
+     */
     private class SubList extends IntegerArrayList implements RandomAccess {
+        
+        /** The parent. */
         private final IntegerArrayList parent;
+        
+        /** The parent offset. */
         private final int parentOffset;
+        
+        /** The offset. */
         private final int offset;
+        
+        /** The size. */
         int size;
 
+        /**
+         * Instantiates a new sub list.
+         *
+         * @param parent the parent
+         * @param offset the offset
+         * @param fromIndex the from index
+         * @param toIndex the to index
+         */
         SubList(
                 IntegerArrayList parent,
                 int offset, int fromIndex, int toIndex) {
@@ -876,6 +1009,9 @@ public class IntegerArrayList extends AbstractList<Integer>
             this.modCount = IntegerArrayList.this.modCount;
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#toIntArray()
+         */
         @Override
         public int[] toIntArray() {
             int[] res = new int[size];
@@ -883,6 +1019,9 @@ public class IntegerArrayList extends AbstractList<Integer>
             return res;
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#set(int, java.lang.Integer)
+         */
         @Override public Integer set(int index, Integer e) {
             rangeCheck(index);
             checkForComodification();
@@ -891,17 +1030,26 @@ public class IntegerArrayList extends AbstractList<Integer>
             return oldValue;
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#get(int)
+         */
         @Override public Integer get(int index) {
             rangeCheck(index);
             checkForComodification();
             return IntegerArrayList.this.elementData(offset + index);
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#size()
+         */
         @Override public int size() {
             checkForComodification();
             return this.size;
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#add(int, java.lang.Integer)
+         */
         @Override public void add(int index, Integer e) {
             rangeCheckForAdd(index);
             checkForComodification();
@@ -910,6 +1058,9 @@ public class IntegerArrayList extends AbstractList<Integer>
             this.size++;
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#remove(int)
+         */
         @Override public Integer remove(int index) {
             rangeCheck(index);
             checkForComodification();
@@ -919,6 +1070,9 @@ public class IntegerArrayList extends AbstractList<Integer>
             return result;
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#removeRange(int, int)
+         */
         @Override protected void removeRange(int fromIndex, int toIndex) {
             checkForComodification();
             parent.removeRange(
@@ -928,10 +1082,16 @@ public class IntegerArrayList extends AbstractList<Integer>
             this.size -= toIndex - fromIndex;
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#addAll(java.util.Collection)
+         */
         @Override public boolean addAll(Collection<? extends Integer> c) {
             return addAll(this.size, c);
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#addAll(int, java.util.Collection)
+         */
         @Override public boolean addAll(int index, Collection<? extends Integer> c) {
             rangeCheckForAdd(index);
             int cSize = c.size();
@@ -945,10 +1105,16 @@ public class IntegerArrayList extends AbstractList<Integer>
             return true;
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#iterator()
+         */
         @Override public Iterator<Integer> iterator() {
             return listIterator();
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#listIterator(int)
+         */
         @Override public ListIterator<Integer> listIterator(final int index) {
             checkForComodification();
             rangeCheckForAdd(index);
@@ -1049,25 +1215,47 @@ public class IntegerArrayList extends AbstractList<Integer>
             };
         }
 
+        /* (non-Javadoc)
+         * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.IntegerArrayList#subList(int, int)
+         */
         @Override public List<Integer> subList(int fromIndex, int toIndex) {
             subListRangeCheck(fromIndex, toIndex, size);
             return new IntegerArrayList.SubList(this, offset, fromIndex, toIndex);
         }
 
+        /**
+         * Range check.
+         *
+         * @param index the index
+         */
         private void rangeCheck(int index) {
             if (index < 0 || index >= this.size)
                 throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
         }
 
+        /**
+         * Range check for add.
+         *
+         * @param index the index
+         */
         private void rangeCheckForAdd(int index) {
             if (index < 0 || index > this.size)
                 throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
         }
 
+        /**
+         * Out of bounds msg.
+         *
+         * @param index the index
+         * @return the string
+         */
         private String outOfBoundsMsg(int index) {
             return "Index: " + index + ", Size: " + this.size;
         }
 
+        /**
+         * Check for comodification.
+         */
         private void checkForComodification() {
             if (IntegerArrayList.this.modCount != this.modCount)
                 throw new ConcurrentModificationException();

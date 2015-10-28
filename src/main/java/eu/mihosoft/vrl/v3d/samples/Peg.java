@@ -1,7 +1,7 @@
 /**
  * Peg.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,7 +29,7 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d.samples;
 
@@ -38,9 +38,9 @@ import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 
+// TODO: Auto-generated Javadoc
 /**
- *
- * <pre>
+ *  
  *       ol
  *      | |
  *       __    _
@@ -60,8 +60,8 @@ import eu.mihosoft.vrl.v3d.Vector3d;
  *      pth   = peg tooth hight
  *      ptoph = peg top height
  *      ol    = overlap between board and peg
- * </pre>
- * 
+ *  .
+ *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Peg {
@@ -83,17 +83,39 @@ public class Peg {
     // bt    = board thickness
     // pth   = peg tooth hight
     // ptoph = peg top height
+    /** The outer offset. */
     // ol    = overlap between board and peg
     private double outerOffset = 4;
+    
+    /** The inner offset. */
     private double innerOffset = 4;
+    
+    /** The board mounting height. */
     private double boardMountingHeight = 4;
+    
+    /** The board thickness. */
     private double boardThickness = 2;
+    
+    /** The overlap. */
     private double overlap = 1;
+    
+    /** The peg depth. */
     private double pegDepth = 3;
+    
+    /** The peg tooth height. */
     private double pegToothHeight = 1;
+    
+    /** The peg top height. */
     private double pegTopHeight = 2;
+    
+    /** The board spacing. */
     private double boardSpacing = 0.2;
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         // inner offset
@@ -133,6 +155,8 @@ public class Peg {
     }
 
     /**
+     * Gets the outer offset.
+     *
      * @return the outerOffset
      */
     public double getOuterOffset() {
@@ -140,7 +164,10 @@ public class Peg {
     }
 
     /**
+     * Sets the outer offset.
+     *
      * @param outerOffset the outerOffset to set
+     * @return the peg
      */
     public Peg setOuterOffset(double outerOffset) {
         this.outerOffset = outerOffset;
@@ -149,6 +176,8 @@ public class Peg {
     }
 
     /**
+     * Gets the inner offset.
+     *
      * @return the innerOffset
      */
     public double getInnerOffset() {
@@ -156,7 +185,10 @@ public class Peg {
     }
 
     /**
+     * Sets the inner offset.
+     *
      * @param innerOffset the innerOffset to set
+     * @return the peg
      */
     public Peg setInnerOffset(double innerOffset) {
         this.innerOffset = innerOffset;
@@ -164,6 +196,8 @@ public class Peg {
     }
 
     /**
+     * Gets the board mounting height.
+     *
      * @return the boardMountingHeight
      */
     public double getBoardMountingHeight() {
@@ -171,7 +205,10 @@ public class Peg {
     }
 
     /**
+     * Sets the board mounting height.
+     *
      * @param boardMountingHeight the boardMountingHeight to set
+     * @return the peg
      */
     public Peg setBoardMountingHeight(double boardMountingHeight) {
         this.boardMountingHeight = boardMountingHeight;
@@ -179,6 +216,8 @@ public class Peg {
     }
 
     /**
+     * Gets the board thickness.
+     *
      * @return the boardThickness
      */
     public double getBoardThickness() {
@@ -186,7 +225,10 @@ public class Peg {
     }
 
     /**
+     * Sets the board thickness.
+     *
      * @param boardThickness the boardThickness to set
+     * @return the peg
      */
     public Peg setBoardThickness(double boardThickness) {
         this.boardThickness = boardThickness;
@@ -194,6 +236,8 @@ public class Peg {
     }
 
     /**
+     * Gets the overlap.
+     *
      * @return the overlap
      */
     public double getOverlap() {
@@ -201,7 +245,10 @@ public class Peg {
     }
 
     /**
+     * Sets the overlap.
+     *
      * @param overlap the overlap to set
+     * @return the peg
      */
     public Peg setOverlap(double overlap) {
         this.overlap = overlap;
@@ -209,6 +256,8 @@ public class Peg {
     }
 
     /**
+     * Gets the peg depth.
+     *
      * @return the pegDepth
      */
     public double getPegDepth() {
@@ -216,7 +265,10 @@ public class Peg {
     }
 
     /**
+     * Sets the peg depth.
+     *
      * @param pegDepth the pegDepth to set
+     * @return the peg
      */
     public Peg setPegDepth(double pegDepth) {
         this.pegDepth = pegDepth;
@@ -224,6 +276,8 @@ public class Peg {
     }
 
     /**
+     * Gets the peg tooth height.
+     *
      * @return the pegToothHeight
      */
     public double getPegToothHeight() {
@@ -231,7 +285,10 @@ public class Peg {
     }
 
     /**
+     * Sets the peg tooth height.
+     *
      * @param pegToothHeight the pegToothHeight to set
+     * @return the peg
      */
     public Peg setPegToothHeight(double pegToothHeight) {
         this.pegToothHeight = pegToothHeight;
@@ -239,6 +296,8 @@ public class Peg {
     }
 
     /**
+     * Gets the peg top height.
+     *
      * @return the pegTopHeight
      */
     public double getPegTopHeight() {
@@ -246,7 +305,10 @@ public class Peg {
     }
 
     /**
+     * Sets the peg top height.
+     *
      * @param pegTopHeight the pegTopHeight to set
+     * @return the peg
      */
     public Peg setPegTopHeight(double pegTopHeight) {
         this.pegTopHeight = pegTopHeight;
@@ -254,6 +316,8 @@ public class Peg {
     }
 
     /**
+     * Gets the board spacing.
+     *
      * @return the boardSpacing
      */
     public double getBoardSpacing() {
@@ -261,7 +325,10 @@ public class Peg {
     }
 
     /**
+     * Sets the board spacing.
+     *
      * @param boardSpacing the boardSpacing to set
+     * @return the peg
      */
     public Peg setBoardSpacing(double boardSpacing) {
         this.boardSpacing = boardSpacing;

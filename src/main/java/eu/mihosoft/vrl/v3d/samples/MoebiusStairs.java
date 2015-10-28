@@ -14,26 +14,50 @@ import static eu.mihosoft.vrl.v3d.Transform.*;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class MoebiusStairs.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class MoebiusStairs {
 
+    /** The n. */
     private double n = 45;
+    
+    /** The twists. */
     private double twists = 1;
+    
+    /** The tilt. */
     private double tilt = 0;
 
+    /**
+     * Resolution.
+     *
+     * @param n the n
+     * @return the moebius stairs
+     */
     public MoebiusStairs resolution(double n) {
         this.n = n;
         return this;
     }
 
+    /**
+     * Twists.
+     *
+     * @param twists the twists
+     * @return the moebius stairs
+     */
     public MoebiusStairs twists(double twists) {
         this.twists = twists;
         return this;
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
 //        CSG.setDefaultOptType(CSG.OptType.POLYGON_BOUND);
@@ -92,18 +116,42 @@ public class MoebiusStairs {
         return result.transformed(unity().translateZ(8 + 4 / 2));
     }
 
+    /**
+     * Sin.
+     *
+     * @param deg the deg
+     * @return the double
+     */
     private static double sin(double deg) {
         return Math.sin(Math.toRadians(deg));
     }
 
+    /**
+     * Cos.
+     *
+     * @param deg the deg
+     * @return the double
+     */
     private static double cos(double deg) {
         return Math.cos(Math.toRadians(deg));
     }
 
+    /**
+     * Abs.
+     *
+     * @param value the value
+     * @return the double
+     */
     private double abs(double value) {
         return Math.abs(value);
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         MoebiusStairs moebiusStairs = new MoebiusStairs();

@@ -14,6 +14,7 @@
 
 package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents the half-edges that surround each
  * face in a counter-clockwise direction.
@@ -60,6 +61,9 @@ class HalfEdge
 	   face = f;
 	 }
 
+	/**
+	 * Instantiates a new half edge.
+	 */
 	public HalfEdge ()
 	 { 
 	 }

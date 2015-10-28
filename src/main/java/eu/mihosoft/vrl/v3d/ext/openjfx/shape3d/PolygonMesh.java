@@ -35,38 +35,79 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableFloatArray;
 import javafx.collections.ObservableIntegerArray;
 
+// TODO: Auto-generated Javadoc
 /**
  * A Mesh where each face can be a Polygon
- *
- * can convert to using ObservableIntegerArray
+ * 
+ * can convert to using ObservableIntegerArray.
  */
 public class PolygonMesh {
+    
+    /** The points. */
     private final ObservableFloatArray points = FXCollections.observableFloatArray();
+    
+    /** The tex coords. */
     private final ObservableFloatArray texCoords = FXCollections.observableFloatArray();
+    
+    /** The faces. */
     public int[][] faces = new int[0][0];
+    
+    /** The face smoothing groups. */
     private final ObservableIntegerArray faceSmoothingGroups = FXCollections.observableIntegerArray();
+    
+    /** The num edges in faces. */
     protected int numEdgesInFaces = -1; // TODO invalidate automatically by listening to faces (whenever it is an observable)
 
+    /**
+     * Instantiates a new polygon mesh.
+     */
     public PolygonMesh() {}
 
+    /**
+     * Instantiates a new polygon mesh.
+     *
+     * @param points the points
+     * @param texCoords the tex coords
+     * @param faces the faces
+     */
     public PolygonMesh(float[] points, float[] texCoords, int[][] faces) {
         this.points.addAll(points);
         this.texCoords.addAll(texCoords);
         this.faces = faces;
     }
 
+    /**
+     * Gets the points.
+     *
+     * @return the points
+     */
     public ObservableFloatArray getPoints() {
         return points;
     }
     
+    /**
+     * Gets the tex coords.
+     *
+     * @return the tex coords
+     */
     public ObservableFloatArray getTexCoords() {
         return texCoords;
     }
     
+    /**
+     * Gets the face smoothing groups.
+     *
+     * @return the face smoothing groups
+     */
     public ObservableIntegerArray getFaceSmoothingGroups() {
         return faceSmoothingGroups;
     }
      
+    /**
+     * Gets the num edges in faces.
+     *
+     * @return the num edges in faces
+     */
     public int getNumEdgesInFaces() {
         if (numEdgesInFaces == -1) {
             numEdgesInFaces = 0;
@@ -78,19 +119,39 @@ public class PolygonMesh {
         return numEdgesInFaces;
     }
     
+    /** The Constant NUM_COMPONENTS_PER_POINT. */
     // TODO: Hardcode to constants for FX 8 (only one vertex format)
     private static final int NUM_COMPONENTS_PER_POINT = 3;
+    
+    /** The Constant NUM_COMPONENTS_PER_TEXCOORD. */
     private static final int NUM_COMPONENTS_PER_TEXCOORD = 2;
+    
+    /** The Constant NUM_COMPONENTS_PER_FACE. */
     private static final int NUM_COMPONENTS_PER_FACE = 6;
 
+    /**
+     * Gets the point element size.
+     *
+     * @return the point element size
+     */
     public int getPointElementSize() {
         return NUM_COMPONENTS_PER_POINT;
     }
 
+    /**
+     * Gets the tex coord element size.
+     *
+     * @return the tex coord element size
+     */
     public int getTexCoordElementSize() {
         return NUM_COMPONENTS_PER_TEXCOORD;
     }
 
+    /**
+     * Gets the face element size.
+     *
+     * @return the face element size
+     */
     public int getFaceElementSize() {
         return NUM_COMPONENTS_PER_FACE;
     }

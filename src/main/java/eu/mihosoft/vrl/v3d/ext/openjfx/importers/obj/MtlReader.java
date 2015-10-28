@@ -49,11 +49,19 @@ import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
 
 
+// TODO: Auto-generated Javadoc
 /** Reader for OBJ file MTL material files. */
 public class MtlReader {
 
+    /** The base url. */
     private String baseUrl;
 
+    /**
+     * Instantiates a new mtl reader.
+     *
+     * @param filename the filename
+     * @param parentUrl the parent url
+     */
     public MtlReader(String filename, String parentUrl) {
         baseUrl = parentUrl.substring(0,parentUrl.lastIndexOf('/')+1);
         String fileUrl = baseUrl + filename;
@@ -68,6 +76,11 @@ public class MtlReader {
         }
     }
     
+    /**
+     * Instantiates a new mtl reader.
+     *
+     * @param stream the stream
+     */
     public MtlReader(InputStream stream) {
 
         try {
@@ -80,10 +93,21 @@ public class MtlReader {
         }
     }
 
+    /** The materials. */
     private Map<String, Material> materials = new HashMap<>();
+    
+    /** The material. */
     private PhongMaterial material = new PhongMaterial();
+    
+    /** The modified. */
     private boolean modified = false;
 
+    /**
+     * Read.
+     *
+     * @param inputStream the input stream
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     private void read(InputStream inputStream) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String line;
@@ -139,6 +163,11 @@ public class MtlReader {
         addMaterial(name);
     }
 
+    /**
+     * Adds the material.
+     *
+     * @param name the name
+     */
     private void addMaterial(String name) {
         if (modified) {
             if (!materials.containsKey(name)) {
@@ -150,6 +179,12 @@ public class MtlReader {
         }
     }
 
+    /**
+     * Read color.
+     *
+     * @param line the line
+     * @return the color
+     */
     private Color readColor(String line) {
         String[] split = line.trim().split(" +");
         float red = Float.parseFloat(split[0]);
@@ -158,6 +193,12 @@ public class MtlReader {
         return Color.color(red, green, blue);
     }
 
+    /**
+     * Load image.
+     *
+     * @param filename the filename
+     * @return the image
+     */
     private Image loadImage(String filename) {
         filename = baseUrl + filename;
         log("Loading image from " + filename);
@@ -165,6 +206,11 @@ public class MtlReader {
         return new Image(filename);
     }
 
+    /**
+     * Gets the materials.
+     *
+     * @return the materials
+     */
     public Map<String, Material> getMaterials() {
         return Collections.unmodifiableMap(materials);
     }

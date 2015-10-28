@@ -16,24 +16,43 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class RaspberryArduinoConnector.
  *
  * @author miho
  */
 public class RaspberryArduinoConnector {
+    
+    /** The arduino mounting thickness. */
     private double arduinoMountingThickness = 2.0;
+    
+    /** The rspberry mounting thickness. */
     private double rspberryMountingThickness = 2.0;
     
+    /** The board to board spacing. */
     private double boardToBoardSpacing = 30.0;
     
+    /** The connector depth. */
     private double connectorDepth = 8;
     
+    /** The peg height. */
     private double pegHeight= 1;
+    
+    /** The peg tooth height. */
     private double pegToothHeight = 0.3;
+    
+    /** The peg overlap. */
     private double pegOverlap = 0.6;
     
+    /** The board mounting width. */
     private double boardMountingWidth = 8;
     
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         
         double th = 2;
@@ -70,6 +89,12 @@ public class RaspberryArduinoConnector {
         );
     }
     
+        /**
+         * The main method.
+         *
+         * @param args the arguments
+         * @throws IOException Signals that an I/O exception has occurred.
+         */
         public static void main(String[] args) throws IOException {
 
         RaspberryArduinoConnector arConnect = new RaspberryArduinoConnector();

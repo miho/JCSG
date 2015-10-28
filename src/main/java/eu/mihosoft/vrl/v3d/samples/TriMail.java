@@ -12,12 +12,22 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class TriMail.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class TriMail {
 
+    /**
+     * To csg.
+     *
+     * @param numEdges the num edges
+     * @param numX the num x
+     * @param numY the num y
+     * @return the csg
+     */
     public CSG toCSG(int numEdges, int numX, int numY) {
 
         PolyMailTile tile = new PolyMailTile().setNumEdges(numEdges).
@@ -81,6 +91,12 @@ public class TriMail {
         return result;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("trimail.stl"), new TriMail().toCSG(3, 3, 3).toStlString());
     }

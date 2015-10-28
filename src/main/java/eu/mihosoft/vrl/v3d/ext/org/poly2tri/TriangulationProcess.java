@@ -1,7 +1,7 @@
 /**
  * TriangulationProcess.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,7 +25,7 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
@@ -62,6 +62,7 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.List;
+// TODO: Auto-generated Javadoc
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
@@ -69,48 +70,79 @@ import java.util.List;
 
 
 /**
- * 
+ * The Class TriangulationProcess.
+ *
  * @author Thomas ???, thahlen@gmail.com
- * 
  */
 class TriangulationProcess implements Runnable
 {
 //    private final static Logger //logger = LoggerFactory.getLogger( TriangulationProcess.class );
 
-    private final TriangulationAlgorithm _algorithm;
+    /** The _algorithm. */
+private final TriangulationAlgorithm _algorithm;
     
+    /** The _tcx. */
     private TriangulationContext<?> _tcx;
+    
+    /** The _thread. */
     private Thread                  _thread;
+    
+    /** The _is terminated. */
     private boolean                 _isTerminated = false;
+    
+    /** The _point count. */
     private int                     _pointCount = 0;
+    
+    /** The _timestamp. */
     private long                    _timestamp = 0;
+    
+    /** The _triangulation time. */
     private double                  _triangulationTime = 0;
 
+    /** The _awaiting termination. */
     private boolean                 _awaitingTermination;
+    
+    /** The _restart. */
     private boolean                 _restart = false;
     
+    /** The _triangulations. */
     private ArrayList<Triangulatable> _triangulations = new ArrayList<Triangulatable>();
     
+    /** The _listeners. */
     private ArrayList<TriangulationProcessListener> _listeners = new ArrayList<TriangulationProcessListener>();
     
+    /**
+     * Adds the listener.
+     *
+     * @param listener the listener
+     */
     public void addListener( TriangulationProcessListener listener )
     {
         _listeners.add( listener );
     }
     
+    /**
+     * Removes the listener.
+     *
+     * @param listener the listener
+     */
     public void removeListener( TriangulationProcessListener listener )
     {
         _listeners.remove( listener );
     }
     
+    /**
+     * Clear listeners.
+     */
     public void clearListeners()
     {
         _listeners.clear();
     }
 
     /**
-     * Notify all listeners of this new event
-     * @param event
+     * Notify all listeners of this new event.
+     *
+     * @param event the event
      */
     private void sendEvent( TriangulationProcessEvent event )
     {
@@ -120,30 +152,49 @@ class TriangulationProcess implements Runnable
         }
     }
 
+    /**
+     * Gets the step count.
+     *
+     * @return the step count
+     */
     public int getStepCount()
     {
         return _tcx.getStepCount();
     }
 
+    /**
+     * Gets the timestamp.
+     *
+     * @return the timestamp
+     */
     public long getTimestamp()
     {
         return _timestamp;
     }
     
+    /**
+     * Gets the triangulation time.
+     *
+     * @return the triangulation time
+     */
     public double getTriangulationTime() 
     {
         return _triangulationTime;
     }
     
     /**
-     * Uses SweepLine algorithm by default
-     * @param algorithm
+     * Uses SweepLine algorithm by default.
      */
     public TriangulationProcess()
     {
         this( TriangulationAlgorithm.DTSweep );
     }
 
+    /**
+     * Instantiates a new triangulation process.
+     *
+     * @param algorithm the algorithm
+     */
     public TriangulationProcess( TriangulationAlgorithm algorithm )
     {
         _algorithm = algorithm;
@@ -155,6 +206,8 @@ class TriangulationProcess implements Runnable
      * useful if you want to do consecutive triangulations with 
      * same data. Like when you when you want to do performance 
      * tests.
+     *
+     * @param ps the ps
      */
 //    public void triangulate()
 //    {
@@ -164,7 +217,7 @@ class TriangulationProcess implements Runnable
     /**
      * Triangulate a PointSet with eventual constraints 
      * 
-     * @param cps
+     * @param ps the set of points to triangulate
      */
     public void triangulate( PointSet ps )
     {
@@ -174,9 +227,9 @@ class TriangulationProcess implements Runnable
     }
 
     /**
-     * Triangulate a PointSet with eventual constraints 
-     * 
-     * @param cps
+     * Triangulate a PointSet with eventual constraints .
+     *
+     * @param cps the cps
      */
     public void triangulate( ConstrainedPointSet cps )
     {
@@ -186,9 +239,9 @@ class TriangulationProcess implements Runnable
     }
     
     /**
-     * Triangulate a PolygonSet
-     * 
-     * @param ps
+     * Triangulate a PolygonSet.
+     *
+     * @param ps the ps
      */
     public void triangulate( PolygonSet ps )
     {
@@ -198,9 +251,9 @@ class TriangulationProcess implements Runnable
     }
 
     /**
-     * Triangulate a Polygon
-     * 
-     * @param ps
+     * Triangulate a Polygon.
+     *
+     * @param polygon the polygon
      */
     public void triangulate( Polygon polygon )
     {
@@ -210,9 +263,9 @@ class TriangulationProcess implements Runnable
     }
 
     /**
-     * Triangulate a List of Triangulatables
-     * 
-     * @param ps
+     * Triangulate a List of Triangulatables.
+     *
+     * @param list the list
      */
     public void triangulate( List<Triangulatable> list )
     {
@@ -221,6 +274,9 @@ class TriangulationProcess implements Runnable
         start();
     }
 
+    /**
+     * Start.
+     */
     private void start()
     {
         if( _thread == null || _thread.getState() == State.TERMINATED )
@@ -238,6 +294,11 @@ class TriangulationProcess implements Runnable
         }
     }
 
+    /**
+     * Checks if is waiting.
+     *
+     * @return true, if is waiting
+     */
     public boolean isWaiting()
     {
         if( _thread != null && _thread.getState() == State.WAITING )
@@ -247,6 +308,9 @@ class TriangulationProcess implements Runnable
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
     public void run()
     {
         _pointCount=0;
@@ -299,6 +363,9 @@ class TriangulationProcess implements Runnable
         }
     }
 
+    /**
+     * Resume.
+     */
     public void resume()
     {
         if( _thread != null )
@@ -318,6 +385,9 @@ class TriangulationProcess implements Runnable
         }
     }
 
+    /**
+     * Shutdown.
+     */
     public void shutdown()
     {
         _awaitingTermination = true;
@@ -325,21 +395,39 @@ class TriangulationProcess implements Runnable
         resume();
     }
 
+    /**
+     * Gets the context.
+     *
+     * @return the context
+     */
     public TriangulationContext<?> getContext()
     {
         return _tcx;
     }
 
+    /**
+     * Checks if is done.
+     *
+     * @return true, if is done
+     */
     public boolean isDone()
     {
         return _isTerminated;
     }
 
+    /**
+     * Request read.
+     */
     public void requestRead()
     {
         _tcx.waitUntilNotified( true );
     }
 
+    /**
+     * Checks if is readable.
+     *
+     * @return true, if is readable
+     */
     public boolean isReadable()
     {
         if( _thread == null )
@@ -365,6 +453,11 @@ class TriangulationProcess implements Runnable
         }
     }
 
+    /**
+     * Gets the point count.
+     *
+     * @return the point count
+     */
     public int getPointCount()
     {
         return _pointCount;

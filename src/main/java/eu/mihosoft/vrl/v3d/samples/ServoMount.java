@@ -16,7 +16,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ServoMount.
  *
  * @author miho
  */
@@ -26,22 +28,45 @@ public class ServoMount {
 //    private double servoWidth = 22.9;
 //    private double servoThickness = 12.0;
 //    
+    /** The servo width. */
     //standard servo
     private double servoWidth = 40.0;
+    
+    /** The servo thickness. */
     private double servoThickness = 19.0;
+    
+    /** The border thickness. */
     private double borderThickness = 2;
+    
+    /** The overlap. */
     private double overlap = 3;
+    
+    /** The servo mount height. */
     private double servoMountHeight = 20;
 
+    /** The board mounting thickness. */
     private double boardMountingThickness = 2;
+    
+    /** The board holder length. */
     private double boardHolderLength = 12;
     
+    /** The board mounting width. */
     private double boardMountingWidth = 8.1;
     
+    /** The peg height. */
     private double pegHeight= 1;
+    
+    /** The peg tooth height. */
     private double pegToothHeight = 0.6;
+    
+    /** The peg overlap. */
     private double pegOverlap = 0.5;
 
+    /**
+     * To csg simple.
+     *
+     * @return the csg
+     */
     public CSG toCSGSimple() {
 
         return Extrude.points(new Vector3d(0, 0, servoMountHeight),
@@ -58,6 +83,11 @@ public class ServoMount {
         );
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         CSG bm1 = boardMount().transformed(Transform.unity().rotY(90).rotZ(90).translate(borderThickness, borderThickness, -boardHolderLength + borderThickness));
         CSG bm2 = bm1.transformed(Transform.unity().translateX(servoWidth -boardHolderLength + borderThickness*2));
@@ -66,6 +96,11 @@ public class ServoMount {
         return sm.union(bm1).union(bm2);//.transformed(Transform.unity().scale(0.08));
     }
 
+    /**
+     * Board mount.
+     *
+     * @return the csg
+     */
     private CSG boardMount() {
 
         double h = boardMountingWidth;
@@ -86,6 +121,12 @@ public class ServoMount {
         );
     }
     
+        /**
+         * The main method.
+         *
+         * @param args the arguments
+         * @throws IOException Signals that an I/O exception has occurred.
+         */
         public static void main(String[] args) throws IOException {
 
         ServoMount sMount = new ServoMount();

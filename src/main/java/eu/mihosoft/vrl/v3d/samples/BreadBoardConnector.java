@@ -17,26 +17,43 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class BreadBoardConnector.
  *
  * @author miho
  */
 public class BreadBoardConnector {
 
+    /** The board mounting thickness. */
     private double boardMountingThickness = 2.0;
 
+    /** The bread board thickness. */
     private double breadBoardThickness = 9;
 
+    /** The connector depth. */
     private double connectorDepth = 20;
 
+    /** The peg height. */
     private double pegHeight = 1;
+    
+    /** The peg tooth height. */
     private double pegToothHeight = 0.3;
+    
+    /** The peg overlap. */
     private double pegOverlap = 0.6;
 
+    /** The board mounting width. */
     private double boardMountingWidth = 8.1;
 
+    /** The bread board to pi mount distance. */
     private double breadBoardToPiMountDistance = 21;
 
+/**
+ * To csg.
+ *
+ * @return the csg
+ */
 //    private double breadBoardMountLength = 20;
     public CSG toCSG() {
 
@@ -81,6 +98,12 @@ public class BreadBoardConnector {
 //                new Vector3d(-th, bmth + th + bbth + th)).transformed(Transform.unity().translateZ(connectorDepth)));
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         BreadBoardConnector arConnect = new BreadBoardConnector();

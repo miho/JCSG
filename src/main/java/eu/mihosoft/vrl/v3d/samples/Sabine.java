@@ -16,6 +16,7 @@ import eu.mihosoft.vrl.v3d.ZModifier;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
  * Average Chicken Egg.
  *
@@ -23,6 +24,11 @@ import java.nio.file.Paths;
  */
 public class Sabine {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         double w = 16;
@@ -75,6 +81,12 @@ public class Sabine {
 
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("sabine.stl"), new Sabine().toCSG().toStlString());
     }

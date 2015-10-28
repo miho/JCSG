@@ -21,12 +21,24 @@ import eu.mihosoft.vrl.v3d.UnityModifier;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.ZModifier;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QuadrocopterArm.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class QuadrocopterArm {
 
+    /**
+     * Main arm.
+     *
+     * @param numInnerStructures the num inner structures
+     * @param length the length
+     * @param armThickness the arm thickness
+     * @param innerTubeOffset the inner tube offset
+     * @param armCubeThickness the arm cube thickness
+     * @return the csg
+     */
     public CSG mainArm(int numInnerStructures, double length, double armThickness, double innerTubeOffset, double armCubeThickness) {
 
         double outerRadius = armThickness / 2.0;
@@ -134,6 +146,18 @@ public class QuadrocopterArm {
         return finalGeometry;
     }
 
+    /**
+     * Side arms.
+     *
+     * @param sideArmGroundDist the side arm ground dist
+     * @param sideArmHight the side arm hight
+     * @param sideArmRadius the side arm radius
+     * @param sideArmShrinkFactor the side arm shrink factor
+     * @param length the length
+     * @param armCubeThickness the arm cube thickness
+     * @param outerRadius the outer radius
+     * @return the csg
+     */
     public static CSG sideArms(double sideArmGroundDist, double sideArmHight, double sideArmRadius, double sideArmShrinkFactor, double length, double armCubeThickness, double outerRadius) {
         double sideArmLength = Math.sqrt(sideArmGroundDist * sideArmGroundDist + sideArmHight * sideArmHight);
         double alpha = Math.atan(sideArmGroundDist / sideArmHight) * 180 / Math.PI;
@@ -144,6 +168,17 @@ public class QuadrocopterArm {
         return sideArms;
     }
 
+    /**
+     * Side arms.
+     *
+     * @param sideArmGroundDist the side arm ground dist
+     * @param sideArmHight the side arm hight
+     * @param sideArmRadius the side arm radius
+     * @param sideArmShrinkFactor the side arm shrink factor
+     * @param armCubeThickness the arm cube thickness
+     * @param outerRadius the outer radius
+     * @return the csg
+     */
     public static CSG sideArms(double sideArmGroundDist, double sideArmHight, double sideArmRadius, double sideArmShrinkFactor, double armCubeThickness, double outerRadius) {
         double sideArmLength = Math.sqrt(sideArmGroundDist * sideArmGroundDist + sideArmHight * sideArmHight);
         double alpha = Math.atan(sideArmGroundDist / sideArmHight) * 180 / Math.PI;
@@ -154,6 +189,16 @@ public class QuadrocopterArm {
         return sideArms;
     }
 
+    /**
+     * Outer cyl.
+     *
+     * @param outerRadius the outer radius
+     * @param length the length
+     * @param wallThickness the wall thickness
+     * @param scaleOuter the scale outer
+     * @param scaleInner the scale inner
+     * @return the csg
+     */
     public static CSG outerCyl(double outerRadius, double length,
             double wallThickness, double scaleOuter, double scaleInner) {
        
@@ -161,6 +206,17 @@ public class QuadrocopterArm {
         return outerCyl(outerRadius, length, wallThickness, scaleOuter, scaleInner, false);
     }
 
+    /**
+     * Outer cyl.
+     *
+     * @param outerRadius the outer radius
+     * @param length the length
+     * @param wallThickness the wall thickness
+     * @param scaleOuter the scale outer
+     * @param scaleInner the scale inner
+     * @param filled the filled
+     * @return the csg
+     */
     public static CSG outerCyl(double outerRadius, double length,
             double wallThickness, double scaleOuter, double scaleInner, boolean filled) {
         CSG outerCyl = new Cylinder(outerRadius, length, 32).toCSG().
@@ -197,6 +253,11 @@ public class QuadrocopterArm {
 //        outerCyl = outerCyl.weighted(new ZModifier(true)).transformed(Transform.unity().scale(0.8, 0.8, 1)).weighted(new UnityModifier());
 //
 //        return outerCyl;
+/**
+ * To csg.
+ *
+ * @return the csg
+ */
 //    }
     public CSG toCSG() {
 
@@ -235,6 +296,19 @@ public class QuadrocopterArm {
         return mainArm.transformed(unity().rotX(90).rotZ(90));
     }
 
+    /**
+     * Engine platform.
+     *
+     * @param engineRadius the engine radius
+     * @param enginePlatformThickness the engine platform thickness
+     * @param mainHoleRadius the main hole radius
+     * @param screwRadius the screw radius
+     * @param screwDistanceBig the screw distance big
+     * @param screwDistanceSmall the screw distance small
+     * @param washerWallThickness the washer wall thickness
+     * @param washerHeight the washer height
+     * @return the csg
+     */
     private CSG enginePlatform(double engineRadius, double enginePlatformThickness, double mainHoleRadius, double screwRadius, double screwDistanceBig, double screwDistanceSmall, double washerWallThickness, double washerHeight) {
         CSG enginePlatform = new Cylinder(engineRadius, enginePlatformThickness, 32).toCSG();
 
@@ -309,6 +383,12 @@ public class QuadrocopterArm {
 //        enginePlatform = enginePlatform.difference(mainHole, screwHole1, screwHole2, screwHole3, screwHole4);
 //
 //        return enginePlatform;
+/**
+ * The main method.
+ *
+ * @param args the arguments
+ * @throws IOException Signals that an I/O exception has occurred.
+ */
 //    }
     public static void main(String[] args) throws IOException {
 

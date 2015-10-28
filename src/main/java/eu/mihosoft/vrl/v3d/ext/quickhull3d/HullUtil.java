@@ -11,16 +11,28 @@ import eu.mihosoft.vrl.v3d.PropertyStorage;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class HullUtil.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class HullUtil {
 
+    /**
+     * Instantiates a new hull util.
+     */
     private HullUtil() {
         throw new AssertionError("Don't instantiate me!", null);
     }
 
+    /**
+     * Hull.
+     *
+     * @param points the points
+     * @param storage the storage
+     * @return the csg
+     */
     public static CSG hull(List<eu.mihosoft.vrl.v3d.Vector3d> points, PropertyStorage storage) {
 
         Point3d[] hullPoints = points.stream().map((vec) -> new Point3d(vec.x, vec.y, vec.z)).toArray(Point3d[]::new);
@@ -49,6 +61,13 @@ public class HullUtil {
         return CSG.fromPolygons(polygons);
     }
 
+    /**
+     * Hull.
+     *
+     * @param csg the csg
+     * @param storage the storage
+     * @return the csg
+     */
     public static CSG hull(CSG csg, PropertyStorage storage) {
 
         List<eu.mihosoft.vrl.v3d.Vector3d> points = new ArrayList<>(csg.getPolygons().size() * 3);

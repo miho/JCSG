@@ -16,12 +16,19 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class PlaneWithHoles.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class PlaneWithHoles {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         CSG result = new Cube(Vector3d.ZERO, new Vector3d(30, 30, 1)).toCSG();
 
@@ -73,6 +80,12 @@ public class PlaneWithHoles {
         return result;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         
         CSG.setDefaultOptType(CSG.OptType.CSG_BOUND);

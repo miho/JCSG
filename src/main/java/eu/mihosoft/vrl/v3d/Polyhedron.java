@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+// TODO: Auto-generated Javadoc
 /**
  * Polyhedron.
  *
@@ -18,9 +19,13 @@ import java.util.stream.Collectors;
  */
 public class Polyhedron implements Primitive {
 
+    /** The properties. */
     private final PropertyStorage properties = new PropertyStorage();
 
+    /** The points. */
     private final List<Vector3d> points = new ArrayList<>();
+    
+    /** The faces. */
     private final List<List<Integer>> faces = new ArrayList<>();
 
     /**
@@ -51,6 +56,9 @@ public class Polyhedron implements Primitive {
 
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.Primitive#toPolygons()
+     */
     @Override
     public List<Polygon> toPolygons() {
 
@@ -68,6 +76,9 @@ public class Polyhedron implements Primitive {
                 collect(Collectors.toList());
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.Primitive#getProperties()
+     */
     @Override
     public PropertyStorage getProperties() {
         return properties;

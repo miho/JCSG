@@ -15,41 +15,61 @@ package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 import java.util.*;
 import java.io.*;
 
+// TODO: Auto-generated Javadoc
 /**
  * Testing class for QuickHull3D. Running the command
- * <pre>
+ *  
  *   java quickhull3d.QuickHull3DTest
- * </pre>
+ *  
  * will cause QuickHull3D to be tested on a number of randomly
  * choosen input sets, with degenerate points added near
  * the edges and vertics of the convex hull.
  *
- * <p>The command
- * <pre>
+ *  The command
+ *  
  *   java quickhull3d.QuickHull3DTest -timing
- * </pre>
+ *  
  * will cause timing information to be produced instead.
  *
  * @author John E. Lloyd, Fall 2004
  */
 class QuickHull3DTest
 {
+	
+	/** The Constant DOUBLE_PREC. */
 	static private final double DOUBLE_PREC = 2.2204460492503131e-16;
 
+	/** The triangulate. */
 	static boolean triangulate = false;
+	
+	/** The do testing. */
 	static boolean doTesting = true;
+	
+	/** The do timing. */
 	static boolean doTiming = false;
 
+	/** The debug enable. */
 	static boolean debugEnable = false;
 
+	/** The Constant NO_DEGENERACY. */
 	static final int NO_DEGENERACY = 0;
+	
+	/** The Constant EDGE_DEGENERACY. */
 	static final int EDGE_DEGENERACY = 1;
+	
+	/** The Constant VERTEX_DEGENERACY. */
 	static final int VERTEX_DEGENERACY = 2;
 
+	/** The rand. */
 	Random rand; // random number generator
 
+	/** The test rotation. */
 	static boolean testRotation = true;
+	
+	/** The degeneracy test. */
 	static int degeneracyTest = VERTEX_DEGENERACY;
+	
+	/** The eps scale. */
 	static double epsScale = 2.0;
 
 	/**
@@ -112,6 +132,12 @@ class QuickHull3DTest
 	   return coords;
 	 }
 	
+	/**
+	 * Randomly perturb.
+	 *
+	 * @param pnt the pnt
+	 * @param tol the tol
+	 */
 	private void randomlyPerturb (Point3d pnt, double tol)
 	 {
 	   pnt.x += tol*(rand.nextDouble()-0.5);
@@ -241,6 +267,12 @@ class QuickHull3DTest
 	   return coords;
 	 }
 
+	/**
+	 * Shuffle coords.
+	 *
+	 * @param coords the coords
+	 * @return the double[]
+	 */
 	private double[] shuffleCoords (double[] coords)
 	 {
 	   int num = coords.length/3;
@@ -293,6 +325,13 @@ class QuickHull3DTest
 	   return coords;
 	 }
 
+	/**
+	 * Explicit face check.
+	 *
+	 * @param hull the hull
+	 * @param checkFaces the check faces
+	 * @throws Exception the exception
+	 */
 	void explicitFaceCheck (QuickHull3D hull, int[][] checkFaces)
 	   throws Exception
 	 { 
@@ -332,8 +371,16 @@ class QuickHull3DTest
 	    }
 	 }
 
+	/** The cnt. */
 	int cnt = 0;
 
+	/**
+	 * Single test.
+	 *
+	 * @param coords the coords
+	 * @param checkFaces the check faces
+	 * @throws Exception the exception
+	 */
 	void singleTest (double[] coords, int[][] checkFaces)
 	   throws Exception
 	 {
@@ -357,6 +404,14 @@ class QuickHull3DTest
 	    }
 	 }
 
+	/**
+	 * Adds the degeneracy.
+	 *
+	 * @param type the type
+	 * @param coords the coords
+	 * @param hull the hull
+	 * @return the double[]
+	 */
 	double[] addDegeneracy (
 	   int type, double[] coords, QuickHull3D hull)
 	 { 
@@ -396,6 +451,13 @@ class QuickHull3DTest
 	   return coordsx;
 	 }
 	
+	/**
+	 * Degenerate test.
+	 *
+	 * @param hull the hull
+	 * @param coords the coords
+	 * @throws Exception the exception
+	 */
 	void degenerateTest (QuickHull3D hull, double[] coords)
 	   throws Exception
 	 {
@@ -425,6 +487,15 @@ class QuickHull3DTest
 	    }
 	 }
 
+        /**
+         * Rotate coords.
+         *
+         * @param res the res
+         * @param xyz the xyz
+         * @param roll the roll
+         * @param pitch the pitch
+         * @param yaw the yaw
+         */
         void rotateCoords (double[] res, double[] xyz,
 			      double roll, double pitch, double yaw)
 	 {
@@ -457,6 +528,11 @@ class QuickHull3DTest
 	    }
 	 }
 
+	/**
+	 * Prints the coords.
+	 *
+	 * @param coords the coords
+	 */
 	void printCoords (double[] coords)
 	 {
 	   int nump = coords.length/3;
@@ -468,6 +544,12 @@ class QuickHull3DTest
 	    } 
 	 }
 
+	/**
+	 * Test exception.
+	 *
+	 * @param coords the coords
+	 * @param msg the msg
+	 */
 	void testException (double[] coords, String msg)
 	 {
 	   QuickHull3D hull = new QuickHull3D();
@@ -495,6 +577,13 @@ class QuickHull3DTest
 	    }
 	 }
 
+	/**
+	 * Test.
+	 *
+	 * @param coords the coords
+	 * @param checkFaces the check faces
+	 * @throws Exception the exception
+	 */
 	void test (double[] coords, int[][] checkFaces)
 	   throws Exception
 	 { 
@@ -668,9 +757,11 @@ class QuickHull3DTest
 	 * prints <code>Passed</code> if all is well.
 	 * Otherwise, an error message and stack trace
 	 * are printed.
-	 *
-	 * <p>If the option <code>-timing</code> is supplied,
+	 * 
+	 *  If the option <code>-timing</code> is supplied,
 	 * then timing information is produced instead.
+	 *
+	 * @param args the arguments
 	 */
 	public static void main (String[] args) 
 	 {

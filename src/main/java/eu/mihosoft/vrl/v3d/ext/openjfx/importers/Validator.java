@@ -38,11 +38,17 @@ import javafx.scene.shape.Mesh;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 
+// TODO: Auto-generated Javadoc
 /**
- * Mesh data validator
+ * Mesh data validator.
  */
 public class Validator {
 
+    /**
+     * Validate.
+     *
+     * @param node the node
+     */
     public void validate(Node node) {
         if (node instanceof MeshView) {
             MeshView meshView = (MeshView) node;
@@ -54,6 +60,11 @@ public class Validator {
         }
     }
 
+    /**
+     * Validate.
+     *
+     * @param mesh the mesh
+     */
     public void validate(Mesh mesh) {
         if (!(mesh instanceof TriangleMesh)) {
             throw new AssertionError("Mesh is not TriangleMesh: " + mesh.getClass() + ", mesh = " + mesh);
