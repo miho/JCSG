@@ -60,31 +60,60 @@ import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
 
+// TODO: Auto-generated Javadoc
 /**
  * Optimizer to take 3D model and timeline loaded by one of the importers and do as much optimization on
  * the scene graph that was create as we can while still being able to play the given animation.
  */
 public class Optimizer {
 
+    /** The timeline. */
     private Timeline timeline;
+    
+    /** The root. */
     private Node root;
+    
+    /** The bound. */
     private Set<Transform> bound = new HashSet<>();
+    
+    /** The empty parents. */
     private List<Parent> emptyParents = new ArrayList<>();
+    
+    /** The mesh views. */
     private List<MeshView> meshViews = new ArrayList<>();
+    
+    /** The convert to discrete. */
     private boolean convertToDiscrete = true;
 
+    /**
+     * Instantiates a new optimizer.
+     *
+     * @param timeline the timeline
+     * @param root the root
+     */
     public Optimizer(Timeline timeline, Node root) {
         this(timeline, root, false);
     }
 
+    /**
+     * Instantiates a new optimizer.
+     *
+     * @param timeline the timeline
+     * @param root the root
+     * @param convertToDiscrete the convert to discrete
+     */
     public Optimizer(Timeline timeline, Node root, boolean convertToDiscrete) {
         this.timeline = timeline;
         this.root = root;
         this.convertToDiscrete = convertToDiscrete;
     }
 
+    /** The tr empty. */
     private int trRemoved, trTotal, groupsTotal, trCandidate, trEmpty;
 
+    /**
+     * Optimize.
+     */
     public void optimize() {
         trRemoved = 0;
         trTotal = 0;
@@ -103,6 +132,11 @@ public class Optimizer {
         System.out.printf("there are %d (%.2f%%) out of total %d groups with no transforms in them\n", trEmpty, 100d * trEmpty / groupsTotal, groupsTotal);
     }
 
+    /**
+     * Optimize.
+     *
+     * @param node the node
+     */
     private void optimize(Node node) {
         ObservableList<Transform> transforms = node.getTransforms();
         Iterator<Transform> iterator = transforms.iterator();
@@ -148,12 +182,18 @@ public class Optimizer {
         }
     }
 
+    /**
+     * Optimize meshes.
+     */
     private void optimizeMeshes() {
         optimizePoints();
         optimizeTexCoords();
         optimizeFaces();
     }
 
+    /**
+     * Optimize faces.
+     */
     private void optimizeFaces() {
         int total = 0, sameIndexes = 0, samePoints = 0, smallArea = 0;
         ObservableIntegerArray newFaces = FXCollections.observableIntegerArray();
@@ -221,6 +261,9 @@ public class Optimizer {
                 badTotal, 100d * badTotal / total, total);
     }
 
+    /**
+     * Optimize points.
+     */
     private void optimizePoints() {
         int total = 0, duplicates = 0, check = 0;
 
@@ -280,6 +323,9 @@ public class Optimizer {
         System.out.printf("Now we have %d points.\n", check);
     }
 
+    /**
+     * Optimize tex coords.
+     */
     private void optimizeTexCoords() {
         int total = 0, duplicates = 0, check = 0;
 
@@ -338,6 +384,9 @@ public class Optimizer {
         System.out.printf("Now we have %d texcoords.\n", check);
     }
 
+    /**
+     * Clean up repeating frames and values.
+     */
     private void cleanUpRepeatingFramesAndValues() {
         ObservableList<KeyFrame> timelineKeyFrames = timeline.getKeyFrames().sorted(new KeyFrameComparator());
 //        Timeline timeline;
@@ -384,17 +433,39 @@ public class Optimizer {
                 kvRemoved, 100d * kvRemoved / kvTotal, kvTotal);
     }
 
+    /**
+     * The Class KeyInfo.
+     */
     private static class KeyInfo {
+        
+        /** The key frame. */
         KeyFrame keyFrame;
+        
+        /** The key value. */
         KeyValue keyValue;
+        
+        /** The first. */
         boolean first;
 
+        /**
+         * Instantiates a new key info.
+         *
+         * @param keyFrame the key frame
+         * @param keyValue the key value
+         */
         public KeyInfo(KeyFrame keyFrame, KeyValue keyValue) {
             this.keyFrame = keyFrame;
             this.keyValue = keyValue;
             first = false;
         }
 
+        /**
+         * Instantiates a new key info.
+         *
+         * @param keyFrame the key frame
+         * @param keyValue the key value
+         * @param first the first
+         */
         public KeyInfo(KeyFrame keyFrame, KeyValue keyValue, boolean first) {
             this.keyFrame = keyFrame;
             this.keyValue = keyValue;
@@ -402,8 +473,20 @@ public class Optimizer {
         }
     }
 
+    /**
+     * The Class MapOfLists.
+     *
+     * @param <K> the key type
+     * @param <V> the value type
+     */
     private static class MapOfLists<K, V> extends HashMap<K, List<V>> {
 
+        /**
+         * Adds the.
+         *
+         * @param key the key
+         * @param value the value
+         */
         public void add(K key, V value) {
             List<V> p = get(key);
             if (p == null) {
@@ -414,6 +497,9 @@ public class Optimizer {
         }
     }
     
+    /**
+     * Parses the timeline.
+     */
     private void parseTimeline() {
         bound.clear();
         if (timeline == null) {
@@ -540,6 +626,9 @@ public class Optimizer {
         System.out.printf("Now there are %d KeyValues and %d KeyFrames.\n", check, timeline.getKeyFrames().size());
     }
 
+    /**
+     * Removes the empty groups.
+     */
     private void removeEmptyGroups() {
         for (Parent p : emptyParents) {
             Parent parent = p.getParent();
@@ -549,11 +638,20 @@ public class Optimizer {
         }
     }
 
+    /**
+     * The Class KeyFrameComparator.
+     */
     private static class KeyFrameComparator implements Comparator<KeyFrame> {
 
+        /**
+         * Instantiates a new key frame comparator.
+         */
         public KeyFrameComparator() {
         }
 
+        /* (non-Javadoc)
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
         @Override public int compare(KeyFrame o1, KeyFrame o2) {
 //            int compareTo = o1.getTime().compareTo(o2.getTime());
 //            if (compareTo == 0 && o1 != o2) {

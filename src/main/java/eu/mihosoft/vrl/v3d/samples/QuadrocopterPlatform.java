@@ -14,12 +14,20 @@ import static eu.mihosoft.vrl.v3d.Transform.unity;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QuadrocopterPlatform.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class QuadrocopterPlatform {
     
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         CSG result = new QuadrocopterPlatform().toCSG();
@@ -34,6 +42,11 @@ public class QuadrocopterPlatform {
     }
     
     
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     private CSG toCSG() {
 
         double platformRadius = 84;
@@ -70,6 +83,16 @@ public class QuadrocopterPlatform {
 
     
 
+    /**
+     * Base platform.
+     *
+     * @param platformRadius the platform radius
+     * @param numHoneycombs the num honeycombs
+     * @param platformThickness the platform thickness
+     * @param platformBorderThickness the platform border thickness
+     * @param honeycombWallThickness the honeycomb wall thickness
+     * @return the csg
+     */
     private CSG basePlatform(double platformRadius, int numHoneycombs, double platformThickness, double platformBorderThickness, double honeycombWallThickness) {
         double honeycombRadius = platformRadius / numHoneycombs;
         

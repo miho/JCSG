@@ -17,12 +17,19 @@ import eu.mihosoft.vrl.v3d.ZModifier;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class WeightedSphere.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class WeightedSphere {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         CSG prototype = new Sphere(3, 128, 64).toCSG().optimization(CSG.OptType.POLYGON_BOUND);
@@ -77,6 +84,12 @@ public class WeightedSphere {
         return result;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         FileUtil.write(Paths.get("rounded-cube-mod.stl"), new WeightedSphere().toCSG().toStlString());

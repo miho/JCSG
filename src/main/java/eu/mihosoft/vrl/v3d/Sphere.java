@@ -1,7 +1,7 @@
 /**
  * Sphere.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,13 +29,14 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * A solid sphere.
  *
@@ -46,11 +47,19 @@ import java.util.List;
  */
 public class Sphere implements Primitive {
 
+    /** The center. */
     private Vector3d center;
+    
+    /** The radius. */
     private double radius;
+    
+    /** The num slices. */
     private int numSlices;
+    
+    /** The num stacks. */
     private int numStacks;
 
+    /** The properties. */
     private final PropertyStorage properties = new PropertyStorage();
 
     /**
@@ -104,6 +113,9 @@ public class Sphere implements Primitive {
         this.numStacks = numStacks;
     }
 
+    /**
+     * Inits the.
+     */
     private void init() {
         center = new Vector3d(0, 0, 0);
         radius = 1;
@@ -111,6 +123,15 @@ public class Sphere implements Primitive {
         numStacks = 8;
     }
 
+    /**
+     * Sphere vertex.
+     *
+     * @param c the c
+     * @param r the r
+     * @param theta the theta
+     * @param phi the phi
+     * @return the vertex
+     */
     private Vertex sphereVertex(Vector3d c, double r, double theta, double phi) {
         theta *= Math.PI * 2;
         phi *= Math.PI;
@@ -122,6 +143,9 @@ public class Sphere implements Primitive {
         return new Vertex(c.plus(dir.times(r)), dir);
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.Primitive#toPolygons()
+     */
     @Override
     public List<Polygon> toPolygons() {
         List<Polygon> polygons = new ArrayList<>();
@@ -157,6 +181,8 @@ public class Sphere implements Primitive {
     }
 
     /**
+     * Gets the center.
+     *
      * @return the center
      */
     public Vector3d getCenter() {
@@ -164,6 +190,8 @@ public class Sphere implements Primitive {
     }
 
     /**
+     * Sets the center.
+     *
      * @param center the center to set
      */
     public void setCenter(Vector3d center) {
@@ -171,6 +199,8 @@ public class Sphere implements Primitive {
     }
 
     /**
+     * Gets the radius.
+     *
      * @return the radius
      */
     public double getRadius() {
@@ -178,6 +208,8 @@ public class Sphere implements Primitive {
     }
 
     /**
+     * Sets the radius.
+     *
      * @param radius the radius to set
      */
     public void setRadius(double radius) {
@@ -185,6 +217,8 @@ public class Sphere implements Primitive {
     }
 
     /**
+     * Gets the num slices.
+     *
      * @return the numSlices
      */
     public int getNumSlices() {
@@ -192,6 +226,8 @@ public class Sphere implements Primitive {
     }
 
     /**
+     * Sets the num slices.
+     *
      * @param numSlices the numSlices to set
      */
     public void setNumSlices(int numSlices) {
@@ -199,6 +235,8 @@ public class Sphere implements Primitive {
     }
 
     /**
+     * Gets the num stacks.
+     *
      * @return the numStacks
      */
     public int getNumStacks() {
@@ -206,12 +244,17 @@ public class Sphere implements Primitive {
     }
 
     /**
+     * Sets the num stacks.
+     *
      * @param numStacks the numStacks to set
      */
     public void setNumStacks(int numStacks) {
         this.numStacks = numStacks;
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.Primitive#getProperties()
+     */
     @Override
     public PropertyStorage getProperties() {
         return properties;

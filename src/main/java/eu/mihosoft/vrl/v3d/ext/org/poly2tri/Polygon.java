@@ -1,7 +1,7 @@
 /**
  * Polygon.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,7 +25,7 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
@@ -64,27 +64,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
+/**
+ * The Class Polygon.
+ */
 class Polygon implements Triangulatable
 {
 //    private final static Logger //logger = LoggerFactory.getLogger( Polygon.class );
 
-    protected ArrayList<TriangulationPoint> _points = new ArrayList<TriangulationPoint>();
+    /** The _points. */
+protected ArrayList<TriangulationPoint> _points = new ArrayList<TriangulationPoint>();
+    
+    /** The _steiner points. */
     protected ArrayList<TriangulationPoint> _steinerPoints;
+    
+    /** The _holes. */
     protected ArrayList<Polygon> _holes;
 
+    /** The m_triangles. */
     protected List<DelaunayTriangle> m_triangles;
 
+    /** The _last. */
     protected PolygonPoint _last;
 
     /**
-     * To create a polygon we need atleast 3 separate points
-     * 
-     * @param p1
-     * @param p2
-     * @param p3
+     * To create a polygon we need atleast 3 separate points.
+     *
+     * @param p1 the p1
+     * @param p2 the p2
+     * @param p3 the p3
      */
     public Polygon( PolygonPoint p1, PolygonPoint p2, PolygonPoint p3 )
     {
@@ -100,8 +111,9 @@ class Polygon implements Triangulatable
     }
 
     /**
-     * Requires atleast 3 points
-     * @param points - ordered list of points forming the polygon. 
+     * Requires atleast 3 points.
+     *
+     * @param points - ordered list of points forming the polygon.
      *                 No duplicates are allowed
      */
     public Polygon( List<PolygonPoint> points )
@@ -117,20 +129,28 @@ class Polygon implements Triangulatable
     }
 
     /**
-     * Requires atleast 3 points
+     * Requires atleast 3 points.
      *
-     * @param points
+     * @param points the points
      */
     public Polygon( PolygonPoint[] points )
     {        
         this( Arrays.asList( points ) );
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.Triangulatable#getTriangulationMode()
+     */
     public TriangulationMode getTriangulationMode()
     {
         return TriangulationMode.POLYGON;
     }
 
+    /**
+     * Point count.
+     *
+     * @return the int
+     */
     public int pointCount()
     {
         int count = _points.size();
@@ -141,6 +161,11 @@ class Polygon implements Triangulatable
         return count;
     }
 
+    /**
+     * Adds the steiner point.
+     *
+     * @param point the point
+     */
     public void addSteinerPoint( TriangulationPoint point )
     {
         if( _steinerPoints == null )
@@ -150,6 +175,11 @@ class Polygon implements Triangulatable
         _steinerPoints.add( point );        
     }
     
+    /**
+     * Adds the steiner points.
+     *
+     * @param points the points
+     */
     public void addSteinerPoints( List<TriangulationPoint> points )
     {
         if( _steinerPoints == null )
@@ -159,6 +189,9 @@ class Polygon implements Triangulatable
         _steinerPoints.addAll( points );        
     }
 
+    /**
+     * Clear steiner points.
+     */
     public void clearSteinerPoints()
     {
         if( _steinerPoints != null )
@@ -168,7 +201,8 @@ class Polygon implements Triangulatable
     }
 
     /**
-     * Assumes: that given polygon is fully inside the current polygon 
+     * Assumes: that given polygon is fully inside the current polygon .
+     *
      * @param poly - a subtraction polygon
      */
     public void addHole( Polygon poly )
@@ -183,11 +217,10 @@ class Polygon implements Triangulatable
     }
 
     /**
-     * Will insert a point in the polygon after given point 
-     * 
-     * @param a
-     * @param b
-     * @param p
+     * Will insert a point in the polygon after given point .
+     *
+     * @param a the a
+     * @param newPoint the new point
      */
     public void insertPointAfter( PolygonPoint a, PolygonPoint newPoint )
     {
@@ -207,6 +240,11 @@ class Polygon implements Triangulatable
         }
     }
 
+    /**
+     * Adds the points.
+     *
+     * @param list the list
+     */
     public void addPoints( List<PolygonPoint> list )    
     {
         PolygonPoint first;
@@ -227,9 +265,9 @@ class Polygon implements Triangulatable
     }
     
     /**
-     * Will add a point after the last point added
-     * 
-     * @param p
+     * Will add a point after the last point added.
+     *
+     * @param p the p
      */
     public void addPoint(PolygonPoint p )    
     {
@@ -239,6 +277,11 @@ class Polygon implements Triangulatable
         _points.add( p );
     }
     
+    /**
+     * Removes the point.
+     *
+     * @param p the p
+     */
     public void removePoint( PolygonPoint p )
     {
         PolygonPoint next, prev;
@@ -250,31 +293,51 @@ class Polygon implements Triangulatable
         _points.remove( p );
     }
 
+    /**
+     * Gets the point.
+     *
+     * @return the point
+     */
     public PolygonPoint getPoint()
     {
         return _last;
     }
     
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.Triangulatable#getPoints()
+     */
     public List<TriangulationPoint> getPoints()
     {
         return _points;
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.Triangulatable#getTriangles()
+     */
     public List<DelaunayTriangle> getTriangles()
     {
         return m_triangles;
     }
     
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.Triangulatable#addTriangle(eu.mihosoft.vrl.v3d.ext.org.poly2tri.DelaunayTriangle)
+     */
     public void addTriangle( DelaunayTriangle t )
     {
         m_triangles.add( t );
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.Triangulatable#addTriangles(java.util.List)
+     */
     public void addTriangles( List<DelaunayTriangle> list )
     {
         m_triangles.addAll( list );
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.Triangulatable#clearTriangulation()
+     */
     public void clearTriangulation()
     {
         if( m_triangles != null )
@@ -284,7 +347,9 @@ class Polygon implements Triangulatable
     }
 
     /**
-     * Creates constraints and populates the context with points
+     * Creates constraints and populates the context with points.
+     *
+     * @param tcx the tcx
      */
     public void prepareTriangulation( TriangulationContext<?> tcx )
     {

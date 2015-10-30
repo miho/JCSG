@@ -13,6 +13,7 @@
 
 package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
+// TODO: Auto-generated Javadoc
 /**
  * A three-element spatial point.
  *
@@ -34,7 +35,7 @@ public class Point3d extends Vector3d
 	 }
 
 	/**
-	 * Creates a Point3d by copying a vector
+	 * Creates a Point3d by copying a vector.
 	 *
 	 * @param v vector to be copied
 	 */

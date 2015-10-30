@@ -1,7 +1,7 @@
 /**
  * Extrude.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,7 +29,7 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * Extrudes concave and convex polygons.
  *
@@ -46,6 +47,9 @@ import java.util.List;
  */
 public class Extrude {
 
+    /**
+     * Instantiates a new extrude.
+     */
     private Extrude() {
         throw new AssertionError("Don't instantiate me!", null);
     }
@@ -82,6 +86,13 @@ public class Extrude {
         return extrude(dir, Polygon.fromPoints(toCCW(newList)));
     }
     
+    /**
+     * Extrude.
+     *
+     * @param dir the dir
+     * @param polygon1 the polygon1
+     * @return the csg
+     */
     private static CSG extrude(Vector3d dir, Polygon polygon1) {
         List<Polygon> newPolygons = new ArrayList<>();
         
@@ -117,6 +128,12 @@ public class Extrude {
 
     }
 
+    /**
+     * To ccw.
+     *
+     * @param points the points
+     * @return the list
+     */
     static List<Vector3d> toCCW(List<Vector3d> points) {
 
         List<Vector3d> result = new ArrayList<>(points);
@@ -128,6 +145,12 @@ public class Extrude {
         return result;
     }
 
+    /**
+     * To cw.
+     *
+     * @param points the points
+     * @return the list
+     */
     static List<Vector3d> toCW(List<Vector3d> points) {
 
         List<Vector3d> result = new ArrayList<>(points);
@@ -139,6 +162,12 @@ public class Extrude {
         return result;
     }
 
+    /**
+     * Checks if is ccw.
+     *
+     * @param polygon the polygon
+     * @return true, if is ccw
+     */
     public static boolean isCCW(Polygon polygon) {
         // thanks to Sepp Reiter for explaining me the algorithm!
         
@@ -201,6 +230,13 @@ public class Extrude {
         return selectedVIndex > highestLeftVertexIndex;
     }
 
+    /**
+     * Normalized x.
+     *
+     * @param v1 the v1
+     * @param v2 the v2
+     * @return the double
+     */
     private static double normalizedX(Vector3d v1, Vector3d v2) {
         Vector3d v2MinusV1 = v2.minus(v1);
 

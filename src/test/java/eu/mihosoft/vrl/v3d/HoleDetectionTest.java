@@ -11,12 +11,17 @@ import java.util.Optional;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class HoleDetectionTest.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class HoleDetectionTest {
 
+    /**
+     * Hole detection test.
+     */
     @Test
     public void holeDetectionTest() {
         
@@ -111,6 +116,12 @@ public class HoleDetectionTest {
                 2, 0, 0, 1, 0);
     }
 
+    /**
+     * Creates the num holes test.
+     *
+     * @param polygons the polygons
+     * @param numHoles the num holes
+     */
     private static void createNumHolesTest(
             List<Polygon> polygons, int... numHoles) {
 

@@ -14,27 +14,52 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ArduinoMount.
  *
  * @author miho
  */
 public class ArduinoMount {
 
+    /** The bottom width. */
     private double bottomWidth = 68.6;
+    
+    /** The bottom height. */
     private double bottomHeight = 53.3;
+    
+    /** The bottom thickness. */
     private double bottomThickness = 2;
 
+    /** The pin height. */
     private double pinHeight = 12;
+    
+    /** The pin hole height. */
     private double pinHoleHeight = 4.8;
+    
+    /** The pin radius. */
     private double pinRadius = 2;
+    
+    /** The board thickness. */
     private double boardThickness = 2.0;
     
+    /** The servo connect thickness. */
     private double servoConnectThickness = 7;
 
+    /**
+     * Board.
+     *
+     * @return the csg
+     */
     private CSG board() {
         return new Cube(Vector3d.ZERO, new Vector3d(bottomWidth, bottomHeight, bottomThickness)).toCSG();
     }
 
+    /**
+     * Pins.
+     *
+     * @return the csg
+     */
     private CSG pins() {
         CSG prototype = new Cylinder(pinRadius, pinHeight, 16).toCSG();
 
@@ -49,6 +74,11 @@ public class ArduinoMount {
         return pins.difference(board);
     }
 
+    /**
+     * Pin connections.
+     *
+     * @return the csg
+     */
     private CSG pinConnections() {
 
         CSG first = new Cube(Vector3d.ZERO, new Vector3d(bottomWidth / 2, 3, bottomThickness)).
@@ -61,6 +91,11 @@ public class ArduinoMount {
         return first.union(second).union(third);
     }
     
+    /**
+     * Servo connect.
+     *
+     * @return the csg
+     */
     private CSG servoConnect() {
 
         CSG firstA = new Cube(Vector3d.ZERO, new Vector3d(bottomWidth, servoConnectThickness, bottomThickness)).
@@ -76,10 +111,21 @@ public class ArduinoMount {
         return first.union(second);
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         return pins().union(pinConnections()).union(servoConnect());
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         ArduinoMount aMount = new ArduinoMount();

@@ -14,12 +14,19 @@ import eu.mihosoft.vrl.v3d.Transform;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class Naze32Holder.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Naze32Holder {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         double w = 36;
@@ -46,6 +53,16 @@ public class Naze32Holder {
         return base.union(/*peg1, peg2, */cyl1,cyl2,cyl3,cyl4);
     }
 
+    /**
+     * Base platform.
+     *
+     * @param r the r
+     * @param thickness the thickness
+     * @param resolution the resolution
+     * @param w the w
+     * @param h the h
+     * @return the csg
+     */
     private CSG basePlatform(double r, double thickness, int resolution, double w, double h) {
         CSG cylPrototype = new Cylinder(r, thickness, resolution).toCSG();
         CSG cyl1 = cylPrototype.transformed(Transform.unity().translateX(-w / 2.0 + r).translateY(-h / 2.0+r));
@@ -56,6 +73,12 @@ public class Naze32Holder {
         return base;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         FileUtil.write(Paths.get("naze32-mount.stl"), new Naze32Holder().toCSG().toStlString());

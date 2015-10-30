@@ -1,7 +1,7 @@
 /**
  * Polygon.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,7 +29,7 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a convex polygon.
  *
@@ -49,9 +50,7 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
  */
 public final class Polygon {
 
-    /**
-     * Polygon vertices
-     */
+    /** Polygon vertices. */
     public final List<Vertex> vertices;
     /**
      * Shared property (can be used for shared color etc.).
@@ -60,10 +59,15 @@ public final class Polygon {
     /**
      * Plane defined by this polygon.
      *
-     * <b>Note:</b> uses first three vertices to define the plane.
+     *  Note:  uses first three vertices to define the plane.
      */
     public final Plane plane;
 
+    /**
+     * Sets the storage.
+     *
+     * @param storage the new storage
+     */
     void setStorage(PropertyStorage storage) {
         this.shared = storage;
     }
@@ -96,7 +100,7 @@ public final class Polygon {
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
      *
-     * <b>Note:</b> the vertices used to initialize a polygon must be coplanar
+     *  Note:  the vertices used to initialize a polygon must be coplanar
      * and form a convex loop.
      *
      * @param vertices polygon vertices
@@ -115,7 +119,7 @@ public final class Polygon {
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
      *
-     * <b>Note:</b> the vertices used to initialize a polygon must be coplanar
+     *  Note:  the vertices used to initialize a polygon must be coplanar
      * and form a convex loop.
      *
      * @param vertices polygon vertices
@@ -132,7 +136,7 @@ public final class Polygon {
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
      *
-     * <b>Note:</b> the vertices used to initialize a polygon must be coplanar
+     *  Note:  the vertices used to initialize a polygon must be coplanar
      * and form a convex loop.
      *
      * @param vertices polygon vertices
@@ -142,6 +146,9 @@ public final class Polygon {
         this(Arrays.asList(vertices));
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Polygon clone() {
         List<Vertex> newVertices = new ArrayList<>();
@@ -170,7 +177,7 @@ public final class Polygon {
     /**
      * Returns a flipped copy of this polygon.
      *
-     * <b>Note:</b> this polygon is not modified.
+     *  Note:  this polygon is not modified.
      *
      * @return a flipped copy of this polygon
      */
@@ -245,7 +252,7 @@ public final class Polygon {
     /**
      * Returns a translated copy of this polygon.
      *
-     * <b>Note:</b> this polygon is not modified
+     *  Note:  this polygon is not modified
      *
      * @param v the vector that defines the translation
      *
@@ -258,7 +265,7 @@ public final class Polygon {
     /**
      * Applies the specified transformation to this polygon.
      *
-     * <b>Note:</b> if the applied transformation performs a mirror operation
+     *  Note:  if the applied transformation performs a mirror operation
      * the vertex order of this polygon is reversed.
      *
      * @param transform the transformation to apply
@@ -291,10 +298,10 @@ public final class Polygon {
     /**
      * Returns a transformed copy of this polygon.
      *
-     * <b>Note:</b> if the applied transformation performs a mirror operation
+     *  Note:  if the applied transformation performs a mirror operation
      * the vertex order of this polygon is reversed.
      *
-     * <b>Note:</b> this polygon is not modified
+     *  Note:  this polygon is not modified
      *
      * @param transform the transformation to apply
      * @return a transformed copy of this polygon
@@ -339,7 +346,7 @@ public final class Polygon {
      * Creates a polygon from the specified point list.
      *
      * @param points the points that define the polygon
-     * @param shared
+     * @param shared the shared
      * @param plane may be null
      * @return a polygon defined by the specified point list
      */
@@ -405,6 +412,12 @@ public final class Polygon {
                 new Vector3d(maxX, maxY, maxZ));
     }
 
+    /**
+     * Contains.
+     *
+     * @param p the p
+     * @return true, if successful
+     */
     public boolean contains(Vector3d p) {
         // taken from http://www.java-gaming.org/index.php?topic=26013.0
         // and http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
@@ -428,6 +441,12 @@ public final class Polygon {
         return oddNodes;
     }
     
+    /**
+     * Contains.
+     *
+     * @param p the p
+     * @return true, if successful
+     */
     public boolean contains(Polygon p) {
         
         for (Vertex v : p.vertices) {
@@ -550,8 +569,10 @@ public final class Polygon {
 ////        return result;
 //    }
     /**
-     * @return the shared
-     */
+ * Gets the storage.
+ *
+ * @return the shared
+ */
     public PropertyStorage getStorage() {
 
         if (shared == null) {

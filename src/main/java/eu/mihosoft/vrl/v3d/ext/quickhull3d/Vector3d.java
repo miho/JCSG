@@ -15,6 +15,7 @@ package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
 import java.util.Random;
 
+// TODO: Auto-generated Javadoc
 /**
  * A three-element vector. This class is actually a reduced version of the
  * Vector3d class contained in the author's matlib package (which was partly
@@ -30,19 +31,13 @@ class Vector3d
 	 */
 	static private final double DOUBLE_PREC = 2.2204460492503131e-16;
 
-	/**
-	 * First element
-	 */
+	/** First element. */
 	public double x;
 
-	/**
-	 * Second element
-	 */
+	/** Second element. */
 	public double y;
 
-	/**
-	 * Third element
-	 */
+	/** Third element. */
 	public double z;
 
 	/**
@@ -106,7 +101,6 @@ class Vector3d
 	 *
 	 * @param i element index
 	 * @param value element value
-	 * @return element value throws ArrayIndexOutOfBoundsException
 	 * if i is not in the range 0 to 2.
 	 */
 	public void set (int i, double value)
@@ -243,6 +237,7 @@ class Vector3d
 	/**
 	 * Returns the Euclidean distance between this vector and vector v.
 	 *
+	 * @param v the v
 	 * @return distance between this vector and v
 	 */
 	public double distance(Vector3d v)
@@ -258,6 +253,7 @@ class Vector3d
 	 * Returns the squared of the Euclidean distance between this vector
 	 * and vector v.
 	 *
+	 * @param v the v
 	 * @return squared distance between this vector and v
 	 */
 	public double distanceSquared(Vector3d v)

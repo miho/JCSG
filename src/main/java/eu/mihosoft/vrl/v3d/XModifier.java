@@ -5,6 +5,7 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+// TODO: Auto-generated Javadoc
 /**
  * Modifies along x axis.
  * 
@@ -12,11 +13,19 @@ package eu.mihosoft.vrl.v3d;
  */
 public class XModifier implements WeightFunction {
 
+    /** The bounds. */
     private Bounds bounds;
+    
+    /** The min. */
     private double min = 0;
+    
+    /** The max. */
     private double max = 1.0;
 
+    /** The s per unit. */
     private double sPerUnit;
+    
+    /** The centered. */
     private boolean centered;
 
 
@@ -35,6 +44,9 @@ public class XModifier implements WeightFunction {
         this.centered = centered;
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.WeightFunction#eval(eu.mihosoft.vrl.v3d.Vector3d, eu.mihosoft.vrl.v3d.CSG)
+     */
     @Override
     public double eval(Vector3d pos, CSG csg) {
 

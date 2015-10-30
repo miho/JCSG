@@ -15,26 +15,52 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class BreadBoardMount.
  *
  * @author miho
  */
 public class BreadBoardMount {
+    
+    /** The bread board width. */
     private double breadBoardWidth = 84;
+    
+    /** The breadboard length. */
     private double breadboardLength = 54;
+    
+    /** The bread board height. */
     private double breadBoardHeight = 8.5;
     
+    /** The pin radius. */
     private double pinRadius = 5;
+    
+    /** The pin height. */
     private double pinHeight = 14;
+    
+    /** The pin hole height. */
     private double pinHoleHeight = 10;
+    
+    /** The bottom thickness. */
     private double bottomThickness = 2;
     
+    /** The servo connect thickness. */
     private double servoConnectThickness = 7;
     
+    /**
+     * Board.
+     *
+     * @return the csg
+     */
     private CSG board() {
         return new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth, breadboardLength, breadBoardHeight)).toCSG();
     }
 
+    /**
+     * Pins.
+     *
+     * @return the csg
+     */
     private CSG pins() {
         CSG prototype = new Cylinder(pinRadius, pinHeight, 16).toCSG();
 
@@ -49,6 +75,11 @@ public class BreadBoardMount {
         return pins.difference(board);
     }
 
+    /**
+     * Pin connections.
+     *
+     * @return the csg
+     */
     private CSG pinConnections() {
 
         CSG first = new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth / 2, 3, bottomThickness)).
@@ -61,6 +92,11 @@ public class BreadBoardMount {
         return first.union(second).union(third);
     }
     
+    /**
+     * Servo connect.
+     *
+     * @return the csg
+     */
     private CSG servoConnect() {
 
         CSG firstA = new Cube(Vector3d.ZERO, new Vector3d(breadBoardWidth, servoConnectThickness, bottomThickness)).
@@ -76,10 +112,21 @@ public class BreadBoardMount {
         return first.union(second);
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         return pins().union(pinConnections()).union(servoConnect());
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         ArduinoMount aMount = new ArduinoMount();

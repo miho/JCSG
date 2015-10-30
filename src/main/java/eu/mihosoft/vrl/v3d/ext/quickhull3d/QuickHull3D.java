@@ -15,26 +15,27 @@ package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 import java.util.*;
 import java.io.*;
 
+// TODO: Auto-generated Javadoc
 /**
  * Computes the convex hull of a set of three dimensional points.
  *
- * <p>The algorithm is a three dimensional implementation of Quickhull, as
+ *  The algorithm is a three dimensional implementation of Quickhull, as
  * described in Barber, Dobkin, and Huhdanpaa, <a
  * href=http://citeseer.ist.psu.edu/barber96quickhull.html> ``The Quickhull
- * Algorithm for Convex Hulls''</a> (ACM Transactions on Mathematical Software,
+ * Algorithm for Convex Hulls''  (ACM Transactions on Mathematical Software,
  * Vol. 22, No. 4, December 1996), and has a complexity of O(n log(n)) with
  * respect to the number of points. A well-known C implementation of Quickhull
  * that works for arbitrary dimensions is provided by <a
- * href=http://www.qhull.org>qhull</a>.
+ * href=http://www.qhull.org>qhull .
  *
- * <p>A hull is constructed by providing a set of points
+ *  A hull is constructed by providing a set of points
  * to either a constructor or a
  * {@link #build(Point3d[]) build} method. After
  * the hull is built, its vertices and faces can be retrieved
  * using {@link #getVertices()
  * getVertices} and {@link #getFaces() getFaces}.
  * A typical usage might look like this:
- * <pre>
+ *  
  *   // x y z coordinates of 6 points
  *   Point3d[] points = new Point3d[] 
  *    { new Point3d (0.0,  0.0,  0.0),
@@ -64,7 +65,7 @@ import java.io.*;
  *       }
  *      System.out.println ("");
  *    }
- * </pre>
+ *  
  * As a convenience, there are also {@link #build(double[]) build}
  * and {@link #getVertices(double[]) getVertex} methods which
  * pass point information using an array of doubles.
@@ -72,9 +73,9 @@ import java.io.*;
  * <h3><a name=distTol>Robustness</h3> Because this algorithm uses floating
  * point arithmetic, it is potentially vulnerable to errors arising from
  * numerical imprecision.  We address this problem in the same way as <a
- * href=http://www.qhull.org>qhull</a>, by merging faces whose edges are not
+ * href=http://www.qhull.org>qhull , by merging faces whose edges are not
  * clearly convex. A face is convex if its edges are convex, and an edge is
- * convex if the centroid of each adjacent plane is clearly <i>below</i> the
+ * convex if the centroid of each adjacent plane is clearly  below  the
  * plane of the other face. The centroid is considered below a plane if its
  * distance to the plane is less than the negative of a {@link
  * #getDistanceTolerance() distance tolerance}.  This tolerance represents the
@@ -83,7 +84,7 @@ import java.io.*;
  * although an application may {@link #setExplicitDistanceTolerance set this
  * tolerance explicitly}.
  *
- * <p>Numerical problems are more likely to arise in situations where data
+ *  Numerical problems are more likely to arise in situations where data
  * points lie on or within the faces or edges of the convex hull. We have
  * tested QuickHull3D for such situations by computing the convex hull of a
  * random point set, then adding additional randomly chosen points which lie
@@ -101,7 +102,7 @@ import java.io.*;
  * problems which the merging process removed. Hence is it
  * possible that, after triangulation, {@link #check check} will fail (the same
  * behavior is observed with triangulated output from <a
- * href=http://www.qhull.org>qhull</a>).
+ * href=http://www.qhull.org>qhull ).
  *
  * <h3>Degenerate Input</h3>It is assumed that the input points
  * are non-degenerate in that they are not coincident, colinear, or
@@ -143,32 +144,59 @@ class QuickHull3D
 	 */
 	public static final double AUTOMATIC_TOLERANCE = -1;
 
+	/** The find index. */
 	protected int findIndex = -1;
 
+	/** The char length. */
 	// estimated size of the point set
 	protected double charLength;
 
+	/** The debug. */
 	protected boolean debug = false;
 
+	/** The point buffer. */
 	protected Vertex[] pointBuffer = new Vertex[0];
+	
+	/** The vertex point indices. */
 	protected int[] vertexPointIndices = new int[0];
+	
+	/** The discarded faces. */
 	private Face[] discardedFaces = new Face[3];
 
+	/** The max vtxs. */
 	private Vertex[] maxVtxs = new Vertex[3];
+	
+	/** The min vtxs. */
 	private Vertex[] minVtxs = new Vertex[3];
 
+	/** The faces. */
 	protected Vector faces = new Vector(16);
+	
+	/** The horizon. */
 	protected Vector horizon = new Vector(16);
 
+	/** The new faces. */
 	private FaceList newFaces = new FaceList();
+	
+	/** The unclaimed. */
 	private VertexList unclaimed = new VertexList();
+	
+	/** The claimed. */
 	private VertexList claimed = new VertexList();
 
+	/** The num vertices. */
 	protected int numVertices;
+	
+	/** The num faces. */
 	protected int numFaces;
+	
+	/** The num points. */
 	protected int numPoints;
 
+	/** The explicit tolerance. */
 	protected double explicitTolerance = AUTOMATIC_TOLERANCE;
+	
+	/** The tolerance. */
 	protected double tolerance;
 
 	/**
@@ -203,7 +231,7 @@ class QuickHull3D
 	 * computed hull. The distance tolerance is used to determine when
 	 * faces are unambiguously convex with respect to each other, and when
 	 * points are unambiguously above or below a face plane, in the
-	 * presence of <a href=#distTol>numerical imprecision</a>. Normally,
+	 * presence of  =#distTol>numerical imprecision . Normally,
 	 * this tolerance is computed automatically for each set of input
 	 * points, but it can be set explicitly by the application.
 	 *
@@ -240,6 +268,12 @@ class QuickHull3D
 	   return explicitTolerance;
 	 }
 
+	/**
+	 * Adds the point to face.
+	 *
+	 * @param vtx the vtx
+	 * @param face the face
+	 */
 	private void addPointToFace (Vertex vtx, Face face)
 	 {
 	   vtx.face = face;
@@ -253,6 +287,12 @@ class QuickHull3D
 	   face.outside = vtx;
 	 }
 
+	/**
+	 * Removes the point from face.
+	 *
+	 * @param vtx the vtx
+	 * @param face the face
+	 */
 	private void removePointFromFace (Vertex vtx, Face face)
 	 {
 	   if (vtx == face.outside)
@@ -266,6 +306,12 @@ class QuickHull3D
 	   claimed.delete (vtx);
 	 }
 
+	/**
+	 * Removes the all points from face.
+	 *
+	 * @param face the face
+	 * @return the vertex
+	 */
 	private Vertex removeAllPointsFromFace (Face face)
 	 {
 	   if (face.outside != null)
@@ -323,6 +369,13 @@ class QuickHull3D
 	   build (points, points.length);
 	 }
 
+	/**
+	 * Find half edge.
+	 *
+	 * @param tail the tail
+	 * @param head the head
+	 * @return the half edge
+	 */
 	private HalfEdge findHalfEdge (Vertex tail, Vertex head)
 	 { 
 	   // brute force ... OK, since setHull is not used much
@@ -335,7 +388,15 @@ class QuickHull3D
 	   return null;
 	 }
 
- 	protected void setHull (double[] coords, int nump,
+ 	/**
+	  * Sets the hull.
+	  *
+	  * @param coords the coords
+	  * @param nump the nump
+	  * @param faceIndices the face indices
+	  * @param numf the numf
+	  */
+	 protected void setHull (double[] coords, int nump,
 				int[][] faceIndices, int numf)
  	 {
  	   initBuffers (nump);
@@ -356,6 +417,12 @@ class QuickHull3D
 	    }
  	 }
 
+	/**
+	 * Prints the qhull errors.
+	 *
+	 * @param proc the proc
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void printQhullErrors (Process proc)
 	   throws IOException
 	 {
@@ -370,6 +437,13 @@ class QuickHull3D
 	    }
 	 }
 
+	/**
+	 * Sets the from qhull.
+	 *
+	 * @param coords the coords
+	 * @param nump the nump
+	 * @param triangulate the triangulate
+	 */
 	protected void setFromQhull (double[] coords, int nump,
 				     boolean triangulate)
 	 {
@@ -436,6 +510,11 @@ class QuickHull3D
 	    }
 	 }
 
+	/**
+	 * Prints the points.
+	 *
+	 * @param ps the ps
+	 */
 	private void printPoints (PrintStream ps)
 	 {
 	   for (int i=0; i<numPoints; i++)
@@ -533,7 +612,7 @@ class QuickHull3D
 	 * Triangulates any non-triangular hull faces. In some cases, due to
 	 * precision issues, the resulting triangles may be very thin or small,
 	 * and hence appear to be non-convex (this same limitation is present
-	 * in <a href=http://www.qhull.org>qhull</a>).
+	 * in  =http://www.qhull.org>qhull ).
 	 */
 	public void triangulate ()
 	 {
@@ -562,7 +641,12 @@ class QuickHull3D
 //  	    }
 // 	 }
 
-	protected void initBuffers (int nump)
+	/**
+ * Inits the buffers.
+ *
+ * @param nump the nump
+ */
+protected void initBuffers (int nump)
 	 {
 	   if (pointBuffer.length < nump)
 	    { Vertex[] newBuffer = new Vertex[nump];
@@ -581,6 +665,12 @@ class QuickHull3D
 	   numPoints = nump;
 	 }
 
+	/**
+	 * Sets the points.
+	 *
+	 * @param coords the coords
+	 * @param nump the nump
+	 */
 	protected void setPoints (double[] coords, int nump)
 	 { 
 	   for (int i=0; i<nump; i++)
@@ -591,6 +681,12 @@ class QuickHull3D
 	    }
 	 }
 
+	/**
+	 * Sets the points.
+	 *
+	 * @param pnts the pnts
+	 * @param nump the nump
+	 */
 	protected void setPoints (Point3d[] pnts, int nump)
 	 { 
 	   for (int i=0; i<nump; i++)
@@ -601,6 +697,9 @@ class QuickHull3D
 	    }
 	 }
 
+	/**
+	 * Compute max and min.
+	 */
 	protected void computeMaxAndMin ()
 	 {
 	   Vector3d max = new Vector3d();
@@ -657,6 +756,8 @@ class QuickHull3D
 
 	/**
 	 * Creates the initial simplex from which the hull will be built.
+	 *
+	 * @throws IllegalArgumentException the illegal argument exception
 	 */
 	protected void createInitialSimplex ()
 	   throws IllegalArgumentException
@@ -865,7 +966,7 @@ class QuickHull3D
 	/**
 	 * Returns the faces associated with this hull.
 	 *
-	 * <p>Each face is represented by an integer array which gives the
+	 *  Each face is represented by an integer array which gives the
 	 * indices of the vertices. These indices are numbered
 	 * relative to the
 	 * hull vertices, are zero-based,
@@ -886,7 +987,7 @@ class QuickHull3D
 	/**
 	 * Returns the faces associated with this hull.
 	 *
-	 * <p>Each face is represented by an integer array which gives the
+	 *  Each face is represented by an integer array which gives the
 	 * indices of the vertices. By default, these indices are numbered with
 	 * respect to the hull vertices (as opposed to the input points), are
 	 * zero-based, and are arranged counter-clockwise. However, this
@@ -916,14 +1017,14 @@ class QuickHull3D
 	/**
 	 * Prints the vertices and faces of this hull to the stream ps.
 	 *
-	 * <p>
+	 *  
 	 * This is done using the Alias Wavefront .obj file
 	 * format, with the vertices printed first (each preceding by
 	 * the letter <code>v</code>), followed by the vertex indices
 	 * for each face (each
 	 * preceded by the letter <code>f</code>).
 	 *
-	 * <p>The face indices are numbered with respect to the hull vertices
+	 *  The face indices are numbered with respect to the hull vertices
 	 * (as opposed to the input points), with a lowest index of 1, and are
 	 * arranged counter-clockwise. More control over the index format can
 	 * be obtained using
@@ -942,12 +1043,12 @@ class QuickHull3D
 	/**
 	 * Prints the vertices and faces of this hull to the stream ps.
 	 *
-	 * <p> This is done using the Alias Wavefront .obj file format, with
+	 *   This is done using the Alias Wavefront .obj file format, with
 	 * the vertices printed first (each preceding by the letter
 	 * <code>v</code>), followed by the vertex indices for each face (each
 	 * preceded by the letter <code>f</code>).
 	 *
-	 * <p>By default, the face indices are numbered with respect to the
+	 *  By default, the face indices are numbered with respect to the
 	 * hull vertices (as opposed to the input points), with a lowest index
 	 * of 1, and are arranged counter-clockwise. However, this
 	 * can be changed by setting {@link #POINT_RELATIVE POINT_RELATIVE},
@@ -982,6 +1083,13 @@ class QuickHull3D
 	    }
 	 }
 
+	/**
+	 * Gets the face indices.
+	 *
+	 * @param indices the indices
+	 * @param face the face
+	 * @param flags the flags
+	 */
 	private void getFaceIndices (int[] indices, Face face, int flags)
 	 { 
 	   boolean ccw = ((flags & CLOCKWISE) == 0);
@@ -1004,6 +1112,11 @@ class QuickHull3D
 	   while (hedge != face.he0);	   
 	 }
 
+	/**
+	 * Resolve unclaimed points.
+	 *
+	 * @param newFaces the new faces
+	 */
 	protected void resolveUnclaimedPoints (FaceList newFaces)
 	 {
 	   Vertex vtxNext = unclaimed.first();
@@ -1042,6 +1155,12 @@ class QuickHull3D
 	    }
 	 }
 
+	/**
+	 * Delete face points.
+	 *
+	 * @param face the face
+	 * @param absorbingFace the absorbing face
+	 */
 	protected void deleteFacePoints (Face face, Face absorbingFace)
 	 {
 	   Vertex faceVtxs = removeAllPointsFromFace (face);
@@ -1068,14 +1187,30 @@ class QuickHull3D
 	    }
 	 }
 
+	/** The Constant NONCONVEX_WRT_LARGER_FACE. */
 	private static final int NONCONVEX_WRT_LARGER_FACE = 1;
+	
+	/** The Constant NONCONVEX. */
 	private static final int NONCONVEX = 2;
 
+	/**
+	 * Opp face distance.
+	 *
+	 * @param he the he
+	 * @return the double
+	 */
 	protected double oppFaceDistance (HalfEdge he)
 	 {
 	   return he.face.distanceToPlane (he.opposite.face.getCentroid());
 	 }
 
+	/**
+	 * Do adjacent merge.
+	 *
+	 * @param face the face
+	 * @param mergeType the merge type
+	 * @return true, if successful
+	 */
 	private boolean doAdjacentMerge (Face face, int mergeType)
 	 {
 	   HalfEdge hedge = face.he0;
@@ -1141,6 +1276,14 @@ class QuickHull3D
 	   return false;
 	 }
 
+	/**
+	 * Calculate horizon.
+	 *
+	 * @param eyePnt the eye pnt
+	 * @param edge0 the edge0
+	 * @param face the face
+	 * @param horizon the horizon
+	 */
 	protected void calculateHorizon (
 	   Point3d eyePnt, HalfEdge edge0, Face face, Vector horizon)
 	 {
@@ -1178,6 +1321,13 @@ class QuickHull3D
 	   while (edge != edge0);
 	 }
 
+	/**
+	 * Adds the adjoining face.
+	 *
+	 * @param eyeVtx the eye vtx
+	 * @param he the he
+	 * @return the half edge
+	 */
 	private HalfEdge addAdjoiningFace (
 	   Vertex eyeVtx, HalfEdge he)
 	 { 
@@ -1188,6 +1338,13 @@ class QuickHull3D
 	   return face.getEdge(0);
 	 }
 
+	/**
+	 * Adds the new faces.
+	 *
+	 * @param newFaces the new faces
+	 * @param eyeVtx the eye vtx
+	 * @param horizon the horizon
+	 */
 	protected void addNewFaces (
 	   FaceList newFaces, Vertex eyeVtx, Vector horizon)
 	 { 
@@ -1215,6 +1372,11 @@ class QuickHull3D
 	   hedgeSideBegin.next.setOpposite (hedgeSidePrev);
 	 }
 
+	/**
+	 * Next point to add.
+	 *
+	 * @return the vertex
+	 */
 	protected Vertex nextPointToAdd()
 	 {
 	   if (!claimed.isEmpty())
@@ -1237,6 +1399,11 @@ class QuickHull3D
 	    }
 	 }
 	
+	/**
+	 * Adds the point to hull.
+	 *
+	 * @param eyeVtx the eye vtx
+	 */
 	protected void addPointToHull(Vertex eyeVtx)
 	 {
 	     horizon.clear();
@@ -1276,6 +1443,9 @@ class QuickHull3D
 	     resolveUnclaimedPoints(newFaces);
 	 }
 
+	/**
+	 * Builds the hull.
+	 */
 	protected void buildHull ()
 	 {
 	   int cnt = 0;
@@ -1296,6 +1466,12 @@ class QuickHull3D
 	    }
 	 }
 
+	/**
+	 * Mark face vertices.
+	 *
+	 * @param face the face
+	 * @param mark the mark
+	 */
 	private void markFaceVertices (Face face, int mark)
 	 {
 	   HalfEdge he0 = face.getFirstEdge();
@@ -1307,6 +1483,9 @@ class QuickHull3D
 	   while (he != he0);
 	 }
 
+	/**
+	 * Reindex faces and vertices.
+	 */
 	protected void reindexFacesAndVertices()
 	 { 
 	   for (int i=0; i<numPoints; i++)
@@ -1335,6 +1514,14 @@ class QuickHull3D
 	    }
 	 }
 
+	/**
+	 * Check face convexity.
+	 *
+	 * @param face the face
+	 * @param tol the tol
+	 * @param ps the ps
+	 * @return true, if successful
+	 */
 	protected boolean checkFaceConvexity (
 	   Face face, double tol, PrintStream ps)
 	 {
@@ -1373,6 +1560,13 @@ class QuickHull3D
 	   return true;
 	 }
 
+	/**
+	 * Check faces.
+	 *
+	 * @param tol the tol
+	 * @param ps the ps
+	 * @return true, if successful
+	 */
 	protected boolean checkFaces(double tol, PrintStream ps)
 	 { 
 	   // check edge convexity
@@ -1408,14 +1602,14 @@ class QuickHull3D
 	/**
 	 * Checks the correctness of the hull. This is done by making sure that
 	 * no faces are non-convex and that no points are outside any face.
-	 * These tests are performed using the distance tolerance <i>tol</i>.
+	 * These tests are performed using the distance tolerance  tol .
 	 * Faces are considered non-convex if any edge is non-convex, and an
 	 * edge is non-convex if the centroid of either adjoining face is more
-	 * than <i>tol</i> above the plane of the other face. Similarly,
+	 * than  tol  above the plane of the other face. Similarly,
 	 * a point is considered outside a face if its distance to that face's
-	 * plane is more than 10 times <i>tol</i>.
+	 * plane is more than 10 times  tol .
 	 *
-	 * <p>If the hull has been {@link #triangulate triangulated},
+	 *  If the hull has been {@link #triangulate triangulated},
 	 * then this routine may fail if some of the resulting
 	 * triangles are very small or thin.
 	 *

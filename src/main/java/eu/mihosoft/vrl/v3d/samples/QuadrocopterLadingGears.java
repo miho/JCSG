@@ -17,12 +17,20 @@ import eu.mihosoft.vrl.v3d.YModifier;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QuadrocopterLadingGears.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class QuadrocopterLadingGears {
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         QuadrocopterLadingGears moebiusStairs = new QuadrocopterLadingGears();
@@ -33,6 +41,11 @@ public class QuadrocopterLadingGears {
 
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     private CSG toCSG() {
 
         double armThickness = 18;

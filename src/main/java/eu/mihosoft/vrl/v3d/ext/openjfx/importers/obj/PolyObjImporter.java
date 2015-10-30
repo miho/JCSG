@@ -48,11 +48,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+// TODO: Auto-generated Javadoc
 /**
- * OBJ object loader
+ * OBJ object loader.
  */
 public class PolyObjImporter {
 
+    /**
+     * Vertex index.
+     *
+     * @param vertexIndex the vertex index
+     * @return the int
+     */
     private int vertexIndex(int vertexIndex) {
         if (vertexIndex < 0) {
             return vertexIndex + vertexes.size() / 3;
@@ -61,6 +68,12 @@ public class PolyObjImporter {
         }
     }
 
+    /**
+     * Uv index.
+     *
+     * @param uvIndex the uv index
+     * @return the int
+     */
     private int uvIndex(int uvIndex) {
         if (uvIndex < 0) {
             return uvIndex + uvs.size() / 2;
@@ -69,6 +82,12 @@ public class PolyObjImporter {
         }
     }
     
+    /**
+     * Normal index.
+     *
+     * @param normalIndex the normal index
+     * @return the int
+     */
     private int normalIndex(int normalIndex) {
         if (normalIndex < 0) {
             return normalIndex + normals.size() / 3;
@@ -77,51 +96,114 @@ public class PolyObjImporter {
         }
     }
 
+    /** The debug. */
     private static boolean debug = false;
+    
+    /** The scale. */
     private static float scale = 1;
+    
+    /** The flat xz. */
     private static boolean flatXZ = false;
 
+    /**
+     * Log.
+     *
+     * @param string the string
+     */
     static void log(String string) {
         if (debug) {
             System.out.println(string);
         }
     }
 
+    /**
+     * Gets the meshes.
+     *
+     * @return the meshes
+     */
     public Set<String> getMeshes() {
         return meshes.keySet();
     }
 
+    /** The meshes. */
     private Map<String, PolygonMesh> meshes = new HashMap<>();
+    
+    /** The materials. */
     private Map<String, Material> materials = new HashMap<>();
+    
+    /** The material library. */
     private List<Map<String, Material>> materialLibrary = new ArrayList<>();
+    
+    /** The obj filename. */
     private String objFilename;
 
+    /**
+     * Instantiates a new poly obj importer.
+     *
+     * @param filename the filename
+     * @throws FileNotFoundException the file not found exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public PolyObjImporter(String filename) throws FileNotFoundException, IOException {
         this.objFilename = filename;
         log("Reading filename = " + filename);;
         read(new URL(filename).openStream());
     }
 
+    /**
+     * Instantiates a new poly obj importer.
+     *
+     * @param inputStream the input stream
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public PolyObjImporter(InputStream inputStream) throws IOException {
         read(inputStream);
     }
     
+    /**
+     * Gets the mesh.
+     *
+     * @return the mesh
+     */
     public PolygonMesh getMesh() {
         return meshes.values().iterator().next();
     }
     
+    /**
+     * Gets the material.
+     *
+     * @return the material
+     */
     public Material getMaterial() {
         return materials.values().iterator().next();
     }
     
+    /**
+     * Gets the mesh.
+     *
+     * @param key the key
+     * @return the mesh
+     */
     public PolygonMesh getMesh(String key) {
         return meshes.get(key);
     }
 
+    /**
+     * Gets the material.
+     *
+     * @param key the key
+     * @return the material
+     */
     public Material getMaterial(String key) {
         return materials.get(key);
     }
     
+    /**
+     * Builds the polygon mesh view.
+     *
+     * @param key the key
+     * @return the polygon mesh view
+     */
     public PolygonMeshView buildPolygonMeshView(String key) {
         PolygonMeshView polygonMeshView = new PolygonMeshView();
         polygonMeshView.setId(key);
@@ -131,25 +213,60 @@ public class PolyObjImporter {
         return polygonMeshView;
     }
     
+    /**
+     * Sets the debug.
+     *
+     * @param debug the new debug
+     */
     public static void setDebug(boolean debug) {
         PolyObjImporter.debug = debug;
     }
 
+    /**
+     * Sets the scale.
+     *
+     * @param scale the new scale
+     */
     public static void setScale(float scale) {
         PolyObjImporter.scale = scale;
     }
 
+    /** The vertexes. */
     private FloatArrayList vertexes = new FloatArrayList();
+    
+    /** The uvs. */
     private FloatArrayList uvs = new FloatArrayList();
+    
+    /** The faces. */
     private List<int[]> faces = new ArrayList<>();
+    
+    /** The smoothing groups. */
     private IntegerArrayList smoothingGroups = new IntegerArrayList();
+    
+    /** The normals. */
     private FloatArrayList normals = new FloatArrayList();
+    
+    /** The face normals. */
     private List<int[]> faceNormals = new ArrayList<>();
+    
+    /** The material. */
     private Material material = new PhongMaterial(Color.WHITE);
+    
+    /** The faces start. */
     private int facesStart = 0;
+    
+    /** The faces normal start. */
     private int facesNormalStart = 0;
+    
+    /** The smoothing groups start. */
     private int smoothingGroupsStart = 0;
     
+    /**
+     * Read.
+     *
+     * @param inputStream the input stream
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     private void read(InputStream inputStream) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         String line;
@@ -248,6 +365,11 @@ public class PolyObjImporter {
                 + smoothingGroups.size() + " smoothing groups.");
     }
     
+    /**
+     * Adds the mesh.
+     *
+     * @param key the key
+     */
     private void addMesh(String key) {
         if (facesStart >= faces.size()) {
             // we're only interested in faces
@@ -361,6 +483,11 @@ public class PolyObjImporter {
         smoothingGroupsStart = smoothingGroups.size();
     }
 
+    /**
+     * Sets the flat xz.
+     *
+     * @param flatXZ the new flat xz
+     */
     public static void setFlatXZ(boolean flatXZ) {
         PolyObjImporter.flatXZ = flatXZ;
     }

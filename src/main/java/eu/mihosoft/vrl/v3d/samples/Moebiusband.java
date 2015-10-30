@@ -18,12 +18,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class Moebiusband.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Moebiusband {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         double width = 10;
@@ -73,6 +80,12 @@ public class Moebiusband {
         return result.union(originalResult.transformed(Transform.unity().translateX(width * 2)));
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         System.out.println("RUNNING");

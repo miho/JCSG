@@ -1,7 +1,7 @@
 /**
  * Node.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,7 +29,7 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO: Auto-generated Javadoc
 /**
  * Holds a node in a BSP tree. A BSP tree is built from a collection of polygons
  * by picking a polygon to split along. That polygon (and all other coplanar
@@ -85,6 +86,9 @@ final class Node {
         this(null);
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Node clone() {
         Node node = new Node();
@@ -150,7 +154,7 @@ final class Node {
      * Recursively removes all polygons in the {@link polygons} list that are
      * contained within this BSP tree.
      *
-     * <b>Note:</b> polygons are splitted if necessary.
+     *  Note:  polygons are splitted if necessary.
      *
      * @param polygons the polygons to clip
      *
@@ -187,7 +191,7 @@ final class Node {
      * Removes all polygons in this BSP tree that are inside the specified BSP
      * tree ({@code bsp}).
      *
-     * <b>Note:</b> polygons are splitted if necessary.
+     *  Note:  polygons are splitted if necessary.
      *
      * @param bsp bsp that shall be used for clipping
      */
