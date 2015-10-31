@@ -18,7 +18,6 @@ In addition to CSG this library provides the following features:
 ![](/resources/screenshot2.png)
 
 
-![](https://raw.githubusercontent.com/NeuronRobotics/JFXScad/master/resources/img/screenshot-02.png)
 
 ##Maven
 ```
