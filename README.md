@@ -1,7 +1,7 @@
 JCSG
 =======
 
-[![Build Status](https://travis-ci.org/miho/JCSG.png?branch=master)](https://travis-ci.org/miho/JCSG)
+[![Build Status](https://travis-ci.org/NeuronRobotics/JCSG.png?branch=master)](https://travis-ci.org/NeuronRobotics/JCSG)
 
 Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses an optimized CSG algorithm based on [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
 
@@ -17,9 +17,24 @@ In addition to CSG this library provides the following features:
 
 ![](/resources/screenshot2.png)
 
-To see what's possible with JCSG try [JFXScad](https://github.com/miho/JFXScad).
 
-![](https://raw.githubusercontent.com/miho/JFXScad/master/resources/img/screenshot-02.png)
+![](https://raw.githubusercontent.com/NeuronRobotics/JFXScad/master/resources/img/screenshot-02.png)
+
+##Maven
+```
+<dependency>
+  <groupId>com.neuronrobotics</groupId>
+  <artifactId>JCSG</artifactId>
+  <version>0.0.3</version>
+  <type>zip</type>
+</dependency>
+```
+
+##Gradle
+```
+compile "com.neuronrobotics:JCSG:0.0.3"
+
+```
 
 ## How to Build JCSG
 
