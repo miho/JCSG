@@ -17,15 +17,29 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class EggCup.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class EggCup {
+     
+     /**
+      * The main method.
+      *
+      * @param args the arguments
+      * @throws IOException Signals that an I/O exception has occurred.
+      */
      public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("eggcup.stl"), new EggCup().toCSG().toStlString());
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     private CSG toCSG() {
         
         CSG.setDefaultOptType(CSG.OptType.POLYGON_BOUND);

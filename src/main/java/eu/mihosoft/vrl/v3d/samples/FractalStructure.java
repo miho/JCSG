@@ -10,45 +10,66 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class FractalStructure.
  *
  * @author cpoliwoda
  */
 public class FractalStructure {
 
+    /** The number of ground edges. */
     // decides which kind of polygon base should be created: triangle, hexagon, general n-polygon with n>2
     int numberOfGroundEdges = 3;
+
+/** The thickness. */
 //    double height = 1.0;
     double thickness = 1.0;
     // divider 5 makes a good look for the structure
+    /** The Next thickness divider. */
     // divider bigger 5 makes the structure thinner, lower than 5 makes it wider
     double NextThicknessDivider = 6.0;
+    
+    /** The Next thickness. */
     // the thickness of the child tubes in the next level
     double NextThickness = thickness / NextThicknessDivider;
+    
+    /** The thickness list. */
     // list which gives the user the controll of thickness in each level
     static ArrayList<Double> thicknessList = null;
 
     // decides who many connections there should be in the next level between
+    /** The cross connections rate. */
     // two subFractalStructures (position parent edge and center)
     int crossConnectionsRate = 25; //percent
+    
+    /** The max angle for cross conections. */
     // maxAngleForCrossConections dominates crossConnectionsRate
     int maxAngleForCrossConections = 45;//degree
 
     //the distance between groundCenter and topCenter decides about the height of the tu
+    /** The ground center. */
     //the center of the bottom polygon of the first FractalStructure (level=0) / tube
     Vector3d groundCenter = null;
+    
+    /** The top center. */
     //the center of the top polygon of the first FractalStructure (level=0) / tube
     Vector3d topCenter = null;
 
     //collection of the bottom polygon points of a FractalStructure (edges & center)
+    /** The ground points. */
     //used for the new bottom centers of the child FractalStructures
     List<Vector3d> groundPoints = null;
+    
+    /** The top points. */
     //collection of the top polygon points of a FractalStructure (edges & center)
     List<Vector3d> topPoints = null;
 
+    /** The sub structures. */
     //collection of all child tubes, together they build the fractal structure we want
     List<CSG> subStructures = null;
 
+    /** The level. */
     //how many recursion should be done before drawing (level 0), level 2 means draw after 2 refinments
     int level = 0;
 
@@ -61,9 +82,14 @@ public class FractalStructure {
         thicknessList.add(160.0);//level 4
     }
 
+    /** The ortho vec to rot axis1. */
     //we need two vectors which span the plane where the circle lies in       
     Vector3d orthoVecToRotAxis1 = null;
+    
+    /** The ortho vec to rot axis2. */
     Vector3d orthoVecToRotAxis2 = null;
+    
+    /** The ortho threshhold. */
     //if dot of two vectors is lower than threshhold we assume they are orthogonal
     double orthoThreshhold = 1E-16;
 
@@ -488,6 +514,11 @@ public class FractalStructure {
 
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         List<Polygon> polygons = new ArrayList<>();
@@ -497,6 +528,12 @@ public class FractalStructure {
         return CSG.fromPolygons(polygons);
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         CSG csg = new FractalStructure(Vector3d.ZERO, Vector3d.Z_ONE.times(1), 4, 15, 2,

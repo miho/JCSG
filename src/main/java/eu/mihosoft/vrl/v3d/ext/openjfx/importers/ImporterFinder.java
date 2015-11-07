@@ -39,8 +39,17 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ImporterFinder.
+ */
 public class ImporterFinder {
 
+    /**
+     * Adds the url to class path.
+     *
+     * @return the URL class loader
+     */
     public URLClassLoader addUrlToClassPath() {
         final Class<?> referenceClass = ImporterFinder.class;
         final URL url = referenceClass.getProtectionDomain().getCodeSource().getLocation();

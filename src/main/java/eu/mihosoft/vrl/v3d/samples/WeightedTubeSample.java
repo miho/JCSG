@@ -17,12 +17,19 @@ import eu.mihosoft.vrl.v3d.ZModifier;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class WeightedTubeSample.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class WeightedTubeSample {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         
         
@@ -56,6 +63,12 @@ public class WeightedTubeSample {
                 transformed(scale).difference(inner);
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         FileUtil.write(Paths.get("weighted-tube.stl"), new WeightedTubeSample().toCSG().toStlString());

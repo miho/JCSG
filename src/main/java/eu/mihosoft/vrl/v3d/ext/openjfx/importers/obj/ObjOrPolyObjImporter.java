@@ -35,13 +35,18 @@ import eu.mihosoft.vrl.v3d.ext.openjfx.importers.Importer;
 import java.io.IOException;
 import javafx.scene.Group;
 
+// TODO: Auto-generated Javadoc
 /**
- * object loader
+ * object loader.
  */
 public class ObjOrPolyObjImporter extends Importer {
 
+    /** The res. */
     final Group res = new Group();
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.Importer#load(java.lang.String, boolean)
+     */
     @Override
     public void load(String fileUrl, boolean asPolygonMesh) throws IOException {
 
@@ -58,11 +63,17 @@ public class ObjOrPolyObjImporter extends Importer {
 	}
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.Importer#getRoot()
+     */
     @Override
     public Group getRoot() {
 	return res;
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.openjfx.importers.Importer#isSupported(java.lang.String)
+     */
     @Override
     public boolean isSupported(String extension) {
 	return extension != null && extension.equals("obj");

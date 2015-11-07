@@ -1,7 +1,7 @@
 /**
  * PropertyStorage.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,7 +29,7 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 import javafx.scene.paint.Color;
 
+// TODO: Auto-generated Javadoc
 /**
  * A simple property storage.
  *
@@ -45,8 +46,10 @@ import javafx.scene.paint.Color;
  */
 public class PropertyStorage {
 
+    /** The map. */
     private final Map<String, Object> map = new HashMap<>();
 
+    /** The Constant colors. */
     private static final Color[] colors = {
         Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE, Color.MAGENTA,
         Color.WHITE, Color.BLACK, Color.GRAY, Color.ORANGE};
@@ -107,6 +110,11 @@ public class PropertyStorage {
         return map.containsKey(key);
     }
 
+    /**
+     * Random color.
+     *
+     * @param storage the storage
+     */
     static void randomColor(PropertyStorage storage) {
         Color c = colors[(int) (Math.random() * colors.length)];
 

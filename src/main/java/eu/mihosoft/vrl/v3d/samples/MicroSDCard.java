@@ -14,12 +14,19 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class MicroSDCard.
  *
  * @author miho
  */
 public class MicroSDCard {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         // data taken from
@@ -62,6 +69,12 @@ public class MicroSDCard {
         );
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         FileUtil.write(Paths.get("mircosd.stl"), new MicroSDCard().toCSG().toStlString());

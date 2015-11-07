@@ -41,8 +41,10 @@ by calling the `assemble` task.
 Navigate to the [Gradle](http://www.gradle.org/) project (e.g., `path/to/JCSG`) and enter the following command
 
 #### Bash (Linux/OS X/Cygwin/other Unix-like shell)
-
-    sh gradlew assemble
+    
+    sudo update-alternatives --config java # select Java 8
+    sudo apt-get install libopenjfx-java
+    bash gradlew assemble
     
 #### Windows (CMD)
 

@@ -43,17 +43,37 @@ import java.util.Queue;
 import com.sun.javafx.geom.Vec3f;
 import javafx.scene.shape.TriangleMesh;
 
-/** Util for converting Normals to Smoothing Groups */
+// TODO: Auto-generated Javadoc
+/**
+ *  Util for converting Normals to Smoothing Groups.
+ */
 public class SmoothingGroups {
+    
+    /** The not visited. */
     private BitSet visited, notVisited;
+    
+    /** The q. */
     private Queue<Integer> q;
 
+    /** The faces. */
     private int[][] faces;
+    
+    /** The face normals. */
     private int[][] faceNormals;
+    
+    /** The normals. */
     private float[] normals;
     
+    /** The face edges. */
     private Edge[][] faceEdges;
 
+    /**
+     * Instantiates a new smoothing groups.
+     *
+     * @param faces the faces
+     * @param faceNormals the face normals
+     * @param normals the normals
+     */
     public SmoothingGroups(int faces[][], int[][] faceNormals, float[] normals) {
         this.faces = faces;
         this.faceNormals = faceNormals;
@@ -64,6 +84,12 @@ public class SmoothingGroups {
         q = new LinkedList<Integer>();
     }
 
+    /**
+     * Gets the next connected component.
+     *
+     * @param adjacentFaces the adjacent faces
+     * @return the next connected component
+     */
     // edge -> [faces]
     private List<Integer> getNextConnectedComponent(Map<Edge, List<Integer>> adjacentFaces) {
         int index = notVisited.previousSetBit(faces.length - 1);
@@ -90,10 +116,18 @@ public class SmoothingGroups {
         return res;
     }
 
+    /**
+     * Checks for next connected component.
+     *
+     * @return true, if successful
+     */
     private boolean hasNextConnectedComponent() {
         return !notVisited.isEmpty();
     }
 
+    /**
+     * Compute face edges.
+     */
     private void computeFaceEdges() {
         faceEdges = new Edge[faces.length][];
         for (int f = 0; f < faces.length; f++) {
@@ -114,6 +148,11 @@ public class SmoothingGroups {
         }
     }
     
+    /**
+     * Gets the adjacent faces.
+     *
+     * @return the adjacent faces
+     */
     private Map<Edge, List<Integer>> getAdjacentFaces() {
         Map<Edge, List<Integer>> adjacentFaces = new HashMap<Edge, List<Integer>>();
         for (int f = 0; f < faceEdges.length; f++) {
@@ -134,12 +173,26 @@ public class SmoothingGroups {
         return adjacentFaces;
     }
 
+    /**
+     * Gets the normal.
+     *
+     * @param index the index
+     * @return the normal
+     */
     Vec3f getNormal(int index) {
         return new Vec3f(normals[index * 3], normals[index * 3 + 1], normals[index * 3 + 2]);
     }
     
+    /** The Constant normalAngle. */
     private static final float normalAngle = 0.9994f; // cos(2)
 
+    /**
+     * Checks if is normals equal.
+     *
+     * @param n1 the n1
+     * @param n2 the n2
+     * @return true, if is normals equal
+     */
     private static boolean isNormalsEqual(Vec3f n1, Vec3f n2) {
         if (n1.x == 1.0e20f || n1.y == 1.0e20f || n1.z == 1.0e20f
                 || n2.x == 1.0e20f || n2.y == 1.0e20f || n2.z == 1.0e20f) {
@@ -153,6 +206,12 @@ public class SmoothingGroups {
         return myN1.dot(myN2) >= normalAngle;
     }
 
+    /**
+     * Gets the smooth edges.
+     *
+     * @param adjacentFaces the adjacent faces
+     * @return the smooth edges
+     */
     private Map<Edge, List<Integer>> getSmoothEdges(Map<Edge, List<Integer>> adjacentFaces) {
         Map<Edge, List<Integer>> smoothEdges = new HashMap<Edge, List<Integer>>();
 
@@ -183,6 +242,12 @@ public class SmoothingGroups {
         return smoothEdges;
     }
 
+    /**
+     * Calc conn components.
+     *
+     * @param smoothEdges the smooth edges
+     * @return the list
+     */
     private List<List<Integer>> calcConnComponents(Map<Edge, List<Integer>> smoothEdges) {
         //System.out.println("smoothEdges = " + smoothEdges);
         List<List<Integer>> groups = new ArrayList<List<Integer>>();
@@ -193,6 +258,12 @@ public class SmoothingGroups {
         return groups;
     }
 
+    /**
+     * Generate sm groups.
+     *
+     * @param groups the groups
+     * @return the int[]
+     */
     private int[] generateSmGroups(List<List<Integer>> groups) {
         int[] smGroups = new int[faceNormals.length];
         int curGroup = 0;
@@ -213,6 +284,11 @@ public class SmoothingGroups {
         return smGroups;
     }
 
+    /**
+     * Calc smooth groups.
+     *
+     * @return the int[]
+     */
     private int[] calcSmoothGroups() {
         computeFaceEdges();
         
@@ -228,10 +304,25 @@ public class SmoothingGroups {
         return generateSmGroups(groups);
     }
     
+    /**
+     * The Class Edge.
+     */
     private class Edge {
+        
+        /** The to. */
         int from, to;
+        
+        /** The to normal. */
         int fromNormal, toNormal;
 
+        /**
+         * Instantiates a new edge.
+         *
+         * @param from the from
+         * @param to the to
+         * @param fromNormal the from normal
+         * @param toNormal the to normal
+         */
         public Edge(int from, int to, int fromNormal, int toNormal) {
             this.from = Math.min(from, to);
             this.to = Math.max(from, to);
@@ -239,12 +330,21 @@ public class SmoothingGroups {
             this.toNormal = Math.max(fromNormal, toNormal);
         }
         
+        /**
+         * Checks if is smooth.
+         *
+         * @param edge the edge
+         * @return true, if is smooth
+         */
         public boolean isSmooth(Edge edge) {
             boolean smooth = (isNormalsEqual(getNormal(fromNormal), getNormal(edge.fromNormal)) && isNormalsEqual(getNormal(toNormal), getNormal(edge.toNormal))) ||
                     (isNormalsEqual(getNormal(fromNormal), getNormal(edge.toNormal)) && isNormalsEqual(getNormal(toNormal), getNormal(edge.fromNormal)));
             return smooth;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#hashCode()
+         */
         @Override
         public int hashCode() {
             int hash = 7;
@@ -253,6 +353,9 @@ public class SmoothingGroups {
             return hash;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
         @Override
         public boolean equals(Object obj) {
             if (obj == null) {
@@ -273,7 +376,8 @@ public class SmoothingGroups {
     }
 
     /**
-     * Calculates smoothing groups for data formatted in PolygonMesh style
+     * Calculates smoothing groups for data formatted in PolygonMesh style.
+     *
      * @param faces An array of faces, where each face consists of an array of vertex and uv indices
      * @param faceNormals An array of face normals, where each face normal consists of an array of normal indices
      * @param normals The array of normals
@@ -285,7 +389,9 @@ public class SmoothingGroups {
     }
     
     /**
-     * Calculates smoothing groups for data formatted in TriangleMesh style
+     * Calculates smoothing groups for data formatted in TriangleMesh style.
+     *
+     * @param mesh the mesh
      * @param flatFaces An array of faces, where each triangle face is represented by 6 (vertex and uv) indices
      * @param flatFaceNormals An array of face normals, where each triangle face is represented by 3 normal indices
      * @param normals The array of normals

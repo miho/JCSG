@@ -13,12 +13,18 @@ import static eu.mihosoft.vrl.v3d.Transform.unity;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
  * Average Chicken Egg.
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Egg {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         double radius = 22;
         double stretch = 1.50;
@@ -46,6 +52,12 @@ public class Egg {
         return egg;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("egg.stl"), new Egg().toCSG().toStlString());
     }

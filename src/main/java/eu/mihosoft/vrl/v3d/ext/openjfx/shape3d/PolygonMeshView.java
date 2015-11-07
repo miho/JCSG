@@ -48,30 +48,47 @@ import javafx.scene.shape.TriangleMesh;
 import static javafx.scene.shape.TriangleMesh.*;
 
 
+// TODO: Auto-generated Javadoc
 /**
- * A MeshView node for Polygon Meshes
+ * A MeshView node for Polygon Meshes.
  */
 public class PolygonMeshView extends Parent {
+    
+    /** The Constant DEBUG. */
     private static final boolean DEBUG = false;
+    
+    /** The mesh view. */
     private final MeshView meshView = new MeshView();
 
+    /** The triangle mesh. */
     private TriangleMesh triangleMesh = new TriangleMesh();
     
+    /** The subdivision mesh. */
     // this is null if no subdivision is happening (i.e. subdivisionLevel = 0);
     private SubdivisionMesh subdivisionMesh;
     
+    /** The mesh points listener. */
     private final ArrayChangeListener<ObservableFloatArray> meshPointsListener = (t, bln, i, i1) -> {
         pointsDirty = true;
         updateMesh();
     };
+    
+    /** The mesh tex coord listener. */
     private final ArrayChangeListener<ObservableFloatArray> meshTexCoordListener = (t, bln, i, i1) -> {
         texCoordsDirty = true;
         updateMesh();
     };
     
+    /** The points dirty. */
     private boolean pointsDirty = true;
+    
+    /** The points size dirty. */
     private boolean pointsSizeDirty = true;
+    
+    /** The tex coords dirty. */
     private boolean texCoordsDirty = true;
+    
+    /** The faces dirty. */
     private boolean facesDirty = true;
     
     // =========================================================================
@@ -83,8 +100,26 @@ public class PolygonMeshView extends Parent {
      * @defaultValue null
      */
     private ObjectProperty<PolygonMesh> meshProperty;
+    
+    /**
+     * Gets the mesh.
+     *
+     * @return the mesh
+     */
     public PolygonMesh getMesh() { return meshProperty().get(); }
+    
+    /**
+     * Sets the mesh.
+     *
+     * @param mesh the new mesh
+     */
     public void setMesh(PolygonMesh mesh) { meshProperty().set(mesh);}
+    
+    /**
+     * Mesh property.
+     *
+     * @return the object property
+     */
     public ObjectProperty<PolygonMesh> meshProperty() { 
         if (meshProperty == null) {
             meshProperty = new SimpleObjectProperty<PolygonMesh>();
@@ -114,8 +149,26 @@ public class PolygonMeshView extends Parent {
      * @defaultValue DrawMode.FILL
      */
     private ObjectProperty<DrawMode> drawMode;
+    
+    /**
+     * Sets the draw mode.
+     *
+     * @param value the new draw mode
+     */
     public final void setDrawMode(DrawMode value) { drawModeProperty().set(value); }
+    
+    /**
+     * Gets the draw mode.
+     *
+     * @return the draw mode
+     */
     public final DrawMode getDrawMode() { return drawMode == null ? DrawMode.FILL : drawMode.get(); }
+    
+    /**
+     * Draw mode property.
+     *
+     * @return the object property
+     */
     public final ObjectProperty<DrawMode> drawModeProperty() {
         if (drawMode == null) {
             drawMode = new SimpleObjectProperty<DrawMode>(PolygonMeshView.this, "drawMode", DrawMode.FILL) {
@@ -135,8 +188,26 @@ public class PolygonMeshView extends Parent {
      * @defaultValue CullFace.BACK
      */
     private ObjectProperty<CullFace> cullFace;
+    
+    /**
+     * Sets the cull face.
+     *
+     * @param value the new cull face
+     */
     public final void setCullFace(CullFace value) { cullFaceProperty().set(value); }
+    
+    /**
+     * Gets the cull face.
+     *
+     * @return the cull face
+     */
     public final CullFace getCullFace() { return cullFace == null ? CullFace.BACK : cullFace.get(); }
+    
+    /**
+     * Cull face property.
+     *
+     * @return the object property
+     */
     public final ObjectProperty<CullFace> cullFaceProperty() {
         if (cullFace == null) {
             cullFace = new SimpleObjectProperty<CullFace>(PolygonMeshView.this, "cullFace", CullFace.BACK) {
@@ -156,18 +227,54 @@ public class PolygonMeshView extends Parent {
      * @defaultValue null
      */
     private ObjectProperty<Material> materialProperty = new SimpleObjectProperty<Material>();
+    
+    /**
+     * Gets the material.
+     *
+     * @return the material
+     */
     public Material getMaterial() { return materialProperty.get(); }
+    
+    /**
+     * Sets the material.
+     *
+     * @param material the new material
+     */
     public void setMaterial(Material material) { materialProperty.set(material); }
+    
+    /**
+     * Material property.
+     *
+     * @return the object property
+     */
     public ObjectProperty<Material> materialProperty() { return materialProperty; }
 
     /**
-     * Number of iterations of Catmull Clark subdivision to apply to the mesh
+     * Number of iterations of Catmull Clark subdivision to apply to the mesh.
      *
      * @defaultValue 0
      */
     private SimpleIntegerProperty subdivisionLevelProperty;
+    
+    /**
+     * Sets the subdivision level.
+     *
+     * @param subdivisionLevel the new subdivision level
+     */
     public void setSubdivisionLevel(int subdivisionLevel) { subdivisionLevelProperty().set(subdivisionLevel); }
+    
+    /**
+     * Gets the subdivision level.
+     *
+     * @return the subdivision level
+     */
     public int getSubdivisionLevel() { return subdivisionLevelProperty == null ? 0 : subdivisionLevelProperty.get(); }
+    
+    /**
+     * Subdivision level property.
+     *
+     * @return the simple integer property
+     */
     public SimpleIntegerProperty subdivisionLevelProperty() { 
         if (subdivisionLevelProperty == null) {
             subdivisionLevelProperty = new SimpleIntegerProperty(getSubdivisionLevel()) {
@@ -191,13 +298,31 @@ public class PolygonMeshView extends Parent {
     }
     
     /**
-     * Texture mapping boundary rule for Catmull Clark subdivision applied to the mesh
+     * Texture mapping boundary rule for Catmull Clark subdivision applied to the mesh.
      *
      * @defaultValue BoundaryMode.CREASE_EDGES
      */
     private SimpleObjectProperty<BoundaryMode> boundaryMode;
+    
+    /**
+     * Sets the boundary mode.
+     *
+     * @param boundaryMode the new boundary mode
+     */
     public void setBoundaryMode(BoundaryMode boundaryMode) { boundaryModeProperty().set(boundaryMode); }
+    
+    /**
+     * Gets the boundary mode.
+     *
+     * @return the boundary mode
+     */
     public BoundaryMode getBoundaryMode() { return boundaryMode == null ? BoundaryMode.CREASE_EDGES : boundaryMode.get(); }
+    
+    /**
+     * Boundary mode property.
+     *
+     * @return the simple object property
+     */
     public SimpleObjectProperty<BoundaryMode> boundaryModeProperty() {
         if (boundaryMode == null) {
             boundaryMode = new SimpleObjectProperty<BoundaryMode>(getBoundaryMode()) {
@@ -215,13 +340,31 @@ public class PolygonMeshView extends Parent {
     }
     
     /**
-     * Texture mapping smoothness option for Catmull Clark subdivision applied to the mesh
+     * Texture mapping smoothness option for Catmull Clark subdivision applied to the mesh.
      *
      * @defaultValue MapBorderMode.NOT_SMOOTH
      */
     private SimpleObjectProperty<MapBorderMode> mapBorderMode;
+    
+    /**
+     * Sets the map border mode.
+     *
+     * @param mapBorderMode the new map border mode
+     */
     public void setMapBorderMode(MapBorderMode mapBorderMode) { mapBorderModeProperty().set(mapBorderMode); }
+    
+    /**
+     * Gets the map border mode.
+     *
+     * @return the map border mode
+     */
     public MapBorderMode getMapBorderMode() { return mapBorderMode == null ? MapBorderMode.NOT_SMOOTH : mapBorderMode.get(); }
+    
+    /**
+     * Map border mode property.
+     *
+     * @return the simple object property
+     */
     public SimpleObjectProperty<MapBorderMode> mapBorderModeProperty() { 
         if (mapBorderMode == null) {
             mapBorderMode = new SimpleObjectProperty<MapBorderMode>(getMapBorderMode()) {
@@ -241,11 +384,19 @@ public class PolygonMeshView extends Parent {
     // =========================================================================
     // CONSTRUCTORS
 
+    /**
+     * Instantiates a new polygon mesh view.
+     */
     public PolygonMeshView() {
         meshView.materialProperty().bind(materialProperty());
         getChildren().add(meshView);
     }
 
+    /**
+     * Instantiates a new polygon mesh view.
+     *
+     * @param mesh the mesh
+     */
     public PolygonMeshView(PolygonMesh mesh) {
         this();
         setMesh(mesh);
@@ -254,6 +405,9 @@ public class PolygonMeshView extends Parent {
     // =========================================================================
     // PRIVATE METHODS
 
+    /**
+     * Update mesh.
+     */
     private void updateMesh() {
         PolygonMesh pmesh = getMesh();
         if (pmesh == null || pmesh.faces == null) {
@@ -402,6 +556,17 @@ public class PolygonMeshView extends Parent {
         pointsDirty = pointsSizeDirty = texCoordsDirty = facesDirty = false;
     }
 
+    /**
+     * Distance between points.
+     *
+     * @param x1 the x1
+     * @param y1 the y1
+     * @param z1 the z1
+     * @param x2 the x2
+     * @param y2 the y2
+     * @param z2 the z2
+     * @return the float
+     */
     private float distanceBetweenPoints(float x1, float y1, float z1, float x2, float y2, float z2) {
         return (float)Math.sqrt(
                 Math.pow(z2 - z1,2) +

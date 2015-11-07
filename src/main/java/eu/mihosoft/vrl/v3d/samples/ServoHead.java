@@ -15,21 +15,50 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ServoHead.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class ServoHead {
 
+    /** The tooth length. */
     private double toothLength = 0.7;
+    
+    /** The tooth width. */
     private double toothWidth = 0.1;
+    
+    /** The tooth height. */
     private double toothHeight = 0.3;
+    
+    /** The tooth count. */
     private int toothCount = 25;
+    
+    /** The head height. */
     private double headHeight = 4;
+    
+    /** The head diameter. */
     private double headDiameter = 5.92;
+    
+    /** The head screw diameter. */
     private double headScrewDiameter = 2.5;
+    
+    /** The head thickness. */
     private double headThickness = 1.1;
 
+    /**
+     * Instantiates a new servo head.
+     *
+     * @param toothLength the tooth length
+     * @param toothWidth the tooth width
+     * @param toothHeight the tooth height
+     * @param toothCount the tooth count
+     * @param headHeight the head height
+     * @param headDiameter the head diameter
+     * @param headScrewDiameter the head screw diameter
+     * @param headThickness the head thickness
+     */
     public ServoHead(
             double toothLength,
             double toothWidth,
@@ -50,9 +79,17 @@ public class ServoHead {
         this.headThickness = headThickness;
     }
 
+    /**
+     * Instantiates a new servo head.
+     */
     public ServoHead() {
     }
 
+    /**
+     * Servo tooth.
+     *
+     * @return the csg
+     */
     public CSG servoTooth() {
 
         //
@@ -71,6 +108,11 @@ public class ServoHead {
         );
     }
 
+    /**
+     * Servo head male.
+     *
+     * @return the csg
+     */
     public CSG servoHeadMale() {
 
         double clear = 0.3;
@@ -104,6 +146,11 @@ public class ServoHead {
         return result;
     }
 
+    /**
+     * Servo head female.
+     *
+     * @return the csg
+     */
     public CSG servoHeadFemale() {
 
         CSG cyl1 = new Cylinder(headDiameter / 2 + headThickness, headHeight + 1, 16).toCSG();
@@ -119,6 +166,12 @@ public class ServoHead {
     }
     
     
+        /**
+         * The main method.
+         *
+         * @param args the arguments
+         * @throws IOException Signals that an I/O exception has occurred.
+         */
         public static void main(String[] args) throws IOException {
         
         System.out.println("RUNNING");

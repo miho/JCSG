@@ -15,27 +15,54 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class Hinge.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Hinge {
 
+    /** The joint length. */
     private double jointLength = 10;
+    
+    /** The joint radius. */
     private double jointRadius = 5;
+    
+    /** The cone length. */
     private double coneLength = 5;
+    
+    /** The joint hole length. */
     private double jointHoleLength = 5;
+    
+    /** The joint connection thickness. */
     private double jointConnectionThickness = jointRadius * 0.5;
+    
+    /** The resolution. */
     private int resolution = 16;
 
+    /**
+     * Instantiates a new hinge.
+     */
     public Hinge() {
         //
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("hinge.stl"), new Hinge().toCSG().toStlString());
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         CSG sideConeR = new Cylinder(getJointRadius(), 0, getConeLength(), getResolution()).toCSG().
@@ -56,37 +83,75 @@ public class Hinge {
         return joint;
     }
 
+    /**
+     * Sets the joint length.
+     *
+     * @param jointLength the joint length
+     * @return the hinge
+     */
     public Hinge setJointLength(double jointLength) {
         this.jointLength = jointLength;
         return this;
     }
 
+    /**
+     * Sets the joint radius.
+     *
+     * @param jointRadius the joint radius
+     * @return the hinge
+     */
     public Hinge setJointRadius(double jointRadius) {
         this.jointRadius = jointRadius;
         return this;
     }
 
+    /**
+     * Sets the cone length.
+     *
+     * @param coneLength the cone length
+     * @return the hinge
+     */
     public Hinge setConeLength(double coneLength) {
         this.coneLength = coneLength;
         return this;
     }
 
+    /**
+     * Sets the joint hole length.
+     *
+     * @param jointHoleLength the joint hole length
+     * @return the hinge
+     */
     public Hinge setJointHoleLength(double jointHoleLength) {
         this.jointHoleLength = jointHoleLength;
         return this;
     }
 
+    /**
+     * Sets the joint connection thickness.
+     *
+     * @param jointConnectionThickness the joint connection thickness
+     * @return the hinge
+     */
     public Hinge setJointConnectionThickness(double jointConnectionThickness) {
         this.jointConnectionThickness = jointConnectionThickness;
         return this;
     }
 
+    /**
+     * Sets the resolution.
+     *
+     * @param resolution the resolution
+     * @return the hinge
+     */
     public Hinge setResolution(int resolution) {
         this.resolution = resolution;
         return this;
     }
 
     /**
+     * Gets the joint length.
+     *
      * @return the jointLength
      */
     public double getJointLength() {
@@ -94,6 +159,8 @@ public class Hinge {
     }
 
     /**
+     * Gets the joint radius.
+     *
      * @return the jointRadius
      */
     public double getJointRadius() {
@@ -101,6 +168,8 @@ public class Hinge {
     }
 
     /**
+     * Gets the cone length.
+     *
      * @return the coneLength
      */
     public double getConeLength() {
@@ -108,6 +177,8 @@ public class Hinge {
     }
 
     /**
+     * Gets the joint hole length.
+     *
      * @return the jointHoleLength
      */
     public double getJointHoleLength() {
@@ -115,6 +186,8 @@ public class Hinge {
     }
 
     /**
+     * Gets the joint connection thickness.
+     *
      * @return the jointConnectionThickness
      */
     public double getJointConnectionThickness() {
@@ -122,6 +195,8 @@ public class Hinge {
     }
 
     /**
+     * Gets the resolution.
+     *
      * @return the resolution
      */
     public int getResolution() {

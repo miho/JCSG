@@ -12,12 +12,22 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class HexaMail.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class HexaMail {
 
+    /**
+     * To csg.
+     *
+     * @param numEdges the num edges
+     * @param numX the num x
+     * @param numY the num y
+     * @return the csg
+     */
     public CSG toCSG(int numEdges, int numX, int numY) {
 
         PolyMailTile tile = new PolyMailTile().setNumEdges(numEdges).setHingeHoleScale(1.2);
@@ -76,6 +86,12 @@ public class HexaMail {
         return result;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("hexamail.stl"), new HexaMail().toCSG(6, 3, 3).toStlString());
     }

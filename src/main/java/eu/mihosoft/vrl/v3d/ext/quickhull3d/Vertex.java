@@ -1,5 +1,6 @@
 package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents vertices of the hull, as well as the points from
  * which it is formed.
@@ -43,6 +44,11 @@ class Vertex
 	/**
 	 * Constructs a vertex with the specified coordinates
 	 * and index.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 * @param idx the idx
 	 */
 	public Vertex (double x, double y, double z, int idx)
 	 {

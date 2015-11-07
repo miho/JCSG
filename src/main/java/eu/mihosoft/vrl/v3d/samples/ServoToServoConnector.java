@@ -13,23 +13,42 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ServoToServoConnector.
  *
  * @author miho
  */
 public class ServoToServoConnector {
 
+    /** The servo width. */
     //standard servo
     private double servoWidth = 40.0;
+    
+    /** The servo thickness. */
     private double servoThickness = 19.0;
+    
+    /** The border thickness. */
     private double borderThickness = 2;
+    
+    /** The connector thickness. */
     private double connectorThickness = 4;
+    
+    /** The servo mount height. */
     private double servoMountHeight = 10;
     
+    /** The servo distance. */
     private double servoDistance = 17;
+    
+    /** The height. */
     private double height=12;
     
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         
         double sth = servoThickness;
@@ -59,6 +78,12 @@ public class ServoToServoConnector {
         return fork.union(fork2);
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         ServoToServoConnector servo2ServoConnector = new ServoToServoConnector();

@@ -1,7 +1,7 @@
 /**
  * DTSweep.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,7 +25,7 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
@@ -72,8 +72,9 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint;
 import eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationUtil.Orientation;
 import eu.mihosoft.vrl.v3d.ext.org.poly2tri.DelaunayTriangle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// TODO: Auto-generated Javadoc
+//import org.slf4j.//logger;
+//import org.slf4j.//loggerFactory;
 
 /**
  * Sweep-line, Constrained Delauney Triangulation (CDT) See: Domiter, V. and
@@ -86,16 +87,24 @@ import org.slf4j.LoggerFactory;
  */
 class DTSweep {
 
-    private final static Logger logger = LoggerFactory.getLogger(DTSweep.class);
+//    private final static //logger //logger = //loggerFactory.get//logger(DTSweep.class);
 
-    private final static double PI_div2 = Math.PI / 2;
+    /** The Constant PI_div2. */
+private final static double PI_div2 = Math.PI / 2;
+    
+    /** The Constant PI_3div4. */
     private final static double PI_3div4 = 3 * Math.PI / 4;
 
+    /**
+     * Instantiates a new DT sweep.
+     */
     public DTSweep() {
     }
 
     /**
-     * Triangulate simple polygon with holes *
+     * Triangulate simple polygon with holes *.
+     *
+     * @param tcx the tcx
      */
     public static void triangulate(DTSweepContext tcx) {
         tcx.createAdvancingFront();
@@ -112,9 +121,9 @@ class DTSweep {
     }
 
     /**
-     * Start sweeping the Y-sorted point set from bottom to top
+     * Start sweeping the Y-sorted point set from bottom to top.
      *
-     * @param tcx
+     * @param tcx the tcx
      */
     private static void sweep(DTSweepContext tcx) {
         List<TriangulationPoint> points;
@@ -142,9 +151,9 @@ class DTSweep {
 
     /**
      * If this is a Delaunay Triangulation of a pointset we need to fill so the
-     * triangle mesh gets a ConvexHull
+     * triangle mesh gets a ConvexHull.
      *
-     * @param tcx
+     * @param tcx the tcx
      */
     private static void finalizationConvexHull(DTSweepContext tcx) {
         AdvancingFrontNode n1, n2;
@@ -223,6 +232,10 @@ class DTSweep {
     /**
      * We will traverse the entire advancing front and fill it to form a convex
      * hull.<br>
+     *
+     * @param tcx the tcx
+     * @param b the b
+     * @param c the c
      */
     private static void turnAdvancingFrontConvex(DTSweepContext tcx,
             AdvancingFrontNode b,
@@ -252,6 +265,11 @@ class DTSweep {
         }
     }
 
+    /**
+     * Finalization polygon.
+     *
+     * @param tcx the tcx
+     */
     private static void finalizationPolygon(DTSweepContext tcx) {
         // Get an Internal triangle to start with
         DelaunayTriangle t = tcx.aFront.head.next.triangle;
@@ -268,9 +286,9 @@ class DTSweep {
      * Find closes node to the left of the new point and create a new triangle.
      * If needed new holes and basins will be filled to.
      *
-     * @param tcx
-     * @param point
-     * @return
+     * @param tcx the tcx
+     * @param point the point
+     * @return the advancing front node
      */
     private static AdvancingFrontNode pointEvent(DTSweepContext tcx,
             TriangulationPoint point) {
@@ -294,12 +312,12 @@ class DTSweep {
     }
 
     /**
-     * Creates a new front triangle and legalize it
+     * Creates a new front triangle and legalize it.
      *
-     * @param tcx
-     * @param point
-     * @param node
-     * @return
+     * @param tcx the tcx
+     * @param point the point
+     * @param node the node
+     * @return the advancing front node
      */
     private static AdvancingFrontNode newFrontTriangle(DTSweepContext tcx,
             TriangulationPoint point,
@@ -331,11 +349,11 @@ class DTSweep {
     }
 
     /**
+     * Edge event.
      *
-     *
-     * @param tcx
-     * @param edge
-     * @param node
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
      */
     private static void edgeEvent(DTSweepContext tcx,
             DTSweepConstraint edge,
@@ -359,10 +377,17 @@ class DTSweep {
 
             edgeEvent(tcx, edge.p, edge.q, node.triangle, edge.q);
         } catch (PointOnEdgeException e) {
-            logger.warn("Skipping edge: {}", e.getMessage());
+            //logger.warn("Skipping edge: {}", e.getMessage());
         }
     }
 
+    /**
+     * Fill edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         if (tcx.edgeEvent.right) {
             fillRightAboveEdgeEvent(tcx, edge, node);
@@ -371,6 +396,13 @@ class DTSweep {
         }
     }
 
+    /**
+     * Fill right concave edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillRightConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         fill(tcx, node.next);
         if (node.next.point != edge.p) {
@@ -387,6 +419,13 @@ class DTSweep {
         }
     }
 
+    /**
+     * Fill right convex edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillRightConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         // Next concave or convex?
         if (orient2d(node.next.point, node.next.next.point, node.next.next.next.point) == Orientation.CCW) {
@@ -404,6 +443,13 @@ class DTSweep {
         }
     }
 
+    /**
+     * Fill right below edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillRightBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         if (tcx.isDebugEnabled()) {
             tcx.getDebugContext().setActiveNode(node);
@@ -423,6 +469,13 @@ class DTSweep {
         }
     }
 
+    /**
+     * Fill right above edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillRightAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         while (node.next.point.getX() < edge.p.getX()) {
             if (tcx.isDebugEnabled()) {
@@ -438,6 +491,13 @@ class DTSweep {
         }
     }
 
+    /**
+     * Fill left convex edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillLeftConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         // Next concave or convex?
         if (orient2d(node.prev.point, node.prev.prev.point, node.prev.prev.prev.point) == Orientation.CW) {
@@ -455,6 +515,13 @@ class DTSweep {
         }
     }
 
+    /**
+     * Fill left concave edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillLeftConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         fill(tcx, node.prev);
         if (node.prev.point != edge.p) {
@@ -471,6 +538,13 @@ class DTSweep {
         }
     }
 
+    /**
+     * Fill left below edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillLeftBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         if (tcx.isDebugEnabled()) {
             tcx.getDebugContext().setActiveNode(node);
@@ -489,6 +563,13 @@ class DTSweep {
         }
     }
 
+    /**
+     * Fill left above edge event.
+     *
+     * @param tcx the tcx
+     * @param edge the edge
+     * @param node the node
+     */
     private static void fillLeftAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
         while (node.prev.point.getX() > edge.p.getX()) {
             if (tcx.isDebugEnabled()) {
@@ -504,27 +585,47 @@ class DTSweep {
         }
     }
 
+    /**
+     * Checks if is edge side of triangle.
+     *
+     * @param triangle the triangle
+     * @param ep the ep
+     * @param eq the eq
+     * @return true, if is edge side of triangle
+     */
     private static boolean isEdgeSideOfTriangle(DelaunayTriangle triangle,
             TriangulationPoint ep,
             TriangulationPoint eq) {
         int index;
-        index = triangle.edgeIndex(ep, eq);
-        if (index != -1) {
-            triangle.markConstrainedEdge(index);
-            triangle = triangle.neighbors[ index];
-            if (triangle != null) {
-                triangle.markConstrainedEdge(ep, eq);
-            }
-            return true;
+        if(triangle !=null){
+	        index = triangle.edgeIndex(ep, eq);
+	        if (index != -1) {
+	            triangle.markConstrainedEdge(index);
+	            triangle = triangle.neighbors[ index];
+	            if (triangle != null) {
+	                triangle.markConstrainedEdge(ep, eq);
+	            }
+	            return true;
+	        }
         }
         return false;
     }
 
+    /**
+     * Edge event.
+     *
+     * @param tcx the tcx
+     * @param ep the ep
+     * @param eq the eq
+     * @param triangle the triangle
+     * @param point the point
+     */
     private static void edgeEvent(DTSweepContext tcx,
             TriangulationPoint ep,
             TriangulationPoint eq,
             DelaunayTriangle triangle,
             TriangulationPoint point) {
+
         TriangulationPoint p1, p2;
 
         if (tcx.isDebugEnabled()) {
@@ -534,7 +635,8 @@ class DTSweep {
         if (isEdgeSideOfTriangle(triangle, ep, eq)) {
             return;
         }
-
+    	if(triangle==null)
+    		return;
         p1 = triangle.pointCCW(point);
         Orientation o1 = orient2d(eq, p1, ep);
         if (o1 == Orientation.Collinear) {
@@ -549,7 +651,7 @@ class DTSweep {
                 throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
             }
             if (tcx.isDebugEnabled()) {
-                logger.info("EdgeEvent - Point on constrained edge");
+                //logger.info("EdgeEvent - Point on constrained edge");
             }
             return;
         }
@@ -568,7 +670,7 @@ class DTSweep {
                 throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
             }
             if (tcx.isDebugEnabled()) {
-                logger.info("EdgeEvent - Point on constrained edge");
+                //logger.info("EdgeEvent - Point on constrained edge");
             }
             return;
         }
@@ -588,6 +690,15 @@ class DTSweep {
         }
     }
 
+    /**
+     * Flip edge event.
+     *
+     * @param tcx the tcx
+     * @param ep the ep
+     * @param eq the eq
+     * @param t the t
+     * @param p the p
+     */
     private static void flipEdgeEvent(DTSweepContext tcx,
             TriangulationPoint ep,
             TriangulationPoint eq,
@@ -607,7 +718,7 @@ class DTSweep {
         }
 
         if (t.getConstrainedEdgeAcross(p)) {
-            throw new RuntimeException("Intersecting Constraints");
+            throw new RuntimeException("Intersecting Constraints "+t+" is constrained Edge accross "+p);
         }
 
         if (tcx.isDebugEnabled()) {
@@ -660,11 +771,11 @@ class DTSweep {
      * When we need to traverse from one triangle to the next we need the point
      * in current triangle that is the opposite point to the next triangle.
      *
-     * @param ep
-     * @param eq
-     * @param ot
-     * @param op
-     * @return
+     * @param ep the ep
+     * @param eq the eq
+     * @param ot the ot
+     * @param op the op
+     * @return the triangulation point
      */
     private static TriangulationPoint nextFlipPoint(TriangulationPoint ep,
             TriangulationPoint eq,
@@ -688,7 +799,7 @@ class DTSweep {
      * intersecting the edge. So decide which to contiune with and legalize the
      * other
      *
-     * @param tcx
+     * @param tcx the tcx
      * @param o - should be the result of an orient2d( eq, op, ep )
      * @param t - triangle 1
      * @param ot - triangle 2
@@ -725,12 +836,12 @@ class DTSweep {
      * is inside the flip triangle scan area. When found we generate a new
      * flipEdgeEvent
      *
-     * @param tcx
+     * @param tcx the tcx
      * @param ep - last point on the edge we are traversing
      * @param eq - first point on the edge we are traversing
      * @param flipTriangle - the current triangle sharing the point eq with edge
-     * @param t
-     * @param p
+     * @param t the t
+     * @param p the p
      */
     private static void flipScanEdgeEvent(DTSweepContext tcx,
             TriangulationPoint ep,
@@ -778,11 +889,10 @@ class DTSweep {
     }
 
     /**
-     * Fills holes in the Advancing Front
+     * Fills holes in the Advancing Front.
      *
-     *
-     * @param tcx
-     * @param n
+     * @param tcx the tcx
+     * @param n the n
      */
     private static void fillAdvancingFront(DTSweepContext tcx, AdvancingFrontNode n) {
         AdvancingFrontNode node;
@@ -818,7 +928,9 @@ class DTSweep {
     }
 
     /**
-     * @param node
+     * Checks if is large hole.
+     *
+     * @param node the node
      * @return true if hole angle exceeds 90 degrees
      */
     private static boolean isLargeHole(AdvancingFrontNode node) {
@@ -888,14 +1000,14 @@ class DTSweep {
 //        return (angle > PI_div2) || (angle < 0);
 //    }
     /**
-     * Fills a basin that has formed on the Advancing Front to the right of
-     * given node.<br>
-     * First we decide a left,bottom and right node that forms the boundaries of
-     * the basin. Then we do a reqursive fill.
-     *
-     * @param tcx
-     * @param node - starting node, this or next node will be left node
-     */
+ * Fills a basin that has formed on the Advancing Front to the right of
+ * given node.<br>
+ * First we decide a left,bottom and right node that forms the boundaries of
+ * the basin. Then we do a reqursive fill.
+ *
+ * @param tcx the tcx
+ * @param node - starting node, this or next node will be left node
+ */
     private static void fillBasin(DTSweepContext tcx, AdvancingFrontNode node) {
         if (orient2d(node.point, node.next.point, node.next.next.point) == Orientation.CCW) {
             tcx.basin.leftNode = node;
@@ -931,11 +1043,10 @@ class DTSweep {
     }
 
     /**
-     * Recursive algorithm to fill a Basin with triangles
+     * Recursive algorithm to fill a Basin with triangles.
      *
-     * @param tcx
+     * @param tcx the tcx
      * @param node - bottomNode
-     * @param cnt - counter used to alternate on even and odd numbers
      */
     private static void fillBasinReq(DTSweepContext tcx, AdvancingFrontNode node) {
         // if shallow stop filling
@@ -969,6 +1080,13 @@ class DTSweep {
         fillBasinReq(tcx, node);
     }
 
+    /**
+     * Checks if is shallow.
+     *
+     * @param tcx the tcx
+     * @param node the node
+     * @return true, if is shallow
+     */
     private static boolean isShallow(DTSweepContext tcx, AdvancingFrontNode node) {
         double height;
 
@@ -984,8 +1102,11 @@ class DTSweep {
     }
 
     /**
+     * Angle.
      *
-     * @param node - middle node
+     * @param p the p
+     * @param a the a
+     * @param b the b
      * @return the angle between p-a and p-b in range [-pi,pi]
      */
     private static double angle(TriangulationPoint p,
@@ -1011,7 +1132,10 @@ class DTSweep {
     }
 
     /**
-     * The basin angle is decided against the horizontal line [1,0]
+     * The basin angle is decided against the horizontal line [1,0].
+     *
+     * @param node the node
+     * @return the double
      */
     private static double basinAngle(AdvancingFrontNode node) {
         double ax = node.point.getX() - node.next.next.point.getX();
@@ -1022,7 +1146,7 @@ class DTSweep {
     /**
      * Adds a triangle to the advancing front to fill a hole.
      *
-     * @param tcx
+     * @param tcx the tcx
      * @param node - middle node, that is the bottom of the hole
      */
     private static void fill(DTSweepContext tcx, AdvancingFrontNode node) {
@@ -1047,7 +1171,11 @@ class DTSweep {
     }
 
     /**
-     * Returns true if triangle was legalized
+     * Returns true if triangle was legalized.
+     *
+     * @param tcx the tcx
+     * @param t the t
+     * @return true, if successful
      */
     private static boolean legalize(DTSweepContext tcx,
             DelaunayTriangle t) {
@@ -1118,7 +1246,7 @@ class DTSweep {
 
     /**
      * Rotates a triangle pair one vertex CW
-     * <pre>
+     *  
      *       n2                    n2
      *  P +-----+             P +-----+
      *    | t  /|               |\  t |
@@ -1128,7 +1256,12 @@ class DTSweep {
      *    |/ oT |               | oT \|
      *    +-----+ oP            +-----+
      *       n4                    n4
-     * </pre>
+     *  .
+     *
+     * @param t the t
+     * @param p the p
+     * @param ot the ot
+     * @param op the op
      */
     private static void rotateTrianglePair(DelaunayTriangle t,
             TriangulationPoint p,

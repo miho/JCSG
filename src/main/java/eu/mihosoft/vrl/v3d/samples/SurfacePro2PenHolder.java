@@ -14,11 +14,19 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class SurfacePro2PenHolder.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class SurfacePro2PenHolder {
+    
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
         CSG sdCard = new MicroSDCard().toCSG();
         
@@ -47,6 +55,12 @@ public class SurfacePro2PenHolder {
         return sdCard.union(extension.union(extension2));
     }
     
+     /**
+      * The main method.
+      *
+      * @param args the arguments
+      * @throws IOException Signals that an I/O exception has occurred.
+      */
      public static void main(String[] args) throws IOException {
 
         FileUtil.write(Paths.get("surfac2penholder.stl"), new SurfacePro2PenHolder().toCSG().toStlString());

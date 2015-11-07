@@ -22,27 +22,59 @@ import javafx.scene.shape.CullFace;
 import javafx.scene.shape.Mesh;
 import javafx.scene.shape.MeshView;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class MeshContainer.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class MeshContainer {
 
+    /** The meshes. */
     private final List<Mesh> meshes;
+    
+    /** The materials. */
     private final List<Material> materials;
+    
+    /** The width. */
     private final double width;
+    
+    /** The height. */
     private final double height;
+    
+    /** The depth. */
     private final double depth;
+    
+    /** The bounds. */
     private final Bounds bounds;
 
+    /** The root. */
     private final Group root = new Group();
+    
+    /** The view container. */
     private Pane viewContainer;
+    
+    /** The sub scene. */
     private SubScene subScene;
 
+    /**
+     * Instantiates a new mesh container.
+     *
+     * @param min the min
+     * @param max the max
+     * @param meshes the meshes
+     */
     MeshContainer(Vector3d min, Vector3d max, Mesh... meshes) {
         this(min, max, Arrays.asList(meshes));
     }
 
+    /**
+     * Instantiates a new mesh container.
+     *
+     * @param min the min
+     * @param max the max
+     * @param meshes the meshes
+     */
     MeshContainer(Vector3d min, Vector3d max, List<Mesh> meshes) {
         this.meshes = meshes;
         this.materials = new ArrayList<>();
@@ -57,6 +89,14 @@ public class MeshContainer {
         }
     }
 
+    /**
+     * Instantiates a new mesh container.
+     *
+     * @param min the min
+     * @param max the max
+     * @param meshes the meshes
+     * @param materials the materials
+     */
     MeshContainer(Vector3d min, Vector3d max, List<Mesh> meshes, List<Material> materials) {
         this.meshes = meshes;
         this.materials = materials;
@@ -72,6 +112,8 @@ public class MeshContainer {
     }
 
     /**
+     * Gets the width.
+     *
      * @return the width
      */
     public double getWidth() {
@@ -79,6 +121,8 @@ public class MeshContainer {
     }
 
     /**
+     * Gets the height.
+     *
      * @return the height
      */
     public double getHeight() {
@@ -86,6 +130,8 @@ public class MeshContainer {
     }
 
     /**
+     * Gets the depth.
+     *
      * @return the depth
      */
     public double getDepth() {
@@ -93,18 +139,25 @@ public class MeshContainer {
     }
 
     /**
+     * Gets the meshes.
+     *
      * @return the mesh
      */
     public List<Mesh> getMeshes() {
         return meshes;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return bounds.toString();
     }
 
     /**
+     * Gets the bounds.
+     *
      * @return the bounds
      */
     public Bounds getBounds() {
@@ -112,12 +165,19 @@ public class MeshContainer {
     }
 
     /**
+     * Gets the materials.
+     *
      * @return the materials
      */
     public List<Material> getMaterials() {
         return materials;
     }
 
+    /**
+     * Gets the as mesh views.
+     *
+     * @return the as mesh views
+     */
     public List<MeshView> getAsMeshViews() {
         List<MeshView> result = new ArrayList<>(meshes.size());
 

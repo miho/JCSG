@@ -1,7 +1,7 @@
 /**
  * Triangulatable.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,7 +25,7 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
@@ -62,19 +62,57 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 import java.util.List;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface Triangulatable.
+ */
 interface Triangulatable
 {
+    
     /**
-     * Preparations needed before triangulation start should be handled here
-     * @param tcx
+     * Preparations needed before triangulation start should be handled here.
+     *
+     * @param tcx the tcx
      */
     public void prepareTriangulation( TriangulationContext<?> tcx );
     
+    /**
+     * Gets the triangles.
+     *
+     * @return the triangles
+     */
     public List<DelaunayTriangle> getTriangles();
+    
+    /**
+     * Gets the points.
+     *
+     * @return the points
+     */
     public List<TriangulationPoint> getPoints();
+    
+    /**
+     * Adds the triangle.
+     *
+     * @param t the t
+     */
     public void addTriangle( DelaunayTriangle t );
+    
+    /**
+     * Adds the triangles.
+     *
+     * @param list the list
+     */
     public void addTriangles( List<DelaunayTriangle> list );
+    
+    /**
+     * Clear triangulation.
+     */
     public void clearTriangulation();
     
+    /**
+     * Gets the triangulation mode.
+     *
+     * @return the triangulation mode
+     */
     public TriangulationMode getTriangulationMode();
 }

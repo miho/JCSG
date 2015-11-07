@@ -1,7 +1,7 @@
 /**
  * FloatBufferPoint.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,7 +25,7 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
@@ -63,11 +63,25 @@ import java.nio.FloatBuffer;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FloatBufferPoint.
+ */
 class FloatBufferPoint extends TriangulationPoint
 {
+    
+    /** The _fb. */
     private final FloatBuffer _fb;
+    
+    /** The _iz. */
     private final int _ix,_iy,_iz;
     
+    /**
+     * Instantiates a new float buffer point.
+     *
+     * @param fb the fb
+     * @param index the index
+     */
     public FloatBufferPoint( FloatBuffer fb, int index )
     {
         _fb = fb;
@@ -76,32 +90,57 @@ class FloatBufferPoint extends TriangulationPoint
         _iz = index+2;
     }
     
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint#getX()
+     */
     public final double getX()
     {
         return _fb.get( _ix );
     }
+    
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint#getY()
+     */
     public final double getY()
     {
         return _fb.get( _iy );
     }
+    
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint#getZ()
+     */
     public final double getZ()
     {
         return _fb.get( _iz );
     }
     
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint#getXf()
+     */
     public final float getXf()
     {
         return _fb.get( _ix );
     }
+    
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint#getYf()
+     */
     public final float getYf()
     {
         return _fb.get( _iy );
     }
+    
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint#getZf()
+     */
     public final float getZf()
     {
         return _fb.get( _iz );
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.org.poly2tri.TriangulationPoint#set(double, double, double)
+     */
     @Override
     public void set( double x, double y, double z )
     {
@@ -110,6 +149,12 @@ class FloatBufferPoint extends TriangulationPoint
         _fb.put( _iz, (float)z );
     }
     
+    /**
+     * To points.
+     *
+     * @param fb the fb
+     * @return the triangulation point[]
+     */
     public static TriangulationPoint[] toPoints( FloatBuffer fb )
     {
         FloatBufferPoint[] points = new FloatBufferPoint[fb.limit()/3];

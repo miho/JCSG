@@ -14,12 +14,25 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QuadrocopterArmHolder.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class QuadrocopterArmHolder {
 
+    /**
+     * To csg.
+     *
+     * @param armHeight the arm height
+     * @param armScaleFactor the arm scale factor
+     * @param armCubeWidth the arm cube width
+     * @param armCubeThickness the arm cube thickness
+     * @param holderPlatformRadius the holder platform radius
+     * @param holderPlatformThickness the holder platform thickness
+     * @return the csg
+     */
     public CSG toCSG(double armHeight, double armScaleFactor, double armCubeWidth, double armCubeThickness, double holderPlatformRadius, double holderPlatformThickness) {
 
         double widthTol = 2;
@@ -64,6 +77,12 @@ public class QuadrocopterArmHolder {
         return holderPlatform.union(holder.transformed(unity().translateZ(4*holderWallThickness))).transformed(unity().rotZ(-90));
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         CSG result = new QuadrocopterArmHolder().toCSG(18, 0.5, 18, 4, 20, 3);
 

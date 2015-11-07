@@ -15,38 +15,82 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class ServoWheel.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class ServoWheel {
 
+    /** The tooth length. */
     private double toothLength = 0.7;
+    
+    /** The tooth width. */
     private double toothWidth = 0.1;
+    
+    /** The tooth height. */
     private double toothHeight = 0.3;
+    
+    /** The tooth count. */
     private int toothCount = 25;
+    
+    /** The head height. */
     private double headHeight = 4;
+    
+    /** The head diameter. */
     private double headDiameter = 5.92;
+    
+    /** The head screw diameter. */
     private double headScrewDiameter = 2.5;
+    
+    /** The head thickness. */
     private double headThickness = 1.1;
 
+    /** The servo head. */
     private ServoHead servoHead = new ServoHead(toothLength, toothWidth, toothHeight, toothCount, headHeight, headDiameter, headScrewDiameter, headThickness);
 
+    /** The number of arms. */
     private int numberOfArms = 7;
+    
+    /** The inner width. */
     double innerWidth = 7;
+    
+    /** The outer width. */
     double outerWidth = 3.5;
+    
+    /** The thickness. */
     double thickness = 2;
+    
+    /** The radius. */
     double radius = 27.5;
+    
+    /** The ring thickness. */
     double ringThickness = 3;
+    
+    /** The wheel thickness. */
     double wheelThickness = 5;
 
+    /** The minor arm length. */
     double minorArmLength = radius * 0.75;
+    
+    /** The minor arm height. */
     double minorArmHeight = headHeight;
+    
+    /** The minor arm thickness. */
     double minorArmThickness = 2.5;
     
+    /** The outer ring thickness. */
     double outerRingThickness = wheelThickness/3.0*2;
+    
+    /** The outer ring depth. */
     double outerRingDepth = 0.5;
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         double dt = 360.0 / numberOfArms;
@@ -94,6 +138,19 @@ public class ServoWheel {
         return wheel;
     }
 
+    /**
+     * Servo arm.
+     *
+     * @param innerWidth the inner width
+     * @param outerWidth the outer width
+     * @param thickness the thickness
+     * @param radius the radius
+     * @param wheelThickness the wheel thickness
+     * @param minorArmThickness the minor arm thickness
+     * @param minorArmLegth the minor arm legth
+     * @param minorArmHeight the minor arm height
+     * @return the csg
+     */
     public CSG servoArm(
             double innerWidth, double outerWidth, double thickness, double radius, double wheelThickness, double minorArmThickness, double minorArmLegth, double minorArmHeight) {
         CSG mainArm = Extrude.points(Vector3d.z(thickness),
@@ -114,6 +171,12 @@ public class ServoWheel {
 
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         System.out.println("RUNNING");

@@ -5,6 +5,7 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+// TODO: Auto-generated Javadoc
 /**
  * Bounding box for CSGs.
  *
@@ -12,11 +13,22 @@ package eu.mihosoft.vrl.v3d;
  */
 public class Bounds {
 
+    /** The center. */
     private final Vector3d center;
+    
+    /** The bounds. */
     private final Vector3d bounds;
+    
+    /** The min. */
     private final Vector3d min;
+    
+    /** The max. */
     private final Vector3d max;
+    
+    /** The csg. */
     private final CSG csg;
+    
+    /** The cube. */
     private final Cube cube;
 
     /**
@@ -43,6 +55,9 @@ public class Bounds {
         csg = cube.toCSG();
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Bounds clone() {
         return new Bounds(min.clone(), max.clone());
@@ -163,6 +178,8 @@ public class Bounds {
     }
 
     /**
+     * Gets the min.
+     *
      * @return the min x,y,z values
      */
     public Vector3d getMin() {
@@ -170,12 +187,17 @@ public class Bounds {
     }
 
     /**
+     * Gets the max.
+     *
      * @return the max x,y,z values
      */
     public Vector3d getMax() {
         return max;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return "[center: " + center + ", bounds: " + bounds + "]";

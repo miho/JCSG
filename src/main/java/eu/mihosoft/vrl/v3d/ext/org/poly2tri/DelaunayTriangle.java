@@ -1,7 +1,7 @@
 /**
  * DelaunayTriangle.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,7 +25,7 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
@@ -61,25 +61,40 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
  */
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// TODO: Auto-generated Javadoc
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 
+/**
+ * The Class DelaunayTriangle.
+ */
 class DelaunayTriangle
 {
-    private final static Logger logger    = LoggerFactory.getLogger( DelaunayTriangle.class );
+    //private final static Logger logger    = LoggerFactory.getLogger( DelaunayTriangle.class );
 
-    /** Neighbor pointers */
+    /**  Neighbor pointers. */
     public final DelaunayTriangle[]   neighbors = new DelaunayTriangle[3];
-    /** Flags to determine if an edge is a Constrained edge */
+    
+    /**  Flags to determine if an edge is a Constrained edge. */
     public final boolean[]            cEdge     = new boolean[] { false, false, false };
-    /** Flags to determine if an edge is a Delauney edge */
+    
+    /**  Flags to determine if an edge is a Delauney edge. */
     public final boolean[]            dEdge     = new boolean[] { false, false, false };
-    /** Has this triangle been marked as an interior triangle? */
+    
+    /**  Has this triangle been marked as an interior triangle?. */
     protected boolean           interior  = false;
 
+    /** The points. */
     public final TriangulationPoint[] points = new TriangulationPoint[3];
 
+    /**
+     * Instantiates a new delaunay triangle.
+     *
+     * @param p1 the p1
+     * @param p2 the p2
+     * @param p3 the p3
+     */
     public DelaunayTriangle( TriangulationPoint p1, TriangulationPoint p2, TriangulationPoint p3 )
     {
         points[0] = p1;
@@ -87,6 +102,12 @@ class DelaunayTriangle
         points[2] = p3;
     }
 
+    /**
+     * Index.
+     *
+     * @param p the p
+     * @return the int
+     */
     public int index( TriangulationPoint p )
     {
         if( p == points[0] )
@@ -104,6 +125,12 @@ class DelaunayTriangle
         throw new RuntimeException("Calling index with a point that doesn't exist in triangle");
     }
     
+    /**
+     * Index cw.
+     *
+     * @param p the p
+     * @return the int
+     */
     public int indexCW( TriangulationPoint p )
     {
         int index = index(p);
@@ -115,6 +142,12 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Index ccw.
+     *
+     * @param p the p
+     * @return the int
+     */
     public int indexCCW( TriangulationPoint p )
     {
         int index = index(p);
@@ -126,21 +159,47 @@ class DelaunayTriangle
         }
     }
     
+    /**
+     * Contains.
+     *
+     * @param p the p
+     * @return true, if successful
+     */
     public boolean contains( TriangulationPoint p )
     {
         return ( p == points[0] || p == points[1] || p == points[2] );
     }
 
+    /**
+     * Contains.
+     *
+     * @param e the e
+     * @return true, if successful
+     */
     public boolean contains( DTSweepConstraint e )
     {
         return ( contains( e.p ) && contains( e.q ) );
     }
 
+    /**
+     * Contains.
+     *
+     * @param p the p
+     * @param q the q
+     * @return true, if successful
+     */
     public boolean contains( TriangulationPoint p, TriangulationPoint q )
     {
         return ( contains( p ) && contains( q ) );
     }
 
+    /**
+     * Mark neighbor.
+     *
+     * @param p1 the p1
+     * @param p2 the p2
+     * @param t the t
+     */
     // Update neighbor pointers
     private void markNeighbor( TriangulationPoint p1, 
                                TriangulationPoint p2, 
@@ -160,11 +219,16 @@ class DelaunayTriangle
         }
         else
         {
-            logger.error( "Neighbor error, please report!" );
+            //logger.error( "Neighbor error, please report!" );
             // throw new Exception("Neighbor error, please report!");
         }
     }
 
+    /**
+     * Mark neighbor.
+     *
+     * @param t the t
+     */
     /* Exhaustive search to update neighbor pointers */
     public void markNeighbor( DelaunayTriangle t )
     {
@@ -185,15 +249,23 @@ class DelaunayTriangle
         }
         else
         {
-            logger.error( "markNeighbor failed" );
+            //logger.error( "markNeighbor failed" );
         }
     }
 
+    /**
+     * Clear neighbors.
+     */
     public void clearNeighbors()
     {
         neighbors[0] = neighbors[1] = neighbors[2] = null;
     }
 
+    /**
+     * Clear neighbor.
+     *
+     * @param triangle the triangle
+     */
     public void clearNeighbor( DelaunayTriangle triangle )
     {
         if( neighbors[0] == triangle )
@@ -211,7 +283,7 @@ class DelaunayTriangle
     }
 
     /**
-     * Clears all references to all other triangles and points
+     * Clears all references to all other triangles and points.
      */
     public void clear()
     {
@@ -227,10 +299,13 @@ class DelaunayTriangle
         clearNeighbors();
         points[0]=points[1]=points[2]=null;
     }
+    
     /**
-     * @param t - opposite triangle 
+     * Opposite point.
+     *
+     * @param t - opposite triangle
      * @param p - the point in t that isn't shared between the triangles
-     * @return
+     * @return the triangulation point
      */
     public TriangulationPoint oppositePoint( DelaunayTriangle t, TriangulationPoint p )
     {
@@ -238,6 +313,12 @@ class DelaunayTriangle
         return pointCW( t.pointCW(p) );
     }
 
+    /**
+     * Neighbor cw.
+     *
+     * @param point the point
+     * @return the delaunay triangle
+     */
     // The neighbor clockwise to given point
     public DelaunayTriangle neighborCW( TriangulationPoint point )
     {
@@ -252,6 +333,12 @@ class DelaunayTriangle
         return neighbors[0];
     }
 
+    /**
+     * Neighbor ccw.
+     *
+     * @param point the point
+     * @return the delaunay triangle
+     */
     // The neighbor counter-clockwise to given point
     public DelaunayTriangle neighborCCW( TriangulationPoint point )
     {
@@ -266,6 +353,12 @@ class DelaunayTriangle
         return neighbors[1];
     }
 
+    /**
+     * Neighbor across.
+     *
+     * @param opoint the opoint
+     * @return the delaunay triangle
+     */
     // The neighbor across to given point
     public DelaunayTriangle neighborAcross( TriangulationPoint opoint )
     {
@@ -280,6 +373,12 @@ class DelaunayTriangle
         return neighbors[2];
     }
 
+    /**
+     * Point ccw.
+     *
+     * @param point the point
+     * @return the triangulation point
+     */
     // The point counter-clockwise to given point
     public TriangulationPoint pointCCW( TriangulationPoint point )
     {
@@ -295,10 +394,16 @@ class DelaunayTriangle
         {
             return points[0];
         }
-        logger.error( "point location error" );
+        //logger.error( "point location error" );
         throw new RuntimeException("[FIXME] point location error");
     }
 
+    /**
+     * Point cw.
+     *
+     * @param point the point
+     * @return the triangulation point
+     */
     // The point counter-clockwise to given point
     public TriangulationPoint pointCW( TriangulationPoint point )
     {
@@ -314,10 +419,16 @@ class DelaunayTriangle
         {
             return points[1];
         }
-        logger.error( "point location error" );
+        //logger.error( "point location error" );
         throw new RuntimeException("[FIXME] point location error");
     }
 
+    /**
+     * Legalize.
+     *
+     * @param oPoint the o point
+     * @param nPoint the n point
+     */
     // Legalize triangle by rotating clockwise around oPoint
     public void legalize( TriangulationPoint oPoint, TriangulationPoint nPoint )
     {
@@ -341,16 +452,22 @@ class DelaunayTriangle
         }
         else
         {
-            logger.error( "legalization error" );
+            //logger.error( "legalization error" );
             throw new RuntimeException("legalization bug");
         }
     }
 
+    /**
+     * Prints the debug.
+     */
     public void printDebug()
     {
         System.out.println( points[0] + "," + points[1] + "," + points[2] );
     }
 
+    /**
+     * Mark neighbor edges.
+     */
     // Finalize edge marking
     public void markNeighborEdges()
     {
@@ -377,6 +494,11 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Mark edge.
+     *
+     * @param triangle the triangle
+     */
     public void markEdge( DelaunayTriangle triangle )
     {
         for( int i = 0; i < 3; i++ )
@@ -399,6 +521,11 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Mark edge.
+     *
+     * @param tList the t list
+     */
     public void markEdge( ArrayList<DelaunayTriangle> tList )
     {
 
@@ -425,11 +552,21 @@ class DelaunayTriangle
         }
     }
     
+    /**
+     * Mark constrained edge.
+     *
+     * @param index the index
+     */
     public void markConstrainedEdge( int index )
     {
         cEdge[index] = true;
     }
     
+    /**
+     * Mark constrained edge.
+     *
+     * @param edge the edge
+     */
     public void markConstrainedEdge( DTSweepConstraint edge )
     {
         markConstrainedEdge( edge.p, edge.q );
@@ -450,6 +587,12 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Mark constrained edge.
+     *
+     * @param p the p
+     * @param q the q
+     */
     // Mark edge as constrained
     public void markConstrainedEdge( TriangulationPoint p, TriangulationPoint q )
     {
@@ -467,6 +610,11 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Area.
+     *
+     * @return the double
+     */
     public double area()
     {
         double a = (points[0].getX() - points[2].getX())*(points[1].getY() - points[0].getY());
@@ -475,6 +623,11 @@ class DelaunayTriangle
         return 0.5*Math.abs( a - b );
     }
 
+    /**
+     * Centroid.
+     *
+     * @return the t point
+     */
     public TPoint centroid()
     {
         double cx = ( points[0].getX() + points[1].getX() + points[2].getX() ) / 3d;
@@ -483,9 +636,10 @@ class DelaunayTriangle
     }
 
     /**
-     * Get the neighbor that share this edge
-     * 
-     * @param constrainedEdge
+     * Get the neighbor that share this edge.
+     *
+     * @param p1 the p1
+     * @param p2 the p2
      * @return index of the shared edge or -1 if edge isn't shared
      */
     public int edgeIndex( TriangulationPoint p1, TriangulationPoint p2 )
@@ -526,6 +680,12 @@ class DelaunayTriangle
         return -1;
     }
 
+    /**
+     * Gets the constrained edge ccw.
+     *
+     * @param p the p
+     * @return the constrained edge ccw
+     */
     public boolean getConstrainedEdgeCCW( TriangulationPoint p )
     {
         if( p == points[0] )
@@ -539,6 +699,12 @@ class DelaunayTriangle
         return cEdge[1];
     }
 
+    /**
+     * Gets the constrained edge cw.
+     *
+     * @param p the p
+     * @return the constrained edge cw
+     */
     public boolean getConstrainedEdgeCW( TriangulationPoint p )
     {
         if( p == points[0] )
@@ -552,6 +718,12 @@ class DelaunayTriangle
         return cEdge[0];
     }
 
+    /**
+     * Gets the constrained edge across.
+     *
+     * @param p the p
+     * @return the constrained edge across
+     */
     public boolean getConstrainedEdgeAcross( TriangulationPoint p )
     {
         if( p == points[0] )
@@ -565,6 +737,12 @@ class DelaunayTriangle
         return cEdge[2];
     }
 
+    /**
+     * Sets the constrained edge ccw.
+     *
+     * @param p the p
+     * @param ce the ce
+     */
     public void setConstrainedEdgeCCW( TriangulationPoint p, boolean ce )
     {
         if( p == points[0] )
@@ -581,6 +759,12 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Sets the constrained edge cw.
+     *
+     * @param p the p
+     * @param ce the ce
+     */
     public void setConstrainedEdgeCW( TriangulationPoint p, boolean ce )
     {
         if( p == points[0] )
@@ -597,6 +781,12 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Sets the constrained edge across.
+     *
+     * @param p the p
+     * @param ce the ce
+     */
     public void setConstrainedEdgeAcross( TriangulationPoint p, boolean ce )
     {
         if( p == points[0] )
@@ -613,6 +803,12 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Gets the delunay edge ccw.
+     *
+     * @param p the p
+     * @return the delunay edge ccw
+     */
     public boolean getDelunayEdgeCCW( TriangulationPoint p )
     {
         if( p == points[0] )
@@ -626,6 +822,12 @@ class DelaunayTriangle
         return dEdge[1];
     }
 
+    /**
+     * Gets the delunay edge cw.
+     *
+     * @param p the p
+     * @return the delunay edge cw
+     */
     public boolean getDelunayEdgeCW( TriangulationPoint p )
     {
         if( p == points[0] )
@@ -639,6 +841,12 @@ class DelaunayTriangle
         return dEdge[0];
     }
 
+    /**
+     * Gets the delunay edge across.
+     *
+     * @param p the p
+     * @return the delunay edge across
+     */
     public boolean getDelunayEdgeAcross( TriangulationPoint p )
     {
         if( p == points[0] )
@@ -652,6 +860,12 @@ class DelaunayTriangle
         return dEdge[2];
     }
 
+    /**
+     * Sets the delunay edge ccw.
+     *
+     * @param p the p
+     * @param e the e
+     */
     public void setDelunayEdgeCCW( TriangulationPoint p, boolean e )
     {
         if( p == points[0] )
@@ -668,6 +882,12 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Sets the delunay edge cw.
+     *
+     * @param p the p
+     * @param e the e
+     */
     public void setDelunayEdgeCW( TriangulationPoint p, boolean e )
     {
         if( p == points[0] )
@@ -684,6 +904,12 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Sets the delunay edge across.
+     *
+     * @param p the p
+     * @param e the e
+     */
     public void setDelunayEdgeAcross( TriangulationPoint p, boolean e )
     {
         if( p == points[0] )
@@ -700,6 +926,9 @@ class DelaunayTriangle
         }
     }
 
+    /**
+     * Clear delunay edges.
+     */
     public void clearDelunayEdges()
     {
         dEdge[0] = false;
@@ -707,11 +936,21 @@ class DelaunayTriangle
         dEdge[2] = false;
     }
 
+    /**
+     * Checks if is interior.
+     *
+     * @return true, if is interior
+     */
     public boolean isInterior()
     {
         return interior;
     }
 
+    /**
+     * Checks if is interior.
+     *
+     * @param b the b
+     */
     public void isInterior( boolean b )
     {
         interior = b;        

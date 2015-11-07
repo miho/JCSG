@@ -1,7 +1,7 @@
 /**
  * Cylinder.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,7 +29,7 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * A solid cylinder.
  *
@@ -46,12 +47,22 @@ import java.util.List;
  */
 public class Cylinder implements Primitive {
 
+    /** The start. */
     private Vector3d start;
+    
+    /** The end. */
     private Vector3d end;
+    
+    /** The start radius. */
     private double startRadius;
+    
+    /** The end radius. */
     private double endRadius;
+    
+    /** The num slices. */
     private int numSlices;
 
+    /** The properties. */
     private final PropertyStorage properties = new PropertyStorage();
 
     /**
@@ -141,6 +152,9 @@ public class Cylinder implements Primitive {
         this.numSlices = numSlices;
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.Primitive#toPolygons()
+     */
     @Override
     public List<Polygon> toPolygons() {
         final Vector3d s = getStart();
@@ -182,6 +196,20 @@ public class Cylinder implements Primitive {
         return polygons;
     }
 
+    /**
+     * Cyl point.
+     *
+     * @param axisX the axis x
+     * @param axisY the axis y
+     * @param axisZ the axis z
+     * @param ray the ray
+     * @param s the s
+     * @param r the r
+     * @param stack the stack
+     * @param slice the slice
+     * @param normalBlend the normal blend
+     * @return the vertex
+     */
     private Vertex cylPoint(
             Vector3d axisX, Vector3d axisY, Vector3d axisZ, Vector3d ray, Vector3d s,
             double r, double stack, double slice, double normalBlend) {
@@ -193,6 +221,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Gets the start.
+     *
      * @return the start
      */
     public Vector3d getStart() {
@@ -200,6 +230,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Sets the start.
+     *
      * @param start the start to set
      */
     public void setStart(Vector3d start) {
@@ -207,6 +239,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Gets the end.
+     *
      * @return the end
      */
     public Vector3d getEnd() {
@@ -214,6 +248,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Sets the end.
+     *
      * @param end the end to set
      */
     public void setEnd(Vector3d end) {
@@ -221,6 +257,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Gets the start radius.
+     *
      * @return the radius
      */
     public double getStartRadius() {
@@ -228,6 +266,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Sets the start radius.
+     *
      * @param radius the radius to set
      */
     public void setStartRadius(double radius) {
@@ -235,6 +275,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Gets the end radius.
+     *
      * @return the radius
      */
     public double getEndRadius() {
@@ -242,6 +284,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Sets the end radius.
+     *
      * @param radius the radius to set
      */
     public void setEndRadius(double radius) {
@@ -249,6 +293,8 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Gets the num slices.
+     *
      * @return the number of slices
      */
     public int getNumSlices() {
@@ -256,12 +302,17 @@ public class Cylinder implements Primitive {
     }
 
     /**
+     * Sets the num slices.
+     *
      * @param numSlices the number of slices to set
      */
     public void setNumSlices(int numSlices) {
         this.numSlices = numSlices;
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.Primitive#getProperties()
+     */
     @Override
     public PropertyStorage getProperties() {
         return properties;

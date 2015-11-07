@@ -15,31 +15,67 @@ import java.nio.file.Paths;
 
 import static eu.mihosoft.vrl.v3d.Transform.*;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class LeapMotionCase.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class LeapMotionCase {
 
+    /** The w. */
     private double w = 80.5;
+    
+    /** The h. */
     private double h = 30.5;
+    
+    /** The d. */
     private double d = 12;
 
+    /** The arc. */
     private double arc = 7.35;
+    
+    /** The arc res. */
     private int arcRes = 64;
 
+    /** The case thickness. */
     private double caseThickness = 2.0;
     
+    /** The device metal thickness. */
     private double deviceMetalThickness = 1.0;
 
+    /** The peg thickness. */
     private double pegThickness = 0.8;
+    
+    /** The peg height. */
     private double pegHeight = -1;
+    
+    /** The peg width. */
     private double pegWidth = 16;
+    
+    /** The peg offset. */
     private double pegOffset = 0.6;
+    
+    /** The peg top height. */
     private double pegTopHeight = 2.4;
+    
+    /** The peg to case offset. */
     private double pegToCaseOffset = 2.5;
+    
+    /** The grab space. */
     private double grabSpace = 16;
 
+    /**
+     * Outline.
+     *
+     * @param w the w
+     * @param h the h
+     * @param d the d
+     * @param arc the arc
+     * @param thickness the thickness
+     * @param arcRes the arc res
+     * @return the csg
+     */
     private CSG outline(double w, double h, double d, double arc, double thickness, int arcRes) {
 
         arc = arc + thickness;
@@ -58,14 +94,29 @@ public class LeapMotionCase {
         return arcCyls.hull();
     }
 
+    /**
+     * Device outline.
+     *
+     * @return the csg
+     */
     private CSG deviceOutline() {
         return outline(w, h, d, arc, 0, arcRes);
     }
     
+    /**
+     * Device inner outline.
+     *
+     * @return the csg
+     */
     private CSG deviceInnerOutline() {
         return outline(w, h, d, arc, -deviceMetalThickness, arcRes);
     }
 
+    /**
+     * Case outline.
+     *
+     * @return the csg
+     */
     private CSG caseOutline() {
 
         CSG outline = outline(w, h, d+caseThickness, arc, caseThickness, arcRes);
@@ -77,6 +128,11 @@ public class LeapMotionCase {
                 difference(deviceOutline().transformed(unity().translateZ(caseThickness))).difference(cyl);
     }
 
+    /**
+     * Peg.
+     *
+     * @return the csg
+     */
     private CSG peg() {
 
         double fullPegHeight = pegHeight + d + caseThickness + pegTopHeight;
@@ -91,14 +147,29 @@ public class LeapMotionCase {
         );
     }
 
+    /**
+     * Peg to front.
+     *
+     * @return the csg
+     */
     private CSG pegToFront() {
         return peg().transformed(unity().rotX(-90).rotY(-90)).transformed(unity().translateX(-pegWidth / 2.0));
     }
 
+    /**
+     * Peg to back.
+     *
+     * @return the csg
+     */
     private CSG pegToBack() {
         return peg().transformed(unity().rotX(-90).rotY(90)).transformed(unity().translateX(-pegWidth / 2.0));
     }
 
+    /**
+     * Full case.
+     *
+     * @return the csg
+     */
     private CSG fullCase() {
 
         CSG caseOutline = caseOutline();
@@ -114,6 +185,13 @@ public class LeapMotionCase {
         return caseOutline;
     }
 
+    /**
+     * Adds the pegs to outline.
+     *
+     * @param caseOutline the case outline
+     * @param pos the pos
+     * @return the csg
+     */
     private CSG addPegsToOutline(CSG caseOutline, double pos) {
         
         pos = pos-caseThickness;
@@ -129,11 +207,22 @@ public class LeapMotionCase {
         return caseOutline.union(peg1, peg2);
     }
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         return fullCase();
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         FileUtil.write(Paths.get("leapmotion.stl"), new LeapMotionCase().toCSG().toStlString());
