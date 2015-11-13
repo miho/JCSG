@@ -33,18 +33,14 @@
  */
 package eu.mihosoft.vrl.v3d;
 
-import eu.mihosoft.vrl.v3d.ext.openjfx.importers.obj.ObjImporter;
 import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,7 +49,6 @@ import com.neuronrobotics.interaction.CadInteractionEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.CullFace;
-import javafx.scene.shape.Mesh;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Affine;
@@ -248,6 +243,16 @@ public class CSG {
 		return toYMax(this);
 	}
 	
+	CSG move(double x, double y, double z){
+		return 	movex(x)
+				.movey(y)
+				.movez(z);
+	}
+	
+	CSG move(double [] posVector){
+		return move(posVector[0],posVector[1],posVector[2]);
+	}
+	
 	/**
 	 * Movey.
 	 *
@@ -278,6 +283,17 @@ public class CSG {
 	CSG movex(double howFarToMove ){
 		return this.transformed(Transform.unity().translateX(howFarToMove));	
 	}
+	
+	CSG rot(double x, double y, double z){
+		return 	movex(x)
+				.movey(y)
+				.movez(z);
+	}
+	
+	CSG rot(double [] posVector){
+		return rot(posVector[0],posVector[1],posVector[2]);
+	}
+	
 	
 	/**
 	 * Rotz.
@@ -1577,5 +1593,31 @@ public class CSG {
         /** The none. */
         NONE
     }
+	
+public CSG makeKeepaway(double shellThickness){
+		
+		double x = Math.abs(this.getBounds().getMax().x )+ Math.abs(this.getBounds().getMin().x);
+		double y = Math.abs(this.getBounds().getMax().y) + Math.abs(this.getBounds().getMin().y);
+		
+		double z = Math.abs(this.getBounds().getMax().z )+ Math.abs(this.getBounds().getMin().z);
+		
+		double xtol=(x+shellThickness)/x;
+		double ytol= (y+shellThickness)/y;
+		double ztol=(z+shellThickness)/z;
+		
+		double xPer=-(Math.abs(this.getBounds().getMax().x)-Math.abs(this.getBounds().getMin().x))/x;
+		double yPer=-(Math.abs(this.getBounds().getMax().y)-Math.abs(this.getBounds().getMin().y))/y;
+		double zPer=-(Math.abs(this.getBounds().getMax().z)-Math.abs(this.getBounds().getMin().z))/z;
+		
+		//println " Keep away x = "+y+" new = "+ytol
+		return 	this
+				.transformed(new Transform().scale(xtol,
+													ytol,
+													 ztol ))
+				.transformed(new Transform().translateX(shellThickness * xPer))
+				.transformed(new Transform().translateY(shellThickness*yPer))
+				.transformed(new Transform().translateZ(shellThickness*zPer));
+				
+	}
 
 }
