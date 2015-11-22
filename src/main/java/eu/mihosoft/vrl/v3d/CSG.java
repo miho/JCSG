@@ -243,13 +243,13 @@ public class CSG {
 		return toYMax(this);
 	}
 	
-	CSG move(double x, double y, double z){
+	public CSG move(double x, double y, double z){
 		return 	movex(x)
 				.movey(y)
 				.movez(z);
 	}
 	
-	CSG move(double [] posVector){
+	public CSG move(double [] posVector){
 		return move(posVector[0],posVector[1],posVector[2]);
 	}
 	
@@ -260,7 +260,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	//Helper/wrapper functions for movement
-	CSG movey(double howFarToMove){
+	public CSG movey(double howFarToMove){
 		return this.transformed(Transform.unity().translateY(howFarToMove));	
 	}
 	
@@ -270,7 +270,7 @@ public class CSG {
 	 * @param howFarToMove the how far to move
 	 * @return the csg
 	 */
-	CSG movez(double howFarToMove ){
+	public CSG movez(double howFarToMove ){
 		return this.transformed(Transform.unity().translateZ(howFarToMove));	
 	}
 	
@@ -280,17 +280,17 @@ public class CSG {
 	 * @param howFarToMove the how far to move
 	 * @return the csg
 	 */
-	CSG movex(double howFarToMove ){
+	public CSG movex(double howFarToMove ){
 		return this.transformed(Transform.unity().translateX(howFarToMove));	
 	}
 	
-	CSG rot(double x, double y, double z){
+	public CSG rot(double x, double y, double z){
 		return 	movex(x)
 				.movey(y)
 				.movez(z);
 	}
 	
-	CSG rot(double [] posVector){
+	public CSG rot(double [] posVector){
 		return rot(posVector[0],posVector[1],posVector[2]);
 	}
 	
@@ -302,7 +302,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	//Rotation function, rotates the object
-	CSG rotz(double degreesToRotate ){
+	public CSG rotz(double degreesToRotate ){
 		return this.transformed(new Transform().rotZ(degreesToRotate));	
 	}
 	
@@ -312,7 +312,7 @@ public class CSG {
 	 * @param degreesToRotate the degrees to rotate
 	 * @return the csg
 	 */
-	CSG roty(double degreesToRotate ){
+	public CSG roty(double degreesToRotate ){
 		return this.transformed(new Transform().rotY(degreesToRotate));	
 	}
 	
@@ -322,7 +322,7 @@ public class CSG {
 	 * @param degreesToRotate the degrees to rotate
 	 * @return the csg
 	 */
-	CSG rotx(double degreesToRotate ){
+	public CSG rotx(double degreesToRotate ){
 		return this.transformed(new Transform().rotX(degreesToRotate));	
 	}
 	
@@ -333,7 +333,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	//Scale function, scales the object
-	CSG scalez(double scaleValue ){
+	public CSG scalez(double scaleValue ){
 		return this.transformed(new Transform().scaleZ(scaleValue));	
 	}
 	
@@ -343,7 +343,7 @@ public class CSG {
 	 * @param scaleValue the scale value
 	 * @return the csg
 	 */
-	CSG scaley(double scaleValue ){
+	public CSG scaley(double scaleValue ){
 		return this.transformed(new Transform().scaleY(scaleValue));	
 	}
 	
@@ -353,7 +353,7 @@ public class CSG {
 	 * @param scaleValue the scale value
 	 * @return the csg
 	 */
-	CSG scalex(double scaleValue ){
+	public CSG scalex(double scaleValue ){
 		return this.transformed(new Transform().scaleX(scaleValue));	
 	}
 	
@@ -363,7 +363,7 @@ public class CSG {
 	 * @param scaleValue the scale value
 	 * @return the csg
 	 */
-	CSG scale(double scaleValue ){
+	public CSG scale(double scaleValue ){
 		return this.transformed(new Transform().scale(scaleValue));	
 	}
         
@@ -381,12 +381,13 @@ public class CSG {
 	 *
 	 * @param color the new color
 	 */
-	public void setColor(Color color) {
+	public CSG setColor(Color color) {
 		this.color = color;
 		if(current!=null){
 			PhongMaterial m = new PhongMaterial(getColor());
 			current.setMaterial(m);
 		}
+		return this;
 	}
     
     /**
@@ -395,14 +396,14 @@ public class CSG {
      * @param manipulator the manipulator
      * @return the affine
      */
-    public Affine setManipulator(Affine manipulator){
+    public CSG setManipulator(Affine manipulator){
     	Affine old = manipulator;
 		this.manipulator = manipulator;
 	 	if(current != null){
 	 		current.getTransforms().clear();
 	 		current.getTransforms().add(manipulator);
 	 	}
-		return old;
+		return this;
     }
  
     /**
