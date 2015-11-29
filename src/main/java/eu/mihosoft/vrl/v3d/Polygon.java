@@ -62,6 +62,8 @@ public final class Polygon {
      *  Note:  uses first three vertices to define the plane.
      */
     public final Plane plane;
+	private final Exception creationEventStackTrace = new Exception();
+    
 
     /**
      * Sets the storage.
@@ -581,4 +583,8 @@ public final class Polygon {
 
         return shared;
     }
+
+	public Exception getCreationEventStackTrace() {
+		return creationEventStackTrace;
+	}
 }

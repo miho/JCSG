@@ -99,6 +99,8 @@ import javafx.scene.transform.Affine;
  * is {@code A & B =
  * ~(~A | ~B)} where {@code ~} is the complement operator.
  */
+
+
 public class CSG {
 
     /** The polygons. */
@@ -121,6 +123,12 @@ public class CSG {
 	
 	/** The manipulator. */
 	private Affine manipulator;
+
+	private Bounds bounds;
+	/**
+	 * This is the trace for where this csg was created
+	 */
+	private final Exception creationEventStackTrace = new Exception();
 
 	/**
 	 * Instantiates a new csg.
@@ -591,9 +599,9 @@ public class CSG {
         
         CSG result = this.clone();
         CSG other = csg.clone();
-        
+
         result.getPolygons().addAll(other.getPolygons());
-        
+        bounds=null;
         return result;
     }
 
@@ -688,6 +696,7 @@ public class CSG {
         });
 
         csgsUnion.getPolygons().forEach(p -> p.setStorage(storage));
+        bounds=null;
         return csgsUnion.hull();
 
 //        CSG csgsUnion = this;
@@ -732,10 +741,10 @@ public class CSG {
         List<Polygon> inner = new ArrayList<>();
         List<Polygon> outer = new ArrayList<>();
 
-        Bounds bounds = csg.getBounds();
+        Bounds b = csg.getBounds();
 
         this.getPolygons().stream().forEach((p) -> {
-            if (bounds.intersects(p.getBounds())) {
+            if (b.intersects(p.getBounds())) {
                 inner.add(p);
             } else {
                 outer.add(p);
@@ -753,7 +762,7 @@ public class CSG {
             allPolygons.addAll(this.getPolygons());
             allPolygons.addAll(csg.getPolygons());
         }
-
+        bounds=null;
         return CSG.fromPolygons(allPolygons).optimization(getOptType());
     }
 
@@ -1496,9 +1505,11 @@ public class CSG {
      * @return bouds of this csg
      */
     public Bounds getBounds() {
-
+        if(bounds!=null)
+        	return bounds;
         if (getPolygons().isEmpty()) {
-            return new Bounds(Vector3d.ZERO, Vector3d.ZERO);
+        	bounds=  new Bounds(Vector3d.ZERO, Vector3d.ZERO);
+        	return bounds;
         }
 
         double minX = Double.POSITIVE_INFINITY;
@@ -1539,10 +1550,32 @@ public class CSG {
 
         } // end for polygon
 
-        return new Bounds(
+        bounds= new Bounds(
                 new Vector3d(minX, minY, minZ),
                 new Vector3d(maxX, maxY, maxZ));
+        return bounds;
     }
+    
+    public double getMaxX(){
+    	return getBounds().getMax().x;
+    }
+    public double getMaxY(){
+    	return getBounds().getMax().y;
+    }
+    public double getMaxZ(){
+    	return getBounds().getMax().z;
+    }
+    
+    public double getMinX(){
+    	return getBounds().getMin().x;
+    }
+    public double getMinY(){
+    	return getBounds().getMin().y;
+    }
+    public double getMinZ(){
+    	return getBounds().getMin().z;
+    }
+
 
     /**
      * Gets the opt type.
@@ -1577,6 +1610,7 @@ public class CSG {
      * @param polygons the new polygons
      */
     public void setPolygons(List<Polygon> polygons) {
+        bounds=null;
 		this.polygons = polygons;
 	}
 
@@ -1620,5 +1654,9 @@ public CSG makeKeepaway(double shellThickness){
 				.transformed(new Transform().translateZ(shellThickness*zPer));
 				
 	}
+
+public Exception getCreationEventStackTrace() {
+	return creationEventStackTrace;
+}
 
 }
