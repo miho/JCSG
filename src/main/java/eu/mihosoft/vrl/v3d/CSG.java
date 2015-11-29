@@ -432,9 +432,9 @@ public class CSG {
 			current.setMaterial(m);
         }
         
-        if(manipulator!=null){
+        if(getManipulator()!=null){
         	current.getTransforms().clear();
-        	current.getTransforms().add(manipulator);
+        	current.getTransforms().add(getManipulator());
         }
 		
 		current.setCullFace(CullFace.NONE);
@@ -1629,34 +1629,38 @@ public class CSG {
         NONE
     }
 	
-public CSG makeKeepaway(double shellThickness){
-		
-		double x = Math.abs(this.getBounds().getMax().x )+ Math.abs(this.getBounds().getMin().x);
-		double y = Math.abs(this.getBounds().getMax().y) + Math.abs(this.getBounds().getMin().y);
-		
-		double z = Math.abs(this.getBounds().getMax().z )+ Math.abs(this.getBounds().getMin().z);
-		
-		double xtol=(x+shellThickness)/x;
-		double ytol= (y+shellThickness)/y;
-		double ztol=(z+shellThickness)/z;
-		
-		double xPer=-(Math.abs(this.getBounds().getMax().x)-Math.abs(this.getBounds().getMin().x))/x;
-		double yPer=-(Math.abs(this.getBounds().getMax().y)-Math.abs(this.getBounds().getMin().y))/y;
-		double zPer=-(Math.abs(this.getBounds().getMax().z)-Math.abs(this.getBounds().getMin().z))/z;
-		
-		//println " Keep away x = "+y+" new = "+ytol
-		return 	this
-				.transformed(new Transform().scale(xtol,
-													ytol,
-													 ztol ))
-				.transformed(new Transform().translateX(shellThickness * xPer))
-				.transformed(new Transform().translateY(shellThickness*yPer))
-				.transformed(new Transform().translateZ(shellThickness*zPer));
-				
+	public CSG makeKeepaway(double shellThickness){
+			
+			double x = Math.abs(this.getBounds().getMax().x )+ Math.abs(this.getBounds().getMin().x);
+			double y = Math.abs(this.getBounds().getMax().y) + Math.abs(this.getBounds().getMin().y);
+			
+			double z = Math.abs(this.getBounds().getMax().z )+ Math.abs(this.getBounds().getMin().z);
+			
+			double xtol=(x+shellThickness)/x;
+			double ytol= (y+shellThickness)/y;
+			double ztol=(z+shellThickness)/z;
+			
+			double xPer=-(Math.abs(this.getBounds().getMax().x)-Math.abs(this.getBounds().getMin().x))/x;
+			double yPer=-(Math.abs(this.getBounds().getMax().y)-Math.abs(this.getBounds().getMin().y))/y;
+			double zPer=-(Math.abs(this.getBounds().getMax().z)-Math.abs(this.getBounds().getMin().z))/z;
+			
+			//println " Keep away x = "+y+" new = "+ytol
+			return 	this
+					.transformed(new Transform().scale(xtol,
+														ytol,
+														 ztol ))
+					.transformed(new Transform().translateX(shellThickness * xPer))
+					.transformed(new Transform().translateY(shellThickness*yPer))
+					.transformed(new Transform().translateZ(shellThickness*zPer));
+					
+		}
+	
+	public Exception getCreationEventStackTrace() {
+		return creationEventStackTrace;
 	}
-
-public Exception getCreationEventStackTrace() {
-	return creationEventStackTrace;
-}
+	
+	public Affine getManipulator() {
+		return manipulator;
+	}
 
 }
