@@ -10,7 +10,7 @@ sourceCompatibility = '1.8'
 //repairHeaders.licenseHeaderText = new File(projectDir,'./license-template.txt')
 
 Properties props = new Properties()
-props.load(new FileInputStream(buildDir.getAbsolutePath()+"/src/main/resources/com/neuronrobotics/javacad/build.properties"))
+props.load(new FileInputStream(buildDir.getAbsolutePath()+"/../src/main/resources/com/neuronrobotics/javacad/build.properties"))
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
     gradleVersion = '2.1'
@@ -58,8 +58,8 @@ jar {
 }
 
 group = "com.neuronrobotics"
-archivesBaseName = "JCSG"
-version = "0.1.4"
+archivesBaseName = props."app.name"
+version = props."app.version"
 
 task javadocJar(type: Jar) {
 	classifier = 'javadoc'
