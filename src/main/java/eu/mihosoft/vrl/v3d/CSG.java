@@ -1706,10 +1706,10 @@ public class CSG {
 					if(dupLine==false){
 						groovyFileLines.add(thisline);
 						//System.err.println("Line: "+thisline);
-						for(String s:groovyFileLines){
-							System.err.println("\t\t "+s);
-							creationEventStackTrace2.printStackTrace();
-						}
+//						for(String s:groovyFileLines){
+//							//System.err.println("\t\t "+s);
+//							creationEventStackTrace2.printStackTrace();
+//						}
 					}
 				}
 			}catch(NullPointerException ex){
