@@ -100,7 +100,6 @@ import javafx.scene.transform.Affine;
  * ~(~A | ~B)} where {@code ~} is the complement operator.
  */
 
-
 public class CSG {
 
     /** The polygons. */
@@ -130,7 +129,9 @@ public class CSG {
 	 */
 	private final Exception creationEventStackTrace = new Exception();
 
-	private ArrayList<String> groovyFileLines = new ArrayList<>();;
+	private ArrayList<String> groovyFileLines = new ArrayList<>();
+	private PrepForManufacturing manufactuing=null;
+
 	/**
 	 * Instantiates a new csg.
 	 */
@@ -1745,5 +1746,24 @@ public class CSG {
 	public ArrayList<String> getCreationEventStackTraceList() {
 		return groovyFileLines;
 	}
+	
+	public CSG prepForManufacturing(){
+		if(getManufactuing()==null)
+			return this;
+		return getManufactuing().prep(this);
+	}
+
+
+
+	public PrepForManufacturing getManufactuing() {
+		return manufactuing;
+	}
+
+
+
+	public void setManufactuing(PrepForManufacturing manufactuing) {
+		this.manufactuing = manufactuing;
+	}
+
 
 }
