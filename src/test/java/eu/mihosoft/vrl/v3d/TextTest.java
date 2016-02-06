@@ -15,6 +15,6 @@ public class TextTest {
 	 */
 	public static void main(String [] args){
 
-		Text.text(10.0, "Hello", new Font("Helvedica", Font.PLAIN, 18));
+		TextExtrude.text(10.0, "Hello", new Font("Helvedica", Font.PLAIN, 18));
 	}
 }

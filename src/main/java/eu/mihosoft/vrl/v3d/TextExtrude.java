@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * The Class Text.
  */
-public class Text {
+public class TextExtrude {
     /**
      * Extrudes the specified path (convex or concave polygon without holes or
      * intersections, specified in CCW) into the specified direction.
