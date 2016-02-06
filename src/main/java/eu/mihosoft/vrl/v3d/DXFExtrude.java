@@ -7,11 +7,13 @@ import java.util.List;
 import java.io.FileInputStream;
 import org.kabeja.dxf.DXFConstants;
 import org.kabeja.dxf.DXFDocument;
-import org.kabeja.dxf.DXFEntity;
 import org.kabeja.dxf.DXFLayer;
+import org.kabeja.dxf.DXFLine;
 import org.kabeja.dxf.DXFPolyline;
+import org.kabeja.dxf.DXFSpline;
 import org.kabeja.dxf.DXFVertex;
 import org.kabeja.dxf.helpers.Point;
+import org.kabeja.dxf.helpers.SplinePoint;
 import org.kabeja.parser.DXFParser;
 import org.kabeja.parser.Parser;
 import org.kabeja.parser.ParserBuilder;
@@ -62,13 +64,43 @@ public class DXFExtrude implements Primitive {
 										}
 									}
 								}
-							} else {
+							}
+							else if (entityType.contentEquals(DXFConstants.ENTITY_TYPE_LINE)) {
+								// get all polylines from the layer
+								List plines = layer.getDXFEntities(entityType);
+								if (plines != null) {
+									for (Object p : plines) {
+										DXFLine pline = (DXFLine) p;
+										Point point = pline.getStartPoint();
+										points.add(new Vector3d(point.getX(), point.getY(), point.getZ()));
+										point = pline.getEndPoint();
+										points.add(new Vector3d(point.getX(), point.getY(), point.getZ()));
+										
+									}
+								}
+							}
+							else if (entityType.contentEquals(DXFConstants.ENTITY_TYPE_SPLINE)) {
+								// get all polylines from the layer
+								List plines = layer.getDXFEntities(entityType);
+								if (plines != null) {
+									for (Object p : plines) {
+										DXFSpline pline = (DXFSpline) p;
+										Iterator splinePointIterator = pline.getSplinePointIterator();
+										if(splinePointIterator!=null)
+											for (;splinePointIterator.hasNext();) {
+												SplinePoint point =(SplinePoint) splinePointIterator.next();
+												points.add(new Vector3d(point.getX(), point.getY(), point.getZ()));
+											}
+									}
+								}
+							}
+							else {
 								System.out.println("Found type: " + entityType);
 
 							}
 						}
 					}
-					return Extrude.points(new Vector3d(0, 0, extrudeDistance), points);
+					//return Extrude.points(new Vector3d(0, 0, extrudeDistance), points);
 				}
 			}
 

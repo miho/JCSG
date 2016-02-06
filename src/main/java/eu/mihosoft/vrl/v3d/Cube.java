@@ -163,8 +163,9 @@ public class Cube implements Primitive {
      *
      * @param center the center to set
      */
-    public void setCenter(Vector3d center) {
+    public Cube setCenter(Vector3d center) {
         this.center = center;
+        return this;
     }
 
     /**
@@ -181,8 +182,9 @@ public class Cube implements Primitive {
      *
      * @param dimensions the dimensions to set
      */
-    public void setDimensions(Vector3d dimensions) {
+    public Cube setDimensions(Vector3d dimensions) {
         this.dimensions = dimensions;
+        return this;
     }
 
     /* (non-Javadoc)
