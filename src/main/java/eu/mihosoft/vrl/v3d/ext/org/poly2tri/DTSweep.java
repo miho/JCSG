@@ -274,9 +274,12 @@ private final static double PI_div2 = Math.PI / 2;
         // Get an Internal triangle to start with
         DelaunayTriangle t = tcx.aFront.head.next.triangle;
         TriangulationPoint p = tcx.aFront.head.next.point;
-        while (!t.getConstrainedEdgeCW(p)) {
-            t = t.neighborCCW(p);
-        }
+        if(t!=null)
+	        while (!t.getConstrainedEdgeCW(p)) {
+	            t = t.neighborCCW(p);
+	            if(t==null)
+	            	break;
+	        }
 
         // Collect interior triangles constrained by edges
         tcx.meshClean(t);
