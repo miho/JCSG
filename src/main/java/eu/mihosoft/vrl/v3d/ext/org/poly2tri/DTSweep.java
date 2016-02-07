@@ -139,9 +139,6 @@ private final static double PI_div2 = Math.PI / 2;
 
             if (point.hasEdges()) {
                 for (DTSweepConstraint e : point.getEdges()) {
-                    if (tcx.isDebugEnabled()) {
-                        tcx.getDebugContext().setActiveConstraint(e);
-                    }
                     edgeEvent(tcx, e, node);
                 }
             }
@@ -374,8 +371,10 @@ private final static double PI_div2 = Math.PI / 2;
             // TODO: integrate with flip process might give some better performance 
             //       but for now this avoid the issue with cases that needs both flips and fills
             fillEdgeEvent(tcx, edge, node);
-
-            edgeEvent(tcx, edge.p, edge.q, node.triangle, edge.q);
+          
+            takeEdgeStep(tcx, edge.p, edge.q, node.triangle, edge.q,0);
+            
+            //edgeEvent(tcx, edge.p, edge.q, node.triangle, edge.q);
         } catch (PointOnEdgeException e) {
             //logger.warn("Skipping edge: {}", e.getMessage());
         }
@@ -620,11 +619,11 @@ private final static double PI_div2 = Math.PI / 2;
      * @param triangle the triangle
      * @param point the point
      */
-    private static void edgeEvent(DTSweepContext tcx,
+    private static void takeEdgeStep(DTSweepContext tcx,
             TriangulationPoint ep,
             TriangulationPoint eq,
             DelaunayTriangle triangle,
-            TriangulationPoint point) {
+            TriangulationPoint point, int depth) {
 
         TriangulationPoint p1, p2;
 
@@ -646,7 +645,7 @@ private final static double PI_div2 = Math.PI / 2;
                 // not change the given constraint and just keep a variable for the new constraint
                 tcx.edgeEvent.constrainedEdge.q = p1;
                 triangle = triangle.neighborAcross(point);
-                edgeEvent(tcx, ep, p1, triangle, p1);
+                takeEdgeStep(tcx, ep, p1, triangle, p1,depth++);
             } else {
                 throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
             }
@@ -665,7 +664,7 @@ private final static double PI_div2 = Math.PI / 2;
                 // not change the given constraint and just keep a variable for the new constraint
                 tcx.edgeEvent.constrainedEdge.q = p2;
                 triangle = triangle.neighborAcross(point);
-                edgeEvent(tcx, ep, p2, triangle, p2);
+                takeEdgeStep(tcx, ep, p2, triangle, p2,depth++);
             } else {
                 throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
             }
@@ -683,7 +682,7 @@ private final static double PI_div2 = Math.PI / 2;
             } else {
                 triangle = triangle.neighborCW(point);
             }
-            edgeEvent(tcx, ep, eq, triangle, point);
+            takeEdgeStep(tcx, ep, eq, triangle, point,depth++);
         } else {
             // This triangle crosses constraint so lets flippin start!
             flipEdgeEvent(tcx, ep, eq, triangle, point);
@@ -763,7 +762,7 @@ private final static double PI_div2 = Math.PI / 2;
         } else {
             newP = nextFlipPoint(ep, eq, ot, op);
             flipScanEdgeEvent(tcx, ep, eq, t, ot, newP);
-            edgeEvent(tcx, ep, eq, t, p);
+            takeEdgeStep(tcx, ep, eq, t, p,0);
         }
     }
 
@@ -863,7 +862,7 @@ private final static double PI_div2 = Math.PI / 2;
         }
 
         if (tcx.isDebugEnabled()) {
-            System.out.println("[FLIP:SCAN] - scan next point"); // TODO: remove
+            //System.out.println("[FLIP:SCAN] - scan next point"); // TODO: remove
             tcx.getDebugContext().setPrimaryTriangle(t);
             tcx.getDebugContext().setSecondaryTriangle(ot);
         }

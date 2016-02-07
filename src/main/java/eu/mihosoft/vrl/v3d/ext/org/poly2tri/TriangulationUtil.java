@@ -157,28 +157,28 @@ class TriangulationUtil
                                       final TriangulationPoint pc, 
                                       final TriangulationPoint pd )
     {
-        final double pdx = pd.getX();
-        final double pdy = pd.getY();
-        final double adx = pa.getX() - pdx;
-        final double ady = pa.getY() - pdy;        
-        final double bdx = pb.getX() - pdx;
-        final double bdy = pb.getY() - pdy;
+         double pdx = pd.getX();
+         double pdy = pd.getY();
+         double adx = pa.getX() - pdx;
+         double ady = pa.getY() - pdy;        
+         double bdx = pb.getX() - pdx;
+         double bdy = pb.getY() - pdy;
 
-        final double adxbdy = adx * bdy;
-        final double bdxady = bdx * ady;
-        final double oabd = adxbdy - bdxady;
+         double adxbdy = adx * bdy;
+         double bdxady = bdx * ady;
+         double oabd = adxbdy - bdxady;
 //        oabd = orient2d(pa,pb,pd);
         if( oabd <= 0 )
         {
             return false;
         }
 
-        final double cdx = pc.getX() - pdx;
-        final double cdy = pc.getY() - pdy;
+         double cdx = pc.getX() - pdx;
+         double cdy = pc.getY() - pdy;
 
-        final double cdxady = cdx * ady;
-        final double adxcdy = adx * cdy;
-        final double ocad = cdxady - adxcdy;
+         double cdxady = cdx * ady;
+         double adxcdy = adx * cdy;
+         double ocad = cdxady - adxcdy;
 //      ocad = orient2d(pc,pa,pd);
         if( ocad <= 0 )
         {

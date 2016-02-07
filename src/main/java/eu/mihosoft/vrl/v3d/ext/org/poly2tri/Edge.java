@@ -66,21 +66,25 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-abstract class Edge<A extends Point>
+public class Edge
 {
     
     /** The p. */
-    protected A p;
+    protected TriangulationPoint p;
     
     /** The q. */
-    protected A q;
+    protected TriangulationPoint q;
+    public Edge(TriangulationPoint p, TriangulationPoint q){
+    	this.p=p;
+    	this.q=q;
+    }
 
     /**
      * Gets the p.
      *
      * @return the p
      */
-    public A getP()
+    public TriangulationPoint getP()
     {
         return p;
     }
@@ -90,8 +94,12 @@ abstract class Edge<A extends Point>
      *
      * @return the q
      */
-    public A getQ()
+    public TriangulationPoint getQ()
     {
         return q;
+    }
+    
+    public boolean checkForCrossing(Edge incoming){
+    	return false;
     }
 }

@@ -68,5 +68,6 @@ public enum TriangulationAlgorithm
 {
     
     /** The DT sweep. */
-    DTSweep
+    DTSweep,
+    DistanceFields
 }
