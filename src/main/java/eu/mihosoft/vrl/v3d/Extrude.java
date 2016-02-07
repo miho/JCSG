@@ -95,110 +95,40 @@ public class Extrude {
      * @return the csg
      */
     private static CSG extrude(Vector3d dir, Polygon polygon1) {
-        List<Polygon> newPolygons = new ArrayList<>();
         
-        if (dir.z<0 || polygon1.vertices.size()<3) {
-            throw new IllegalArgumentException("z < 0 currently not supported for extrude: " + dir);
-        }
-        
-		List<Vertex> points = polygon1.vertices;
-		System.out.println("Extrude points: "+points.size()+" points in polygon");
-		int n=points.size();
-		boolean sign=false;
-		// Load up all of the exterior edges
-		CSG nonMonotone=null;
-		ArrayList<Vector3d> firstPoints = new ArrayList<Vector3d>();
-		int lastIndex=0;
-		for ( int i = 0; i < (n-2); i++) {
-			
-			// check for turning polygon
-			double dx1 = points.get((i+2)).getX()-points.get((i+1)).getX();
-	        double dy1 = points.get((i+2)).getY()-points.get((i+1)).getY();
-	        double dx2 = points.get(i).getX()-points.get((i+1)).getX();
-	        double dy2 = points.get(i).getY()-points.get((i+1)).getY();
-	        double zcrossproduct = dx1*dy2 - dy1*dx2;
-	        if (i==0){
-	            sign=zcrossproduct>0;
-	            firstPoints.add(points.get(i).pos);
-	        }
-	        else
-	        {
-	            if (sign!=(zcrossproduct>0)){
-	            	// found point where polygon should be broken
-	            	sign=zcrossproduct>0;
-	            	firstPoints.add(points.get(i).pos);
-	            	firstPoints.add(points.get(i+1).pos);
-
-	            	
-	            	//Process the rest of the polygon
-            		CSG newExtrusion = extrude(dir,Polygon.fromPoints(firstPoints));
-            		
-            		if(nonMonotone==null)
-            			nonMonotone=newExtrusion;
-            		else
-            			try{
-            				nonMonotone=nonMonotone.union(newExtrusion);
-            			}catch (Exception ex){
-            				System.out.println("Failed sub-polygon "+firstPoints.size());
-            				ex.printStackTrace();
-            			}
-            		i+=2;// skip the loop ahead to the next start
-            		lastIndex=i;
-            		firstPoints.clear();
-            		firstPoints.add(points.get(i).pos);
-	            	//reset this iteration to process a monotone polygon
-	            }else{
-	            	firstPoints.add(points.get(i).pos);
-	            }
-	        }
-		}
-		ArrayList<Vector3d> restPoints = new ArrayList<Vector3d>();
-    	for(int j=lastIndex;j<n;j++){
-    		restPoints.add(points.get(j).pos);
-    	}
-    	int x=0;
-		while(restPoints.size()<3){
-			//fill out a full polygon
-			restPoints.add(points.get(x++).pos);
-		}
-		System.out.println("Start-polygon "+restPoints.size());
-    	polygon1 = Polygon.fromPoints(restPoints);
+    	return monotoneExtrude(dir, polygon1);
+    }
+    
+    private static CSG monotoneExtrude(Vector3d dir, Polygon polygon1){
+    	List<Polygon> newPolygons = new ArrayList<>();
+    	CSG extrude;
 		
-		CSG extrude;
-        try{
-    		System.out.println("All points convex in "+polygon1.vertices.size());
-            newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
-            Polygon polygon2 = polygon1.translated(dir);
+        newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
+        Polygon polygon2 = polygon1.translated(dir);
 
-            int numvertices = polygon1.vertices.size();
-            for (int i = 0; i < numvertices; i++) {
+        int numvertices = polygon1.vertices.size();
+        for (int i = 0; i < numvertices; i++) {
 
-                int nexti = (i + 1) % numvertices;
+            int nexti = (i + 1) % numvertices;
 
-                Vector3d bottomV1 = polygon1.vertices.get(i).pos;
-                Vector3d topV1 = polygon2.vertices.get(i).pos;
-                Vector3d bottomV2 = polygon1.vertices.get(nexti).pos;
-                Vector3d topV2 = polygon2.vertices.get(nexti).pos;
+            Vector3d bottomV1 = polygon1.vertices.get(i).pos;
+            Vector3d topV1 = polygon2.vertices.get(i).pos;
+            Vector3d bottomV2 = polygon1.vertices.get(nexti).pos;
+            Vector3d topV2 = polygon2.vertices.get(nexti).pos;
 
-                List<Vector3d> pPoints = Arrays.asList(bottomV2, topV2, topV1, bottomV1);
+            List<Vector3d> pPoints = Arrays.asList(bottomV2, topV2, topV1, bottomV1);
 
-                newPolygons.add(Polygon.fromPoints(pPoints, polygon1.getStorage()));
+            newPolygons.add(Polygon.fromPoints(pPoints, polygon1.getStorage()));
 
-            }
-
-            polygon2 = polygon2.flipped();
-            List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
-
-            newPolygons.addAll(topPolygons);
-            extrude =CSG.fromPolygons(newPolygons);
-	        if(nonMonotone!=null){
-	        	extrude=extrude.union(nonMonotone);
-	        }
-        }catch(Exception ex){
-        	return nonMonotone;
         }
-        return extrude;
 
+        polygon2 = polygon2.flipped();
+        List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
+
+        newPolygons.addAll(topPolygons);
+        extrude =CSG.fromPolygons(newPolygons);
+
+        return extrude;
     }
 
     /**
