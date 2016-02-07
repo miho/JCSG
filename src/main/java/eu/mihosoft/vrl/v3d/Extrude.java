@@ -33,11 +33,12 @@
  */
 package eu.mihosoft.vrl.v3d;
 
-import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -99,6 +100,48 @@ public class Extrude {
         if (dir.z<0) {
             throw new IllegalArgumentException("z < 0 currently not supported for extrude: " + dir);
         }
+        
+		List<Vertex> points = polygon1.vertices;
+		System.out.println("Extrude points: "+points.size()+" points in polygon");
+		int n=points.size();
+		boolean sign=false;
+		// Load up all of the exterior edges
+		CSG nonMonotone=null;
+		for (int i = 0; i < n; i++) {
+			// check for turning polygon
+			double dx1 = points.get((i+2)%n).getX()-points.get((i+1)%n).getX();
+	        double dy1 = points.get((i+2)%n).getY()-points.get((i+1)%n).getY();
+	        double dx2 = points.get(i).getX()-points.get((i+1)%n).getX();
+	        double dy2 = points.get(i).getY()-points.get((i+1)%n).getY();
+	        double zcrossproduct = dx1*dy2 - dy1*dx2;
+	        if (i==0)
+	            sign=zcrossproduct>0;
+	        else
+	        {
+	            if (sign!=(zcrossproduct>0)){
+	            	// found point where polygon should be broken
+	            	ArrayList<Vector3d> firstPoints = new ArrayList<Vector3d>();
+	            	ArrayList<Vector3d> restPoints = new ArrayList<Vector3d>();
+	            	for(int j=0;j<i+1;j++){
+	            		firstPoints.add(points.get(i).pos);
+	            	}
+	            	for(int j=i+1;j<n;j++){
+	            		restPoints.add(points.get(i).pos);
+	            	}
+	            	if(restPoints.size()>3){
+		            	//Process the rest of the polygon
+	            		System.out.println("Processing sub-polygon "+restPoints.size());
+		            	nonMonotone=extrude(dir,Polygon.fromPoints(toCCW(restPoints)));
+	            	}
+	            	if(firstPoints.size()>3){
+		            	//reset this iteration to process a monotone polygon
+	            		System.out.println("Processing new start-polygon "+firstPoints.size());
+		            	polygon1 = Polygon.fromPoints(toCCW(firstPoints));
+	            	}
+	            	break;// break out and process the monotone section
+	            }
+	        }
+		}
 
         newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
         Polygon polygon2 = polygon1.translated(dir);
@@ -123,8 +166,10 @@ public class Extrude {
         List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
 
         newPolygons.addAll(topPolygons);
-
-        return CSG.fromPolygons(newPolygons);
+        CSG extrude =CSG.fromPolygons(newPolygons);
+        if(nonMonotone!=null)
+        	extrude=extrude.union(nonMonotone);
+        return extrude;
 
     }
 

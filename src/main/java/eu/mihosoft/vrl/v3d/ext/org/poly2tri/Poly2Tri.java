@@ -73,23 +73,23 @@ class Poly2Tri
 //    private final static Logger logger = LoggerFactory.getLogger( Poly2Tri.class );
 
     /** The Constant _defaultAlgorithm. */
-private static final TriangulationAlgorithm _defaultAlgorithm = TriangulationAlgorithm.DistanceFields;
+private static final TriangulationAlgorithm _defaultAlgorithm = TriangulationAlgorithm.DTSweep;
     
     /**
-//     * Triangulate.
-//     *
-//     * @param ps the ps
-//     */
-//    public static void triangulate( PolygonSet ps )
-//    {
-//        TriangulationContext<?> tcx = createContext( _defaultAlgorithm );
-//        for( Polygon p : ps.getPolygons() )
-//        {
-//            tcx.prepareTriangulation( p );
-//            triangulate( tcx );            
-//            tcx.clear();
-//        }
-//    }
+     * Triangulate.
+     *
+     * @param ps the ps
+     */
+    public static void triangulate( PolygonSet ps )
+    {
+        TriangulationContext<?> tcx = createContext( _defaultAlgorithm );
+        for( Polygon p : ps.getPolygons() )
+        {
+            tcx.prepareTriangulation( p );
+            triangulate( tcx );            
+            tcx.clear();
+        }
+    }
 
     /**
      * Triangulate.
@@ -99,28 +99,27 @@ private static final TriangulationAlgorithm _defaultAlgorithm = TriangulationAlg
     public static void triangulate( Polygon p )
     {
         triangulate( _defaultAlgorithm, p );            
-        
     }
 
-//    /**
-//     * Triangulate.
-//     *
-//     * @param cps the cps
-//     */
-//    public static void triangulate( ConstrainedPointSet cps )
-//    {
-//        triangulate( _defaultAlgorithm, cps );        
-//    }
-//
-//    /**
-//     * Triangulate.
-//     *
-//     * @param ps the ps
-//     */
-//    public static void triangulate( PointSet ps )
-//    {
-//        triangulate( _defaultAlgorithm, ps );                
-//    }
+    /**
+     * Triangulate.
+     *
+     * @param cps the cps
+     */
+    public static void triangulate( ConstrainedPointSet cps )
+    {
+        triangulate( _defaultAlgorithm, cps );        
+    }
+
+    /**
+     * Triangulate.
+     *
+     * @param ps the ps
+     */
+    public static void triangulate( PointSet ps )
+    {
+        triangulate( _defaultAlgorithm, ps );                
+    }
 
     /**
      * Creates the context.
@@ -132,12 +131,9 @@ private static final TriangulationAlgorithm _defaultAlgorithm = TriangulationAlg
     {
         switch( algorithm )
         {
-		default:
-		case DTSweep:
-			return new DTSweepContext();
-		case DistanceFields:
-			return new DistanceFieldsContext();
-
+            case DTSweep:
+            default:
+                return new DTSweepContext();
         }
     }
 
@@ -160,23 +156,23 @@ private static final TriangulationAlgorithm _defaultAlgorithm = TriangulationAlg
     }
     
     /**
-	 * Triangulate.
-	 *
-	 * @param tcx
-	 *            the tcx
-	 */
-	public static void triangulate(TriangulationContext<?> tcx) {
-		switch (tcx.algorithm()) {
-		case DTSweep:
-			DTSweep.triangulate((DTSweepContext) tcx);
-		case DistanceFields:
-			DistanceFields.triangulate((DistanceFieldsContext) tcx);
-		}
-	}
-
-	/**
-	 * Will do a warmup run to let the JVM optimize the triangulation code.
-	 */
+     * Triangulate.
+     *
+     * @param tcx the tcx
+     */
+    public static void triangulate( TriangulationContext<?> tcx )
+    {
+        switch( tcx.algorithm() )
+        {
+            case DTSweep:
+            default:
+               DTSweep.triangulate( (DTSweepContext)tcx );
+        }        
+    }
+    
+    /**
+     * Will do a warmup run to let the JVM optimize the triangulation code.
+     */
     public static void warmup()
     {        
         /*

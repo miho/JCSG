@@ -223,6 +223,17 @@ public class Vertex {
     public String toString() {
         return pos.toString();
     }
+
+
+public double getX() {
+	return pos.x;
+}
+public double getY() {
+	return pos.y;
+}
+public double getZ() {
+	return pos.z;
+}
     
     
 }
