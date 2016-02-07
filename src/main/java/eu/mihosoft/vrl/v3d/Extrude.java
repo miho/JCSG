@@ -47,12 +47,83 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Extrude {
+	private static IExtrusion extrusionEngine = new IExtrusion() {
+	    /**
+	     * Extrudes the specified path (convex or concave polygon without holes or
+	     * intersections, specified in CCW) into the specified direction.
+	     *
+	     * @param dir direction
+	     * @param points path (convex or concave polygon without holes or
+	     * intersections)
+	     *
+	     * @return a CSG object that consists of the extruded polygon
+	     */
+	    public  CSG points(Vector3d dir, List<Vector3d> points) {
 
+	        List<Vector3d> newList = new ArrayList<>(points);
+
+	        return extrude(dir, Polygon.fromPoints(toCCW(newList)));
+	    }
+	    
+	    /**
+	     * Extrude.
+	     *
+	     * @param dir the dir
+	     * @param polygon1 the polygon1
+	     * @return the csg
+	     */
+	    private  CSG extrude(Vector3d dir, Polygon polygon1) {
+	        
+	    	return monotoneExtrude(dir, polygon1);
+	    }
+	    
+	    private  CSG monotoneExtrude(Vector3d dir, Polygon polygon1){
+	    	List<Polygon> newPolygons = new ArrayList<>();
+	    	CSG extrude;
+			
+	        newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
+	        Polygon polygon2 = polygon1.translated(dir);
+
+	        int numvertices = polygon1.vertices.size();
+	        for (int i = 0; i < numvertices; i++) {
+
+	            int nexti = (i + 1) % numvertices;
+
+	            Vector3d bottomV1 = polygon1.vertices.get(i).pos;
+	            Vector3d topV1 = polygon2.vertices.get(i).pos;
+	            Vector3d bottomV2 = polygon1.vertices.get(nexti).pos;
+	            Vector3d topV2 = polygon2.vertices.get(nexti).pos;
+
+	            List<Vector3d> pPoints = Arrays.asList(bottomV2, topV2, topV1, bottomV1);
+
+	            newPolygons.add(Polygon.fromPoints(pPoints, polygon1.getStorage()));
+
+	        }
+
+	        polygon2 = polygon2.flipped();
+	        List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
+
+	        newPolygons.addAll(topPolygons);
+	        extrude =CSG.fromPolygons(newPolygons);
+
+	        return extrude;
+	    }
+		
+		@Override
+		public CSG extrude(Vector3d dir, List<Vector3d> points) {
+			return points( dir, points) ;
+		}
+	};
     /**
      * Instantiates a new extrude.
      */
     private Extrude() {
         throw new AssertionError("Don't instantiate me!", null);
+    }
+    
+    public static  CSG points(Vector3d dir, List<Vector3d> points) {
+
+        return getExtrusionEngine().extrude(dir, points);
     }
 
     /**
@@ -67,68 +138,7 @@ public class Extrude {
      */
     public static CSG points(Vector3d dir, Vector3d... points) {
 
-        return extrude(dir, Polygon.fromPoints(toCCW(Arrays.asList(points))));
-    }
-
-    /**
-     * Extrudes the specified path (convex or concave polygon without holes or
-     * intersections, specified in CCW) into the specified direction.
-     *
-     * @param dir direction
-     * @param points path (convex or concave polygon without holes or
-     * intersections)
-     *
-     * @return a CSG object that consists of the extruded polygon
-     */
-    public static CSG points(Vector3d dir, List<Vector3d> points) {
-
-        List<Vector3d> newList = new ArrayList<>(points);
-
-        return extrude(dir, Polygon.fromPoints(toCCW(newList)));
-    }
-    
-    /**
-     * Extrude.
-     *
-     * @param dir the dir
-     * @param polygon1 the polygon1
-     * @return the csg
-     */
-    private static CSG extrude(Vector3d dir, Polygon polygon1) {
-        
-    	return monotoneExtrude(dir, polygon1);
-    }
-    
-    private static CSG monotoneExtrude(Vector3d dir, Polygon polygon1){
-    	List<Polygon> newPolygons = new ArrayList<>();
-    	CSG extrude;
-		
-        newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
-        Polygon polygon2 = polygon1.translated(dir);
-
-        int numvertices = polygon1.vertices.size();
-        for (int i = 0; i < numvertices; i++) {
-
-            int nexti = (i + 1) % numvertices;
-
-            Vector3d bottomV1 = polygon1.vertices.get(i).pos;
-            Vector3d topV1 = polygon2.vertices.get(i).pos;
-            Vector3d bottomV2 = polygon1.vertices.get(nexti).pos;
-            Vector3d topV2 = polygon2.vertices.get(nexti).pos;
-
-            List<Vector3d> pPoints = Arrays.asList(bottomV2, topV2, topV1, bottomV1);
-
-            newPolygons.add(Polygon.fromPoints(pPoints, polygon1.getStorage()));
-
-        }
-
-        polygon2 = polygon2.flipped();
-        List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
-
-        newPolygons.addAll(topPolygons);
-        extrude =CSG.fromPolygons(newPolygons);
-
-        return extrude;
+        return points(dir, Arrays.asList(points));
     }
 
     /**
@@ -245,6 +255,14 @@ public class Extrude {
 
         return v2MinusV1.dividedBy(v2MinusV1.magnitude()).times(Vector3d.X_ONE).x;
     }
+
+	public static IExtrusion getExtrusionEngine() {
+		return extrusionEngine;
+	}
+
+	public static void setExtrusionEngine(IExtrusion extrusionEngine) {
+		Extrude.extrusionEngine = extrusionEngine;
+	}
 
 //    public static void main(String[] args) {
 //        System.out.println("1 CCW: " + isCCW(Polygon.fromPoints(
