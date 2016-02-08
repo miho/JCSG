@@ -129,9 +129,9 @@ public class CSG {
 	 * This is the trace for where this csg was created
 	 */
 	private final Exception creationEventStackTrace = new Exception();
-	private static final int INDEX_OF_PARAMETRIC_DEFAULT =0;
-	private static final int INDEX_OF_PARAMETRIC_LOWER =1;
-	private static final int INDEX_OF_PARAMETRIC_UPPER =2;
+	public static final int INDEX_OF_PARAMETRIC_DEFAULT =0;
+	public static final int INDEX_OF_PARAMETRIC_LOWER =1;
+	public static final int INDEX_OF_PARAMETRIC_UPPER =2;
 	private ArrayList<String> groovyFileLines = new ArrayList<>();
 	private PrepForManufacturing manufactuing=null;
 	private HashMap<String,IParametric> mapOfparametrics=null;
@@ -418,6 +418,8 @@ public class CSG {
      * @return the affine
      */
     public CSG setManipulator(Affine manipulator){
+    	if(manipulator==null)
+    		return this;
     	Affine old = manipulator;
 		this.manipulator = manipulator;
 	 	if(current != null){
@@ -1685,6 +1687,8 @@ public class CSG {
 	
 
 	public Affine getManipulator() {
+		if(manipulator==null)
+			manipulator = new Affine(); 
 		return manipulator;
 	}
 	
