@@ -1791,7 +1791,10 @@ public class CSG {
 	public CSG setParameterNewValue(String key, double newValue){
 		IParametric function = getMapOfparametrics().get(key);
 		if(function!=null)
-			return function.change(this, key, newValue);
+			return function
+					.change(this, key, newValue)
+					.setManipulator(this.getManipulator())
+					.setColor(this.getColor());
 		return this;
 	}
 	
@@ -1802,7 +1805,10 @@ public class CSG {
 	public CSG regenerate(){
 		if(regenerate==null)
 			return this;
-		return regenerate.regenerate(this);
+		return regenerate
+				.regenerate(this)
+				.setManipulator(this.getManipulator())
+				.setColor(this.getColor());
 	}
 
 
@@ -1812,27 +1818,12 @@ public class CSG {
 		}
 		return mapOfparametrics;
 	}
-
-
-
-	public void setMapOfparametrics(HashMap<String,IParametric> mapOfparametrics) {
-		this.mapOfparametrics = mapOfparametrics;
-	}
-
-
-
+	
 	public HashMap<String,Double[]> getMapOfparametricsValues() {
 		if(mapOfparametricsValues==null){
 			mapOfparametricsValues=new HashMap<>();
 		}
 		return mapOfparametricsValues;
 	}
-
-
-
-	public void setMapOfparametricsValues(HashMap<String,Double[]> mapOfparametricsValues) {
-		this.mapOfparametricsValues = mapOfparametricsValues;
-	}
-
 
 }
