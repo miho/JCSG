@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -128,10 +129,16 @@ public class CSG {
 	 * This is the trace for where this csg was created
 	 */
 	private final Exception creationEventStackTrace = new Exception();
-
+	private static final int INDEX_OF_PARAMETRIC_DEFAULT =0;
+	private static final int INDEX_OF_PARAMETRIC_LOWER =1;
+	private static final int INDEX_OF_PARAMETRIC_UPPER =2;
 	private ArrayList<String> groovyFileLines = new ArrayList<>();
 	private PrepForManufacturing manufactuing=null;
-
+	private HashMap<String,IParametric> mapOfparametrics=null;
+	private HashMap<String,Double[]> mapOfparametricsValues=null;
+	private IRegenerate regenerate=null;
+	
+	
 	/**
 	 * Instantiates a new csg.
 	 */
@@ -1763,6 +1770,68 @@ public class CSG {
 
 	public void setManufactuing(PrepForManufacturing manufactuing) {
 		this.manufactuing = manufactuing;
+	}
+	
+	public CSG setParameter(String key,double defaultValue, double upperBound, double lowerBound, IParametric function){
+
+		getMapOfparametrics().put(key, function);
+		getMapOfparametricsValues().put(key, new Double[]{defaultValue,lowerBound,upperBound});
+		return this;
+	}
+	
+	public Set<String> getParameters(){
+		
+		return getMapOfparametrics().keySet();
+	}
+	
+	public  Double[] getParameterValues(String key){
+		return getMapOfparametricsValues().get(key);
+	}
+	
+	public CSG setParameterNewValue(String key, double newValue){
+		IParametric function = getMapOfparametrics().get(key);
+		if(function!=null)
+			return function.change(this, key, newValue);
+		return this;
+	}
+	
+	public CSG setRegenerate(IRegenerate function){
+		regenerate=function;
+		return this;
+	}
+	public CSG regenerate(){
+		if(regenerate==null)
+			return this;
+		return regenerate.regenerate(this);
+	}
+
+
+	public HashMap<String,IParametric> getMapOfparametrics() {
+		if(mapOfparametrics==null){
+			mapOfparametrics=new HashMap<>();
+		}
+		return mapOfparametrics;
+	}
+
+
+
+	public void setMapOfparametrics(HashMap<String,IParametric> mapOfparametrics) {
+		this.mapOfparametrics = mapOfparametrics;
+	}
+
+
+
+	public HashMap<String,Double[]> getMapOfparametricsValues() {
+		if(mapOfparametricsValues==null){
+			mapOfparametricsValues=new HashMap<>();
+		}
+		return mapOfparametricsValues;
+	}
+
+
+
+	public void setMapOfparametricsValues(HashMap<String,Double[]> mapOfparametricsValues) {
+		this.mapOfparametricsValues = mapOfparametricsValues;
 	}
 
 
