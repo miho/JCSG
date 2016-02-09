@@ -137,6 +137,7 @@ public class CSG {
 	private HashMap<String,IParametric> mapOfparametrics=null;
 	private HashMap<String,Double[]> mapOfparametricsValues=null;
 	private IRegenerate regenerate=null;
+	private boolean markForRegeneration=false;
 	
 	
 	/**
@@ -1807,6 +1808,7 @@ public class CSG {
 		return this;
 	}
 	public CSG regenerate(){
+		this.markForRegeneration = false;
 		if(regenerate==null)
 			return this;
 		return regenerate
@@ -1828,6 +1830,18 @@ public class CSG {
 			mapOfparametricsValues=new HashMap<>();
 		}
 		return mapOfparametricsValues;
+	}
+
+
+
+	public boolean isMarkedForRegeneration() {
+		return markForRegeneration;
+	}
+
+
+
+	public void markForRegeneration() {
+		this.markForRegeneration = true;
 	}
 
 }
