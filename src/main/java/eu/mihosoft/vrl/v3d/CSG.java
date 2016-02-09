@@ -1783,6 +1783,17 @@ public class CSG {
 		getMapOfparametricsValues().put(key, new Double[]{defaultValue,lowerBound,upperBound});
 		return this;
 	}
+	public CSG setParameter(String key,double defaultValue, double upperBound, double lowerBound){
+
+		getMapOfparametrics().put(key, null);
+		getMapOfparametricsValues().put(key, new Double[]{defaultValue,lowerBound,upperBound});
+		return this;
+	}
+	public CSG setParameterIfNull(String key,IParametric function){
+		if(getMapOfparametrics().get(key)==null)
+			getMapOfparametrics().put(key, function);
+		return this;
+	}
 	
 	public Set<String> getParameters(){
 		
