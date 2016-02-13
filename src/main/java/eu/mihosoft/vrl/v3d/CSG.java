@@ -158,7 +158,7 @@ public class CSG {
      */
     public CSG toZMin(CSG target){
 		return this.transformed(new Transform().translateZ(-target.getBounds().getMin().z))
-				.addCreationEventStringeList(this.getCreationEventStackTraceList());
+				.historySync(target);
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toZMax(CSG target){
-		return this.transformed(new Transform().translateZ(-target.getBounds().getMax().z)).addCreationEventStringeList(target.getCreationEventStackTraceList());
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMax().z)).historySync(target);
 	}
 	
 	/**
@@ -178,7 +178,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toXMin(CSG target){
-		return this.transformed(new Transform().translateX(-target.getBounds().getMin().x)).addCreationEventStringeList(target.getCreationEventStackTraceList());
+		return this.transformed(new Transform().translateX(-target.getBounds().getMin().x)).historySync(target);
 	}
 	
 	/**
@@ -188,7 +188,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toXMax(CSG target){
-		return this.transformed(new Transform().translateX(-target.getBounds().getMax().x)).addCreationEventStringeList(target.getCreationEventStackTraceList());
+		return this.transformed(new Transform().translateX(-target.getBounds().getMax().x)).historySync(target);
 	}
 	
 	/**
@@ -198,7 +198,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toYMin(CSG target){
-		return this.transformed(new Transform().translateY(-target.getBounds().getMin().y)).addCreationEventStringeList(target.getCreationEventStackTraceList());
+		return this.transformed(new Transform().translateY(-target.getBounds().getMin().y)).historySync(target);
 	}
 	
 	/**
@@ -208,7 +208,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toYMax(CSG target){
-		return this.transformed(new Transform().translateY(-target.getBounds().getMax().y)).addCreationEventStringeList(target.getCreationEventStackTraceList());
+		return this.transformed(new Transform().translateY(-target.getBounds().getMax().y)).historySync(target);
 	}
 	
 	/**
@@ -283,7 +283,7 @@ public class CSG {
 	 */
 	//Helper/wrapper functions for movement
 	public CSG movey(double howFarToMove){
-		return this.transformed(Transform.unity().translateY(howFarToMove)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(Transform.unity().translateY(howFarToMove));
 	}
 	
 	/**
@@ -293,7 +293,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG movez(double howFarToMove ){
-		return this.transformed(Transform.unity().translateZ(howFarToMove)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(Transform.unity().translateZ(howFarToMove));
 	}
 	
 	/**
@@ -303,7 +303,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG movex(double howFarToMove ){
-		return this.transformed(Transform.unity().translateX(howFarToMove)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(Transform.unity().translateX(howFarToMove));
 	}
 	
 	public CSG rot(double x, double y, double z){
@@ -325,7 +325,7 @@ public class CSG {
 	 */
 	//Rotation function, rotates the object
 	public CSG rotz(double degreesToRotate ){
-		return this.transformed(new Transform().rotZ(degreesToRotate)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(new Transform().rotZ(degreesToRotate));
 	}
 	
 	/**
@@ -335,7 +335,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG roty(double degreesToRotate ){
-		return this.transformed(new Transform().rotY(degreesToRotate)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(new Transform().rotY(degreesToRotate));
 	}
 	
 	/**
@@ -345,7 +345,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG rotx(double degreesToRotate ){
-		return this.transformed(new Transform().rotX(degreesToRotate)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(new Transform().rotX(degreesToRotate));
 	}
 	
 	/**
@@ -356,7 +356,7 @@ public class CSG {
 	 */
 	//Scale function, scales the object
 	public CSG scalez(double scaleValue ){
-		return this.transformed(new Transform().scaleZ(scaleValue)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(new Transform().scaleZ(scaleValue));
 	}
 	
 	/**
@@ -366,7 +366,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG scaley(double scaleValue ){
-		return this.transformed(new Transform().scaleY(scaleValue)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(new Transform().scaleY(scaleValue));
 	}
 	
 	/**
@@ -376,7 +376,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG scalex(double scaleValue ){
-		return this.transformed(new Transform().scaleX(scaleValue)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(new Transform().scaleX(scaleValue));
 	}
 	
 	/**
@@ -386,7 +386,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG scale(double scaleValue ){
-		return this.transformed(new Transform().scale(scaleValue)).addCreationEventStringeList(this.getCreationEventStackTraceList());	
+		return this.transformed(new Transform().scale(scaleValue));	
 	}
         
 	/**
@@ -538,7 +538,7 @@ public class CSG {
         csg.setPolygons(polygonStream.
                 map((Polygon p) -> p.clone()).collect(Collectors.toList()));
 
-        return csg.addCreationEventStringeList(this.getCreationEventStackTraceList());
+        return csg.historySync(this);
     }
 
     /**
@@ -590,17 +590,17 @@ public class CSG {
         switch (getOptType()) {
             case CSG_BOUND:
                 return _unionCSGBoundsOpt(csg)
-                		.addCreationEventStringeList(this.getCreationEventStackTraceList())
-                		.addCreationEventStringeList(csg.getCreationEventStackTraceList());
+                		.historySync(this)
+                		.historySync(csg);
             case POLYGON_BOUND:
                 return _unionPolygonBoundsOpt(csg)
-                		.addCreationEventStringeList(this.getCreationEventStackTraceList())
-                		.addCreationEventStringeList(csg.getCreationEventStackTraceList());
+                		.historySync(this)
+                		.historySync(csg);
             default:
 //                return _unionIntersectOpt(csg);
                 return _unionNoOpt(csg)
-                		.addCreationEventStringeList(this.getCreationEventStackTraceList())
-                		.addCreationEventStringeList(csg.getCreationEventStackTraceList());
+                		.historySync(this)
+                		.historySync(csg);
         }
     }
     
@@ -624,7 +624,7 @@ public class CSG {
 
         result.getPolygons().addAll(other.getPolygons());
         bounds=null;
-        return result.addCreationEventStringeList(other.getCreationEventStackTraceList());
+        return result.historySync(other);
     }
 
     /**
@@ -697,7 +697,7 @@ public class CSG {
      */
     public CSG hull() {
 
-        return HullUtil.hull(this, storage).addCreationEventStringeList(this.getCreationEventStackTraceList());
+        return HullUtil.hull(this, storage).historySync(this);
     }
 
     /**
@@ -715,7 +715,7 @@ public class CSG {
 
         csgs.stream().forEach((csg) -> {
             csgsUnion.getPolygons().addAll(csg.clone().getPolygons());
-            csgsUnion.addCreationEventStringeList(csg.getCreationEventStackTraceList());
+            csgsUnion.historySync(csg);
         });
 
         csgsUnion.getPolygons().forEach(p -> p.setStorage(storage));
@@ -871,7 +871,7 @@ public class CSG {
 
         for (int i = 1; i < csgs.size(); i++) {
             csgsUnion = csgsUnion.union(csgs.get(i));
-            csgsUnion.addCreationEventStringeList(csgs.get(i).getCreationEventStackTraceList());
+            csgsUnion.historySync(csgs.get(i));
         }
 
         return difference(csgsUnion);
@@ -931,16 +931,16 @@ public class CSG {
         switch (getOptType()) {
             case CSG_BOUND:
                 return _differenceCSGBoundsOpt(csg)
-                		.addCreationEventStringeList(this.getCreationEventStackTraceList())
-                		.addCreationEventStringeList(csg.getCreationEventStackTraceList());
+                		.historySync(this)
+                		.historySync(csg);
             case POLYGON_BOUND:
                 return _differencePolygonBoundsOpt(csg)
-                		.addCreationEventStringeList(this.getCreationEventStackTraceList())
-                		.addCreationEventStringeList(csg.getCreationEventStackTraceList());
+                		.historySync(this)
+                		.historySync(csg);
             default:
                 return _differenceNoOpt(csg)
-                		.addCreationEventStringeList(this.getCreationEventStackTraceList())
-                		.addCreationEventStringeList(csg.getCreationEventStackTraceList());
+                		.historySync(this)
+                		.historySync(csg);
         }
     }
 
@@ -1047,8 +1047,8 @@ public class CSG {
         a.build(b.allPolygons());
         a.invert();
         return CSG.fromPolygons(a.allPolygons()).optimization(getOptType())
-        		.addCreationEventStringeList(csg.getCreationEventStackTraceList())
-        		.addCreationEventStringeList(this.getCreationEventStackTraceList());
+        		.historySync(csg)
+        		.historySync(this);
     }
 
     /**
@@ -1084,7 +1084,7 @@ public class CSG {
 
         for (int i = 1; i < csgs.size(); i++) {
             csgsUnion = csgsUnion.union(csgs.get(i));
-            csgsUnion.addCreationEventStringeList(csgs.get(i).getCreationEventStackTraceList());
+            csgsUnion.historySync(csgs.get(i));
         }
 
         return intersect(csgsUnion);
@@ -1365,7 +1365,7 @@ public class CSG {
 
         result.storage = storage;
 
-        return result.addCreationEventStringeList(this.getCreationEventStackTraceList());
+        return result.historySync(this);
     }
  
 
@@ -1682,7 +1682,7 @@ public class CSG {
 					.transformed(new Transform().translateX(shellThickness * xPer))
 					.transformed(new Transform().translateY(shellThickness*yPer))
 					.transformed(new Transform().translateZ(shellThickness*zPer))
-					.addCreationEventStringeList(this.getCreationEventStackTraceList());
+					.historySync(this);
 					
 		}
 	
@@ -1730,7 +1730,25 @@ public class CSG {
 			}
 		}
 	}
-	public CSG addCreationEventStringeList(ArrayList<String> incoming) {
+	
+	public CSG historySync(CSG dyingCSG){
+		this.addCreationEventStringList(dyingCSG.getCreationEventStackTraceList());
+		Set<String> params = dyingCSG.getParameters();
+		for(String param:params){
+			boolean existing=false;
+			for(String s:this.getParameters()){
+				if(s.contentEquals(param))
+					existing=true;
+			}
+			if(!existing){
+				Double[] vals = dyingCSG.getParameterValues(param);
+				this.setParameter(param, vals[0], vals[2], vals[1]);
+			}
+		}
+		return this;
+	}
+	
+	public CSG addCreationEventStringList(ArrayList<String> incoming) {
 
 		for(String s:incoming){
 			addCreationEventString(s);
