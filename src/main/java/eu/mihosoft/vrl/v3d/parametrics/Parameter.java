@@ -21,19 +21,6 @@ public abstract class Parameter {
 				value = p.getValue();// if another instance of parameter with this key changes value
 			}
 		});
-//		if(String.class.isInstance(defaultValue)){
-//			if(CSGDatabase.get(key)==null)
-//				CSGDatabase.set(key, (String)defaultValue);
-//		}
-//		if(Integer.class.isInstance(defaultValue)){
-//			if(CSGDatabase.get(key)==null)
-//				setParameterInFixedPointScaledValue((Integer)defaultValue);
-//		}
-//		if(Double.class.isInstance(defaultValue)){
-//			if(CSGDatabase.get(key)==null)
-//				setParameterInFlotingPointEngineeringUnits((Double)defaultValue);
-//		}
-//		
 	}
 
 	public String getName() {
