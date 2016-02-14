@@ -34,7 +34,8 @@
 package eu.mihosoft.vrl.v3d;
 
 import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
-
+import eu.mihosoft.vrl.v3d.parametrics.IParametric;
+import eu.mihosoft.vrl.v3d.parametrics.IRegenerate;
 
 import java.util.ArrayList;
 import java.util.Arrays;

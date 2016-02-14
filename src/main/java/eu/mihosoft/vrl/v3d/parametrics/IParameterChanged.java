@@ -1,4 +1,4 @@
-package eu.mihosoft.vrl.v3d;
+package eu.mihosoft.vrl.v3d.parametrics;
 
 public interface IParameterChanged {
 	/**

@@ -1,4 +1,4 @@
-package eu.mihosoft.vrl.v3d;
+package eu.mihosoft.vrl.v3d.parametrics;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,61 +16,39 @@ import com.google.gson.reflect.TypeToken;
 
 public class CSGDatabase {
 	
-	private static HashMap<String,String> database=null;
+	private static HashMap<String,Parameter> database=null;
 	private static File db=new File("/.CSGdatabase.json");
-    private static final Type TT_mapStringString = new TypeToken<HashMap<String,String>>(){}.getType();
+    private static final Type TT_mapStringString = new TypeToken<HashMap<String,Parameter>>(){}.getType();
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     private static final HashMap<String,ArrayList<IParameterChanged>> parameterListeners=new HashMap<>();
-	public static void set(String key, String value){
+	public static void set(String key, Parameter value){
 		synchronized(database){
 			getDatabase().put(key, value);
 		}
 	}
-	public static String get(String key){
-		String ret =null;
+	public static Parameter get(String key){
+		Parameter ret =null;
 		getDatabase();// load database before synchronization
 		synchronized(database){
 			ret=getDatabase().get(key);
 		}
 		return ret;
 	}
-	public static void setMM(String key, double value){
-		setMicrons(key, (long) (value*1000.0));
-	}
-	public static void setMicrons(String key, long value){
-		long oldVal = getMicrons( key);
-		boolean newVal=oldVal!=value;
-		
-		set(key, new Long(value).toString());
-		if(newVal){
-			ArrayList<IParameterChanged> paraListeners = parameterListeners.get(key);
-			if(paraListeners!=null){
-				Parameter p = new Parameter(key) {
-				};
-				for(IParameterChanged params:paraListeners){
-					params.parameterChanged(key, p);
-				}
-			}
-		}
-	}
 	
-	public void clearDatabase(){
+	public static   void clearDatabase(){
 		getDatabase();
 		synchronized(database){
 			database.clear();
 		}
 		parameterListeners.clear();
 	}
-	public void addParameterListener(String key, IParameterChanged l){
-		if(parameterListeners.get(key)==null){
-			parameterListeners.put(key, new ArrayList<>());
-		}
-		ArrayList<IParameterChanged> list = parameterListeners.get(key);
+	public static  void addParameterListener(String key, IParameterChanged l){
+		ArrayList<IParameterChanged> list = getParamListeners(key);
 		if(!list.contains(l)){
 			list.add(l);
 		}
 	}
-	public void removeParameterListener(String key, IParameterChanged l){
+	public static  void removeParameterListener(String key, IParameterChanged l){
 		if(parameterListeners.get(key)==null){
 			return;
 		}
@@ -80,20 +58,20 @@ public class CSGDatabase {
 		}
 	}
 	
-	public static double getMM(String key){
-		return ((double)getMicrons( key))/1000.0;
+	public static  ArrayList<IParameterChanged> getParamListeners(String key){
+		if(parameterListeners.get(key)==null){
+			parameterListeners.put(key, new ArrayList<>());
+		}
+		return parameterListeners.get(key);
 	}
-	public static long getMicrons(String key){
-		getDatabase();// load database before synchronization
-		String ret =get( key);
-		return Long.parseLong(ret);
-	}
+	
+
 	public static void delete(String key){
 		synchronized(database){
 			getDatabase().remove(key);
 		}
 	}
-	private static HashMap<String,String> getDatabase() {
+	private static HashMap<String,Parameter> getDatabase() {
 		if(database==null){
 			new Thread(){
 				public void run(){
@@ -101,7 +79,7 @@ public class CSGDatabase {
 					try {
 						
 						if(!db.exists()){
-							setDatabase(new HashMap<String,String>());
+							setDatabase(new HashMap<String,Parameter>());
 						}
 						else{
 					        InputStream in = null;
@@ -111,7 +89,7 @@ public class CSGDatabase {
 					        } finally {
 					            IOUtils.closeQuietly(in);
 					        }
-					        HashMap<String,String> tm=gson.fromJson(jsonString, TT_mapStringString);
+					        HashMap<String,Parameter> tm=gson.fromJson(jsonString, TT_mapStringString);
 					        
 					        
 					        if(tm!=null){
@@ -124,7 +102,7 @@ public class CSGDatabase {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						setDatabase(new HashMap<String,String>());
+						setDatabase(new HashMap<String,Parameter>());
 					}
 					Runtime.getRuntime().addShutdownHook(new Thread() {
 						@Override
@@ -143,7 +121,7 @@ public class CSGDatabase {
 					e.printStackTrace();
 				}
 				if((System.currentTimeMillis()-start)>500){
-					setDatabase(new HashMap<String,String>());
+					setDatabase(new HashMap<String,Parameter>());
 				}
 			}
 		}
@@ -157,7 +135,7 @@ public class CSGDatabase {
             try {
 				in = FileUtils.openInputStream(db);
 				jsonString= IOUtils.toString(in);
-		        HashMap<String,String> tm=gson.fromJson(jsonString, TT_mapStringString);
+		        HashMap<String,Parameter> tm=gson.fromJson(jsonString, TT_mapStringString);
 		        for(String k:tm.keySet()){
 		        	set(k,tm.get(k));
 		        }
@@ -200,16 +178,11 @@ public class CSGDatabase {
 			e.printStackTrace();
 		}
 	}
-	private static void setDatabase(HashMap<String,String> database) {
+	private static void setDatabase(HashMap<String,Parameter> database) {
 		if(CSGDatabase.database!=null){
 			return;
 		}
 		CSGDatabase.database = database;
 	}
-	public static void setMilidegrees(String name, long parameterInMilidegrees) {
-		setMicrons(name, parameterInMilidegrees);
-	}
-	public static void setFixedPointScaledValue(String name, long parameterInFixedPointScaledValue) {
-		setMicrons(name, parameterInFixedPointScaledValue);
-	}
+
 }

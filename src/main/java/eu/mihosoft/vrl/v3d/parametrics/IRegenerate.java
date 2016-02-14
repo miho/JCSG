@@ -1,4 +1,6 @@
-package eu.mihosoft.vrl.v3d;
+package eu.mihosoft.vrl.v3d.parametrics;
+
+import eu.mihosoft.vrl.v3d.CSG;
 
 public interface IRegenerate {
 	/**
