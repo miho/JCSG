@@ -19,7 +19,7 @@ public class CSGDatabase {
 	private static HashMap<String,Parameter> database=null;
 	private static File dbFile=new File("CSGdatabase.json");
     private static final Type TT_mapStringString = new TypeToken<HashMap<String,Parameter>>(){}.getType();
-    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private static final HashMap<String,ArrayList<IParameterChanged>> parameterListeners=new HashMap<>();
 	public static void set(String key, Parameter value){
 		getDatabase();
