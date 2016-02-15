@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class Cylinder implements Primitive {
+public class Cylinder extends Primitive {
 
     /** The start. */
     private Vector3d start;

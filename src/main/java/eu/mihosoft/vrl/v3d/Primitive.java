@@ -30,7 +30,10 @@
 
 package eu.mihosoft.vrl.v3d;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import eu.mihosoft.vrl.v3d.parametrics.Parameter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -38,7 +41,9 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public interface Primitive {
+public abstract class Primitive {
+	ArrayList<Parameter> parametrics=new ArrayList<>();
+    
 
     /**
      * Returns the polygons that define this primitive.
@@ -48,20 +53,24 @@ public interface Primitive {
      *
      * @return al list of polygons that define this primitive
      */
-    public List<Polygon> toPolygons();
+    public abstract List<Polygon> toPolygons();
 
     /**
      * Returns this primitive as {@link CSG}.
      *
      * @return this primitive as {@link CSG}
      */
-    public default CSG toCSG() {
-        return CSG.fromPolygons(getProperties(),toPolygons());
+    public   CSG toCSG() {
+    	CSG tmp = CSG.fromPolygons(getProperties(),toPolygons());
+    	if(parametrics!=null)
+    		for(Parameter p:parametrics)
+    			tmp.setParameter(p);
+        return tmp;
     }
     
     /**
      * Returns the property storage of this primitive.
      * @return the property storage of this primitive
      */
-    public PropertyStorage getProperties();
+    public abstract PropertyStorage getProperties();
 }

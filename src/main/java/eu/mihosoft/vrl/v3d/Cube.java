@@ -36,6 +36,9 @@ package eu.mihosoft.vrl.v3d;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
+import eu.mihosoft.vrl.v3d.parametrics.Parameter;
+
 // TODO: Auto-generated Javadoc
 /**
  * An axis-aligned solid cuboid defined by {@code center} and
@@ -43,7 +46,7 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class Cube implements Primitive {
+public class Cube extends Primitive {
 
     /**
      * Center of this cube.
@@ -59,7 +62,6 @@ public class Cube implements Primitive {
 
     /** The properties. */
     private final PropertyStorage properties = new PropertyStorage();
-
     /**
      * Constructor. Creates a new cube with center {@code [0,0,0]} and
      * dimensions {@code [1,1,1]}.
@@ -103,7 +105,15 @@ public class Cube implements Primitive {
     public Cube(double w, double h, double d) {
         this(Vector3d.ZERO, new Vector3d(w, h, d));
     }
-
+    public Cube(LengthParameter w, LengthParameter h, LengthParameter d) {
+        this(Vector3d.ZERO, new Vector3d(w.getMM(), h.getMM(), d.getMM()));
+        parametrics.add(w);
+        parametrics.add(h);
+        parametrics.add(d);
+    }
+    public Cube(LengthParameter size) {
+        this(size,size,size);
+    }
     /* (non-Javadoc)
      * @see eu.mihosoft.vrl.v3d.Primitive#toPolygons()
      */

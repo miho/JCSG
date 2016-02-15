@@ -2,18 +2,20 @@ package eu.mihosoft.vrl.v3d.parametrics;
 
 import java.util.ArrayList;
 
-public abstract class Parameter {
+public class Parameter {
 	
-	private final String name;
-	private final ArrayList<Object> options=new ArrayList<Object>();
-	private Object value;
+	private String name=null;
+	private final ArrayList<String> options=new ArrayList<String>();
+	private Long value=null;
+	private String strValue=null;
+	public Parameter(){}
 	
-	public Parameter(String key,Object defaultValue,ArrayList<Object> options){
+	protected void setup(String key,Long defaultValue,ArrayList<String> options){
 		this.name = key;
 		if(CSGDatabase.get(name)==null)
-			this.value = defaultValue;
+			setValue(defaultValue);
 		else{
-			this.value = CSGDatabase.get(name).getValue();
+			setValue(CSGDatabase.get(name).getValue());
 		}
 		CSGDatabase.addParameterListener(name, new IParameterChanged() {
 			@Override
@@ -21,13 +23,33 @@ public abstract class Parameter {
 				value = p.getValue();// if another instance of parameter with this key changes value
 			}
 		});
+		for(String o:options){
+			this.options.add(o);
+		}
+		CSGDatabase.set(key, this);
 	}
-
+	protected void setup(String key,String defaultValue,ArrayList<String> options){
+		this.name = key;
+		if(CSGDatabase.get(name)==null)
+			this.strValue = defaultValue;
+		else{
+			this.strValue = CSGDatabase.get(name).getStrValue();
+		}
+		CSGDatabase.addParameterListener(name, new IParameterChanged() {
+			@Override
+			public void parameterChanged(String name, Parameter p) {
+				strValue = p.getStrValue();// if another instance of parameter with this key changes value
+			}
+		});
+		for(String o:options){
+			this.options.add(o);
+		}
+	}
 	public String getName() {
 		return name;
 	}
 	
-	public void setValue(Object newVal){
+	public void setValue(Long newVal){
 		value=newVal;
 		ArrayList<IParameterChanged> listeners = CSGDatabase.getParamListeners(name);
 		for(IParameterChanged l:listeners){
@@ -35,11 +57,19 @@ public abstract class Parameter {
 		}
 	}
 	
-	public Object getValue() {
+	public Long getValue() {
 		return value;
 	}
-	public ArrayList<Object> getOptions() {
+	public ArrayList<String> getOptions() {
 		return options;
+	}
+
+	public String getStrValue() {
+		return strValue;
+	}
+
+	public void setStrValue(String strValue) {
+		this.strValue = strValue;
 	}
 	
 

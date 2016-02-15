@@ -34,8 +34,11 @@
 package eu.mihosoft.vrl.v3d;
 
 import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
+import eu.mihosoft.vrl.v3d.parametrics.CSGDatabase;
 import eu.mihosoft.vrl.v3d.parametrics.IParametric;
 import eu.mihosoft.vrl.v3d.parametrics.IRegenerate;
+import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
+import eu.mihosoft.vrl.v3d.parametrics.Parameter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,7 +139,6 @@ public class CSG {
 	private ArrayList<String> groovyFileLines = new ArrayList<>();
 	private PrepForManufacturing manufactuing=null;
 	private HashMap<String,IParametric> mapOfparametrics=null;
-	private HashMap<String,Double[]> mapOfparametricsValues=null;
 	private IRegenerate regenerate=null;
 	private boolean markForRegeneration=false;
 	
@@ -1742,8 +1744,8 @@ public class CSG {
 					existing=true;
 			}
 			if(!existing){
-				Double[] vals = dyingCSG.getParameterValues(param);
-				this.setParameter(param, vals[0], vals[2], vals[1]);
+				Parameter vals = CSGDatabase.get(param);
+				this.setParameter(vals,dyingCSG.getMapOfparametrics().get(param));
 			}
 		}
 		return this;
@@ -1792,25 +1794,54 @@ public class CSG {
 
 
 
-	public void setManufactuing(PrepForManufacturing manufactuing) {
+	public CSG setManufactuing(PrepForManufacturing manufactuing) {
 		this.manufactuing = manufactuing;
+		return this;
+	}
+	
+	public CSG setParameter(Parameter w, IParametric function) {
+		if(CSGDatabase.get(w.getName())==null)
+			CSGDatabase.set(w.getName(), w);
+		if(getMapOfparametrics().get(w.getName())==null)
+			getMapOfparametrics().put(w.getName(), function);
+		return this;
+	}
+	public CSG setParameter(Parameter w) {
+		setParameter(w, new IParametric() {
+			@Override
+			public CSG change(CSG oldCSG, String parameterKey, Long newValue) {
+				if(parameterKey.contentEquals(w.getName()))
+					CSGDatabase.get(w.getName()).setValue(newValue);
+				return oldCSG;
+			}
+		});
+		return this;
 	}
 	
 	public CSG setParameter(String key,double defaultValue, double upperBound, double lowerBound, IParametric function){
-
-		getMapOfparametrics().put(key, function);
-		getMapOfparametricsValues().put(key, new Double[]{defaultValue,lowerBound,upperBound});
+		ArrayList<Double> vals = new ArrayList<Double>();
+		vals.add(upperBound);
+		vals.add(lowerBound);
+		setParameter(new LengthParameter(key,
+				defaultValue, 
+				vals), 
+				function);
 		return this;
 	}
 	public CSG setParameter(String key,double defaultValue, double upperBound, double lowerBound){
-
-		getMapOfparametrics().put(key, null);
-		getMapOfparametricsValues().put(key, new Double[]{defaultValue,lowerBound,upperBound});
+		setParameter(key,defaultValue,upperBound,lowerBound,null);
 		return this;
 	}
-	public CSG setParameterIfNull(String key,IParametric function){
+	public CSG setParameterIfNull(String key){
 		if(getMapOfparametrics().get(key)==null)
-			getMapOfparametrics().put(key, function);
+			getMapOfparametrics().put(key, new IParametric() {
+				
+				@Override
+				public CSG change(CSG oldCSG, String parameterKey, Long newValue) {
+					CSGDatabase.get(key).setValue(newValue);
+					return oldCSG;
+				}
+			});
 		return this;
 	}
 	
@@ -1819,15 +1850,13 @@ public class CSG {
 		return getMapOfparametrics().keySet();
 	}
 	
-	public  Double[] getParameterValues(String key){
-		return getMapOfparametricsValues().get(key);
-	}
+
 	
 	public CSG setParameterNewValue(String key, double newValue){
 		IParametric function = getMapOfparametrics().get(key);
 		if(function!=null)
 			return function
-					.change(this, key, newValue)
+					.change(this, key, new Long((long) (newValue*1000)))
 					.setManipulator(this.getManipulator())
 					.setColor(this.getColor());
 		return this;
@@ -1854,13 +1883,6 @@ public class CSG {
 		}
 		return mapOfparametrics;
 	}
-	
-	public HashMap<String,Double[]> getMapOfparametricsValues() {
-		if(mapOfparametricsValues==null){
-			mapOfparametricsValues=new HashMap<>();
-		}
-		return mapOfparametricsValues;
-	}
 
 
 
@@ -1873,5 +1895,9 @@ public class CSG {
 	public void markForRegeneration() {
 		this.markForRegeneration = true;
 	}
+
+
+
+	
 
 }

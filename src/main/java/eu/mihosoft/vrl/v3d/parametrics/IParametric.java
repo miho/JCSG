@@ -12,5 +12,5 @@ public interface IParametric {
 	 * @param newValue the new value of the parameter
 	 * @return the CSG to be displayed, returning the same reference prevents excess render load
 	 */
-	public CSG change(CSG oldCSG,String parameterKey, double newValue);
+	public CSG change(CSG oldCSG,String parameterKey, Long newValue);
 }

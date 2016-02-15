@@ -6,15 +6,15 @@ import java.util.List;
 public class StringParameter extends Parameter {
 
 	private List<String> options2;
-	public StringParameter(String key, String defaultValue, List<String> options) {
-		super(key, defaultValue, new ArrayList<Object>(options));
+	public StringParameter(String key, String defaultValue, ArrayList<String> options) {
+		setup(key, defaultValue, options);
 		options2 = options;
 	}
 	public void setString(String s){
-		setValue(s);
+		setStrValue(s);
 	}
 	public String getString(){
-		return (String)getValue();
+		return (String)getStrValue();
 	}
 	public List<String> getStringOptions(){
 		return new ArrayList<String>(options2);

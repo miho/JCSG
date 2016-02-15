@@ -5,9 +5,13 @@ import java.util.ArrayList;
 public class LengthParameter extends Parameter {
 
 	public LengthParameter(String key, Double defaultValue, ArrayList<Double> options) {
-		super(key, new Long((long) (defaultValue*1000.0)), new ArrayList<Object>(options));
+		 ArrayList<String> opts=new ArrayList<String>();
+		 for(Object d:options)
+			 opts.add(d.toString());
+		setup(key, new Long((long) (defaultValue*1000.0)), opts);
 	}
-	
+
+
 	public void setMM(double newVal){
 		setValue(new Long((long)(newVal*1000.0)));
 	}
@@ -16,7 +20,7 @@ public class LengthParameter extends Parameter {
 	}
 	
 	public double getMM(){
-		return ((double)((Long)getValue()))/1000.0;
+		return (Double.parseDouble(getValue().toString()))/1000.0;
 	}
 	public double getMicrons(){
 		return (Long)getValue();

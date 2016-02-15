@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class Polyhedron implements Primitive {
+public class Polyhedron extends Primitive {
 
     /** The properties. */
     private final PropertyStorage properties = new PropertyStorage();

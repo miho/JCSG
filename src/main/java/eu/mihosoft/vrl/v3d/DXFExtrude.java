@@ -18,7 +18,7 @@ import org.kabeja.parser.DXFParser;
 import org.kabeja.parser.Parser;
 import org.kabeja.parser.ParserBuilder;
 
-public class DXFExtrude implements Primitive {
+public class DXFExtrude extends Primitive {
 
 	private File source;
 	/** The properties. */

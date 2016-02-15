@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class RoundedCube implements Primitive {
+public class RoundedCube extends Primitive {
 
     /**
      * Cube dimensions.

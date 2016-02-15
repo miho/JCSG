@@ -17,11 +17,12 @@ import com.google.gson.reflect.TypeToken;
 public class CSGDatabase {
 	
 	private static HashMap<String,Parameter> database=null;
-	private static File db=new File("/.CSGdatabase.json");
+	private static File dbFile=new File("CSGdatabase.json");
     private static final Type TT_mapStringString = new TypeToken<HashMap<String,Parameter>>(){}.getType();
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     private static final HashMap<String,ArrayList<IParameterChanged>> parameterListeners=new HashMap<>();
 	public static void set(String key, Parameter value){
+		getDatabase();
 		synchronized(database){
 			getDatabase().put(key, value);
 		}
@@ -78,13 +79,13 @@ public class CSGDatabase {
 					String jsonString;
 					try {
 						
-						if(!db.exists()){
+						if(!getDbFile().exists()){
 							setDatabase(new HashMap<String,Parameter>());
 						}
 						else{
 					        InputStream in = null;
 					        try {
-					            in = FileUtils.openInputStream(db);
+					            in = FileUtils.openInputStream(getDbFile());
 					            jsonString= IOUtils.toString(in);
 					        } finally {
 					            IOUtils.closeQuietly(in);
@@ -102,6 +103,7 @@ public class CSGDatabase {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
+						System.err.println(dbFile.getAbsolutePath());
 						setDatabase(new HashMap<String,Parameter>());
 					}
 					Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -133,15 +135,16 @@ public class CSGDatabase {
 		String jsonString;
         try {
             try {
-				in = FileUtils.openInputStream(db);
+				in = FileUtils.openInputStream(f);
 				jsonString= IOUtils.toString(in);
 		        HashMap<String,Parameter> tm=gson.fromJson(jsonString, TT_mapStringString);
-		        for(String k:tm.keySet()){
-		        	set(k,tm.get(k));
-		        }
+		        if(tm !=null)
+			        for(String k:tm.keySet()){
+			        	set(k,tm.get(k));
+			        }
 		        saveDatabase();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				System.err.println(f.getAbsolutePath());
 				e.printStackTrace();
 			}
             
@@ -152,6 +155,7 @@ public class CSGDatabase {
 	
 	public static String getDataBaseString(){
 		String writeOut=null;
+		getDatabase();
 		synchronized(database){
 			 writeOut  =gson.toJson(database, TT_mapStringString); 
 		}
@@ -161,12 +165,12 @@ public class CSGDatabase {
 	public static void saveDatabase(){
 		String writeOut=getDataBaseString();
 		try {
-			if(!db.exists()){
-				db.createNewFile();
+			if(!getDbFile().exists()){
+				getDbFile().createNewFile();
 			}
 	        OutputStream out = null;
 	        try {
-	            out = FileUtils.openOutputStream(db, false);
+	            out = FileUtils.openOutputStream(getDbFile(), false);
 	            IOUtils.write(writeOut, out);
 	            out.flush();
 	            out.close(); // don't swallow close Exception if copy completes normally
@@ -183,6 +187,22 @@ public class CSGDatabase {
 			return;
 		}
 		CSGDatabase.database = database;
+	}
+	public static File getDbFile() {
+		return dbFile;
+	}
+	public static void setDbFile(File dbFile) {
+		if(!dbFile.exists())
+			try {
+				dbFile.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		else{
+			loadDatabaseFromFile(dbFile);
+		}
+		CSGDatabase.dbFile = dbFile;
 	}
 
 }
