@@ -73,4 +73,19 @@ public class Parameter {
 	}
 	
 
+	public void setMM(double newVal){
+		setValue(new Long((long)(newVal*1000.0)));
+	}
+	public void setMicrons(long newVal){
+		setValue(new Long(newVal));
+	}
+	
+	public double getMM(){
+		return (Double.parseDouble(getValue().toString()))/1000.0;
+	}
+	public double getMicrons(){
+		return (Long)getValue();
+	}
+	
+
 }

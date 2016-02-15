@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
+
 // TODO: Auto-generated Javadoc
 /**
  * A solid cylinder.
@@ -151,7 +153,15 @@ public class Cylinder extends Primitive {
         this.endRadius = endRadius;
         this.numSlices = numSlices;
     }
-
+    public Cylinder(LengthParameter startRadius, LengthParameter endRadius, LengthParameter height, int numSlices) {
+        this(startRadius.getMM(),endRadius.getMM(),height.getMM(),numSlices);
+        parametrics.add(startRadius);
+        parametrics.add(endRadius);
+        parametrics.add(height);
+    }
+    public Cylinder(LengthParameter startRadius,  LengthParameter height, int numSlices) {
+        this(startRadius,startRadius,height,numSlices);
+    }
     /* (non-Javadoc)
      * @see eu.mihosoft.vrl.v3d.Primitive#toPolygons()
      */

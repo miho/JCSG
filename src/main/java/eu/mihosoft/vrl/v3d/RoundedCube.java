@@ -8,6 +8,8 @@ package eu.mihosoft.vrl.v3d;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
 import java.util.List;
 
+import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class RoundedCube.
@@ -54,6 +56,17 @@ public class RoundedCube extends Primitive {
     public RoundedCube(double size) {
         center = new Vector3d(0, 0, 0);
         dimensions = new Vector3d(size, size, size);
+    }
+    
+
+    public RoundedCube(LengthParameter w, LengthParameter h, LengthParameter d) {
+        this(Vector3d.ZERO, new Vector3d(w.getMM(), h.getMM(), d.getMM()));
+        parametrics.add(w);
+        parametrics.add(h);
+        parametrics.add(d);
+    }
+    public RoundedCube(LengthParameter size) {
+        this(size,size,size);
     }
 
     /**

@@ -1828,10 +1828,7 @@ public class CSG {
 				function);
 		return this;
 	}
-	public CSG setParameter(String key,double defaultValue, double upperBound, double lowerBound){
-		setParameter(key,defaultValue,upperBound,lowerBound,null);
-		return this;
-	}
+
 	public CSG setParameterIfNull(String key){
 		if(getMapOfparametrics().get(key)==null)
 			getMapOfparametrics().put(key, new IParametric() {

@@ -36,12 +36,13 @@ public class CSGDatabase {
 		return ret;
 	}
 	
-	public static   void clearDatabase(){
+	public static   void clear(){
 		getDatabase();
 		synchronized(database){
 			database.clear();
 		}
 		parameterListeners.clear();
+		saveDatabase();
 	}
 	public static  void addParameterListener(String key, IParameterChanged l){
 		ArrayList<IParameterChanged> list = getParamListeners(key);
