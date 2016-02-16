@@ -51,44 +51,44 @@ import java.util.Vector;
  * operations, and doesn't permit <tt>null</tt>s.  In addition to implementing the <tt>List</tt> interface, this class
  * provides methods to manipulate the size of the array that is used internally to store the list.  (This class is
  * roughly equivalent to <tt>Vector</tt>, except that it is unsynchronized.)
- * <p/>
+ * </p>
  * <p>The <tt>size</tt>, <tt>isEmpty</tt>, <tt>get</tt>, <tt>set</tt>, <tt>iterator</tt>, and <tt>listIterator</tt>
  * operations run in constant time.  The <tt>add</tt> operation runs in <i>amortized constant time</i>, that is, adding
  * n elements requires O(n) time.  All of the other operations run in linear time (roughly speaking).  The constant
  * factor is low compared to that for the <tt>LinkedList</tt> implementation.
- * <p/>
+ * </p>
  * <p>Each <tt>ArrayList</tt> instance has a <i>capacity</i>.  The capacity is the size of the array used to store the
  * elements in the list.  It is always at least as large as the list size.  As elements are added to an ArrayList, its
  * capacity grows automatically.  The details of the growth policy are not specified beyond the fact that adding an
  * element has constant amortized time cost.
- * <p/>
+ * </p>
  * <p>An application can increase the capacity of an <tt>ArrayList</tt> instance before adding a large number of
  * elements using the <tt>ensureCapacity</tt> operation.  This may reduce the amount of incremental reallocation.
- * <p/>
+ * </p>
  * <p><strong>Note that this implementation is not synchronized.</strong> If multiple threads access an
  * <tt>ArrayList</tt> instance concurrently, and at least one of the threads modifies the list structurally, it
  * <i>must</i> be synchronized externally.  (A structural modification is any operation that adds or deletes one or more
  * elements, or explicitly resizes the backing array; merely setting the value of an element is not a structural
  * modification.)  This is typically accomplished by synchronizing on some object that naturally encapsulates the list.
- * <p/>
+ * </p>
  * If no such object exists, the list should be "wrapped" using the {@link Collections#synchronizedList
  * Collections.synchronizedList} method.  This is best done at creation time, to prevent accidental
  * unsynchronized access to the list:<pre>
  *   List list = Collections.synchronizedList(new ArrayList(...));</pre>
- * <p/>
+ * </p>
  * <p><a name="fail-fast"/> The iterators returned by this class's {@link #iterator() iterator} and {@link
  * #listIterator(int) listIterator} methods are <em>fail-fast</em>: if the list is structurally modified at any time
  * after the iterator is created, in any way except through the iterator's own {@link ListIterator#remove() remove} or
  * {@link ListIterator#add(Object) add} methods, the iterator will throw a {@link ConcurrentModificationException}.
  * Thus, in the face of concurrent modification, the iterator fails quickly and cleanly, rather than risking arbitrary,
  * non-deterministic behavior at an undetermined time in the future.
- * <p/>
+ * </p>
  * <p>Note that the fail-fast behavior of an iterator cannot be guaranteed as it is, generally speaking, impossible to
  * make any hard guarantees in the presence of unsynchronized concurrent modification.  Fail-fast iterators throw {@code
  * ConcurrentModificationException} on a best-effort basis. Therefore, it would be wrong to write a program that
  * depended on this exception for its correctness:  <i>the fail-fast behavior of iterators should be used only to detect
  * bugs.</i>
- * <p/>
+ * </p>
  * <p>This class is a member of the <a href="{@docRoot}/../technotes/guides/collections/index.html"> Java Collections
  * Framework</a>.
  *
@@ -296,10 +296,10 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Returns an array containing all of the elements in this list in proper sequence (from first to last element).
-     * <p/>
+     * </p>
      * <p>The returned array will be "safe" in that no references to it are maintained by this list.  (In other words,
      * this method must allocate a new array).  The caller is thus free to modify the returned array.
-     * <p/>
+     * </p>
      * <p>This method acts as bridge between array-based and collection-based APIs.
      *
      * @return an array containing all of the elements in this list in proper sequence
@@ -317,7 +317,7 @@ public class IntegerArrayList extends AbstractList<Integer>
      * runtime type of the returned array is that of the specified array.  If the list fits in the specified array, it
      * is returned therein.  Otherwise, a new array is allocated with the runtime type of the specified array and the
      * size of this list.
-     * <p/>
+     * </p>
      * <p>If the list fits in the specified array with room to spare (i.e., the array has more elements than the list),
      * the element in the array immediately following the end of the collection is set to <tt>null</tt>.  (This is
      * useful in determining the length of the list <i>only</i> if the caller knows that the list does not contain any
@@ -685,7 +685,7 @@ public class IntegerArrayList extends AbstractList<Integer>
      * in the list. The specified index indicates the first element that would be returned by an initial call to {@link
      * ListIterator#next next}. An initial call to {@link ListIterator#previous previous} would return the element with
      * the specified index minus one.
-     * <p/>
+     * </p>
      * <p>The returned list iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
      *
      * @throws IndexOutOfBoundsException {@inheritDoc}
@@ -698,7 +698,7 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Returns a list iterator over the elements in this list (in proper sequence).
-     * <p/>
+     * </p>
      * <p>The returned list iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
      *
      * @see #listIterator(int)
@@ -709,7 +709,7 @@ public class IntegerArrayList extends AbstractList<Integer>
 
     /**
      * Returns an iterator over the elements in this list in proper sequence.
-     * <p/>
+     * </p>
      * <p>The returned iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
      *
      * @return an iterator over the elements in this list in proper sequence
@@ -826,7 +826,7 @@ public class IntegerArrayList extends AbstractList<Integer>
      * toIndex}, exclusive.  (If {@code fromIndex} and {@code toIndex} are equal, the returned list is empty.)  The
      * returned list is backed by this list, so non-structural changes in the returned list are reflected in this list,
      * and vice-versa. The returned list supports all of the optional list operations.
-     * <p/>
+     * </p>
      * <p>This method eliminates the need for explicit range operations (of the sort that commonly exist for arrays).
      * Any operation that expects a list can be used as a range operation by passing a subList view instead of a whole
      * list.  For example, the following idiom removes a range of elements from a list:
@@ -835,7 +835,7 @@ public class IntegerArrayList extends AbstractList<Integer>
      * </pre>
      * Similar idioms may be constructed for {@link #indexOf(Object)} and {@link #lastIndexOf(Object)}, and all of the
      * algorithms in the {@link Collections} class can be applied to a subList.
-     * <p/>
+     * </p>
      * <p>The semantics of the list returned by this method become undefined if the backing list (i.e., this list) is
      * <i>structurally modified</i> in any way other than via the returned list.  (Structural modifications are those
      * that change the size of this list, or otherwise perturb it in such a fashion that iterations in progress may
