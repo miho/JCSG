@@ -1,5 +1,10 @@
-apply plugin: 'java'
-apply plugin: 'application'
+plugins {
+    id 'application'
+    id 'java'
+    id 'maven-publish'
+    id 'net.nemerosa.versioning' version '1.5.0'
+    id 'com.jfrog.bintray' version '1.6'
+}
 
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -8,7 +13,7 @@ sourceCompatibility = '1.8'
 //repairHeaders.licenseHeaderText = new File(projectDir,'./license-template.txt')
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '2.7'
+    gradleVersion = '2.10'
 }
 
 if (!hasProperty('mainClass')) {
@@ -20,7 +25,27 @@ mainClassName = mainClass
 
 repositories {
     mavenCentral()
+    jcenter()
 }
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+// create one jar for the source files
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+
 
 
 dependencies {
@@ -32,16 +57,100 @@ dependencies {
     //compile group: 'java3d', name: 'vecmath', version: '1.3.1' , classifier: "javadoc"
 }
 
+Date buildTimeAndDate = new Date()
+ext {
+    buildDate = new java.text.SimpleDateFormat('yyyy-MM-dd').format(buildTimeAndDate)
+    buildTime = new java.text.SimpleDateFormat('HH:mm:ss.SSSZ').format(buildTimeAndDate)
+}
+
 // create a fat-jar (class files plus dependencies
 // excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
 jar {
 
+
+    // TODO add switch for fat-jar generation
     // dependencies except VRL
-    from configurations.runtime.asFileTree.
-        filter({file->return !file.name.startsWith("vrl-0")}).
-        files.collect { zipTree(it) }
-
-    // project class files compiled from source
-    from files(sourceSets.main.output.classesDir)
-
+    // from configurations.runtime.asFileTree.
+    //     filter({file->return !file.name.startsWith("vrl-0")}).
+    //     files.collect { zipTree(it) }
+    // 
+    // // project class files compiled from source
+    // from files(sourceSets.main.output)
+    
+    manifest {
+    
+      attributes(
+          'Built-By': System.properties['user.name'],
+          'Created-By': System.properties['java.version'] + " (" + System.properties['java.vendor'] + " " + System.properties['java.vm.version'] + ")",
+          'Build-Date': project.buildDate,
+          'Build-Time': project.buildTime,
+          'Build-Revision': versioning.info.commit,
+          'Specification-Title': project.name,
+          'Specification-Version': project.version,
+          'Implementation-Title': project.name,
+          'Implementation-Version': project.version
+      )
+   }
 }
+
+
+def pomConfig = {
+    name 'JCSG'
+    desc 'Java implementation of BSP based CSG (Constructive Solid Geometry)'
+    url 'https://github.com/miho/JCSG/wiki'
+    inceptionYear '2016'
+    licenses {
+        license([:]) {
+            name 'BSD 2-Clause'
+            url 'https://github.com/miho/JCSG/blob/master/LICENSE.txt'
+            distribution 'repo'
+        }
+    }
+    scm {
+        url 'scm:git@github.com:miho/JCSG.git'
+        connection 'scm:git@github.com:miho/JCSG.git'
+        developerConnection 'scm:git@github.com:miho/JCSG.git'
+    }
+    developers {
+        developer {
+            id 'miho'
+            name 'Michael Hoffer'
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenCustom(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom.withXml {
+                asNode().children().last() + pomConfig
+            }
+        }
+    }
+}
+
+if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = ''
+if (!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = ''
+
+bintray {
+    user = project.bintrayUsername
+    key = project.bintrayApiKey
+    publications = ['mavenCustom']
+    pkg {
+        repo                  = 'JCSG'
+        userOrg               = 'miho'
+        name                  = project.name
+        desc                  = 'Java implementation of BSP based CSG (Constructive Solid Geometry)'
+        licenses              = ['BSD 2-Clause']
+        labels                = ['javafx', 'java',  'CSG', 'Constructive Solid Geometry',  'VRL',  '3D',  'STL',  'OBJ']
+        websiteUrl            = 'https://github.com/miho/JCSG/wiki'
+        issueTrackerUrl       = 'https://github.com/miho/JCSG/issues'
+        vcsUrl                = 'git@github.com:miho/JCSG.git'
+        publicDownloadNumbers = true
+    }
+}
+
