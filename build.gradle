@@ -105,8 +105,8 @@ jar {
 
 
 def pomConfig = {
-    name 'JCSG'
-    desc 'Java implementation of BSP based CSG (Constructive Solid Geometry)'
+    name 'jcsg'
+    description 'Java implementation of BSP based CSG (Constructive Solid Geometry)'
     url 'https://github.com/miho/JCSG/wiki'
     inceptionYear '2016'
     licenses {
@@ -163,4 +163,3 @@ bintray {
         publicDownloadNumbers = true
     }
 }
-
