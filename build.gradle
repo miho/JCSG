@@ -28,7 +28,17 @@ repositories {
     jcenter()
 }
 
+// javadoc is way too strict for my taste.
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
 task javadocJar(type: Jar, dependsOn: javadoc) {
+    
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
@@ -79,7 +89,7 @@ jar {
     
     manifest {
     
-      attributes(
+        attributes(
           'Built-By': System.properties['user.name'],
           'Created-By': System.properties['java.version'] + " (" + System.properties['java.vendor'] + " " + System.properties['java.vm.version'] + ")",
           'Build-Date': project.buildDate,
@@ -89,8 +99,8 @@ jar {
           'Specification-Version': project.version,
           'Implementation-Title': project.name,
           'Implementation-Version': project.version
-      )
-   }
+        )
+    }
 }
 
 
