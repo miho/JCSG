@@ -63,7 +63,7 @@ public class RaspberryPeg {
         // ol    = overlap between board and peg
         double outer_offset = 4;
         double inner_offset = 4;
-        double board_mounting_height = 4;
+        double board_mounting_height = 5.5;
         double board_thickness = 2;
         double overlap = 1;
         double peg_depth = 3;

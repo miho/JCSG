@@ -32,11 +32,11 @@ public class ServoWheel {
 
     private ServoHead servoHead = new ServoHead(toothLength, toothWidth, toothHeight, toothCount, headHeight, headDiameter, headScrewDiameter, headThickness);
 
-    private int numberOfArms = 7;
+    private int numberOfArms = 3;
     double innerWidth = 7;
     double outerWidth = 3.5;
     double thickness = 2;
-    double radius = 27.5;
+    double radius = 40;
     double ringThickness = 3;
     double wheelThickness = 5;
 

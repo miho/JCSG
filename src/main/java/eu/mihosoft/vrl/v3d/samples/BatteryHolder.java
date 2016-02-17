@@ -21,11 +21,11 @@ import java.util.List;
  */
 public class BatteryHolder {
 
-    private double mountingThickness = 2.0;
+    private double mountingThickness = 3.0;
 
     private double boardToBoardSpacing = 30.0;
 
-    private double connectorDepth = 15;
+    private double connectorDepth = 25;
 
     private double pegHeight = 1;
     private double pegToothHeight = 0.3;
@@ -42,7 +42,7 @@ public class BatteryHolder {
 
     public CSG toCSG() {
 
-        double th = 2;
+        double th = 3;
         double smh = boardMountingWidth;
         double mth = mountingThickness;
 

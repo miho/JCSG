@@ -34,7 +34,7 @@ public class ServoMountPixy {
     private double overlap = 3;
     private double servoMountHeight = 20;
 
-    private double boardMountingThickness = 2;
+    private double boardMountingThickness = 3;
     private double boardHolder1Length = 12;
     private double boardHolder2Length = 16;
 

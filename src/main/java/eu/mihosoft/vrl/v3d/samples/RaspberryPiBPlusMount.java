@@ -49,7 +49,7 @@ public class RaspberryPiBPlusMount {
 
     public static CSG board() {
         double board_thickness = 2;
-        double bottom_thickness = 2;
+        double bottom_thickness = 3;
 
         double board_mounting_height = 4;
 
@@ -120,7 +120,7 @@ public class RaspberryPiBPlusMount {
         
         double outer_offset = 4;
         
-        double bottom_thickness = 2;
+        double bottom_thickness = 3;
         
         CSG board = board();
         
@@ -153,9 +153,9 @@ public class RaspberryPiBPlusMount {
 //        FileUtil.write(Paths.get("sample.stl"), new ServoHead().servoHeadFemale().transformed(Transform.unity().scale(1.0)).toStlString());
         
             CSG board = RaspberryPiBPlusMount.boardAndPegs().transformed(Transform.unity().rotX(180));
-            FileUtil.write(Paths.get("raspberry-pi-bplus-mount.stl"), board.toStlString());
+            FileUtil.write(Paths.get("raspberry-pi-bplus-mount-3mm.stl"), board.toStlString());
             
-            board.toObj().toFiles(Paths.get("raspberry-pi-bplus-mount.obj"));
+            board.toObj().toFiles(Paths.get("raspberry-pi-bplus-mount-3mm.obj"));
 
     }
 }
