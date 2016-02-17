@@ -137,7 +137,9 @@ publishing {
             artifact javadocJar
 
             pom.withXml {
-                asNode().children().last() + pomConfig
+                def root = asNode()
+                root.appendNode 'description', 'Java implementation of BSP based CSG (Constructive Solid Geometry)'
+                root.children().last() + pomConfig
             }
         }
     }
