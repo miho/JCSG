@@ -1,7 +1,7 @@
 JCSG
 =======
 
-[![Build Status](https://travis-ci.org/miho/JCSG.png?branch=master)](https://travis-ci.org/miho/JCSG)
+[![Build Status](https://travis-ci.org/miho/JCSG.png?branch=master)](https://travis-ci.org/miho/JCSG) [ ![Download](https://api.bintray.com/packages/miho/JCSG/jcsg/images/download.svg) ](https://bintray.com/miho/JCSG/jcsg/_latestVersion)
 
 Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses an optimized CSG algorithm based on [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
 
