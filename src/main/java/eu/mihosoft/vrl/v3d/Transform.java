@@ -69,10 +69,10 @@ public class Transform {
      */
     public Transform() {
         m = new Matrix4d();
-        m.m00 = 1;
-        m.m11 = 1;
-        m.m22 = 1;
-        m.m33 = 1;
+        getInternalMatrix().m00 = 1;
+        getInternalMatrix().m11 = 1;
+        getInternalMatrix().m22 = 1;
+        getInternalMatrix().m33 = 1;
     }
 
     /**
@@ -106,7 +106,7 @@ public class Transform {
         double elemenents[] = {
             1, 0, 0, 0, 0, cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -124,7 +124,7 @@ public class Transform {
         double elemenents[] = {
             cos, 0, -sin, 0, 0, 1, 0, 0, sin, 0, cos, 0, 0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -142,7 +142,7 @@ public class Transform {
         double elemenents[] = {
             cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -199,7 +199,7 @@ public class Transform {
             0, 0, 1, z,
             0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -217,7 +217,7 @@ public class Transform {
             0, 0, 1, 0,
             0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -235,7 +235,7 @@ public class Transform {
             0, 0, 1, 0,
             0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -253,7 +253,7 @@ public class Transform {
             0, 0, 1, value,
             0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -278,7 +278,7 @@ public class Transform {
             (-2.0 * nx * nz), (-2.0 * ny * nz), (1.0 - 2.0 * nz * nz), 0,
             (-2.0 * nx * w), (-2.0 * ny * w), (-2.0 * nz * w), 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -297,7 +297,7 @@ public class Transform {
         
         double elemenents[] = {
             vec.x, 0, 0, 0, 0, vec.y, 0, 0, 0, 0, vec.z, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -318,7 +318,7 @@ public class Transform {
         
         double elemenents[] = {
             x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -338,7 +338,7 @@ public class Transform {
         
         double elemenents[] = {
             s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -358,7 +358,7 @@ public class Transform {
         
         double elemenents[] = {
             s, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -377,7 +377,7 @@ public class Transform {
         
         double elemenents[] = {
             1, 0, 0, 0, 0, s, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -396,7 +396,7 @@ public class Transform {
         
         double elemenents[] = {
             1, 0, 0, 0, 0, 1, 0, 0, 0, 0, s, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -409,9 +409,9 @@ public class Transform {
      */
     public Vector3d transform(Vector3d vec) {
         double x, y;
-        x = m.m00 * vec.x + m.m01 * vec.y + m.m02 * vec.z + m.m03;
-        y = m.m10 * vec.x + m.m11 * vec.y + m.m12 * vec.z + m.m13;
-        vec.z = m.m20 * vec.x + m.m21 * vec.y + m.m22 * vec.z + m.m23;
+        x = getInternalMatrix().m00 * vec.x + getInternalMatrix().m01 * vec.y + getInternalMatrix().m02 * vec.z + getInternalMatrix().m03;
+        y = getInternalMatrix().m10 * vec.x + getInternalMatrix().m11 * vec.y + getInternalMatrix().m12 * vec.z + getInternalMatrix().m13;
+        vec.z = getInternalMatrix().m20 * vec.x + getInternalMatrix().m21 * vec.y + getInternalMatrix().m22 * vec.z + getInternalMatrix().m23;
         vec.x = x;
         vec.y = y;
 
@@ -433,9 +433,9 @@ public class Transform {
         double prevZ = vec.z;
         
         final double x, y;
-        x = m.m00 * vec.x + m.m01 * vec.y + m.m02 * vec.z + m.m03;
-        y = m.m10 * vec.x + m.m11 * vec.y + m.m12 * vec.z + m.m13;
-        vec.z = m.m20 * vec.x + m.m21 * vec.y + m.m22 * vec.z + m.m23;
+        x = getInternalMatrix().m00 * vec.x + getInternalMatrix().m01 * vec.y + getInternalMatrix().m02 * vec.z + getInternalMatrix().m03;
+        y = getInternalMatrix().m10 * vec.x + getInternalMatrix().m11 * vec.y + getInternalMatrix().m12 * vec.z + getInternalMatrix().m13;
+        vec.z = getInternalMatrix().m20 * vec.x + getInternalMatrix().m21 * vec.y + getInternalMatrix().m22 * vec.z + getInternalMatrix().m23;
         vec.x = x;
         vec.y = y;
         
@@ -483,7 +483,7 @@ public class Transform {
      * @return the scale factor of this transformation
      */
     public double getScale() {
-        return m.getScale();
+        return getInternalMatrix().getScale();
     }
 
     /**
@@ -494,7 +494,7 @@ public class Transform {
      * <code>false</code> otherwise
      */
     public boolean isMirror() {
-        return m.determinant() < 0;
+        return getInternalMatrix().determinant() < 0;
     }
 
     /**
@@ -505,7 +505,7 @@ public class Transform {
      * @return this transform
      */
     public Transform apply(Transform t) {
-        m.mul(t.m);
+        getInternalMatrix().mul(t.getInternalMatrix());
         return this;
     }
 
@@ -514,6 +514,10 @@ public class Transform {
      */
     @Override
     public String toString() {
-        return m.toString();
+        return getInternalMatrix().toString();
     }
+
+	public Matrix4d getInternalMatrix() {
+		return m;
+	}
 }
