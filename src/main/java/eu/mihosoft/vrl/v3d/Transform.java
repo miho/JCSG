@@ -89,7 +89,7 @@ public class Transform {
      *
      * @param m matrix
      */
-    private Transform(Matrix4d m) {
+    public Transform(Matrix4d m) {
         this.m = m;
     }
 
