@@ -98,6 +98,6 @@ public class TriMail {
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void main(String[] args) throws IOException {
-        FileUtil.write(Paths.get("trimail.stl"), new TriMail().toCSG(3, 3, 3).toStlString());
+        FileUtil.write(Paths.get("trimail-test.stl"), new TriMail().toCSG(3, 3, 3).toStlString());
     }
 }
