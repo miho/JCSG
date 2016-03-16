@@ -1,6 +1,7 @@
 JCSG
 =======
 
+
 [![Build Status](https://travis-ci.org/NeuronRobotics/JCSG.png?branch=master)](https://travis-ci.org/NeuronRobotics/JCSG)
 
 Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses an optimized CSG algorithm based on [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
@@ -14,6 +15,8 @@ In addition to CSG this library provides the following features:
 - STL import and export (STLLoader from [Fiji](https://github.com/fiji/fiji/blob/master/src-plugins/3D_Viewer/src/main/java/customnode/STLLoader.java))
 - OBJ export including material information (see screenshot below)
 - supports conversion of CSG's to `JavaFX 3D` nodes
+
+**JCSG** on [stackoverflow](http://stackoverflow.com/search?q=jcsg).
 
 ![](/resources/screenshot2.png)
 

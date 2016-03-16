@@ -35,7 +35,7 @@ public class WeightedTubeSample {
         
 
         WeightFunction weight = (v, csg) -> {
-            double w = Math.max(1,1.0/(v.z*0.1+0.1));
+            double w = Math.max(1,((0.1)+Math.random())/(v.z*0.1+0.1));
 
             return w;
 
@@ -73,7 +73,7 @@ public class WeightedTubeSample {
 
         FileUtil.write(Paths.get("weighted-tube.stl"), new WeightedTubeSample().toCSG().toStlString());
 
-        new WeightedTubeSample().toCSG().toObj().toFiles(Paths.get("weighted-tube.obj"));
+//        new WeightedTubeSample().toCSG().toObj().toFiles(Paths.get("weighted-tube.obj"));
 
     }
 

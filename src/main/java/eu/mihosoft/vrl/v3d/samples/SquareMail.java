@@ -118,6 +118,6 @@ public class SquareMail {
      * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void main(String[] args) throws IOException {
-        FileUtil.write(Paths.get("squaremail.stl"), new SquareMail().toCSG(12,4).toStlString());
+        FileUtil.write(Paths.get("squaremail-test.stl"), new SquareMail().toCSG(12,4).toStlString());
     }
 }
