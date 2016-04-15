@@ -11,8 +11,9 @@ sourceCompatibility = '1.8'
 //apply from: 'http://gradle-plugins.mihosoft.eu/latest/vlicenseheader.gradle'
 //repairHeaders.licenseHeaderText = new File(projectDir,'./license-template.txt')
 
+File buildDir = file(".");
 Properties props = new Properties()
-props.load(new FileInputStream(buildDir.getAbsolutePath()+"/../src/main/resources/com/neuronrobotics/javacad/build.properties"))
+props.load(new FileInputStream(buildDir.getAbsolutePath()+"/src/main/resources/com/neuronrobotics/javacad/build.properties"))
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
 
