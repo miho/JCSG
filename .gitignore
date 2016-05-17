@@ -7,6 +7,7 @@
 .project
 .classpath
 /.settings*
+/.idea*
 /gradle.properties
 gradle.properties
 gradle.properties
