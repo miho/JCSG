@@ -1,6 +1,7 @@
 JCSG
 =======
 
+**Main Documentation** as [Part of BowlerStudio](http://neuronrobotics.com/JavaCAD/Overview/)
 
 [![Build Status](https://travis-ci.org/NeuronRobotics/JCSG.png?branch=master)](https://travis-ci.org/NeuronRobotics/JCSG)
 
