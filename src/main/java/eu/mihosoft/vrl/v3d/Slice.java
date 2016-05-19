@@ -7,13 +7,13 @@ public class Slice  {
 	private static ISlice sliceEngine = new ISlice() {
 		
 		@Override
-		public List<Vector3d> slice(CSG incoming, Plane slicePlane, double normalInsetDistance) {
+		public List<Vector3d> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) {
 			List<Vector3d> slicedPoints = new ArrayList<>();
 			System.out.println("This is a dummy slice engine and is not implemented yet");
 			return slicedPoints;
 		}
 	};
-	public static  List<Vector3d> slice(CSG incoming, Plane slicePlane, double normalInsetDistance) {
+	public static  List<Vector3d> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) {
 		return getSliceEngine().slice(incoming, slicePlane, normalInsetDistance);
 	}
 	

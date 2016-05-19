@@ -10,5 +10,5 @@ public interface ISlice {
 	 * @param normalInsetDistance sets the inset to the interior of the shape. 
 	 * @return a set of points corosponding to a slice given these parameters. 
 	 */
-	List<Vector3d> slice(CSG incoming, Plane slicePlane, double normalInsetDistance) ;
+	List<Vector3d> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) ;
 }
