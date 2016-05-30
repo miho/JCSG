@@ -18,7 +18,7 @@ public class SliceTest
     public void slice() throws Exception
     {
         //Create a CSG to slice
-        CSG sliced = new Cube(10, 10, 10).toCSG().union(new Sphere(5).toCSG());
+        CSG sliced = new Cube(10, 10, 10).toCSG().union(new Sphere(6.5).toCSG());
 
         //Get a slice
         List<Vector3d> points = Slice.slice(sliced, new Transform(), 0);

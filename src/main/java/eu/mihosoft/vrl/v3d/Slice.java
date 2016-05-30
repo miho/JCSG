@@ -19,10 +19,10 @@ public class Slice
 
 		//Actual slice plane
 		CSG planeCSG = new Cube(incoming.getMaxX() - incoming.getMinX(), incoming.getMaxY() - incoming.getMinY(), 1).noCenter().toCSG();
-		planeCSG = planeCSG.movex((planeCSG.getMaxX() - planeCSG.getMinX()) / 2).movey((planeCSG.getMaxY() - planeCSG.getMinY()) / 2);
+		planeCSG = planeCSG.movex((planeCSG.getMaxX() - planeCSG.getMinX()) / -2.0D).movey((planeCSG.getMaxY() - planeCSG.getMinY()) / -2.0D);
 
 		//Loop over each polygon in the slice of the incoming CSG
-		for (Polygon polygon : incoming.transformed(new Transform(inverse)).intersect(planeCSG).getPolygons())
+		for (Polygon polygon : incoming.intersect(planeCSG).getPolygons())
 		{
 			//Add each vertex at z == 0 to a list as a vector3d
 			slicedPoints.addAll(polygon.vertices.stream()
