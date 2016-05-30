@@ -10,5 +10,5 @@ public interface ISlice {
 	 * @param normalInsetDistance Inset for sliced output
 	 * @return					  A set of points defining the sliced shape
 	 */
-	List<Vector3d> slice(CSG incoming, double slicePlane, double normalInsetDistance);
+	List<Vector3d> slice(CSG incoming, Transform slicePlane, double normalInsetDistance);
 }
