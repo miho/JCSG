@@ -1,5 +1,6 @@
 package eu.mihosoft.vrl.v3d;
 
+import javax.vecmath.Matrix4d;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +13,10 @@ public class Slice
 	private static ISlice sliceEngine = (incoming, slicePlane, normalInsetDistance) -> {
         List<Vector3d> slicedPoints = new ArrayList<>();
 
-		for (Polygon polygon : incoming.movez(-slicePlane).intersect(planeCSG).getPolygons())
+		Matrix4d inverse = slicePlane.scale(1.0D / slicePlane.getScale()).getInternalMatrix();
+		inverse.invert();
+
+		for (Polygon polygon : incoming.transformed(new Transform(inverse)).intersect(planeCSG).getPolygons())
 		{
 			slicedPoints.addAll(polygon.vertices.stream().filter(v -> v.getZ() == 0).map(v -> new Vector3d(v.getX(), v.getY(), v.getZ())).collect(Collectors.toList()));
 		}
@@ -20,7 +24,7 @@ public class Slice
         return slicedPoints;
     };
 
-	public static  List<Vector3d> slice(CSG incoming, double slicePlane, double normalInsetDistance) {
+	public static  List<Vector3d> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) {
 		return getSliceEngine().slice(incoming, slicePlane, normalInsetDistance);
 	}
 	
