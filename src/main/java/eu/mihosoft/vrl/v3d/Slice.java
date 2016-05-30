@@ -8,16 +8,21 @@ import java.util.stream.Collectors;
 
 public class Slice
 {
-	private static final CSG planeCSG = new Cube(10000, 10000, 1).noCenter().toCSG().movex(-5000).movey(-5000);
-
 	private static ISlice sliceEngine = (incoming, slicePlane, normalInsetDistance) -> {
         List<Vector3d> slicedPoints = new ArrayList<>();
 
+		//Invert the incoming transform
 		Matrix4d inverse = slicePlane.scale(1.0D / slicePlane.getScale()).getInternalMatrix();
 		inverse.invert();
 
+		//Actual slice plane
+		CSG planeCSG = new Cube(incoming.getMaxX() - incoming.getMinX(), incoming.getMaxY() - incoming.getMinY(), 1).noCenter().toCSG();
+		planeCSG = planeCSG.movex((planeCSG.getMaxX() - planeCSG.getMinX()) / 2).movey((planeCSG.getMaxY() - planeCSG.getMinY()) / 2);
+
+		//Loop over each polygon in the slice of the incoming CSG
 		for (Polygon polygon : incoming.transformed(new Transform(inverse)).intersect(planeCSG).getPolygons())
 		{
+			//Add each vertex at z == 0 to a list as a vector3d
 			slicedPoints.addAll(polygon.vertices.stream().filter(v -> v.getZ() == 0).map(v -> new Vector3d(v.getX(), v.getY(), v.getZ())).collect(Collectors.toList()));
 		}
 
