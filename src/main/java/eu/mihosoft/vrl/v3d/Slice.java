@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 public class Slice
 {
+	private static final double SLICE_UPPER_BOUND = 0.001, SLICE_LOWER_BOUND = -0.001;
+
 	private static ISlice sliceEngine = (incoming, slicePlane, normalInsetDistance) -> {
         List<Vector3d> slicedPoints = new ArrayList<>();
 
@@ -23,7 +25,10 @@ public class Slice
 		for (Polygon polygon : incoming.transformed(new Transform(inverse)).intersect(planeCSG).getPolygons())
 		{
 			//Add each vertex at z == 0 to a list as a vector3d
-			slicedPoints.addAll(polygon.vertices.stream().filter(v -> v.getZ() == 0).map(v -> new Vector3d(v.getX(), v.getY(), v.getZ())).collect(Collectors.toList()));
+			slicedPoints.addAll(polygon.vertices.stream()
+					.filter(v -> v.getZ() < SLICE_UPPER_BOUND && v.getZ() > SLICE_LOWER_BOUND)
+					.map(v -> new Vector3d(v.getX(), v.getY(), v.getZ()))
+					.collect(Collectors.toList()));
 		}
 
         return slicedPoints;
