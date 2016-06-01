@@ -310,9 +310,9 @@ public class CSG {
 	}
 	
 	public CSG rot(double x, double y, double z){
-		return 	movex(x)
-				.movey(y)
-				.movez(z);
+		return 	rotx(x)
+				.roty(y)
+				.rotz(z);
 	}
 	
 	public CSG rot(double [] posVector){
