@@ -26,7 +26,7 @@ public class SliceTest
         //Construct a CSG from that Polygon List
         CSG finished = CSG.fromPolygons(polygons);
 
-        System.out.println(finished.toObjString());
+        System.out.println(finished.toStlString());
     }
 
 }
