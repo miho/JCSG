@@ -8,7 +8,7 @@ public interface ISlice {
 	 * @param incoming			  Incoming CSG to be sliced
 	 * @param slicePlane		  Z coordinate of incoming CSG to slice at
 	 * @param normalInsetDistance Inset for sliced output
-	 * @return					  A set of points defining the sliced shape
+	 * @return					  A set of polygons defining the sliced shape
 	 */
-	List<Vector3d> slice(CSG incoming, Transform slicePlane, double normalInsetDistance);
+	List<Polygon> slice(CSG incoming, Transform slicePlane, double normalInsetDistance);
 }
