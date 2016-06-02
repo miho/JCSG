@@ -21,17 +21,12 @@ public class SliceTest
         CSG sliced = new Cube(10, 10, 10).toCSG().union(new Sphere(6.5).toCSG());
 
         //Get a slice
-        List<Vector3d> points = Slice.slice(sliced, new Transform(), 0);
-
-        //Construct a Polygon from that slice
-        Polygon polygon = Polygon.fromPoints(points);
-
-        //Collect that Polygon into a List
-        List<Polygon> polygons = new ArrayList<>();
-        polygons.add(polygon);
+        List<Polygon> polygons = Slice.slice(sliced, new Transform(), 0);
 
         //Construct a CSG from that Polygon List
         CSG finished = CSG.fromPolygons(polygons);
+
+        System.out.println(finished.toObjString());
     }
 
 }
