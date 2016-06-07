@@ -26,19 +26,21 @@ public class SliceTest
         //Construct a CSG from that Polygon List
         CSG finished = CSG.fromPolygons(polygons);
 
-        //System.out.println(finished.toStlString());
+        System.out.println(finished.toStlString());
     }
 
     @Test
     public void sliceWithHole() throws Exception
     {
         //Create a CSG to slice
-        CSG sliced = new Cube(10, 10, 10).toCSG().difference(new Cube(5, 5, 100).toCSG().movez(-50));
+        CSG sliced = new Cube(10, 10, 10).toCSG().difference(new Cube(5, 5, 100).toCSG());
 
         //Get a slice
         List<Polygon> polygons = Slice.slice(sliced, new Transform(), 0);
 
         //Construct a CSG from that Polygon List
         CSG finished = CSG.fromPolygons(polygons);
+
+        System.out.println(finished.toStlString());
     }
 }
