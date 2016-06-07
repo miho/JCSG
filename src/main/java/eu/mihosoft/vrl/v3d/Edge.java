@@ -595,6 +595,13 @@ public class Edge {
         return true;
     }
 
+    @Override
+    public String toString()
+    {
+        return "[[" + this.p1.getX() + ", " + this.p1.getY() + ", " + this.p1.getZ() + "]" +
+                ", [" + this.p2.getX() + ", " + this.p2.getY() + ", " + this.p2.getZ() + "]]";
+    }
+
     /**
      * Gets the direction.
      *

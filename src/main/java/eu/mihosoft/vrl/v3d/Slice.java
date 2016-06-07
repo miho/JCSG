@@ -1,8 +1,7 @@
 package eu.mihosoft.vrl.v3d;
 
 import javax.vecmath.Matrix4d;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Slice
@@ -23,6 +22,25 @@ public class Slice
 		finalSlice.addAll(incoming.intersect(planeCSG).getPolygons().stream()
 					.filter(Slice::isPolygonAtZero)
 					.collect(Collectors.toList()));
+
+		int edgeCount = 0;
+
+		TreeSet<Vertex> vertexSet = new TreeSet<>(new VertexComparator());
+
+		for (Polygon p : finalSlice)
+		{
+			for (int i = 0; i < p.vertices.size() - 1; i++)
+			{
+				edgeCount++;
+			}
+
+			edgeCount++;
+			vertexSet.addAll(p.vertices);
+		}
+
+		System.out.println(vertexSet.size());
+		System.out.println(edgeCount);
+		System.out.println(vertexSet.size() - edgeCount + 2 == 2);
 
         return finalSlice;
     };
@@ -71,4 +89,15 @@ public class Slice
 		Slice.sliceEngine = sliceEngine;
 	}
 
+	private static class VertexComparator implements Comparator<Vertex>
+	{
+		@Override
+		public int compare(Vertex o1, Vertex o2)
+		{
+			return o1.getX() == o2.getX() &&
+					o1.getY() == o2.getY() &&
+					o1.getZ() == o2.getZ()
+					? 0 : 1;
+		}
+	}
 }
