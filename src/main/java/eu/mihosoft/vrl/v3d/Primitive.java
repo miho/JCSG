@@ -41,7 +41,7 @@ import eu.mihosoft.vrl.v3d.parametrics.Parameter;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public abstract class Primitive {
+public abstract class Primitive implements ItoCSG{
 	ArrayList<Parameter> parametrics=new ArrayList<>();
     
 

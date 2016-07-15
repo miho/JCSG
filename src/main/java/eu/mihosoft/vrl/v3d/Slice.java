@@ -17,7 +17,8 @@ public class Slice
 		//Actual slice plane
 		CSG planeCSG = new Cube(incoming.getMaxX() - incoming.getMinX(), incoming.getMaxY() - incoming.getMinY(), 1).noCenter().toCSG();
 		planeCSG = planeCSG.movex((planeCSG.getMaxX() - planeCSG.getMinX()) / -2.0D).movey((planeCSG.getMaxY() - planeCSG.getMinY()) / -2.0D);
-
+		incoming.getPolygons();
+		
 		//Loop over each polygon in the slice of the incoming CSG
 		//Add the polygon to the final slice if it lies entirely in the z plane
 		finalSlice.addAll(incoming.intersect(planeCSG).getPolygons().stream()
