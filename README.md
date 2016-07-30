@@ -1,6 +1,8 @@
 JCSG
 =======
 
+[![Join the chat at https://gitter.im/NeuronRobotics/JCSG](https://badges.gitter.im/NeuronRobotics/JCSG.svg)](https://gitter.im/NeuronRobotics/JCSG?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **Main Documentation** as [Part of BowlerStudio](http://neuronrobotics.com/JavaCAD/Overview/)
 
 [![Build Status](https://travis-ci.org/NeuronRobotics/JCSG.png?branch=master)](https://travis-ci.org/NeuronRobotics/JCSG)
