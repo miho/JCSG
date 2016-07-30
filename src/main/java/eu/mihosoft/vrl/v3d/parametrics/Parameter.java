@@ -50,10 +50,12 @@ public class Parameter {
 	}
 	
 	public void setValue(Long newVal){
-		value=newVal;
-		ArrayList<IParameterChanged> listeners = CSGDatabase.getParamListeners(name);
-		for(IParameterChanged l:listeners){
-			l.parameterChanged(name, this);
+		if(value!=newVal){
+			value=newVal;
+			ArrayList<IParameterChanged> listeners = CSGDatabase.getParamListeners(name);
+			for(IParameterChanged l:listeners){
+				l.parameterChanged(name, this);
+			}
 		}
 	}
 	
