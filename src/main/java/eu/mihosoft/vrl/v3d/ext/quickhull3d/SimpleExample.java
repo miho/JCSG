@@ -1,15 +1,19 @@
 package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
+// TODO: Auto-generated Javadoc
 /**
  * Simple example usage of QuickHull3D. Run as the command
- * <pre>
+ *  
  *   java quickhull3d.SimpleExample
- * </pre>
+ *  
  */
 class SimpleExample
 {
+	
 	/**
 	 * Run for a simple demonstration of QuickHull3D.
+	 *
+	 * @param args the arguments
 	 */
 	public static void main (String[] args)
 	 {

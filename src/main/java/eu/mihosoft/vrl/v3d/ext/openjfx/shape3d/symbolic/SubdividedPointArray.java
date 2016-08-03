@@ -35,17 +35,40 @@ import eu.mihosoft.vrl.v3d.ext.openjfx.shape3d.SubdivisionMesh;
 import java.util.Arrays;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SubdividedPointArray.
+ */
 public class SubdividedPointArray extends SymbolicPointArray {
+    
+    /** The control points. */
     private final float[] controlPoints; // points of the previous subdivision level
+    
+    /** The control inds. */
     private final int[][] controlInds; // indices corresponding to controlPoints
+    
+    /** The control factors. */
     private final float[][] controlFactors; // factors corresponding to controlPoints
+    
+    /** The inds. */
     private final int[][] inds;
+    
+    /** The factors. */
     private final float[][] factors;
     
+    /** The boundary mode. */
     private final SubdivisionMesh.BoundaryMode boundaryMode;
     
+    /** The curr point. */
     private int currPoint = 0;
     
+    /**
+     * Instantiates a new subdivided point array.
+     *
+     * @param controlPointArray the control point array
+     * @param numPoints the num points
+     * @param boundaryMode the boundary mode
+     */
     public SubdividedPointArray(SymbolicPointArray controlPointArray, int numPoints, SubdivisionMesh.BoundaryMode boundaryMode) {
         super(new float[NUM_COMPONENTS_PER_POINT * numPoints]);
         
@@ -59,6 +82,12 @@ public class SubdividedPointArray extends SymbolicPointArray {
     }
     
     
+    /**
+     * Adds the face point.
+     *
+     * @param vertices the vertices
+     * @return the int
+     */
     public int addFacePoint(int[] vertices) {
         controlInds[currPoint] = vertices;
         controlFactors[currPoint] = new float[vertices.length];
@@ -70,6 +99,15 @@ public class SubdividedPointArray extends SymbolicPointArray {
         return currPoint++;
     }
     
+    /**
+     * Adds the edge point.
+     *
+     * @param facePoints the face points
+     * @param fromPoint the from point
+     * @param toPoint the to point
+     * @param isBoundary the is boundary
+     * @return the int
+     */
     public int addEdgePoint(int[] facePoints, int fromPoint, int toPoint, boolean isBoundary) {
         if (isBoundary) {
             controlInds[currPoint] = new int[] {fromPoint, toPoint};
@@ -89,6 +127,19 @@ public class SubdividedPointArray extends SymbolicPointArray {
         return currPoint++;
     }
 
+    /**
+     * Adds the control point.
+     *
+     * @param facePoints the face points
+     * @param edgePoints the edge points
+     * @param fromEdgePoints the from edge points
+     * @param toEdgePoints the to edge points
+     * @param isEdgeBoundary the is edge boundary
+     * @param origPoint the orig point
+     * @param isBoundary the is boundary
+     * @param hasInternalEdge the has internal edge
+     * @return the int
+     */
     public int addControlPoint(int[] facePoints, int[] edgePoints, int[] fromEdgePoints, int[] toEdgePoints, boolean[] isEdgeBoundary, int origPoint, boolean isBoundary, boolean hasInternalEdge) {
         if (isBoundary) {
             if ((boundaryMode == SubdivisionMesh.BoundaryMode.CREASE_EDGES) || hasInternalEdge) {
@@ -139,6 +190,9 @@ public class SubdividedPointArray extends SymbolicPointArray {
         return currPoint++;
     }
     
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.ext.openjfx.shape3d.symbolic.SymbolicPointArray#update()
+     */
     @Override
     public void update() {
         int ci;

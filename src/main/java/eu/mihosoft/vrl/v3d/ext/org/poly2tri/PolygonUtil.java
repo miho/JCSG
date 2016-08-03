@@ -1,7 +1,7 @@
 /**
  * PolygonUtil.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,7 +29,7 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 
@@ -41,18 +41,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class PolygonUtil.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class PolygonUtil {
 
+    /**
+     * Instantiates a new polygon util.
+     */
     private PolygonUtil() {
         throw new AssertionError("Don't instantiate me!", null);
     }
 
     /**
-     * Converts a CSG polygon to a poly2tri polygon (including holes)
+     * Converts a CSG polygon to a poly2tri polygon (including holes).
+     *
      * @param polygon the polygon to convert
      * @return a CSG polygon to a poly2tri polygon (including holes)
      */
@@ -84,6 +90,12 @@ public class PolygonUtil {
         return result;
     }
 
+    /**
+     * Concave to convex.
+     *
+     * @param concave the concave
+     * @return the list
+     */
     public static List<eu.mihosoft.vrl.v3d.Polygon> concaveToConvex(
             eu.mihosoft.vrl.v3d.Polygon concave) {
 

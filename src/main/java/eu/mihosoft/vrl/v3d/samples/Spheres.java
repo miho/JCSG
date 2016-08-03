@@ -13,12 +13,19 @@ import eu.mihosoft.vrl.v3d.Transform;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class Spheres.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Spheres {
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         double maxR = 10;
@@ -50,6 +57,12 @@ public class Spheres {
         return spheres;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("spheres.stl"), new Spheres().toCSG().toStlString());
     }

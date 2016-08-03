@@ -1,7 +1,7 @@
 /**
  * Vector3d.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,7 +29,7 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
@@ -39,6 +39,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import java.util.Random;
 
+// TODO: Auto-generated Javadoc
 /**
  * 3D Vector3d.
  *
@@ -46,14 +47,28 @@ import java.util.Random;
  */
 public class Vector3d {
 
+    /** The x. */
     public double x;
+    
+    /** The y. */
     public double y;
+    
+    /** The z. */
     public double z;
 
+    /** The Constant ZERO. */
     public static final Vector3d ZERO = new Vector3d(0, 0, 0);
+    
+    /** The Constant UNITY. */
     public static final Vector3d UNITY = new Vector3d(1, 1, 1);
+    
+    /** The Constant X_ONE. */
     public static final Vector3d X_ONE = new Vector3d(1, 0, 0);
+    
+    /** The Constant Y_ONE. */
     public static final Vector3d Y_ONE = new Vector3d(0, 1, 0);
+    
+    /** The Constant Z_ONE. */
     public static final Vector3d Z_ONE = new Vector3d(0, 0, 1);
 
     /**
@@ -84,6 +99,9 @@ public class Vector3d {
         this.z = 0;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Vector3d clone() {
         return new Vector3d(x, y, z);
@@ -92,7 +110,7 @@ public class Vector3d {
     /**
      * Returns a negated copy of this vector.
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return a negated copy of this vector
      */
@@ -105,7 +123,7 @@ public class Vector3d {
      *
      * @param v the vector to add
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return the sum of this vector and the specified vector
      */
@@ -118,7 +136,7 @@ public class Vector3d {
      *
      * @param v the vector to subtract
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return the difference of this vector and the specified vector
      */
@@ -131,7 +149,7 @@ public class Vector3d {
      *
      * @param a the value
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return the product of this vector and the specified value
      */
@@ -144,7 +162,7 @@ public class Vector3d {
      *
      * @param a the vector
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return the product of this vector and the specified vector
      */
@@ -157,7 +175,7 @@ public class Vector3d {
      *
      * @param a the value
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return this vector devided by the specified value
      */
@@ -168,7 +186,7 @@ public class Vector3d {
     /**
      * Returns the dot product of this vector and the specified vector.
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @param a the second vector
      *
@@ -181,7 +199,7 @@ public class Vector3d {
     /**
      * Linearly interpolates between this and the specified vector.
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @param a vector
      * @param t interpolation value
@@ -196,7 +214,7 @@ public class Vector3d {
     /**
      * Returns the magnitude of this vector.
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return the magnitude of this vector
      */
@@ -207,7 +225,7 @@ public class Vector3d {
     /**
      * Returns the squared magnitude of this vector (<code>this.dot(this)</code>).
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return the squared magnitude of this vector
      */
@@ -218,7 +236,7 @@ public class Vector3d {
     /**
      * Returns a normalized copy of this vector with length {@code 1}.
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return a normalized copy of this vector with length {@code 1}
      */
@@ -229,7 +247,7 @@ public class Vector3d {
     /**
      * Returns the cross product of this vector and the specified vector.
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @param a the vector
      *
@@ -301,7 +319,7 @@ public class Vector3d {
      *
      * @param transform the transform to apply
      *
-     * <b>Note:</b> this vector is not modified.
+     *  Note:  this vector is not modified.
      *
      * @return a transformed copy of this vector
      */
@@ -313,7 +331,7 @@ public class Vector3d {
      * Applies the specified transformation to this vector.
      *
      * @param transform the transform to apply
-     *
+     * @param amount the amount
      * @return this vector
      */
     public Vector3d transform(Transform transform, double amount) {
@@ -324,20 +342,26 @@ public class Vector3d {
      * Returns a transformed copy of this vector.
      *
      * @param transform the transform to apply
-     *
-     * <b>Note:</b> this vector is not modified.
-     *
+     * 
+     *  Note:  this vector is not modified.
+     * @param amount the amount
      * @return a transformed copy of this vector
      */
     public Vector3d transformed(Transform transform, double amount) {
         return clone().transform(transform, amount);
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return "[" + x + ", " + y + ", " + z + "]";
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -370,6 +394,9 @@ public class Vector3d {
         return acos(max(min(val, 1), -1)); // compensate rounding errors
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         int hash = 5;
@@ -400,33 +427,30 @@ public class Vector3d {
 //        return true;
 //    }
     /**
-     * Creates a new vector with specified {@code x}
-     *
-     * @param x x value
-     * @return a new vector {@code [x,0,0]}
-     *
-     */
+ * Creates a new vector with specified {@code x}.
+ *
+ * @param x x value
+ * @return a new vector {@code [x,0,0]}
+ */
     public static Vector3d x(double x) {
         return new Vector3d(x, 0, 0);
     }
 
     /**
-     * Creates a new vector with specified {@code y}
+     * Creates a new vector with specified {@code y}.
      *
      * @param y y value
      * @return a new vector {@code [0,y,0]}
-     *
      */
     public static Vector3d y(double y) {
         return new Vector3d(0, y, 0);
     }
 
     /**
-     * Creates a new vector with specified {@code z}
+     * Creates a new vector with specified {@code z}.
      *
      * @param z z value
      * @return a new vector {@code [0,0,z]}
-     *
      */
     public static Vector3d z(double z) {
         return new Vector3d(0, 0, z);
@@ -435,7 +459,7 @@ public class Vector3d {
     /**
      * Creates a new vector which is orthogonal to this.
      *
-     * this_i , this_j , this_k => i,j,k € {1,2,3} permutation
+     * this_i , this_j , this_k greater than or equal to i,j,k € {1,2,3} permutation
      *
      * looking for orthogonal vector o to vector this: this_i * o_i + this_j *
      * o_j + this_k * o_k = 0

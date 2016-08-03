@@ -8,22 +8,34 @@ package eu.mihosoft.vrl.v3d;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
 import java.util.List;
 
+import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
+
+// TODO: Auto-generated Javadoc
 /**
+ * The Class RoundedCube.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class RoundedCube implements Primitive {
+public class RoundedCube extends Primitive {
 
     /**
      * Cube dimensions.
      */
     private Vector3d dimensions;
+    
+    /** The center. */
     private Vector3d center;
-    private boolean centered;
+    
+    /** The centered. */
+    private boolean centered=true;
 
+    /** The properties. */
     private final PropertyStorage properties = new PropertyStorage();
 
+    /** The corner radius. */
     private double cornerRadius = 0.1;
+    
+    /** The resolution. */
     private int resolution = 8;
 
     /**
@@ -44,6 +56,17 @@ public class RoundedCube implements Primitive {
     public RoundedCube(double size) {
         center = new Vector3d(0, 0, 0);
         dimensions = new Vector3d(size, size, size);
+    }
+    
+
+    public RoundedCube(LengthParameter w, LengthParameter h, LengthParameter d) {
+        this(Vector3d.ZERO, new Vector3d(w.getMM(), h.getMM(), d.getMM()));
+        parametrics.add(w);
+        parametrics.add(h);
+        parametrics.add(d);
+    }
+    public RoundedCube(LengthParameter size) {
+        this(size,size,size);
     }
 
     /**
@@ -71,6 +94,9 @@ public class RoundedCube implements Primitive {
     }
 
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.Primitive#toPolygons()
+     */
     @Override
     public List<Polygon> toPolygons() {
         CSG spherePrototype = 
@@ -106,12 +132,17 @@ public class RoundedCube implements Primitive {
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see eu.mihosoft.vrl.v3d.Primitive#getProperties()
+     */
     @Override
     public PropertyStorage getProperties() {
         return properties;
     }
 
     /**
+     * Gets the center.
+     *
      * @return the center
      */
     public Vector3d getCenter() {
@@ -119,6 +150,8 @@ public class RoundedCube implements Primitive {
     }
 
     /**
+     * Sets the center.
+     *
      * @param center the center to set
      */
     public void setCenter(Vector3d center) {
@@ -126,6 +159,8 @@ public class RoundedCube implements Primitive {
     }
 
     /**
+     * Gets the dimensions.
+     *
      * @return the dimensions
      */
     public Vector3d getDimensions() {
@@ -133,6 +168,8 @@ public class RoundedCube implements Primitive {
     }
 
     /**
+     * Sets the dimensions.
+     *
      * @param dimensions the dimensions to set
      */
     public void setDimensions(Vector3d dimensions) {
@@ -149,6 +186,8 @@ public class RoundedCube implements Primitive {
     }
 
     /**
+     * Gets the resolution.
+     *
      * @return the resolution
      */
     public int getResolution() {
@@ -156,6 +195,8 @@ public class RoundedCube implements Primitive {
     }
 
     /**
+     * Sets the resolution.
+     *
      * @param resolution the resolution to set
      */
     public void setResolution(int resolution) {
@@ -163,15 +204,19 @@ public class RoundedCube implements Primitive {
     }
     
      /**
-     * @param resolution the resolution to set
-     * @return this cube
-     */
+      * Resolution.
+      *
+      * @param resolution the resolution to set
+      * @return this cube
+      */
     public RoundedCube resolution(int resolution) {
         this.resolution = resolution;
         return this;
     }
 
     /**
+     * Gets the corner radius.
+     *
      * @return the corner radius
      */
     public double getCornerRadius() {
@@ -179,6 +224,8 @@ public class RoundedCube implements Primitive {
     }
 
     /**
+     * Sets the corner radius.
+     *
      * @param cornerRadius the corner radius to set
      */
     public void setCornerRadius(double cornerRadius) {
@@ -186,6 +233,8 @@ public class RoundedCube implements Primitive {
     }
     
     /**
+     * Corner radius.
+     *
      * @param cornerRadius the corner radius to set
      * @return this cube
      */

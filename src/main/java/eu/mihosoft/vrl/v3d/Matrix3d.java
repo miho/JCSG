@@ -5,20 +5,42 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+// TODO: Auto-generated Javadoc
 /**
- * 3D Matrix3d
+ * 3D Matrix3d.
  *
  * @author cpoliwoda
  */
 public class Matrix3d {
 
+    /** The m13. */
     public double m11, m12, m13;
+    
+    /** The m23. */
     public double m21, m22, m23;
+    
+    /** The m33. */
     public double m31, m32, m33;
 
+    /** The Constant ZERO. */
     public static final Matrix3d ZERO = new Matrix3d(0, 0, 0, 0, 0, 0, 0, 0, 0);
+    
+    /** The Constant UNITY. */
     public static final Matrix3d UNITY = new Matrix3d(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
+    /**
+     * Instantiates a new matrix3d.
+     *
+     * @param m11 the m11
+     * @param m12 the m12
+     * @param m13 the m13
+     * @param m21 the m21
+     * @param m22 the m22
+     * @param m23 the m23
+     * @param m31 the m31
+     * @param m32 the m32
+     * @param m33 the m33
+     */
     public Matrix3d(double m11, double m12, double m13,
             double m21, double m22, double m23,
             double m31, double m32, double m33) {
@@ -33,6 +55,9 @@ public class Matrix3d {
         this.m33 = m33;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return "[" + m11 + ", " + m12 + ", " + m13 + "]\n"
@@ -40,6 +65,9 @@ public class Matrix3d {
                 + "[" + m31 + ", " + m32 + ", " + m33 + "]";
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -84,7 +112,7 @@ public class Matrix3d {
      *
      * @param a the value
      *
-     * <b>Note:</b> this matrix is not modified.
+     *  Note:  this matrix is not modified.
      *
      * @return the product of this matrix and the specified value
      */
@@ -100,7 +128,7 @@ public class Matrix3d {
      *
      * @param a the vector
      *
-     * <b>Note:</b> the vector is not modified.
+     *  Note:  the vector is not modified.
      *
      * @return the product of this matrix and the specified vector
      */

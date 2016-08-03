@@ -1,7 +1,7 @@
 /**
  * Transform.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -14,10 +14,10 @@
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
@@ -29,12 +29,13 @@
  * The views and conclusions contained in the software and documentation are
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of Michael Hoffer
- * <info@michaelhoffer.de>.
+ * info@michaelhoffer.de.
  */
 package eu.mihosoft.vrl.v3d;
 
 import javax.vecmath.Matrix4d;
 
+// TODO: Auto-generated Javadoc
 /**
  * Transform. Transformations (translation, rotation, scale) can be applied to
  * geometrical objects like {@link CSG}, {@link Polygon}, {@link Vertex} and
@@ -43,14 +44,14 @@ import javax.vecmath.Matrix4d;
  * This transform class uses the builder pattern to define combined
  * transformations.<br><br>
  *
- * <b>Example:</b>
+ *  Example: 
  *
- * <blockquote><pre>
+ *   
  * // t applies rotation and translation
  * Transform t = Transform.unity().rotX(45).translate(2,1,0);
- * </pre></blockquote>
+ *   
  *
- * <b>TODO:</b> use quaternions for rotations.
+ *  TODO:  use quaternions for rotations.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
@@ -68,10 +69,10 @@ public class Transform {
      */
     public Transform() {
         m = new Matrix4d();
-        m.m00 = 1;
-        m.m11 = 1;
-        m.m22 = 1;
-        m.m33 = 1;
+        getInternalMatrix().m00 = 1;
+        getInternalMatrix().m11 = 1;
+        getInternalMatrix().m22 = 1;
+        getInternalMatrix().m33 = 1;
     }
 
     /**
@@ -88,7 +89,7 @@ public class Transform {
      *
      * @param m matrix
      */
-    private Transform(Matrix4d m) {
+    public Transform(Matrix4d m) {
         this.m = m;
     }
 
@@ -105,7 +106,7 @@ public class Transform {
         double elemenents[] = {
             1, 0, 0, 0, 0, cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -123,7 +124,7 @@ public class Transform {
         double elemenents[] = {
             cos, 0, -sin, 0, 0, 1, 0, 0, sin, 0, cos, 0, 0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -141,7 +142,7 @@ public class Transform {
         double elemenents[] = {
             cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -198,7 +199,7 @@ public class Transform {
             0, 0, 1, z,
             0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -216,7 +217,7 @@ public class Transform {
             0, 0, 1, 0,
             0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -234,7 +235,7 @@ public class Transform {
             0, 0, 1, 0,
             0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -252,7 +253,7 @@ public class Transform {
             0, 0, 1, value,
             0, 0, 0, 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -277,7 +278,7 @@ public class Transform {
             (-2.0 * nx * nz), (-2.0 * ny * nz), (1.0 - 2.0 * nz * nz), 0,
             (-2.0 * nx * w), (-2.0 * ny * w), (-2.0 * nz * w), 1
         };
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -296,7 +297,7 @@ public class Transform {
         
         double elemenents[] = {
             vec.x, 0, 0, 0, 0, vec.y, 0, 0, 0, 0, vec.z, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -317,7 +318,7 @@ public class Transform {
         
         double elemenents[] = {
             x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -337,7 +338,7 @@ public class Transform {
         
         double elemenents[] = {
             s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -357,7 +358,7 @@ public class Transform {
         
         double elemenents[] = {
             s, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -376,7 +377,7 @@ public class Transform {
         
         double elemenents[] = {
             1, 0, 0, 0, 0, s, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -395,7 +396,7 @@ public class Transform {
         
         double elemenents[] = {
             1, 0, 0, 0, 0, 1, 0, 0, 0, 0, s, 0, 0, 0, 0, 1};
-        m.mul(new Matrix4d(elemenents));
+        getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
     }
 
@@ -408,9 +409,9 @@ public class Transform {
      */
     public Vector3d transform(Vector3d vec) {
         double x, y;
-        x = m.m00 * vec.x + m.m01 * vec.y + m.m02 * vec.z + m.m03;
-        y = m.m10 * vec.x + m.m11 * vec.y + m.m12 * vec.z + m.m13;
-        vec.z = m.m20 * vec.x + m.m21 * vec.y + m.m22 * vec.z + m.m23;
+        x = getInternalMatrix().m00 * vec.x + getInternalMatrix().m01 * vec.y + getInternalMatrix().m02 * vec.z + getInternalMatrix().m03;
+        y = getInternalMatrix().m10 * vec.x + getInternalMatrix().m11 * vec.y + getInternalMatrix().m12 * vec.z + getInternalMatrix().m13;
+        vec.z = getInternalMatrix().m20 * vec.x + getInternalMatrix().m21 * vec.y + getInternalMatrix().m22 * vec.z + getInternalMatrix().m23;
         vec.x = x;
         vec.y = y;
 
@@ -432,9 +433,9 @@ public class Transform {
         double prevZ = vec.z;
         
         final double x, y;
-        x = m.m00 * vec.x + m.m01 * vec.y + m.m02 * vec.z + m.m03;
-        y = m.m10 * vec.x + m.m11 * vec.y + m.m12 * vec.z + m.m13;
-        vec.z = m.m20 * vec.x + m.m21 * vec.y + m.m22 * vec.z + m.m23;
+        x = getInternalMatrix().m00 * vec.x + getInternalMatrix().m01 * vec.y + getInternalMatrix().m02 * vec.z + getInternalMatrix().m03;
+        y = getInternalMatrix().m10 * vec.x + getInternalMatrix().m11 * vec.y + getInternalMatrix().m12 * vec.z + getInternalMatrix().m13;
+        vec.z = getInternalMatrix().m20 * vec.x + getInternalMatrix().m21 * vec.y + getInternalMatrix().m22 * vec.z + getInternalMatrix().m23;
         vec.x = x;
         vec.y = y;
         
@@ -477,12 +478,12 @@ public class Transform {
      * factors, the largest of the x, y, and z scale factors distill be
      * returned.
      *
-     * <b>Note:</b> this transformation is not modified.
+     *  Note:  this transformation is not modified.
      *
      * @return the scale factor of this transformation
      */
     public double getScale() {
-        return m.getScale();
+        return getInternalMatrix().getScale();
     }
 
     /**
@@ -493,7 +494,7 @@ public class Transform {
      * <code>false</code> otherwise
      */
     public boolean isMirror() {
-        return m.determinant() < 0;
+        return getInternalMatrix().determinant() < 0;
     }
 
     /**
@@ -504,12 +505,19 @@ public class Transform {
      * @return this transform
      */
     public Transform apply(Transform t) {
-        m.mul(t.m);
+        getInternalMatrix().mul(t.getInternalMatrix());
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        return m.toString();
+        return getInternalMatrix().toString();
     }
+
+	public Matrix4d getInternalMatrix() {
+		return m;
+	}
 }

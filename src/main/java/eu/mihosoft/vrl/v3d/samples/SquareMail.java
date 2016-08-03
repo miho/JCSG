@@ -13,12 +13,21 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class SquareMail.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class SquareMail {
 
+    /**
+     * To csg.
+     *
+     * @param numX the num x
+     * @param numY the num y
+     * @return the csg
+     */
     private CSG toCSG(int numX, int numY) {
 
 //        CSG.setDefaultOptType(CSG.OptType.POLYGON_BOUND);
@@ -102,6 +111,12 @@ public class SquareMail {
 
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("squaremail-test.stl"), new SquareMail().toCSG(12,4).toStlString());
     }

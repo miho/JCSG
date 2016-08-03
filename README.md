@@ -1,7 +1,11 @@
 JCSG
 =======
 
-[![Build Status](https://travis-ci.org/miho/JCSG.png?branch=master)](https://travis-ci.org/miho/JCSG) [ ![Download](https://api.bintray.com/packages/miho/JCSG/jcsg/images/download.svg) ](https://bintray.com/miho/JCSG/jcsg/_latestVersion)
+[![Join the chat at https://gitter.im/NeuronRobotics/JCSG](https://badges.gitter.im/NeuronRobotics/JCSG.svg)](https://gitter.im/NeuronRobotics/JCSG?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+**Main Documentation** as [Part of BowlerStudio](http://neuronrobotics.com/JavaCAD/Overview/)
+
+[![Build Status](https://travis-ci.org/NeuronRobotics/JCSG.png?branch=master)](https://travis-ci.org/NeuronRobotics/JCSG)
 
 Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses an optimized CSG algorithm based on [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
 
@@ -19,9 +23,23 @@ In addition to CSG this library provides the following features:
 
 ![](/resources/screenshot2.png)
 
-To see what's possible with JCSG try [JFXScad](https://github.com/miho/JFXScad).
 
-![](https://raw.githubusercontent.com/miho/JFXScad/master/resources/img/screenshot-02.png)
+
+##Maven
+```
+<dependency>
+  <groupId>com.neuronrobotics</groupId>
+  <artifactId>JCSG</artifactId>
+  <version>0.6.5</version>
+  <type>zip</type>
+</dependency>
+```
+
+##Gradle
+```
+compile "com.neuronrobotics:JCSG:0.6.5"
+
+```
 
 ## How to Build JCSG
 
@@ -41,8 +59,10 @@ by calling the `assemble` task.
 Navigate to the [Gradle](http://www.gradle.org/) project (e.g., `path/to/JCSG`) and enter the following command
 
 #### Bash (Linux/OS X/Cygwin/other Unix-like shell)
-
-    sh gradlew assemble
+    
+    sudo update-alternatives --config java # select Java 8
+    sudo apt-get install libopenjfx-java
+    bash gradlew assemble
     
 #### Windows (CMD)
 

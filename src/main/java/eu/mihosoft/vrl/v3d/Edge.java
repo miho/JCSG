@@ -14,16 +14,29 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class Edge.
  *
  * @author miho
  */
 public class Edge {
 
+    /** The p1. */
     private final Vertex p1;
+    
+    /** The p2. */
     private final Vertex p2;
+    
+    /** The direction. */
     private final Vector3d direction;
 
+    /**
+     * Instantiates a new edge.
+     *
+     * @param p1 the p1
+     * @param p2 the p2
+     */
     public Edge(Vertex p1, Vertex p2) {
         this.p1 = p1;
         this.p2 = p2;
@@ -32,6 +45,8 @@ public class Edge {
     }
 
     /**
+     * Gets the p1.
+     *
      * @return the p1
      */
     public Vertex getP1() {
@@ -45,8 +60,10 @@ public class Edge {
 //        this.p1 = p1;
 //    }
     /**
-     * @return the p2
-     */
+ * Gets the p2.
+ *
+ * @return the p2
+ */
     public Vertex getP2() {
         return p2;
     }
@@ -56,6 +73,12 @@ public class Edge {
 //     */
 //    public void setP2(Vertex p2) {
 //        this.p2 = p2;
+/**
+ * From polygon.
+ *
+ * @param poly the poly
+ * @return the list
+ */
 //    }
     public static List<Edge> fromPolygon(Polygon poly) {
         List<Edge> result = new ArrayList<>();
@@ -69,14 +92,33 @@ public class Edge {
         return result;
     }
 
+    /**
+     * To vertices.
+     *
+     * @param edges the edges
+     * @return the list
+     */
     public static List<Vertex> toVertices(List<Edge> edges) {
         return edges.stream().map(e -> e.p1).collect(Collectors.toList());
     }
 
+    /**
+     * To points.
+     *
+     * @param edges the edges
+     * @return the list
+     */
     public static List<Vector3d> toPoints(List<Edge> edges) {
         return edges.stream().map(e -> e.p1.pos).collect(Collectors.toList());
     }
 
+    /**
+     * To polygon.
+     *
+     * @param points the points
+     * @param plane the plane
+     * @return the polygon
+     */
     private static Polygon toPolygon(List<Vector3d> points, Plane plane) {
 
 //        List<Vector3d> points = edges.stream().().map(e -> e.p1.pos).
@@ -94,6 +136,13 @@ public class Edge {
         return p;
     }
 
+    /**
+     * To polygons.
+     *
+     * @param boundaryEdges the boundary edges
+     * @param plane the plane
+     * @return the list
+     */
     public static List<Polygon> toPolygons(List<Edge> boundaryEdges, Plane plane) {
 
         List<Vector3d> boundaryPath = new ArrayList<>();
@@ -128,28 +177,61 @@ public class Edge {
         return result;
     }
 
+    /**
+     * The Class Node.
+     *
+     * @param <T> the generic type
+     */
     private static class Node<T> {
 
+        /** The parent. */
         private Node parent;
+        
+        /** The children. */
         private final List<Node> children = new ArrayList<>();
+        
+        /** The index. */
         private final int index;
+        
+        /** The value. */
         private final T value;
+        
+        /** The is hole. */
         private boolean isHole;
 
+        /**
+         * Instantiates a new node.
+         *
+         * @param index the index
+         * @param value the value
+         */
         public Node(int index, T value) {
             this.index = index;
             this.value = value;
         }
 
+        /**
+         * Adds the child.
+         *
+         * @param index the index
+         * @param value the value
+         */
         public void addChild(int index, T value) {
             children.add(new Node(index, value));
         }
 
+        /**
+         * Gets the children.
+         *
+         * @return the children
+         */
         public List<Node> getChildren() {
             return this.children;
         }
 
         /**
+         * Gets the parent.
+         *
          * @return the parent
          */
         public Node getParent() {
@@ -157,6 +239,8 @@ public class Edge {
         }
 
         /**
+         * Gets the index.
+         *
          * @return the index
          */
         public int getIndex() {
@@ -164,12 +248,17 @@ public class Edge {
         }
 
         /**
+         * Gets the value.
+         *
          * @return the value
          */
         public T getValue() {
             return value;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#hashCode()
+         */
         @Override
         public int hashCode() {
             int hash = 7;
@@ -177,6 +266,9 @@ public class Edge {
             return hash;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
         @Override
         public boolean equals(Object obj) {
             if (obj == null) {
@@ -192,6 +284,11 @@ public class Edge {
             return true;
         }
 
+        /**
+         * Distance to root.
+         *
+         * @return the int
+         */
         public int distanceToRoot() {
             int dist = 0;
 
@@ -206,6 +303,8 @@ public class Edge {
         }
 
         /**
+         * Checks if is checks if is hole.
+         *
          * @return the isHole
          */
         public boolean isIsHole() {
@@ -213,6 +312,8 @@ public class Edge {
         }
 
         /**
+         * Sets the checks if is hole.
+         *
          * @param isHole the isHole to set
          */
         public void setIsHole(boolean isHole) {
@@ -221,8 +322,15 @@ public class Edge {
 
     }
 
+    /** The Constant KEY_POLYGON_HOLES. */
     public static final String KEY_POLYGON_HOLES = "jcsg:edge:polygon-holes";
 
+    /**
+     * Boundary paths with holes.
+     *
+     * @param boundaryPaths the boundary paths
+     * @return the list
+     */
     public static List<Polygon> boundaryPathsWithHoles(List<Polygon> boundaryPaths) {
 
         List<Polygon> result = boundaryPaths.stream().
@@ -295,7 +403,7 @@ public class Edge {
      * Returns a list of all boundary paths.
      *
      * @param boundaryEdges boundary edges (all paths must be closed)
-     * @return
+     * @return the list
      */
     private static List<Polygon> boundaryPaths(List<Edge> boundaryEdges) {
         List<Polygon> result = new ArrayList<>();
@@ -374,6 +482,13 @@ public class Edge {
         return -1;
     }
 
+    /**
+     * _to polygons.
+     *
+     * @param boundaryEdges the boundary edges
+     * @param plane the plane
+     * @return the list
+     */
     public static List<Polygon> _toPolygons(List<Edge> boundaryEdges, Plane plane) {
 
         List<Vector3d> boundaryPath = new ArrayList<>();
@@ -448,6 +563,9 @@ public class Edge {
         return contains(p, Plane.EPSILON);
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -456,6 +574,9 @@ public class Edge {
         return hash;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -474,6 +595,11 @@ public class Edge {
         return true;
     }
 
+    /**
+     * Gets the direction.
+     *
+     * @return the direction
+     */
     public Vector3d getDirection() {
         return direction;
     }
@@ -481,7 +607,7 @@ public class Edge {
     /**
      * Returns the the point of this edge that is closest to the specified edge.
      *
-     * <b>NOTE:</b> returns an empty optional if the edges are parallel
+     *  NOTE:  returns an empty optional if the edges are parallel
      *
      * @param e the edge to check
      * @return the the point of this edge that is closest to the specified edge
@@ -531,7 +657,7 @@ public class Edge {
     /**
      * Returns the intersection point between this edge and the specified edge.
      *
-     * <b>NOTE:</b> returns an empty optional if the edges are parallel or if
+     *  NOTE:  returns an empty optional if the edges are parallel or if
      * the intersection point is not inside the specified edge segment
      *
      * @param e edge to intersect
@@ -555,6 +681,12 @@ public class Edge {
         }
     }
 
+    /**
+     * Boundary polygons.
+     *
+     * @param csg the csg
+     * @return the list
+     */
     public static List<Polygon> boundaryPolygons(CSG csg) {
         List<Polygon> result = new ArrayList<>();
 
@@ -565,6 +697,12 @@ public class Edge {
         return result;
     }
 
+    /**
+     * Boundary edges of plane group.
+     *
+     * @param planeGroup the plane group
+     * @return the list
+     */
     private static List<Edge> boundaryEdgesOfPlaneGroup(List<Polygon> planeGroup) {
         List<Edge> edges = new ArrayList<>();
 
@@ -621,6 +759,12 @@ public class Edge {
         return realBndEdges;
     }
 
+    /**
+     * Boundary polygons of plane group.
+     *
+     * @param planeGroup the plane group
+     * @return the list
+     */
     private static List<Polygon> boundaryPolygonsOfPlaneGroup(
             List<Polygon> planeGroup) {
 
@@ -647,6 +791,13 @@ public class Edge {
         return result;
     }
 
+    /**
+     * False boundary edge shared with other edge.
+     *
+     * @param fbe the fbe
+     * @param e the e
+     * @return true, if successful
+     */
     private static boolean falseBoundaryEdgeSharedWithOtherEdge(Edge fbe, Edge e) {
 
         // we don't consider edges with shared end-points since we are only
@@ -663,6 +814,12 @@ public class Edge {
         return fbe.contains(e.getP1().pos) || fbe.contains(e.getP2().pos);
     }
 
+    /**
+     * Search plane groups.
+     *
+     * @param polygons the polygons
+     * @return the list
+     */
     private static List<List<Polygon>> searchPlaneGroups(List<Polygon> polygons) {
         List<List<Polygon>> planeGroups = new ArrayList<>();
         boolean[] used = new boolean[polygons.size()];

@@ -34,17 +34,36 @@ package eu.mihosoft.vrl.v3d.ext.openjfx.shape3d.symbolic;
 import eu.mihosoft.vrl.v3d.ext.openjfx.shape3d.PolygonMesh;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Polygon mesh where the points are symbolic. That is, the values of the 
  * points depend on other variables and they can be updated appropriately.
  */
 public class SymbolicPolygonMesh {
+    
+    /** The points. */
     public SymbolicPointArray points;
+    
+    /** The tex coords. */
     public float[] texCoords;
+    
+    /** The faces. */
     public int[][] faces;
+    
+    /** The face smoothing groups. */
     public int[] faceSmoothingGroups;
+    
+    /** The num edges in faces. */
     private int numEdgesInFaces = -1;
 
+    /**
+     * Instantiates a new symbolic polygon mesh.
+     *
+     * @param points the points
+     * @param texCoords the tex coords
+     * @param faces the faces
+     * @param faceSmoothingGroups the face smoothing groups
+     */
     public SymbolicPolygonMesh(SymbolicPointArray points, float[] texCoords, int[][] faces, int[] faceSmoothingGroups) {
         this.points = points;
         this.texCoords = texCoords;
@@ -52,6 +71,11 @@ public class SymbolicPolygonMesh {
         this.faceSmoothingGroups = faceSmoothingGroups;
     }
     
+    /**
+     * Instantiates a new symbolic polygon mesh.
+     *
+     * @param mesh the mesh
+     */
     public SymbolicPolygonMesh(PolygonMesh mesh) {
         this.points = new OriginalPointArray(mesh);
         this.texCoords = mesh.getTexCoords().toArray(this.texCoords);
@@ -59,6 +83,11 @@ public class SymbolicPolygonMesh {
         this.faceSmoothingGroups = mesh.getFaceSmoothingGroups().toArray(null);
     }
     
+    /**
+     * Gets the num edges in faces.
+     *
+     * @return the num edges in faces
+     */
     public int getNumEdgesInFaces() {
         if (numEdgesInFaces == -1) {
             numEdgesInFaces = 0;

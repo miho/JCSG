@@ -15,14 +15,23 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class DualMaterialRobot.
  *
  * @author miho
  */
 public class DualMaterialRobot {
 
+    /** The robot. */
     private static CSG robot;
 
+    /**
+     * Middle to csg.
+     *
+     * @return the csg
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static CSG middleToCSG() throws IOException {
 
         if (robot == null) {
@@ -37,6 +46,12 @@ public class DualMaterialRobot {
         return robot.intersect(middle);
     }
 
+    /**
+     * Top bottom csg.
+     *
+     * @return the csg
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static CSG topBottomCSG() throws IOException {
 
         if (robot == null) {
@@ -51,6 +66,12 @@ public class DualMaterialRobot {
 
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
 //        FileUtil.write(Paths.get("robot-color-1.stl"), DualMaterialRobot.topBottomCSG().toStlString());

@@ -1,7 +1,7 @@
 /**
  * AdvancingFront.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,10 +25,11 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
+// TODO: Auto-generated Javadoc
 /* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
@@ -61,14 +62,27 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
  */
 
 /**
+ * The Class AdvancingFront.
+ *
  * @author Thomas ??? (thahlen@gmail.com)
  */
 class AdvancingFront {
 
+    /** The head. */
     public AdvancingFrontNode head;
+    
+    /** The tail. */
     public AdvancingFrontNode tail;
+    
+    /** The search. */
     protected AdvancingFrontNode search;
 
+    /**
+     * Instantiates a new advancing front.
+     *
+     * @param head the head
+     * @param tail the tail
+     */
     public AdvancingFront(AdvancingFrontNode head, AdvancingFrontNode tail) {
         this.head = head;
         this.tail = tail;
@@ -77,14 +91,27 @@ class AdvancingFront {
         addNode(tail);
     }
 
+    /**
+     * Adds the node.
+     *
+     * @param node the node
+     */
     public void addNode(AdvancingFrontNode node) {
 //        _searchTree.put( node.key, node );
     }
 
+    /**
+     * Removes the node.
+     *
+     * @param node the node
+     */
     public void removeNode(AdvancingFrontNode node) {
 //        _searchTree.delete( node.key );
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         AdvancingFrontNode node = head;
@@ -96,6 +123,12 @@ class AdvancingFront {
         return sb.toString();
     }
 
+    /**
+     * Find search node.
+     *
+     * @param x the x
+     * @return the advancing front node
+     */
     private final AdvancingFrontNode findSearchNode(double x) {
         // TODO: implement BST index 
         return search;
@@ -103,15 +136,21 @@ class AdvancingFront {
 
     /**
      * We use a balancing tree to locate a node smaller or equal to given key
-     * value
+     * value.
      *
-     * @param x
-     * @return
+     * @param point the point
+     * @return the advancing front node
      */
     public AdvancingFrontNode locateNode(TriangulationPoint point) {
         return locateNode(point.getX());
     }
 
+    /**
+     * Locate node.
+     *
+     * @param x the x
+     * @return the advancing front node
+     */
     private AdvancingFrontNode locateNode(double x) {
         AdvancingFrontNode node = findSearchNode(x);
         if (x < node.value) {
@@ -134,10 +173,10 @@ class AdvancingFront {
 
     /**
      * This implementation will use simple node traversal algorithm to find a
-     * point on the front
+     * point on the front.
      *
-     * @param point
-     * @return
+     * @param point the point
+     * @return the advancing front node
      */
     public AdvancingFrontNode locatePoint(final TriangulationPoint point) {
         final double px = point.getX();

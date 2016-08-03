@@ -12,18 +12,31 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class RoundedCubeSample.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class RoundedCubeSample {
 
    
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
         return new RoundedCube(3).resolution(8).cornerRadius(0.2).toCSG();
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         FileUtil.write(Paths.get("rounded-cube.stl"), new RoundedCubeSample().toCSG().toStlString());

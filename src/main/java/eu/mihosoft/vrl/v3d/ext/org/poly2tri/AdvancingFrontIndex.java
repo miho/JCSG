@@ -1,7 +1,7 @@
 /**
  * AdvancingFrontIndex.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
+ * Copyright 2014-2014 Michael Hoffer info@michaelhoffer.de. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -13,9 +13,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer info@michaelhoffer.de "AS IS" AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer info@michaelhoffer.de OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -25,10 +25,17 @@
  *
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Michael Hoffer <info@michaelhoffer.de>.
+ * or implied, of Michael Hoffer info@michaelhoffer.de.
  */ 
 
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
+// TODO: Auto-generated Javadoc
+
+/**
+ * The Class AdvancingFrontIndex.
+ *
+ * @param <A> the generic type
+ */
 /* Poly2Tri
  * Copyright (c) 2009-2010, Poly2Tri Contributors
  * http://code.google.com/p/poly2tri/
@@ -61,15 +68,32 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
  */
 class AdvancingFrontIndex<A>
 {
+    
+    /** The _max. */
     double _min,_max;
+    
+    /** The _root. */
     IndexNode<A> _root;
     
+    /**
+     * Instantiates a new advancing front index.
+     *
+     * @param min the min
+     * @param max the max
+     * @param depth the depth
+     */
     public AdvancingFrontIndex( double min, double max, int depth )
     {
         if( depth > 5 ) depth = 5;
         _root = createIndex( depth );
     }
     
+    /**
+     * Creates the index.
+     *
+     * @param n the n
+     * @return the index node
+     */
     private IndexNode<A> createIndex( int n )
     {
         IndexNode<A> node = null;
@@ -82,21 +106,46 @@ class AdvancingFrontIndex<A>
         return node;
     }
 
+    /**
+     * Fetch and remove index.
+     *
+     * @param key the key
+     * @return the a
+     */
     public A fetchAndRemoveIndex( A key )
     {
         return null;
     }
     
+    /**
+     * Fetch and insert index.
+     *
+     * @param key the key
+     * @return the a
+     */
     public A fetchAndInsertIndex( A key )
     {
         return null;
     }
 
+    /**
+     * The Class IndexNode.
+     *
+     * @param <A> the generic type
+     */
     class IndexNode<A>
     {
+        
+        /** The value. */
         A value;
+        
+        /** The smaller. */
         IndexNode<A> smaller;
+        
+        /** The bigger. */
         IndexNode<A> bigger;
+        
+        /** The range. */
         double range;
     }
 }

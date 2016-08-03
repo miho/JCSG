@@ -31,16 +31,28 @@
  */
 package eu.mihosoft.vrl.v3d.ext.openjfx.shape3d.symbolic;
 
+// TODO: Auto-generated Javadoc
 /**
  * A 3D geometric point array that has the x, y, z coordinates of every point
  * as a function of other variables.
  */
 public abstract class SymbolicPointArray {
+    
+    /** The data. */
     final public float[] data;
+    
+    /** The num points. */
     final public int numPoints;
+    
+    /** The Constant NUM_COMPONENTS_PER_POINT. */
     // x, y, z as stated.
     static final int NUM_COMPONENTS_PER_POINT = 3;
     
+    /**
+     * Instantiates a new symbolic point array.
+     *
+     * @param data the data
+     */
     protected SymbolicPointArray(float[] data) {
         this.data = data;
         this.numPoints = data.length / NUM_COMPONENTS_PER_POINT;

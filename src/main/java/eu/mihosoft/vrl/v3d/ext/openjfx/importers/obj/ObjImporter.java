@@ -55,11 +55,18 @@ import javafx.scene.shape.Mesh;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 
+// TODO: Auto-generated Javadoc
 /**
- * Obj file reader
+ * Obj file reader.
  */
 public class ObjImporter {
 
+    /**
+     * Vertex index.
+     *
+     * @param vertexIndex the vertex index
+     * @return the int
+     */
     private int vertexIndex(int vertexIndex) {
         if (vertexIndex < 0) {
             return vertexIndex + vertexes.size() / 3;
@@ -68,6 +75,12 @@ public class ObjImporter {
         }
     }
 
+    /**
+     * Uv index.
+     *
+     * @param uvIndex the uv index
+     * @return the int
+     */
     private int uvIndex(int uvIndex) {
         if (uvIndex < 0) {
             return uvIndex + uvs.size() / 2;
@@ -76,6 +89,12 @@ public class ObjImporter {
         }
     }
 
+    /**
+     * Normal index.
+     *
+     * @param normalIndex the normal index
+     * @return the int
+     */
     private int normalIndex(int normalIndex) {
         if (normalIndex < 0) {
             return normalIndex + normals.size() / 3;
@@ -84,63 +103,142 @@ public class ObjImporter {
         }
     }
 
+    /** The debug. */
     private static boolean debug = false;
+    
+    /** The scale. */
     private static float scale = 1;
+    
+    /** The flat xz. */
     private static boolean flatXZ = false;
 
+    /**
+     * Log.
+     *
+     * @param string the string
+     */
     static void log(String string) {
         if (debug) {
             System.out.println(string);
         }
     }
 
+    /**
+     * Gets the meshes.
+     *
+     * @return the meshes
+     */
     public Set<String> getMeshes() {
         return meshes.keySet();
     }
 
+    /** The meshes. */
     private final Map<String, TriangleMesh> meshes = new HashMap<>();
+    
+    /** The materials. */
     private final Map<String, Material> materials = new HashMap<>();
+    
+    /** The material library. */
     private final List<Map<String, Material>> materialLibrary = new ArrayList<>();
+    
+    /** The obj file url. */
     private String objFileUrl;
 
+    /**
+     * Instantiates a new obj importer.
+     *
+     * @param objFileUrl the obj file url
+     * @throws FileNotFoundException the file not found exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public ObjImporter(String objFileUrl) throws FileNotFoundException, IOException {
         this.objFileUrl = objFileUrl;
         log("Reading filename = " + objFileUrl);
         read(new URL(objFileUrl).openStream());
     }
 
+    /**
+     * Instantiates a new obj importer.
+     *
+     * @param inputStream the input stream
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public ObjImporter(InputStream inputStream) throws IOException {
         read(inputStream);
     }
 
+    /**
+     * Instantiates a new obj importer.
+     *
+     * @param obj the obj
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public ObjImporter(ObjFile obj) throws IOException {
         read(obj.getObjStream(), obj.getMtlStream());
     }
 
+    /**
+     * Gets the mesh.
+     *
+     * @return the mesh
+     */
     public TriangleMesh getMesh() {
         return meshes.values().iterator().next();
     }
 
+    /**
+     * Gets the mesh collection.
+     *
+     * @return the mesh collection
+     */
     public Collection<TriangleMesh> getMeshCollection() {
         return meshes.values();
     }
 
+    /**
+     * Gets the material collection.
+     *
+     * @return the material collection
+     */
     public Collection<Material> getMaterialCollection() {
         return materials.values();
     }
 
+    /**
+     * Gets the material.
+     *
+     * @return the material
+     */
     public Material getMaterial() {
         return materials.values().iterator().next();
     }
 
+    /**
+     * Gets the mesh.
+     *
+     * @param key the key
+     * @return the mesh
+     */
     public TriangleMesh getMesh(String key) {
         return meshes.get(key);
     }
 
+    /**
+     * Gets the material.
+     *
+     * @param key the key
+     * @return the material
+     */
     public Material getMaterial(String key) {
         return materials.get(key);
     }
 
+    /**
+     * Builds the mesh view.
+     *
+     * @param key the key
+     * @return the mesh view
+     */
     public MeshView buildMeshView(String key) {
         MeshView meshView = new MeshView();
         meshView.setId(key);
@@ -150,29 +248,71 @@ public class ObjImporter {
         return meshView;
     }
 
+    /**
+     * Sets the debug.
+     *
+     * @param debug the new debug
+     */
     public static void setDebug(boolean debug) {
         ObjImporter.debug = debug;
     }
 
+    /**
+     * Sets the scale.
+     *
+     * @param scale the new scale
+     */
     public static void setScale(float scale) {
         ObjImporter.scale = scale;
     }
 
+    /** The vertexes. */
     private FloatArrayList vertexes = new FloatArrayList();
+    
+    /** The uvs. */
     private FloatArrayList uvs = new FloatArrayList();
+    
+    /** The faces. */
     private IntegerArrayList faces = new IntegerArrayList();
+    
+    /** The smoothing groups. */
     private IntegerArrayList smoothingGroups = new IntegerArrayList();
+    
+    /** The normals. */
     private FloatArrayList normals = new FloatArrayList();
+    
+    /** The face normals. */
     private IntegerArrayList faceNormals = new IntegerArrayList();
+    
+    /** The material. */
     private Material material = new PhongMaterial(Color.WHITE);
+    
+    /** The faces start. */
     private int facesStart = 0;
+    
+    /** The faces normal start. */
     private int facesNormalStart = 0;
+    
+    /** The smoothing groups start. */
     private int smoothingGroupsStart = 0;
 
+    /**
+     * Read.
+     *
+     * @param objInputStream the obj input stream
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     private void read(InputStream objInputStream) throws IOException {
         read(objInputStream, null);
     }
 
+    /**
+     * Read.
+     *
+     * @param objInputStream the obj input stream
+     * @param mtlInputStream the mtl input stream
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     private void read(InputStream objInputStream, InputStream mtlInputStream) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(objInputStream));
         String line;
@@ -341,6 +481,11 @@ public class ObjImporter {
                 + smoothingGroups.size() + " smoothing groups.");
     }
 
+    /**
+     * Adds the mesh.
+     *
+     * @param key the key
+     */
     private void addMesh(String key) {
         if (facesStart >= faces.size()) {
             // we're only interested in faces
@@ -439,6 +584,11 @@ public class ObjImporter {
         smoothingGroupsStart = smoothingGroups.size();
     }
 
+    /**
+     * Sets the flat xz.
+     *
+     * @param flatXZ the new flat xz
+     */
     public static void setFlatXZ(boolean flatXZ) {
         ObjImporter.flatXZ = flatXZ;
     }

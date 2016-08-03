@@ -1,11 +1,16 @@
 package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
+// TODO: Auto-generated Javadoc
 /**
- * Maintains a double-linked list of vertices for use by QuickHull3D
+ * Maintains a double-linked list of vertices for use by QuickHull3D.
  */
 class VertexList
 {
+	
+	/** The head. */
 	private Vertex head;
+	
+	/** The tail. */
 	private Vertex tail;
 
 	/**
@@ -18,6 +23,8 @@ class VertexList
 
 	/**
 	 * Adds a vertex to the end of this list.
+	 *
+	 * @param vtx the vtx
 	 */
 	public void add (Vertex vtx)
 	 { 
@@ -34,6 +41,8 @@ class VertexList
 
 	/**
 	 * Adds a chain of vertices to the end of this list.
+	 *
+	 * @param vtx the vtx
 	 */
 	public void addAll (Vertex vtx)
 	 { 
@@ -52,6 +61,8 @@ class VertexList
 
 	/**
 	 * Deletes a vertex from this list.
+	 *
+	 * @param vtx the vtx
 	 */
 	public void delete (Vertex vtx)
 	 {
@@ -71,6 +82,9 @@ class VertexList
 
 	/**
 	 * Deletes a chain of vertices from this list.
+	 *
+	 * @param vtx1 the vtx1
+	 * @param vtx2 the vtx2
 	 */
 	public void delete (Vertex vtx1, Vertex vtx2)
 	 {
@@ -91,6 +105,9 @@ class VertexList
 	/**
 	 * Inserts a vertex into this list before another
 	 * specificed vertex.
+	 *
+	 * @param vtx the vtx
+	 * @param next the next
 	 */
 	public void insertBefore (Vertex vtx, Vertex next)
 	 {
@@ -107,6 +124,8 @@ class VertexList
 
 	/**
 	 * Returns the first element in this list.
+	 *
+	 * @return the vertex
 	 */
 	public Vertex first()
 	 {
@@ -115,6 +134,8 @@ class VertexList
 
 	/**
 	 * Returns true if this list is empty.
+	 *
+	 * @return true, if is empty
 	 */
 	public boolean isEmpty()
 	 {

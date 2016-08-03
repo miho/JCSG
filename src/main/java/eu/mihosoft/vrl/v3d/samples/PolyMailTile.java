@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 enum TileType {
 
     MALE,
@@ -24,26 +25,44 @@ enum TileType {
 }
 
 /**
+ * The Class PolyMailTile.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class PolyMailTile {
 
+    /** The tile type. */
     private TileType tileType = TileType.MALE;
 
+    /** The radius. */
     private double radius = 10;
 
+    /** The thickness. */
     private double thickness = 2.2;
 
+    /** The joint radius. */
     private double jointRadius = 1.1;
+    
+    /** The cone length. */
     private double coneLength = 1.8;
+    
+    /** The hinge hole scale. */
     private double hingeHoleScale = 1.16;
 
+    /** The pin length. */
     private double pinLength = 1;
+    
+    /** The pin thickness. */
     private double pinThickness = 2.0;
 
+    /** The num edges. */
     private int numEdges = 3;
 
+    /**
+     * To csg.
+     *
+     * @return the csg
+     */
     public CSG toCSG() {
 
 //        CSG.setDefaultOptType(CSG.OptType.POLYGON_BOUND);
@@ -138,11 +157,19 @@ public class PolyMailTile {
         return mainPrism;
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
         FileUtil.write(Paths.get("triangularmail.stl"), new PolyMailTile().setNumEdges(6).setCombined().toCSG().toStlString());
     }
 
     /**
+     * Checks if is male.
+     *
      * @return the male
      */
     public boolean isMale() {
@@ -150,28 +177,50 @@ public class PolyMailTile {
     }
 
     /**
+     * Checks if is female.
+     *
      * @return the male
      */
     public boolean isFemale() {
         return tileType == TileType.FEMALE;
     }
 
+    /**
+     * Checks if is combined.
+     *
+     * @return true, if is combined
+     */
     public boolean isCombined() {
         return tileType == TileType.COMBINED;
     }
 
+    /**
+     * Sets the male.
+     *
+     * @return the poly mail tile
+     */
     public PolyMailTile setMale() {
         this.tileType = TileType.MALE;
 
         return this;
     }
 
+    /**
+     * Sets the female.
+     *
+     * @return the poly mail tile
+     */
     public PolyMailTile setFemale() {
         this.tileType = TileType.FEMALE;
 
         return this;
     }
 
+    /**
+     * Sets the combined.
+     *
+     * @return the poly mail tile
+     */
     public PolyMailTile setCombined() {
         this.tileType = TileType.COMBINED;
 
@@ -179,6 +228,8 @@ public class PolyMailTile {
     }
 
     /**
+     * Gets the radius.
+     *
      * @return the radius
      */
     public double getRadius() {
@@ -186,7 +237,10 @@ public class PolyMailTile {
     }
 
     /**
+     * Sets the radius.
+     *
      * @param radius the radius to set
+     * @return the poly mail tile
      */
     public PolyMailTile setRadius(double radius) {
         this.radius = radius;
@@ -195,6 +249,8 @@ public class PolyMailTile {
     }
 
     /**
+     * Gets the thickness.
+     *
      * @return the thickness
      */
     public double getThickness() {
@@ -202,7 +258,10 @@ public class PolyMailTile {
     }
 
     /**
+     * Sets the thickness.
+     *
      * @param thickness the thickness to set
+     * @return the poly mail tile
      */
     public PolyMailTile setThickness(double thickness) {
         this.thickness = thickness;
@@ -211,6 +270,8 @@ public class PolyMailTile {
     }
 
     /**
+     * Gets the joint radius.
+     *
      * @return the jointRadius
      */
     public double getJointRadius() {
@@ -218,7 +279,10 @@ public class PolyMailTile {
     }
 
     /**
+     * Sets the joint radius.
+     *
      * @param jointRadius the jointRadius to set
+     * @return the poly mail tile
      */
     public PolyMailTile setJointRadius(double jointRadius) {
         this.jointRadius = jointRadius;
@@ -227,6 +291,8 @@ public class PolyMailTile {
     }
 
     /**
+     * Gets the cone length.
+     *
      * @return the coneLength
      */
     public double getConeLength() {
@@ -234,7 +300,10 @@ public class PolyMailTile {
     }
 
     /**
+     * Sets the cone length.
+     *
      * @param coneLength the coneLength to set
+     * @return the poly mail tile
      */
     public PolyMailTile setConeLength(double coneLength) {
         this.coneLength = coneLength;
@@ -243,6 +312,8 @@ public class PolyMailTile {
     }
 
     /**
+     * Gets the hinge hole scale.
+     *
      * @return the hingeHoleScale
      */
     public double getHingeHoleScale() {
@@ -250,7 +321,10 @@ public class PolyMailTile {
     }
 
     /**
+     * Sets the hinge hole scale.
+     *
      * @param hingeHoleScale the hingeHoleScale to set
+     * @return the poly mail tile
      */
     public PolyMailTile setHingeHoleScale(double hingeHoleScale) {
         this.hingeHoleScale = hingeHoleScale;
@@ -259,6 +333,8 @@ public class PolyMailTile {
     }
 
     /**
+     * Gets the pin length.
+     *
      * @return the pinLength
      */
     public double getPinLength() {
@@ -266,7 +342,10 @@ public class PolyMailTile {
     }
 
     /**
+     * Sets the pin length.
+     *
      * @param pinLength the pinLength to set
+     * @return the poly mail tile
      */
     public PolyMailTile setPinLength(double pinLength) {
         this.pinLength = pinLength;
@@ -275,6 +354,8 @@ public class PolyMailTile {
     }
 
     /**
+     * Gets the pin thickness.
+     *
      * @return the pinThickness
      */
     public double getPinThickness() {
@@ -282,7 +363,10 @@ public class PolyMailTile {
     }
 
     /**
+     * Sets the pin thickness.
+     *
      * @param pinThickness the pinThickness to set
+     * @return the poly mail tile
      */
     public PolyMailTile setPinThickness(double pinThickness) {
         this.pinThickness = pinThickness;
@@ -290,20 +374,41 @@ public class PolyMailTile {
         return this;
     }
 
+    /**
+     * Sets the num edges.
+     *
+     * @param numEdges the num edges
+     * @return the poly mail tile
+     */
     public PolyMailTile setNumEdges(int numEdges) {
         this.numEdges = numEdges;
 
         return this;
     }
 
+    /**
+     * Gets the num edges.
+     *
+     * @return the num edges
+     */
     public int getNumEdges() {
         return this.numEdges;
     }
 
+    /**
+     * Gets the side length.
+     *
+     * @return the side length
+     */
     public double getSideLength() {
         return 2 * radius * Math.sin(Math.toRadians(180.0 / numEdges));
     }
 
+    /**
+     * Gets the apothem.
+     *
+     * @return the apothem
+     */
     public double getApothem() {
         return getRadius() * Math.cos(Math.toRadians(180.0 / numEdges));
     }

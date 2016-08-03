@@ -15,12 +15,20 @@ import static eu.mihosoft.vrl.v3d.Transform.unity;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class QuadrocopterCross.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class QuadrocopterCross {
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void main(String[] args) throws IOException {
 
         CSG result = new QuadrocopterCross().toCSG2();
@@ -30,6 +38,17 @@ public class QuadrocopterCross {
 
     }
 
+    /**
+     * To csg.
+     *
+     * @param armHeight the arm height
+     * @param armScaleFactor the arm scale factor
+     * @param armCubeWidth the arm cube width
+     * @param armCubeThickness the arm cube thickness
+     * @param holderPlatformRadius the holder platform radius
+     * @param holderPlatformThickness the holder platform thickness
+     * @return the csg
+     */
     public CSG toCSG(double armHeight, double armScaleFactor, double armCubeWidth, double armCubeThickness, double holderPlatformRadius, double holderPlatformThickness) {
 
         double widthTol = 2;
@@ -69,6 +88,11 @@ public class QuadrocopterCross {
 
     }
 
+    /**
+     * To cs g2.
+     *
+     * @return the csg
+     */
     public CSG toCSG2() {
 
         double platformRadius = 80;
