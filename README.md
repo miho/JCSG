@@ -30,14 +30,14 @@ In addition to CSG this library provides the following features:
 <dependency>
   <groupId>com.neuronrobotics</groupId>
   <artifactId>JCSG</artifactId>
-  <version>0.5.3</version>
+  <version>0.6.5</version>
   <type>zip</type>
 </dependency>
 ```
 
 ##Gradle
 ```
-compile "com.neuronrobotics:JCSG:0.5.3"
+compile "com.neuronrobotics:JCSG:0.6.5"
 
 ```
 
