@@ -44,6 +44,7 @@ public class Parameter {
 		for(String o:options){
 			this.options.add(o);
 		}
+		CSGDatabase.set(key, this);
 	}
 	public String getName() {
 		return name;
