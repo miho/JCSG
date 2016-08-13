@@ -1745,7 +1745,8 @@ public class CSG {
 			}
 			if(!existing){
 				Parameter vals = CSGDatabase.get(param);
-				this.setParameter(vals,dyingCSG.getMapOfparametrics().get(param));
+				if(vals!=null)
+					this.setParameter(vals,dyingCSG.getMapOfparametrics().get(param));
 			}
 		}
 		return this;
@@ -1800,6 +1801,8 @@ public class CSG {
 	}
 	
 	public CSG setParameter(Parameter w, IParametric function) {
+		if(w==null)
+			return this;
 		if(CSGDatabase.get(w.getName())==null)
 			CSGDatabase.set(w.getName(), w);
 		if(getMapOfparametrics().get(w.getName())==null)
