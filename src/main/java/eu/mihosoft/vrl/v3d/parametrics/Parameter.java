@@ -70,8 +70,15 @@ public class Parameter {
 		return strValue;
 	}
 
-	public void setStrValue(String strValue) {
-		this.strValue = strValue;
+	public void setStrValue(String newValue) {
+		if(!strValue.contentEquals(newValue)){
+			strValue = newValue;
+			ArrayList<IParameterChanged> listeners = CSGDatabase.getParamListeners(name);
+			for(IParameterChanged l:listeners){
+				l.parameterChanged(name, this);
+			}
+		}
+		
 	}
 	
 
