@@ -78,7 +78,6 @@ public class QuadrocopterLadingGearsAndHolders {
                 double val =  0.82+v.y * v.y/ ((gearLegHeight * gearLegHeight));
 
 //                System.out.println("val: " + val + ", " + Math.min(1,val));
-
                 return val;
             }
         };

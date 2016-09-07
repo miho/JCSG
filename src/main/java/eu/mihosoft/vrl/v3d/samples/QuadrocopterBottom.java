@@ -97,10 +97,19 @@ public class QuadrocopterBottom {
             }
         }
 
+        double centerHoleRadius = 15;
+        double holeBorderThickness = platformBorderThickness;
+        double cylHeight = platformThickness;
+
+        CSG centerHoleOuter = new Cylinder(centerHoleRadius+holeBorderThickness,cylHeight,16).toCSG();
+        CSG centerHoleInner = new Cylinder(centerHoleRadius, cylHeight, 16).toCSG();
+
+        CSG centerHoleShell = centerHoleOuter.difference(centerHoleInner);
+
         if (hexagons!=null) {
             platform = platform.difference(hexagons);
         }
 
-        return platform.union(platformShell);//honeycombPrototype.transformed(unity().scale(1.05,1.05,1)));
+        return platform.union(platformShell,centerHoleShell).difference(centerHoleInner);
     }
 }
