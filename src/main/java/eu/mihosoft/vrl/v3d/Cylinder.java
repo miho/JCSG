@@ -45,7 +45,7 @@ import java.util.List;
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Cylinder implements Primitive {
-    private static final double MINIMUM_RADIUS=0.001
+    private static final double MINIMUM_RADIUS=0.001;
     private Vector3d start;
     private Vector3d end;
     private double startRadius;
