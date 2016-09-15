@@ -37,6 +37,7 @@ public class CSGDatabase {
 	}
 	
 	public static   void clear(){
+
 		getDatabase();
 		synchronized(database){
 			database.clear();

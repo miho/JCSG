@@ -31,11 +31,20 @@ public class QuadrocopterCross {
      */
     public static void main(String[] args) throws IOException {
 
+        CSG.setDefaultOptType(CSG.OptType.NONE);
+
         CSG result = new QuadrocopterCross().toCSG2();
 
         FileUtil.write(Paths.get("quadrocopter-cross.stl"), result.toStlString());
         result.toObj().toFiles(Paths.get("quadrocopter-cross.obj"));
+    }
 
+    public void print3d(CSG csg, int n) {
+        try {
+            FileUtil.write(Paths.get("quadrocopter-cross-"+n+".stl"), csg.toStlString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -112,7 +121,7 @@ public class QuadrocopterCross {
 
         CSG armHolders = armHolderPrototype.clone();
 
-        CSG quarterPrototype = new RoundedCube(platformRadius).cornerRadius(10)
+        CSG quarterPrototype = new RoundedCube(platformRadius).noCenter().cornerRadius(10)
                 .resolution(16).toCSG()
                 .transformed(unity().rotZ(45)).transformed(unity().scaleY(3))
                 .transformed(unity().translate(
@@ -132,7 +141,7 @@ public class QuadrocopterCross {
         CSG platform = new Cylinder(platformRadius, armHeight, 64).toCSG();
         CSG innerHole = new Cylinder(innerHoleRadius, armHeight, 64).toCSG();
 
-        platform = platform.difference(armHolders, innerHole,quarters);
+        platform = platform.difference(armHolders, innerHole, quarters);
 
         return platform;
 
