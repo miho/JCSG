@@ -84,6 +84,29 @@ public class Vector3d {
         this.z = 0;
     }
 
+    /**
+     * Creates a new vector with specified {@code x}, {@code y} and
+     * {@code z = 0}.
+     *
+     * @param x x value
+     * @param y y value
+     */
+    public static Vector3d xy(double x, double y) {
+        return new Vector3d(x,y);
+    }
+
+    /**
+     * Creates a new vector with specified {@code x}, {@code y} and
+     * {@code z}.
+     *
+     * @param x x value
+     * @param y y value
+     * @param z z value
+     */
+    public static Vector3d xyz(double x, double y, double z) {
+        return new Vector3d(x,y,z);
+    }
+
     @Override
     public Vector3d clone() {
         return new Vector3d(x, y, z);

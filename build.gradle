@@ -32,6 +32,7 @@ repositories {
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
         tasks.withType(Javadoc) {
+            options.addStringOption("encoding", "UTF-8")
             options.addStringOption('Xdoclint:none', '-quiet')
         }
     }

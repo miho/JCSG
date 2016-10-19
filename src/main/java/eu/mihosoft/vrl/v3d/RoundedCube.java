@@ -19,7 +19,7 @@ public class RoundedCube implements Primitive {
      */
     private Vector3d dimensions;
     private Vector3d center;
-    private boolean centered;
+    private boolean centered = true;
 
     private final PropertyStorage properties = new PropertyStorage();
 
