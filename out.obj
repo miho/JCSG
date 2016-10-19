@@ -1,0 +1,216 @@
+mtllib out.mtl# Group
+g v3d.csg
+
+# Vertices
+v 3.64453125 -0.146484375 0.0
+v 5.900390625 0.744140625 0.0
+v 4.92626953125 0.076171875 0.0
+v 2.4169921875 0.079833984375 0.0
+v 1.4677734375 5.6103515625 0.0
+v 1.46484375 0.7587890625 0.0
+v 0.650390625 3.181640625 0.0
+v 3.685546875 6.50390625 0.0
+v 2.430908203125 6.280517578125 0.0
+v 4.940185546875 6.280517578125 0.0
+v 6.720703125 3.193359375 0.0
+v 5.9033203125 5.6103515625 0.0
+v 5.49609375 3.193359375 0.0
+v 5.04345703125 5.02587890625 0.0
+v 3.685546875 5.63671875 0.0
+v 2.33203125 5.02294921875 0.0
+v 1.880859375 3.181640625 0.0
+v 2.326171875 1.3359375 0.0
+v 3.662109375 0.720703125 0.0
+v 5.03759765625 1.3388671875 0.0
+v 3.64453125 -0.146484375 1.0
+v 4.92626953125 0.076171875 1.0
+v 5.900390625 0.744140625 1.0
+v 2.4169921875 0.079833984375 1.0
+v 1.4677734375 5.6103515625 1.0
+v 0.650390625 3.181640625 1.0
+v 1.46484375 0.7587890625 1.0
+v 3.685546875 6.50390625 1.0
+v 2.430908203125 6.280517578125 1.0
+v 4.940185546875 6.280517578125 1.0
+v 6.720703125 3.193359375 1.0
+v 5.9033203125 5.6103515625 1.0
+v 5.49609375 3.193359375 1.0
+v 5.04345703125 5.02587890625 1.0
+v 3.685546875 5.63671875 1.0
+v 2.33203125 5.02294921875 1.0
+v 1.880859375 3.181640625 1.0
+v 2.326171875 1.3359375 1.0
+v 3.662109375 0.720703125 1.0
+v 5.03759765625 1.3388671875 1.0
+
+# Faces
+usemtl material-1
+f 1 2 3
+usemtl material-1
+f 4 2 1
+usemtl material-1
+f 5 6 7
+usemtl material-1
+f 8 5 9
+usemtl material-1
+f 10 5 8
+usemtl material-1
+f 11 10 12
+usemtl material-1
+f 13 10 11
+usemtl material-1
+f 14 10 13
+usemtl material-1
+f 15 10 14
+usemtl material-1
+f 15 5 10
+usemtl material-1
+f 16 5 15
+usemtl material-1
+f 17 5 16
+usemtl material-1
+f 17 6 5
+usemtl material-1
+f 17 4 6
+usemtl material-1
+f 18 4 17
+usemtl material-1
+f 19 4 18
+usemtl material-1
+f 19 2 4
+usemtl material-1
+f 20 2 19
+usemtl material-1
+f 20 11 2
+usemtl material-1
+f 20 13 11
+usemtl material-1
+f 21 22 23
+usemtl material-1
+f 24 21 23
+usemtl material-1
+f 25 26 27
+usemtl material-1
+f 28 29 25
+usemtl material-1
+f 30 28 25
+usemtl material-1
+f 31 32 30
+usemtl material-1
+f 33 31 30
+usemtl material-1
+f 34 33 30
+usemtl material-1
+f 35 34 30
+usemtl material-1
+f 35 30 25
+usemtl material-1
+f 36 35 25
+usemtl material-1
+f 37 36 25
+usemtl material-1
+f 37 25 27
+usemtl material-1
+f 37 27 24
+usemtl material-1
+f 38 37 24
+usemtl material-1
+f 39 38 24
+usemtl material-1
+f 39 24 23
+usemtl material-1
+f 40 39 23
+usemtl material-1
+f 40 23 31
+usemtl material-1
+f 40 31 33
+usemtl material-1
+f 1 21 1
+usemtl material-1
+f 1 21 21
+usemtl material-1
+f 1 21 4
+usemtl material-1
+f 4 21 24
+usemtl material-1
+f 4 24 6
+usemtl material-1
+f 6 24 27
+usemtl material-1
+f 6 27 7
+usemtl material-1
+f 7 27 26
+usemtl material-1
+f 7 26 5
+usemtl material-1
+f 5 26 25
+usemtl material-1
+f 5 25 9
+usemtl material-1
+f 9 25 29
+usemtl material-1
+f 9 29 8
+usemtl material-1
+f 8 29 28
+usemtl material-1
+f 8 28 10
+usemtl material-1
+f 10 28 30
+usemtl material-1
+f 10 30 12
+usemtl material-1
+f 12 30 32
+usemtl material-1
+f 12 32 11
+usemtl material-1
+f 11 32 31
+usemtl material-1
+f 11 31 2
+usemtl material-1
+f 2 31 23
+usemtl material-1
+f 2 23 3
+usemtl material-1
+f 3 23 22
+usemtl material-1
+f 3 22 1
+usemtl material-1
+f 1 22 21
+usemtl material-1
+f 19 39 19
+usemtl material-1
+f 19 39 39
+usemtl material-1
+f 19 39 20
+usemtl material-1
+f 20 39 40
+usemtl material-1
+f 20 40 13
+usemtl material-1
+f 13 40 33
+usemtl material-1
+f 13 33 14
+usemtl material-1
+f 14 33 34
+usemtl material-1
+f 14 34 15
+usemtl material-1
+f 15 34 35
+usemtl material-1
+f 15 35 16
+usemtl material-1
+f 16 35 36
+usemtl material-1
+f 16 36 17
+usemtl material-1
+f 17 36 37
+usemtl material-1
+f 17 37 18
+usemtl material-1
+f 18 37 38
+usemtl material-1
+f 18 38 19
+usemtl material-1
+f 19 38 39
+
+# End Group v3d.csg

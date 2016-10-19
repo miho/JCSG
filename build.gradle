@@ -4,6 +4,7 @@ plugins {
     id 'maven-publish'
     id 'net.nemerosa.versioning' version '1.5.0'
     id 'com.jfrog.bintray' version '1.6'
+    id 'nebula.override' version "3.0.2"
 }
 
 sourceCompatibility = '1.8'
@@ -13,19 +14,18 @@ sourceCompatibility = '1.8'
 //repairHeaders.licenseHeaderText = new File(projectDir,'./license-template.txt')
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '2.10'
+    gradleVersion = '2.11'
 }
-
-if (!hasProperty('mainClass')) {
-    ext.mainClass = 'eu.mihosoft.vrl.v3d.Main'
-}
-
-applicationDefaultJvmArgs = ["-Xss515m"]
-mainClassName = mainClass
 
 repositories {
+    
+    mavenLocal()
+    
     mavenCentral()
     jcenter()
+    maven {
+        url 'https://dl.bintray.com/miho/Ext'
+    }
 }
 
 // javadoc is way too strict for my taste.
@@ -55,16 +55,13 @@ artifacts {
     archives sourcesJar
 }
 
-
-
-
 dependencies {
     
     testCompile group: 'junit', name: 'junit', version: '4.+'
 
-    compile group: 'java3d', name: 'vecmath', version: '1.3.1'
-    compile 'org.slf4j:slf4j-simple:1.6.1'
-    //compile group: 'java3d', name: 'vecmath', version: '1.3.1' , classifier: "javadoc"
+    compile 'org.slf4j:slf4j-simple:1.6.1'  
+    compile group: 'eu.mihosoft.ext.j3d', name: 'extj3d', version: '0.0.3'
+    
 }
 
 Date buildTimeAndDate = new Date()
@@ -165,3 +162,11 @@ bintray {
         publicDownloadNumbers = true
     }
 }
+
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'eu.mihosoft.vrl.v3d.Main'
+}
+
+applicationDefaultJvmArgs = ["-Xss515m"]
+mainClassName = mainClass
