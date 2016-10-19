@@ -63,6 +63,7 @@ public class STL {
             }
         }
         
-        return CSG.fromPolygons(new PropertyStorage(),polygons);
+        return CSG.fromPolygons(
+                CSG.getDefaultRenderType(), new PropertyStorage(),polygons);
     }
 }

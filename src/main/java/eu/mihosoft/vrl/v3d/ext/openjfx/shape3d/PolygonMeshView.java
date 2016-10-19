@@ -47,7 +47,6 @@ import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import static javafx.scene.shape.TriangleMesh.*;
 
-
 /**
  * A MeshView node for Polygon Meshes
  */

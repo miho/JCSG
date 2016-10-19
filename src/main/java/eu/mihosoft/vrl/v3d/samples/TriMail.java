@@ -6,6 +6,7 @@
 package eu.mihosoft.vrl.v3d.samples;
 
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.CSGImpl;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
 import eu.mihosoft.vrl.v3d.Vector3d;
@@ -27,9 +28,9 @@ public class TriMail {
         double hingeHoleScale = tile.getHingeHoleScale();
 
         CSG malePart = tile.setMale().toCSG().transformed(
-                            unity().rotZ(360.0 / numEdges*0.75));
+                unity().rotZ(360.0 / numEdges * 0.75));
         CSG femalePart = tile.setFemale().toCSG().transformed(
-                            unity().rotZ(360.0 / numEdges*0.25));
+                unity().rotZ(360.0 / numEdges * 0.25));
 
         CSG result = null;
 
@@ -42,22 +43,21 @@ public class TriMail {
                         - tile.getJointRadius());
 
                 double xOffset = 0;
-                double yOffset =0;
+                double yOffset = 0;
 
                 if (y % 2 == 0) {
-                    xOffset = tile.getSideLength() * 0.5+ pinOffset*0.5;
-                    
-                    if ((y/2) % 2 == 0) {
-                        xOffset-= tile.getSideLength()*0.5 + pinOffset*0.5;
+                    xOffset = tile.getSideLength() * 0.5 + pinOffset * 0.5;
+
+                    if ((y / 2) % 2 == 0) {
+                        xOffset -= tile.getSideLength() * 0.5 + pinOffset * 0.5;
                     }
-                    
-                     yOffset = +tile.getPinLength()*3;
+
+                    yOffset = +tile.getPinLength() * 3;
                 }
-                
-                
+
                 double translateX
                         = (-tile.getSideLength() - pinOffset) * x + xOffset;
-                double translateY = tile.getRadius()*y - yOffset;
+                double translateY = tile.getRadius() * y - yOffset;
 
                 CSG part2;
 
@@ -74,7 +74,11 @@ public class TriMail {
                     result = part2.clone();
                 }
 
-                result = result.dumbUnion(part2);
+                if (result instanceof CSGImpl) {
+                    result = ((CSGImpl) result).dumbUnion(part2);
+                } else {
+                    result = result.union(part2);
+                }
             }
         }
 

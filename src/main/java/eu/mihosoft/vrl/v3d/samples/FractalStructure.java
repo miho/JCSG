@@ -1,9 +1,9 @@
 package eu.mihosoft.vrl.v3d.samples;
 
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.CSG.RenderType;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import eu.mihosoft.vrl.v3d.Polygon;
-import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -273,7 +273,7 @@ public class FractalStructure {
         //add the top polygon
         polygonList.add(Polygon.fromPoints(tmpList));
 
-        return CSG.fromPolygons(polygonList);
+        return CSG.fromPolygons(RenderType.JAVA,polygonList);
 
     }
 
@@ -494,7 +494,7 @@ public class FractalStructure {
 
         subStructures.stream().forEach(csg -> polygons.addAll(csg.getPolygons()));
 
-        return CSG.fromPolygons(polygons);
+        return CSG.fromPolygons(RenderType.JAVA,polygons);
     }
 
     public static void main(String[] args) throws IOException {

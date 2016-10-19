@@ -6,6 +6,7 @@
 package eu.mihosoft.vrl.v3d.samples;
 
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.CSGImpl;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
 import eu.mihosoft.vrl.v3d.Vector3d;
@@ -38,16 +39,16 @@ public class HexaMail {
                         - tile.getJointRadius());
 
                 double xOffset = 0;
-                double yOffset = pinOffset*0.9;
+                double yOffset = pinOffset * 0.9;
 
                 if (y % 2 == 0) {
-                    xOffset = tile.getApothem() + pinOffset*0.5;
+                    xOffset = tile.getApothem() + pinOffset * 0.5;
                 }
 
                 double translateX
                         = (-tile.getApothem() * 2 - pinOffset) * x + xOffset;
                 double translateY
-                        = (-tile.getRadius() * 0.5 - tile.getRadius()) * y - yOffset*y;
+                        = (-tile.getRadius() * 0.5 - tile.getRadius()) * y - yOffset * y;
 
                 CSG part2;
 
@@ -69,7 +70,11 @@ public class HexaMail {
                     result = part2.clone();
                 }
 
-                result = result.dumbUnion(part2);
+                if (result instanceof CSGImpl) {
+                    result = ((CSGImpl) result).dumbUnion(part2);
+                } else {
+                    result = result.union(part2);
+                }
             }
         }
 

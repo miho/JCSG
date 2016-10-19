@@ -30,6 +30,7 @@
 
 package eu.mihosoft.vrl.v3d;
 
+import eu.mihosoft.vrl.v3d.CSG.RenderType;
 import java.util.List;
 
 /**
@@ -54,8 +55,18 @@ public interface Primitive {
      *
      * @return this primitive as {@link CSG}
      */
+    public default CSG toCSG(RenderType type) {
+        return CSG.fromPolygons(type, getProperties(),toPolygons());
+    }
+    
+    /**
+     * Returns this primitive as {@link CSG}.
+     *
+     * @return this primitive as {@link CSG}
+     */
     public default CSG toCSG() {
-        return CSG.fromPolygons(getProperties(),toPolygons());
+        return CSG.fromPolygons(CSG.getDefaultRenderType(),
+                getProperties(),toPolygons());
     }
     
     /**

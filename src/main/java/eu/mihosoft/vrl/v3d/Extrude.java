@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+import eu.mihosoft.vrl.v3d.CSG.RenderType;
 import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,8 +50,8 @@ public class Extrude {
     private Extrude() {
         throw new AssertionError("Don't instantiate me!", null);
     }
-
-    /**
+    
+        /**
      * Extrudes the specified path (convex or concave polygon without holes or
      * intersections, specified in CCW) into the specified direction.
      *
@@ -62,7 +63,7 @@ public class Extrude {
      */
     public static CSG points(Vector3d dir, Vector3d... points) {
 
-        return extrude(dir, Polygon.fromPoints(toCCW(Arrays.asList(points))));
+        return points(CSG.getDefaultRenderType(), dir, points);
     }
 
     /**
@@ -75,14 +76,43 @@ public class Extrude {
      *
      * @return a CSG object that consists of the extruded polygon
      */
+    public static CSG points(RenderType type, Vector3d dir, Vector3d... points) {
+
+        return extrude(type, dir, Polygon.fromPoints(toCCW(Arrays.asList(points))));
+    }
+    
+      /**
+     * Extrudes the specified path (convex or concave polygon without holes or
+     * intersections, specified in CCW) into the specified direction.
+     *
+     * @param dir direction
+     * @param points path (convex or concave polygon without holes or
+     * intersections)
+     *
+     * @return a CSG object that consists of the extruded polygon
+     */
     public static CSG points(Vector3d dir, List<Vector3d> points) {
+        return points(CSG.getDefaultRenderType(), dir, points);
+    }
+
+    /**
+     * Extrudes the specified path (convex or concave polygon without holes or
+     * intersections, specified in CCW) into the specified direction.
+     *
+     * @param dir direction
+     * @param points path (convex or concave polygon without holes or
+     * intersections)
+     *
+     * @return a CSG object that consists of the extruded polygon
+     */
+    public static CSG points(RenderType type, Vector3d dir, List<Vector3d> points) {
 
         List<Vector3d> newList = new ArrayList<>(points);
 
-        return extrude(dir, Polygon.fromPoints(toCCW(newList)));
+        return extrude(type, dir, Polygon.fromPoints(toCCW(newList)));
     }
     
-    private static CSG extrude(Vector3d dir, Polygon polygon1) {
+    private static CSG extrude(RenderType type, Vector3d dir, Polygon polygon1) {
         List<Polygon> newPolygons = new ArrayList<>();
         
         if (dir.z<0) {
@@ -113,7 +143,7 @@ public class Extrude {
 
         newPolygons.addAll(topPolygons);
 
-        return CSG.fromPolygons(newPolygons);
+        return CSG.fromPolygons(type, newPolygons);
 
     }
 

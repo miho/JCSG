@@ -52,7 +52,7 @@ public class EdgeTest {
             System.out.println("#groups: " + boundaryPolygons.size());
 
 //        List<Polygon> polys = boundaryPolygons.stream().peek(p->System.out.println("verts: "+p.vertices)).map(p->PolygonUtil.concaveToConvex(p)).flatMap(pList->pList.stream()).collect(Collectors.toList());
-            return CSG.fromPolygons(boundaryPolygons);
+            return CSG.fromPolygons(CSG.RenderType.JAVA,boundaryPolygons);
         }
 
 //        return csg;

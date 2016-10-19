@@ -99,7 +99,6 @@ public class PolygonUtil {
         eu.mihosoft.vrl.v3d.ext.org.poly2tri.Poly2Tri.triangulate(p);
 
         List<DelaunayTriangle> triangles = p.getTriangles();
-
         List<Vertex> triPoints = new ArrayList<>();
 
         for (DelaunayTriangle t : triangles) {

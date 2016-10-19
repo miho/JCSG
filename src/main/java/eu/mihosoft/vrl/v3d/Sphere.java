@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * A solid sphere.
  *
- * Tthe tessellation along the longitude and latitude directions can be
+ * The tessellation along the longitude and latitude directions can be
  * controlled via the {@link #numSlices} and {@link #numStacks} parameters.
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;

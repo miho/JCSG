@@ -6,6 +6,7 @@
 package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.CSG.RenderType;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.PropertyStorage;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class HullUtil {
         throw new AssertionError("Don't instantiate me!", null);
     }
 
-    public static CSG hull(List<eu.mihosoft.vrl.v3d.Vector3d> points, PropertyStorage storage) {
+    public static CSG hull(RenderType type, List<eu.mihosoft.vrl.v3d.Vector3d> points, PropertyStorage storage) {
 
         Point3d[] hullPoints = points.stream().map((vec) -> new Point3d(vec.x, vec.y, vec.z)).toArray(Point3d[]::new);
 
@@ -46,7 +47,7 @@ public class HullUtil {
             vertices.clear();
         }
 
-        return CSG.fromPolygons(polygons);
+        return CSG.fromPolygons(type,polygons);
     }
 
     public static CSG hull(CSG csg, PropertyStorage storage) {
@@ -55,6 +56,6 @@ public class HullUtil {
 
         csg.getPolygons().forEach((p) -> p.vertices.forEach((v) -> points.add(v.pos)));
 
-        return hull(points, storage);
+        return hull(csg.getRenderType(),points, storage);
     }
 }

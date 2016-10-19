@@ -6,6 +6,7 @@
 package eu.mihosoft.vrl.v3d.samples;
 
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.CSGImpl;
 import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import static eu.mihosoft.vrl.v3d.Transform.unity;
@@ -93,8 +94,14 @@ public class SquareMail {
                 if (result == null) {
                     result = part2.clone();
                 }
+                
+                if (result instanceof CSGImpl) {
+                    result = ((CSGImpl)result).dumbUnion(part2);
+                } else {
+                    result = result.union(part2);
+                }
 
-                result = result.dumbUnion(part2);
+                
             }
         }
 
