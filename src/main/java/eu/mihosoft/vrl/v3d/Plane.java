@@ -133,21 +133,20 @@ public class Plane {
         final int COPLANAR = 0;
         final int FRONT = 1;
         final int BACK = 2;
-        final int SPANNING = 3;
+        final int SPANNING = 3; // == some in the FRONT + some in the BACK
 
-        // Classify each point as well as the entire polygon into one of the above
-        // four classes.
+        // Classify each point as well as the entire polygon into one of the 
+        // above four classes.
         int polygonType = 0;
-        List<Integer> types = new ArrayList<>();
+        List<Integer> types = new ArrayList<>(polygon.vertices.size());
         for (int i = 0; i < polygon.vertices.size(); i++) {
-            double t = this.normal.dot(polygon.vertices.get(i).pos) - this.dist;
+            double t = this.normal.dot(polygon.vertices.get(i).pos) - this.dist; 
             int type = (t < -Plane.EPSILON) ? BACK : (t > Plane.EPSILON) ? FRONT : COPLANAR;
             polygonType |= type;
             types.add(type);
         }
-        
-        //System.out.println("> switching");
 
+        //System.out.println("> switching");
         // Put the polygon in the correct list, splitting it when necessary.
         switch (polygonType) {
             case COPLANAR:
@@ -179,7 +178,8 @@ public class Plane {
                         b.add(ti != BACK ? vi.clone() : vi);
                     }
                     if ((ti | tj) == SPANNING) {
-                        double t = (this.dist - this.normal.dot(vi.pos)) / this.normal.dot(vj.pos.minus(vi.pos));
+                        double t = (this.dist - this.normal.dot(vi.pos))
+                                / this.normal.dot(vj.pos.minus(vi.pos));
                         Vertex v = vi.interpolate(vj, t);
                         f.add(v);
                         b.add(v.clone());
