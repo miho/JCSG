@@ -59,8 +59,8 @@ public class RoundedCube implements Primitive {
     }
 
     /**
-     * Constructor. Creates a new rounded cuboid with center {@code [0,0,0]}
-     * and with the specified dimensions.
+     * Constructor. Creates a new rounded cuboid with center {@code [0,0,0]} and
+     * with the specified dimensions.
      *
      * @param w width
      * @param h height
@@ -70,11 +70,10 @@ public class RoundedCube implements Primitive {
         this(Vector3d.ZERO, new Vector3d(w, h, d));
     }
 
-
     @Override
     public List<Polygon> toPolygons() {
-        CSG spherePrototype = 
-                new Sphere(getCornerRadius(), getResolution()*2, getResolution()).toCSG();
+        CSG spherePrototype
+                = new Sphere(getCornerRadius(), getResolution() * 2, getResolution()).toCSG();
 
         double x = dimensions.x / 2.0 - getCornerRadius();
         double y = dimensions.y / 2.0 - getCornerRadius();
@@ -93,6 +92,12 @@ public class RoundedCube implements Primitive {
         List<Polygon> result = sphere1.union(
                 sphere2, sphere3, sphere4,
                 sphere5, sphere6, sphere7, sphere8).hull().getPolygons();
+
+        Transform locTransform = Transform.unity().translate(center);
+
+        for (Polygon p : result) {
+            p.transform(locTransform);
+        }
 
         if (!centered) {
 
@@ -141,6 +146,7 @@ public class RoundedCube implements Primitive {
 
     /**
      * Defines that this cube will not be centered.
+     *
      * @return this cube
      */
     public RoundedCube noCenter() {
@@ -161,8 +167,8 @@ public class RoundedCube implements Primitive {
     public void setResolution(int resolution) {
         this.resolution = resolution;
     }
-    
-     /**
+
+    /**
      * @param resolution the resolution to set
      * @return this cube
      */
@@ -184,7 +190,7 @@ public class RoundedCube implements Primitive {
     public void setCornerRadius(double cornerRadius) {
         this.cornerRadius = cornerRadius;
     }
-    
+
     /**
      * @param cornerRadius the corner radius to set
      * @return this cube
