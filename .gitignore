@@ -1,2 +1,5 @@
 /.nb-gradle/private/
 /build/
+/bin/
+/.classpath
+/.project
