@@ -172,8 +172,7 @@ class MeshRetriever {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
-	public List<TexturedMesh> getMeshes() {
+    public List<TexturedMesh> getMeshes() {
         try {
             Field field = Text3DMesh.class.getDeclaredField("meshes");
 
