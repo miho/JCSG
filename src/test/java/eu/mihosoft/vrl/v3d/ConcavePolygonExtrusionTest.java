@@ -1,9 +1,13 @@
 package eu.mihosoft.vrl.v3d;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 
@@ -280,14 +284,21 @@ public class ConcavePolygonExtrusionTest {
 		
 		System.out.println("H number of polygons: "+HLetter.getPolygons().size());
 		System.out.println("e number of polygons: "+eLetter.getPolygons().size());
+                
+
+                
+                CSG.setDefaultOptType(CSG.OptType.CSG_BOUND);
+
 		
 		CSG simpleUnionOfNonIntersectingBodies = eLetter.union(HLetter);
 		
 		int numPolysExpected = HLetter.getPolygons().size()+eLetter.getPolygons().size();
 		
-		
 		System.out.println("Both number of polygons: "+simpleUnionOfNonIntersectingBodies.getPolygons().size());
-		assertTrue(numPolysExpected == simpleUnionOfNonIntersectingBodies.getPolygons().size());
+            
+                // assumption only valid if optimization is enabled! (see above)
+                // assumption is wrong for CSG.setDefaultOptType(CSG.OptType.NONE);
+                assertTrue(numPolysExpected == simpleUnionOfNonIntersectingBodies.getPolygons().size());
 	}
 
 }
