@@ -1,6 +1,5 @@
 package eu.mihosoft.vrl.v3d;
 
-import eu.mihosoft.vrl.v3d.samples.ConcaveTest01;
 import java.io.IOException;
 import java.nio.file.Paths;
 import static org.junit.Assert.*;
