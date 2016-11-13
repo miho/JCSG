@@ -2,6 +2,8 @@ package com.piro.bezier;
 
 import com.badlogic.gdx.math.Vector2;
 
+import eu.mihosoft.vrl.v3d.Vector3d;
+
 /**
  * Class that represents a Bèzier curve
  *
@@ -60,8 +62,9 @@ public class Bezier
         return point;
     }
     
-    public Vector2 eval(double param, Vector2 point)
+     Vector3d eval(double param)
     {
+    	Vector2 point = new Vector2();
         point.x = 0;
         point.y = 0;
         int numKnots = coord.length / 2;
@@ -73,7 +76,7 @@ public class Bezier
             point.y += coord[i * 2 + 1] * scale;
         }
         
-        return point;
+        return new Vector3d(point.x,point.y);
     }
     
     /**

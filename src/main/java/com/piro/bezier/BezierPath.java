@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 import com.badlogic.gdx.math.Vector2;
 
+import eu.mihosoft.vrl.v3d.Vector3d;
+
 public class BezierPath 
 {
     
@@ -133,9 +135,9 @@ public class BezierPath
      * Evaluates this animation element for the passed interpolation time.  Interp
      * must be on [0..1].
      */
-    public Vector2 eval(float interp)
+    public Vector3d eval(float interp)
     {
-        Vector2 point = new Vector2();
+    	Vector3d point=new Vector3d(0, 0);// = new Vector3d();
   
         
         double curLength = path.curveLength * interp;
@@ -147,7 +149,7 @@ public class BezierPath
             if (curLength < bezLength)
             {
                 double param = curLength / bezLength;
-                bez.eval(param, point);
+                point =bez.eval(param);
                 break;
             }
             
