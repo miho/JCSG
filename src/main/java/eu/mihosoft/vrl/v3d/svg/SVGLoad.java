@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.batik.bridge.BridgeContext;
@@ -12,21 +13,116 @@ import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.svg.SVGItem;
+import org.apache.batik.dom.svg.SVGOMGElement;
+import org.apache.batik.dom.svg.SVGOMPathElement;
 import org.apache.batik.dom.svg.SVGOMSVGElement;
 import org.apache.batik.util.XMLResourceDescriptor;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGPathSegList;
 
+import com.piro.bezier.BezierPath;
+
+import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.Polygon;
+import eu.mihosoft.vrl.v3d.Vector3d;
 
 /**
  * Responsible for converting all SVG path elements into MetaPost curves.
  */
 public class SVGLoad {
 	private static final String PATH_ELEMENT_NAME = "path";
-
+	private static final String GROUP_ELEMENT_NAME = "g";
 	private Document svgDocument;
+
+	/**
+	 * Responsible for converting an SVG path element to MetaPost. This will
+	 * convert just the bezier curve portion of the path element, not its style.
+	 * Typically the SVG path data is provided from the "d" attribute of an SVG
+	 * path node.
+	 */
+	class MetaPostPath {
+		private SVGOMPathElement pathElement;
+		private String transform;
+
+		/**
+		 * Use to create an instance of a class that can parse an SVG path
+		 * element to produce MetaPost code.
+		 *
+		 * @param pathNode
+		 *            The path node containing a "d" attribute (output as
+		 *            MetaPost code).
+		 */
+		public MetaPostPath(Node pathNode, String transform) {
+			this.transform = transform;
+			setPathNode(pathNode);
+		}
+
+		/**
+		 * Converts this object's SVG path to a MetaPost draw statement.
+		 * 
+		 * @return A string that represents the MetaPost code for a path
+		 *         element.
+		 */
+		public String toCode() {
+			StringBuilder sb = new StringBuilder(16384);
+			SVGOMPathElement pathElement = getPathElement();
+			SVGPathSegList pathList = pathElement.getNormalizedPathSegList();
+			// String offset = pathElement.getOwnerSVGElement();
+
+			int pathObjects = pathList.getNumberOfItems();
+			// sb.append( "M "+offset
+			// .replaceAll("translate", "")
+			// .replaceAll("(", "")
+			// .replaceAll(")", "")
+			// +"\n");
+			// sb.append( "//"+getId()+"\n");
+
+			for (int i = 0; i < pathObjects; i++) {
+				SVGItem item = (SVGItem) pathList.getItem(i);
+				sb.append(String.format("%s%n", item.getValueAsString()));
+			}
+
+			return sb.toString();
+		}
+
+		/**
+		 * Returns the value for the id attribute of the path element. If the id
+		 * isn't present, this will probably throw a NullPointerException.
+		 * 
+		 * @return A non-null, but possibly empty String.
+		 */
+		private String getId() {
+			return getPathElement().getAttributes().getNamedItem("id").getNodeValue();
+		}
+
+		/**
+		 * Typecasts the given pathNode to an SVGOMPathElement for later
+		 * analysis.
+		 * 
+		 * @param pathNode
+		 *            The path element that contains curves, lines, and other
+		 *            SVG instructions.
+		 */
+		private void setPathNode(Node pathNode) {
+			this.pathElement = (SVGOMPathElement) pathNode;
+		}
+
+		/**
+		 * Returns an SVG document element that contains path instructions
+		 * (usually for drawing on a canvas).
+		 * 
+		 * @return An object that contains a list of items representing pen
+		 *         movements.
+		 */
+		private SVGOMPathElement getPathElement() {
+			return this.pathElement;
+		}
+	}
 
 	/**
 	 * Creates an SVG Document given a URI.
@@ -36,32 +132,104 @@ public class SVGLoad {
 	 * @throws Exception
 	 *             Something went wrong parsing the SVG file.
 	 */
-	public SVGLoad(String uri) throws IOException {
+	public SVGLoad(URI uri) throws IOException {
 		setSVGDocument(createSVGDocument(uri));
 	}
-	public static List<Polygon> toPolygons(URI uri) {
-		
-		
-		return toPolygons(uri,0.05);
+
+	public  ArrayList<CSG> extrude(double thickness) throws IOException {
+
+		return extrude( thickness, 0.005);
 
 	}
-	public static List<Polygon> toPolygons(URI uri,double resolution) {
-		
-		
-		return null;
+	public  static ArrayList<CSG> extrude(File f,double thickness) throws IOException {
+		return new SVGLoad(f.toURI()).extrude( thickness);
+
 	}
 
-	/**
-	 * Finds all the path nodes and converts them to MetaPost code.
-	 */
-	public void run() {
-		NodeList pathNodes = getPathElements();
-		int pathNodeCount = pathNodes.getLength();
+	public static ArrayList<CSG> extrude(File f, double thickness, double resolution) throws IOException{
+		return new SVGLoad(f.toURI()).extrude( thickness, resolution);
+	}
+	public  static ArrayList<CSG> extrude(URI uri,double thickness) throws IOException {
 
-		for (int iPathNode = 0; iPathNode < pathNodeCount; iPathNode++) {
-			MetaPostPath mpp = new MetaPostPath(pathNodes.item(iPathNode));
-			System.out.println(mpp.toCode());
+		return new SVGLoad(uri).extrude( thickness);
+
+	}
+
+	public static ArrayList<CSG> extrude(URI uri, double thickness, double resolution) throws IOException{
+		return new SVGLoad(uri).extrude( thickness, resolution);
+	}
+	public  ArrayList<CSG> extrude( double thickness, double resolution) throws IOException {
+
+		/**
+		 * Reads a file and parses the path elements.
+		 * 
+		 * @param args
+		 *            args[0] - Filename to parse.
+		 * @throws IOException
+		 *             Error reading the SVG file.
+		 */
+
+		//SVGLoad converter = new eu.mihosoft.vrl.v3d.svg.SVGLoad(uri.toString());
+		// println "Loading converter"
+		NodeList pn = getSVGDocument().getDocumentElement().getElementsByTagName("g");
+		;
+		System.out.println("List of groups " + pn.getClass());
+		ArrayList<CSG> sections = new ArrayList<CSG>();
+		ArrayList<CSG> holes = new ArrayList<CSG>();
+		int pnCount = pn.getLength();
+		for (int j = 0; j < pnCount; j++) {
+			SVGOMGElement element = (SVGOMGElement) pn.item(j);
+			NodeList pathNodes = element.getElementsByTagName("path");
+			Node transforms = element.getAttributes().getNamedItem("transform");
+
+			if (pathNodes != null) {
+				// System.out.println(pathNodes.getClass());
+				// String
+				if (transforms != null)
+					System.out.println(transforms.getNodeValue() + " " + transforms.getClass());
+				// else
+
+				ArrayList<Vector3d> p = new ArrayList<Vector3d>();
+				double connectorDepth = thickness;
+				int pathNodeCount = pathNodes.getLength();
+				// BowlerStudioController.setCsg(null,null);
+				for (int iPathNode = 0; iPathNode < pathNodeCount; iPathNode++) {
+					String transform =transforms.getNodeValue();
+					Node pathNode=pathNodes.item(iPathNode);
+					MetaPostPath mpp = new MetaPostPath(pathNode, transform);
+					String code = mpp.toCode();
+
+					BezierPath path = new BezierPath();
+					path.parsePathString(code);
+					p.clear();
+					for (double i = 0; i < 1.0; i += resolution) {
+						Vector3d point = path.eval((float) i);
+						// println point
+						p.add(point);
+					}
+					p.add(path.eval((float) 1));
+					System.out.println(" Path " + code);
+					boolean hole = !Extrude.isCCW(Polygon.fromPoints(p));
+					try {
+						CSG newbit = Extrude.points(new Vector3d(0, 0, connectorDepth), p);
+						if (!hole)
+							sections.add(newbit);
+						else
+							holes.add(newbit);
+						// BowlerStudioController.addCsg(newbit);
+						//
+					} catch (Exception ex) {
+						// System.out.println(" Path "+code );
+						// BowlerStudio.printStackTrace(ex);
+						// ThreadUtil.wait(100);
+					}
+				}
+			}
+
 		}
+
+		sections.addAll(holes);
+		return sections;
 	}
 
 	/**
@@ -70,8 +238,18 @@ public class SVGLoad {
 	 * 
 	 * @return The list of "path" elements in the SVG document.
 	 */
-	private NodeList getPathElements() {
+	private NodeList getPathElements(NodeList group) {
 		return getSVGDocumentRoot().getElementsByTagName(PATH_ELEMENT_NAME);
+	}
+
+	/**
+	 * Returns a list of elements in the SVG document with names that match
+	 * PATH_ELEMENT_NAME.
+	 * 
+	 * @return The list of "path" elements in the SVG document.
+	 */
+	private NodeList getGroupElements() {
+		return getSVGDocumentRoot().getElementsByTagName(GROUP_ELEMENT_NAME);
 	}
 
 	/**
@@ -133,10 +311,10 @@ public class SVGLoad {
 	 * @throws Exception
 	 *             The file could not be read.
 	 */
-	private Document createSVGDocument(String uri) throws IOException {
+	private Document createSVGDocument(URI uri) throws IOException {
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
-		return factory.createDocument(uri);
+		return factory.createDocument(uri.getPath());
 	}
 
 	/**
@@ -148,8 +326,7 @@ public class SVGLoad {
 	 *             Error reading the SVG file.
 	 */
 	public static void main(String args[]) throws IOException {
-		URI uri = new File(args[0]).toURI();
-		SVGLoad converter = new SVGLoad(uri.toString());
-		converter.run();
+		URI uri = new File("simplified logo.svg").toURI();
+		new SVGLoad(uri).extrude( 20);
 	}
 }

@@ -119,6 +119,9 @@ public class BezierPath
                 case 'z':
                     path.closePath();
                     break;
+                case '/':
+                    //comment line
+                    break;
                 default:
                     throw new RuntimeException("Invalid path element");
             }
