@@ -72,6 +72,9 @@ dependencies {
     compile group: 'eu.mihosoft.ext.org.fxyz', name: 'extfxyz', version: '0.4', classifier: 'sources'
     compile group: 'java3d', name: 'vecmath', version: '1.3.1'
     compile 'org.slf4j:slf4j-simple:1.6.1'
+    // https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-tools
+	compile group: 'com.badlogicgames.gdx', name: 'gdx-tools', version: '0.9.9'
+    
     compile fileTree (dir: 'libs', includes: ['*.jar'])
     //compile group: 'java3d', name: 'vecmath', version: '1.3.1' , classifier: "javadoc"
 }
