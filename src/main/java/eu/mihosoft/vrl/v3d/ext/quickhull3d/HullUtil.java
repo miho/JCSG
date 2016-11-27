@@ -25,6 +25,15 @@ public class HullUtil {
     private HullUtil() {
         throw new AssertionError("Don't instantiate me!", null);
     }
+    /**
+     * Hull.
+     *
+     * @param points the points
+     * @return the csg
+     */
+    public static CSG hull(List<eu.mihosoft.vrl.v3d.Vector3d> points) {
+    	return hull(points, new PropertyStorage());
+    }
 
     /**
      * Hull.

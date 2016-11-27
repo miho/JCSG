@@ -20,7 +20,11 @@ public class BezierPath
     public BezierPath()
     {
     }
-
+    /** Creates a new instance of Animate */
+    public BezierPath(String path)
+    {
+    	parsePathString(path); 
+    }
     public void parsePathString(String d) {
 
         this.path = new BezierListProducer();
