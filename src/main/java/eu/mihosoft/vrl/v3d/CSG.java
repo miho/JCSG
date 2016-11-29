@@ -111,7 +111,7 @@ public class CSG {
     private List<Polygon> polygons;
     
     /** The default opt type. */
-    private static OptType defaultOptType = OptType.NONE;
+    private static OptType defaultOptType = OptType.CSG_BOUND;
     
     /** The opt type. */
     private OptType optType = null;
