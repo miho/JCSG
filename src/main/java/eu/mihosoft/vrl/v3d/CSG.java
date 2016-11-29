@@ -1782,22 +1782,38 @@ public class CSG {
 	}
 	
 	public CSG prepForManufacturing(){
-		if(getManufactuing()==null)
+		if(getManufacturing()==null)
 			return this;
-		return getManufactuing().prep(this);
+		return getManufacturing().prep(this);
 	}
-
-
-
-	public PrepForManufacturing getManufactuing() {
+	public CSG prepMfg(){
+		return prepForManufacturing();
+	}
+	
+	public PrepForManufacturing getManufacturing() {
 		return manufactuing;
 	}
+	public PrepForManufacturing getMfg() {
+		return getManufacturing();
+	}
 
-
-
-	public CSG setManufactuing(PrepForManufacturing manufactuing) {
+	public CSG setMfg(PrepForManufacturing manufactuing) {
+		return setManufacturing(manufactuing);
+	}
+	
+	public CSG setManufacturing(PrepForManufacturing manufactuing) {
 		this.manufactuing = manufactuing;
 		return this;
+	}
+	
+	@Deprecated
+	public PrepForManufacturing getManufactuing() {
+		return getManufacturing();
+	}
+
+	@Deprecated
+	public CSG setManufactuing(PrepForManufacturing manufactuing) {
+		return setManufacturing(manufactuing);
 	}
 	
 	public CSG setParameter(Parameter w, IParametric function) {
@@ -1882,6 +1898,25 @@ public class CSG {
 			mapOfparametrics=new HashMap<>();
 		}
 		return mapOfparametrics;
+	}
+	
+	public boolean touching(CSG incoming){
+		// Fast bounding box overlap check, quick fail if not intersecting bounding boxes
+		if( this.getMaxX()>incoming.getMinX() &&
+			this.getMinX()<incoming.getMaxX() &&	
+			this.getMaxY()>incoming.getMinY() &&
+			this.getMinY()<incoming.getMaxY() &&
+			this.getMaxZ()>incoming.getMinZ() &&
+			this.getMinZ()<incoming.getMaxZ() 
+				){
+			//Run a full intersection
+			CSG inter = this.intersect(incoming);
+			if(inter.getPolygons().size() >0 ){
+				// intersection success
+				return true;
+			}
+		}		
+		return false;
 	}
 
 
