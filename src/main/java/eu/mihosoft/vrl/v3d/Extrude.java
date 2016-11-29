@@ -374,6 +374,16 @@ public class Extrude {
 		
 		return slice;
 	}
+	public static ArrayList<CSG>  linear(ArrayList<CSG>   s,ArrayList<Double> endPoint){
+		ArrayList<Double> start = (ArrayList<Double>) Arrays.asList(0.0,0.0,0.0);
+		return bezier(s,start,endPoint,endPoint);
+	}
+	
+	public static ArrayList<CSG>  linear(CSG   s,ArrayList<Double> endPoint, int numSlices){
+		ArrayList<Double> start = (ArrayList<Double>) Arrays.asList(0.0,0.0,0.0);
+		
+		return bezier(s,start,endPoint,endPoint,numSlices);
+	}
 	
 	public static ArrayList<CSG>  move(ArrayList<CSG> slice,ArrayList<Transform> p ){
 		ArrayList<CSG> s = new ArrayList<CSG> ();
