@@ -140,9 +140,9 @@ uploadArchives {
 		  url 'http://neuronrobotics.com'
   
 		  scm {
-			connection 			'scm:git:https://github.com/ThreeCSG/JCSG'
-			developerConnection 'scm:git:git@github.com:ThreeCSG/JCSG.git'
-			url 'https://github.com/ThreeCSG/JCSG'
+			connection 			'scm:git:https://github.com/NeuronRobotics/JCSG'
+			developerConnection 'scm:git:git@github.com:NeuronRobotics/JCSG.git'
+			url 'https://github.com/NeuronRoboticsG/JCSG'
 		  }
   
 		  licenses {
