@@ -1,6 +1,5 @@
 package com.piro.bezier;
 
-import com.badlogic.gdx.math.Vector2;
 
 import eu.mihosoft.vrl.v3d.Vector3d;
 

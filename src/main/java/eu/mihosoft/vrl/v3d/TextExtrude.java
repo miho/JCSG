@@ -160,7 +160,7 @@ public class TextExtrude {
     	for(int i=0;i<sections.size();i++){
     		for(CSG h:holes){
     			try{
-    				if(sections.get(i).intersect(h).getPolygons().size()>0){
+    				if(sections.get(i).touching(h)){
     					//println "Hole found "
     					CSG nl = sections.get(i).difference(h);
     					
