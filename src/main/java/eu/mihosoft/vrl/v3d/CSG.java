@@ -100,6 +100,7 @@ public class CSG {
     private static OptType defaultOptType = OptType.NONE;
     private OptType optType = null;
     private PropertyStorage storage;
+	private Bounds bounds;
 
     private CSG() {
         storage = new PropertyStorage();
@@ -1100,13 +1101,16 @@ public class CSG {
 
     /**
      * Returns the bounds of this csg.
+     * SIDE EFFECT bounds is created and simply returned if existing
      *
      * @return bouds of this csg
      */
     public Bounds getBounds() {
-
-        if (polygons.isEmpty()) {
-            return new Bounds(Vector3d.ZERO, Vector3d.ZERO);
+        if(bounds!=null)
+        	return bounds;
+        if (getPolygons().isEmpty()) {
+        	bounds=  new Bounds(Vector3d.ZERO, Vector3d.ZERO);
+        	return bounds;
         }
 
         double minX = Double.POSITIVE_INFINITY;
@@ -1147,9 +1151,52 @@ public class CSG {
 
         } // end for polygon
 
-        return new Bounds(
+        bounds= new Bounds(
                 new Vector3d(minX, minY, minZ),
                 new Vector3d(maxX, maxY, maxZ));
+        return bounds;
+    }
+    /**
+     * Helper function wrapping bounding box values
+     * @return MaxX
+     */
+    public double getMaxX(){
+    	return getBounds().getMax().x;
+    }
+    /**
+     * Helper function wrapping bounding box values
+     * @return MaxY
+     */
+    public double getMaxY(){
+    	return getBounds().getMax().y;
+    }
+    /**
+     * Helper function wrapping bounding box values
+     * @return MaxZ
+     */
+    public double getMaxZ(){
+    	return getBounds().getMax().z;
+    }
+    /**
+     * Helper function wrapping bounding box values
+     * @return MinX
+     */
+    public double getMinX(){
+    	return getBounds().getMin().x;
+    }
+    /**
+     * Helper function wrapping bounding box values
+     * @return MinY
+     */
+    public double getMinY(){
+    	return getBounds().getMin().y;
+    }
+    /**
+     * Helper function wrapping bounding box values
+     * @return tMinZ
+     */
+    public double getMinZ(){
+    	return getBounds().getMin().z;
     }
 
     /**
@@ -1179,5 +1226,29 @@ public class CSG {
         POLYGON_BOUND,
         NONE
     }
+    /**
+     * A test to see if 2 CSG's are touching. The fast-return is a bounding box check
+     * If bounding boxes overlap, then an intersection is performed and the existance of an interscting object is returned
+     * @param incoming
+     * @return
+     */
+	public boolean touching(CSG incoming){
+		// Fast bounding box overlap check, quick fail if not intersecting bounding boxes
+		if( this.getMaxX()>incoming.getMinX() &&
+			this.getMinX()<incoming.getMaxX() &&	
+			this.getMaxY()>incoming.getMinY() &&
+			this.getMinY()<incoming.getMaxY() &&
+			this.getMaxZ()>incoming.getMinZ() &&
+			this.getMinZ()<incoming.getMaxZ() 
+				){
+			//Run a full intersection
+			CSG inter = this.intersect(incoming);
+			if(inter.getPolygons().size() >0 ){
+				// intersection success
+				return true;
+			}
+		}		
+		return false;
+	}
 
 }
