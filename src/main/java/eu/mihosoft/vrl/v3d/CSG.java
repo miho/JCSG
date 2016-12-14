@@ -118,7 +118,6 @@ public class CSG {
     
     /** The storage. */
     private PropertyStorage storage;
-    
     /** The current. */
     private MeshView current;
 	
@@ -127,7 +126,6 @@ public class CSG {
 	
 	/** The manipulator. */
 	private Affine manipulator;
-
 	private Bounds bounds;
 	/**
 	 * This is the trace for where this csg was created
@@ -150,9 +148,74 @@ public class CSG {
         storage = new PropertyStorage();
         addStackTrace(creationEventStackTrace);
     }
-    
-    
+        
+	/**
+	 * Gets the color.
+	 *
+	 * @return the color
+	 */
+	public Color getColor() {
+		return color;
+	}
 
+	/**
+	 * Sets the color.
+	 *
+	 * @param color the new color
+	 */
+	public CSG setColor(Color color) {
+		this.color = color;
+		if(current!=null){
+			PhongMaterial m = new PhongMaterial(getColor());
+			current.setMaterial(m);
+		}
+		return this;
+	}
+    
+    /**
+     * Sets the manipulator.
+     *
+     * @param manipulator the manipulator
+     * @return the affine
+     */
+    public CSG setManipulator(Affine manipulator){
+    	if(manipulator==null)
+    		return this;
+    	Affine old = manipulator;
+		this.manipulator = manipulator;
+	 	if(current != null){
+	 		current.getTransforms().clear();
+	 		current.getTransforms().add(manipulator);
+	 	}
+		return this;
+    }
+ 
+    /**
+     * Gets the mesh.
+     *
+     * @return the mesh
+     */
+    public MeshView getMesh(){
+    	if(current != null)
+    		return current;
+    	 MeshContainer meshContainer = toJavaFXMesh(null);
+  
+        current = meshContainer.getAsMeshViews().get(0);
+        if(getColor() == null)
+        	setColor(Color.RED);
+        else{
+        	PhongMaterial m = new PhongMaterial(getColor());
+			current.setMaterial(m);
+        }
+        
+        if(getManipulator()!=null){
+        	current.getTransforms().clear();
+        	current.getTransforms().add(getManipulator());
+        }
+		
+		current.setCullFace(CullFace.NONE);
+        return current;
+    }
 	/**
      * To z min.
      *
@@ -160,8 +223,7 @@ public class CSG {
      * @return the csg
      */
     public CSG toZMin(CSG target){
-		return this.transformed(new Transform().translateZ(-target.getBounds().getMin().z))
-				.historySync(target);
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMin().z));
 	}
 	
 	/**
@@ -171,7 +233,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toZMax(CSG target){
-		return this.transformed(new Transform().translateZ(-target.getBounds().getMax().z)).historySync(target);
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMax().z));
 	}
 	
 	/**
@@ -181,7 +243,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toXMin(CSG target){
-		return this.transformed(new Transform().translateX(-target.getBounds().getMin().x)).historySync(target);
+		return this.transformed(new Transform().translateX(-target.getBounds().getMin().x));
 	}
 	
 	/**
@@ -191,7 +253,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toXMax(CSG target){
-		return this.transformed(new Transform().translateX(-target.getBounds().getMax().x)).historySync(target);
+		return this.transformed(new Transform().translateX(-target.getBounds().getMax().x));
 	}
 	
 	/**
@@ -201,7 +263,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toYMin(CSG target){
-		return this.transformed(new Transform().translateY(-target.getBounds().getMin().y)).historySync(target);
+		return this.transformed(new Transform().translateY(-target.getBounds().getMin().y));
 	}
 	
 	/**
@@ -211,7 +273,7 @@ public class CSG {
 	 * @return the csg
 	 */
 	public CSG toYMax(CSG target){
-		return this.transformed(new Transform().translateY(-target.getBounds().getMax().y)).historySync(target);
+		return this.transformed(new Transform().translateY(-target.getBounds().getMax().y));
 	}
 	
 	/**
@@ -391,75 +453,6 @@ public class CSG {
 	public CSG scale(double scaleValue ){
 		return this.transformed(new Transform().scale(scaleValue));	
 	}
-        
-	/**
-	 * Gets the color.
-	 *
-	 * @return the color
-	 */
-	public Color getColor() {
-		return color;
-	}
-
-	/**
-	 * Sets the color.
-	 *
-	 * @param color the new color
-	 */
-	public CSG setColor(Color color) {
-		this.color = color;
-		if(current!=null){
-			PhongMaterial m = new PhongMaterial(getColor());
-			current.setMaterial(m);
-		}
-		return this;
-	}
-    
-    /**
-     * Sets the manipulator.
-     *
-     * @param manipulator the manipulator
-     * @return the affine
-     */
-    public CSG setManipulator(Affine manipulator){
-    	if(manipulator==null)
-    		return this;
-    	Affine old = manipulator;
-		this.manipulator = manipulator;
-	 	if(current != null){
-	 		current.getTransforms().clear();
-	 		current.getTransforms().add(manipulator);
-	 	}
-		return this;
-    }
- 
-    /**
-     * Gets the mesh.
-     *
-     * @return the mesh
-     */
-    public MeshView getMesh(){
-    	if(current != null)
-    		return current;
-    	 MeshContainer meshContainer = toJavaFXMesh(null);
-  
-        current = meshContainer.getAsMeshViews().get(0);
-        if(getColor() == null)
-        	setColor(Color.RED);
-        else{
-        	PhongMaterial m = new PhongMaterial(getColor());
-			current.setMaterial(m);
-        }
-        
-        if(getManipulator()!=null){
-        	current.getTransforms().clear();
-        	current.getTransforms().add(getManipulator());
-        }
-		
-		current.setCullFace(CullFace.NONE);
-        return current;
-    }
-
     /**
      * Constructs a CSG from a list of {@link Polygon} instances.
      *
@@ -1534,6 +1527,7 @@ public class CSG {
 
     /**
      * Returns the bounds of this csg.
+     * SIDE EFFECT bounds is created and simply returned if existing
      *
      * @return bouds of this csg
      */
@@ -1588,23 +1582,46 @@ public class CSG {
                 new Vector3d(maxX, maxY, maxZ));
         return bounds;
     }
-    
+
+    /**
+     * Helper function wrapping bounding box values
+     * @return MaxX
+     */
     public double getMaxX(){
     	return getBounds().getMax().x;
     }
+    /**
+     * Helper function wrapping bounding box values
+     * @return MaxY
+     */
     public double getMaxY(){
     	return getBounds().getMax().y;
     }
+    /**
+     * Helper function wrapping bounding box values
+     * @return MaxZ
+     */
     public double getMaxZ(){
     	return getBounds().getMax().z;
     }
-    
+    /**
+     * Helper function wrapping bounding box values
+     * @return MinX
+     */
     public double getMinX(){
     	return getBounds().getMin().x;
     }
+    /**
+     * Helper function wrapping bounding box values
+     * @return MinY
+     */
     public double getMinY(){
     	return getBounds().getMin().y;
     }
+    /**
+     * Helper function wrapping bounding box values
+     * @return tMinZ
+     */
     public double getMinZ(){
     	return getBounds().getMin().z;
     }
@@ -1661,7 +1678,7 @@ public class CSG {
         /** The none. */
         NONE
     }
-	
+
 	public CSG makeKeepaway(double shellThickness){
 			
 			double x = Math.abs(this.getBounds().getMax().x )+ Math.abs(this.getBounds().getMin().x);
@@ -1899,7 +1916,23 @@ public class CSG {
 		}
 		return mapOfparametrics;
 	}
-	
+
+	public boolean isMarkedForRegeneration() {
+		return markForRegeneration;
+	}
+
+
+
+	public void markForRegeneration() {
+		this.markForRegeneration = true;
+	}
+
+    /**
+     * A test to see if 2 CSG's are touching. The fast-return is a bounding box check
+     * If bounding boxes overlap, then an intersection is performed and the existance of an interscting object is returned
+     * @param incoming
+     * @return
+     */
 	public boolean touching(CSG incoming){
 		// Fast bounding box overlap check, quick fail if not intersecting bounding boxes
 		if( this.getMaxX()>incoming.getMinX() &&
@@ -1918,21 +1951,5 @@ public class CSG {
 		}		
 		return false;
 	}
-
-
-
-	public boolean isMarkedForRegeneration() {
-		return markForRegeneration;
-	}
-
-
-
-	public void markForRegeneration() {
-		this.markForRegeneration = true;
-	}
-
-
-
-	
 
 }

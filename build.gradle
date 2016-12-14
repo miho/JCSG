@@ -62,7 +62,6 @@ artifacts {
 }
 
 dependencies {
-    
     testCompile group: 'junit', name: 'junit', version: '4.0'
 	compile 'commons-io:commons-io:2.4'
 	compile group:'com.googlecode.json-simple', name:'json-simple', version:'1.1'
