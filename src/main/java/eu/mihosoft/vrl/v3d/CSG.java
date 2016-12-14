@@ -105,7 +105,243 @@ public class CSG {
     private CSG() {
         storage = new PropertyStorage();
     }
-
+	/**
+     * To z min.
+     *
+     * @param target the target
+     * @return the csg
+     */
+    public CSG toZMin(CSG target){
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMin().z));
+	}
+	
+	/**
+	 * To z max.
+	 *
+	 * @param target the target
+	 * @return the csg
+	 */
+	public CSG toZMax(CSG target){
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMax().z));
+	}
+	
+	/**
+	 * To x min.
+	 *
+	 * @param target the target
+	 * @return the csg
+	 */
+	public CSG toXMin(CSG target){
+		return this.transformed(new Transform().translateX(-target.getBounds().getMin().x));
+	}
+	
+	/**
+	 * To x max.
+	 *
+	 * @param target the target
+	 * @return the csg
+	 */
+	public CSG toXMax(CSG target){
+		return this.transformed(new Transform().translateX(-target.getBounds().getMax().x));
+	}
+	
+	/**
+	 * To y min.
+	 *
+	 * @param target the target
+	 * @return the csg
+	 */
+	public CSG toYMin(CSG target){
+		return this.transformed(new Transform().translateY(-target.getBounds().getMin().y));
+	}
+	
+	/**
+	 * To y max.
+	 *
+	 * @param target the target
+	 * @return the csg
+	 */
+	public CSG toYMax(CSG target){
+		return this.transformed(new Transform().translateY(-target.getBounds().getMax().y));
+	}
+	
+	/**
+	 * To z min.
+	 *
+	 * @return the csg
+	 */
+	public CSG toZMin(){
+		return toZMin(this);
+	}
+	
+	/**
+	 * To z max.
+	 *
+	 * @return the csg
+	 */
+	public CSG toZMax(){
+		return toZMax(this);
+	}
+	
+	/**
+	 * To x min.
+	 *
+	 * @return the csg
+	 */
+	public CSG toXMin(){
+		return toXMin(this);
+	}
+	
+	/**
+	 * To x max.
+	 *
+	 * @return the csg
+	 */
+	public CSG toXMax(){
+		return toXMax(this);
+	}
+	
+	/**
+	 * To y min.
+	 *
+	 * @return the csg
+	 */
+	public CSG toYMin(){
+		return toYMin(this);
+	}
+	
+	/**
+	 * To y max.
+	 *
+	 * @return the csg
+	 */
+	public CSG toYMax(){
+		return toYMax(this);
+	}
+	
+	public CSG move(double x, double y, double z){
+		return 	movex(x)
+				.movey(y)
+				.movez(z);
+	}
+	
+	public CSG move(double [] posVector){
+		return move(posVector[0],posVector[1],posVector[2]);
+	}
+	
+	/**
+	 * Movey.
+	 *
+	 * @param howFarToMove the how far to move
+	 * @return the csg
+	 */
+	//Helper/wrapper functions for movement
+	public CSG movey(double howFarToMove){
+		return this.transformed(Transform.unity().translateY(howFarToMove));
+	}
+	
+	/**
+	 * Movez.
+	 *
+	 * @param howFarToMove the how far to move
+	 * @return the csg
+	 */
+	public CSG movez(double howFarToMove ){
+		return this.transformed(Transform.unity().translateZ(howFarToMove));
+	}
+	
+	/**
+	 * Movex.
+	 *
+	 * @param howFarToMove the how far to move
+	 * @return the csg
+	 */
+	public CSG movex(double howFarToMove ){
+		return this.transformed(Transform.unity().translateX(howFarToMove));
+	}
+	
+	public CSG rot(double x, double y, double z){
+		return 	rotx(x)
+				.roty(y)
+				.rotz(z);
+	}
+	
+	public CSG rot(double [] posVector){
+		return rot(posVector[0],posVector[1],posVector[2]);
+	}
+	
+	
+	/**
+	 * Rotz.
+	 *
+	 * @param degreesToRotate the degrees to rotate
+	 * @return the csg
+	 */
+	//Rotation function, rotates the object
+	public CSG rotz(double degreesToRotate ){
+		return this.transformed(new Transform().rotZ(degreesToRotate));
+	}
+	
+	/**
+	 * Roty.
+	 *
+	 * @param degreesToRotate the degrees to rotate
+	 * @return the csg
+	 */
+	public CSG roty(double degreesToRotate ){
+		return this.transformed(new Transform().rotY(degreesToRotate));
+	}
+	
+	/**
+	 * Rotx.
+	 *
+	 * @param degreesToRotate the degrees to rotate
+	 * @return the csg
+	 */
+	public CSG rotx(double degreesToRotate ){
+		return this.transformed(new Transform().rotX(degreesToRotate));
+	}
+	
+	/**
+	 * Scalez.
+	 *
+	 * @param scaleValue the scale value
+	 * @return the csg
+	 */
+	//Scale function, scales the object
+	public CSG scalez(double scaleValue ){
+		return this.transformed(new Transform().scaleZ(scaleValue));
+	}
+	
+	/**
+	 * Scaley.
+	 *
+	 * @param scaleValue the scale value
+	 * @return the csg
+	 */
+	public CSG scaley(double scaleValue ){
+		return this.transformed(new Transform().scaleY(scaleValue));
+	}
+	
+	/**
+	 * Scalex.
+	 *
+	 * @param scaleValue the scale value
+	 * @return the csg
+	 */
+	public CSG scalex(double scaleValue ){
+		return this.transformed(new Transform().scaleX(scaleValue));
+	}
+	
+	/**
+	 * Scale.
+	 *
+	 * @param scaleValue the scale value
+	 * @return the csg
+	 */
+	public CSG scale(double scaleValue ){
+		return this.transformed(new Transform().scale(scaleValue));	
+	}
     /**
      * Constructs a CSG from a list of {@link Polygon} instances.
      *
