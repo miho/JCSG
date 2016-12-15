@@ -45,7 +45,7 @@ import java.util.List;
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Cylinder implements Primitive {
-
+    private static final double MINIMUM_RADIUS=0.001;
     private Vector3d start;
     private Vector3d end;
     private double startRadius;
@@ -80,8 +80,8 @@ public class Cylinder implements Primitive {
     public Cylinder(Vector3d start, Vector3d end, double radius, int numSlices) {
         this.start = start;
         this.end = end;
-        this.startRadius = radius;
-        this.endRadius = radius;
+        this.startRadius = radius<MINIMUM_RADIUS?MINIMUM_RADIUS:radius;
+        this.endRadius = radius<MINIMUM_RADIUS?MINIMUM_RADIUS:radius;
         this.numSlices = numSlices;
     }
 
@@ -99,8 +99,8 @@ public class Cylinder implements Primitive {
     public Cylinder(Vector3d start, Vector3d end, double startRadius, double endRadius, int numSlices) {
         this.start = start;
         this.end = end;
-        this.startRadius = startRadius;
-        this.endRadius = endRadius;
+        this.startRadius = startRadius<MINIMUM_RADIUS?MINIMUM_RADIUS:startRadius;
+        this.endRadius = endRadius<MINIMUM_RADIUS?MINIMUM_RADIUS:endRadius;
         this.numSlices = numSlices;
     }
 
@@ -117,8 +117,8 @@ public class Cylinder implements Primitive {
     public Cylinder(double radius, double height, int numSlices) {
         this.start = Vector3d.ZERO;
         this.end = Vector3d.Z_ONE.times(height);
-        this.startRadius = radius;
-        this.endRadius = radius;
+        this.startRadius = radius<MINIMUM_RADIUS?MINIMUM_RADIUS:radius;
+        this.endRadius = radius<MINIMUM_RADIUS?MINIMUM_RADIUS:radius;
         this.numSlices = numSlices;
     }
 
@@ -136,8 +136,8 @@ public class Cylinder implements Primitive {
     public Cylinder(double startRadius, double endRadius, double height, int numSlices) {
         this.start = Vector3d.ZERO;
         this.end = Vector3d.Z_ONE.times(height);
-        this.startRadius = startRadius;
-        this.endRadius = endRadius;
+        this.startRadius = startRadius<MINIMUM_RADIUS?MINIMUM_RADIUS:startRadius;
+        this.endRadius = endRadius<MINIMUM_RADIUS?MINIMUM_RADIUS:endRadius;
         this.numSlices = numSlices;
     }
 
