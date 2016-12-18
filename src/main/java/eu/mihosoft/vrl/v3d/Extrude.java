@@ -275,15 +275,18 @@ public class Extrude {
 	public static void setExtrusionEngine(IExtrusion extrusionEngine) {
 		Extrude.extrusionEngine = extrusionEngine;
 	}
+	
+	
 
 	public static ArrayList<Transform> bezierToTransforms(BezierPath pathA,  BezierPath pathB, int iterations){
 		ArrayList<Transform> p = new ArrayList<Transform>();
 		double x=0,y=0,z=0;
 		double lastx=0,lasty=0,lastz=0;
 		
-		for (double i = 0.01; i< iterations; i ++) {
-			Vector3d pointA = pathA.eval((float) i/iterations);
-			Vector3d pointB = pathB.eval((float) i/iterations);
+		for (double i = 0.01; i< iterations-1; i ++) {
+			Vector3d pointA = pathA.eval((float) i/(iterations-1));
+			Vector3d pointB = pathB.eval((float) i/(iterations-1));
+			
 			x=pointA.x;
 			y=pointA.y;
 			z=pointB.y;
@@ -312,7 +315,30 @@ public class Extrude {
 			lasty=y;
 			lastz=z;
 		}
-		//p.add(pathA.eval((float) (1.0-resolution/2.0)));
+		Vector3d pointA = pathA.eval((float) 0.99999);
+		Vector3d pointB = pathB.eval((float) 0.99999);
+		
+		x=pointA.x;
+		y=pointA.y;
+		z=pointB.y;
+		Transform t = new Transform();
+		t.translateX(x);
+		t.translateY(y);
+		t.translateZ(z);
+
+		double ydiff = y-lasty;
+		double zdiff = z-lastz;
+		double xdiff = x-lastx;
+
+		double rise = zdiff;
+		double run = Math.sqrt((ydiff*ydiff) +(xdiff*xdiff));
+		double rotz = 90-Math.toDegrees(Math.atan2(xdiff,ydiff));
+		double roty = Math.toDegrees(Math.atan2(rise,run));
+
+		t.rotZ(-rotz);
+		t.rotY(roty);
+		p.add(t);
+
 		return p;
 	}
 	
