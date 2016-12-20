@@ -745,8 +745,8 @@ public class CSG {
      * @return the csg
      */
     private CSG _unionCSGBoundsOpt(CSG csg) {
-        System.err.println("WARNING: using " + CSG.OptType.NONE
-                + " since other optimization types missing for union operation.");
+//        System.err.println("WARNING: using " + CSG.OptType.NONE
+//                + " since other optimization types missing for union operation.");
         return _unionIntersectOpt(csg);
     }
 
