@@ -33,9 +33,10 @@
  */
 package eu.mihosoft.vrl.v3d;
 
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.scene.text.Font;
 /**
  * 3d text primitive. 
  * 
@@ -74,7 +75,7 @@ public class Text3d extends Primitive {
      */
     public Text3d(String text, String fontName, double fontSize, double depth) {
 
-    	Font font = new Font(fontName,  Font.PLAIN, (int) fontSize);
+    	Font font = new Font(fontName,  (int) fontSize);
     	letters = TextExtrude.text( depth,  text,  font);
     	for (int i=0;i<letters.size();i++){
     		letters.set(i, letters.get(i)

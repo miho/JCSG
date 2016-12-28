@@ -1,12 +1,41 @@
 package eu.mihosoft.vrl.v3d;
 
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.awt.Shape;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
-import java.awt.geom.PathIterator;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.sun.javafx.geom.PathIterator;
+
+import javafx.collections.ObservableList;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
+import javafx.scene.shape.QuadCurveTo;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
+import javafx.scene.shape.QuadCurveTo;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -15,136 +44,117 @@ import java.util.ArrayList;
 
 public class TextExtrude {
 	private static final String default_font = "FreeSerif";
+	private final static int POINTS_CURVE = 10;
 
-	/**
-	 * Extrudes the specified path (convex or concave polygon without holes or
-	 * intersections, specified in CCW) into the specified direction.
-	 *
-	 * @param dir
-	 *            direction of extrusion
-	 * @param text
-	 *            text
-	 * @param font
-	 *            font configuration of the text
-	 *
-	 * @return a CSG object that consists of the extruded polygon
-	 */
-	public static ArrayList<CSG> text(double dir, String text, Font font) {
+	private final String text;
+	private List<Vector3d> points;
+	private Vector3d p0;
+	private final List<LineSegment> polis = new ArrayList<>();
+	ArrayList<CSG> sections = new ArrayList<CSG>();
+	ArrayList<CSG> holes = new ArrayList<CSG>();
+	private double dir;
 
-		String default_font = "FreeSerif";
-		String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+	class LineSegment {
 
-		boolean found = false;
-		for (String f : fonts) {
-			if (f.contentEquals(font.getFontName())) {
-				found = true;
+		/*
+		 * Given one single character in terms of Path, LineSegment stores a
+		 * list of points that define the exterior of one of its polygons
+		 * (!isHole). It can contain reference to one or several holes inside
+		 * this polygon. Or it can define the perimeter of a hole (isHole), with
+		 * no more holes inside.
+		 */
 
-			}
+		private boolean hole;
+		private List<Vector3d> points;
+		private Path path;
+		private Vector3d origen;
+		private List<LineSegment> holes = new ArrayList<>();
+		private String letter;
+
+		public LineSegment(String text) {
+			letter = text;
 		}
-		if (!found) {
-			for (String f : fonts) {
 
-				System.out.println(f);
-
-			}
-			System.out.println("Font not found! " + font.getFontName() + " using " + default_font);
-			font = new Font(default_font, font.getStyle(), font.getSize());
+		public String getLetter() {
+			return letter;
 		}
-		FontRenderContext frc = new FontRenderContext(null, (boolean) true, (boolean) true);
-		TextLayout textLayout = new TextLayout(text, font, frc);
-		Shape s = textLayout.getOutline(null);
 
-		PathIterator pi = s.getPathIterator(null);
-		ArrayList<Vector3d> points = new ArrayList<Vector3d>();
-
-		int connectorDepth = 10;
-
-		float[] coords = new float[6];
-		float[] start = new float[6];
-
-		ArrayList<CSG> sections = new ArrayList<CSG>();
-		ArrayList<CSG> holes = new ArrayList<CSG>();
-
-		float tmp = 0, tmp1 = 0;
-		while (pi.isDone() == (boolean) false) {
-			coords = new float[6];
-			int type = pi.currentSegment(coords);
-			switch (type) {
-			case PathIterator.SEG_CLOSE:
-				points.add(new Vector3d(start[0], start[1], 0));
-
-				if (points.size() > 3) {
-					try {
-						points.remove(points.size() - 1);
-						points.remove(points.size() - 1);
-						boolean hole = !Extrude.isCCW(Polygon.fromPoints(points));
-						CSG newLetter = Extrude.points(new Vector3d(0, 0, connectorDepth), points);
-
-						if (!hole)
-							sections.add(newLetter);
-						else
-							holes.add(newLetter);
-						// ThreadUtil.wait(10)
-						// stringOut = new Sphere(2).toCSG();
-						// return stringOut;
-					} catch (NullPointerException e) {
-						e.printStackTrace();
-					}
-				}
-				points = new ArrayList<Vector3d>();
-				break;
-			case PathIterator.SEG_QUADTO:
-				// println "SEG_QUADTO from ( "+coords[0]+" , "+coords[1]+" ) to
-				// ( "+coords[2]+" , "+coords[3]+" )";
-				for (float t = 0.05f; t <= 1.0f; t += 0.05f) {
-					// (1-t)²*P0 + 2t*(1-t)*P1 + t²*P2
-					float u = (1.0f - t);
-					float tt = u * u;
-					float ttt = 2.0f * t * u;
-					float tttt = t * t;
-					float p1 = tmp * tt + (coords[0] * ttt) + (coords[2] * tttt);
-					float p2 = tmp1 * tt + (coords[1] * ttt) + (coords[3] * tttt);
-					points.add(new Vector3d(p1, p2, 0));
-					// println "SEG_QUADTO "+p1+" and "+p2
-				}
-				tmp = coords[2];
-				tmp1 = coords[3];
-				points.add(new Vector3d(tmp, tmp1, 0));
-				break;
-			case PathIterator.SEG_LINETO:
-				// println "SEG_LINETO "+coords
-				tmp = coords[0];
-				tmp1 = coords[1];
-				points.add(new Vector3d(tmp, tmp1, 0));
-				break;
-			case PathIterator.SEG_MOVETO:
-
-				// move without drawing
-				start[0] = tmp = coords[0];
-				start[1] = tmp1 = coords[1];
-				// println "Moving to "+start
-				points.add(new Vector3d(tmp, tmp1, 0));
-				break;
-			case PathIterator.SEG_CUBICTO:
-				for (float t = 0.0f; t <= 1.05f; t += 0.1f) {
-					// p = a0 + a1*t + a2 * tt + a3*ttt;
-					float tt = t * t;
-					float ttt = tt * t;
-					float p1 = tmp + (coords[0] * t) + (coords[2] * tt) + (coords[4] * ttt);
-					float p2 = tmp1 + (coords[1] * t) + (coords[3] * tt) + (coords[5] * ttt);
-					points.add(new Vector3d(p1, p2, 0));
-					// println "SEG_CUBICTO "+p1+" and "+p2
-				}
-				tmp = coords[4];
-				tmp1 = coords[5];
-				break;
-
-			default:
-				throw new RuntimeException("Unknown iterator type: " + type);
-			}
-			pi.next();
-			// println "pi.isDone() "+pi.isDone()
+		public void setLetter(String letter) {
+			this.letter = letter;
 		}
+
+		public boolean isHole() {
+			return hole;
+		}
+
+		public void setHole(boolean isHole) {
+			this.hole = isHole;
+		}
+
+		public List<Vector3d> getPoints() {
+			return points;
+		}
+
+		public void setPoints(List<Vector3d> points) {
+			this.points = points;
+		}
+
+		public Path getPath() {
+			return path;
+		}
+
+		public void setPath(Path path) {
+			this.path = path;
+		}
+
+		public Vector3d getOrigen() {
+			return origen;
+		}
+
+		public void setOrigen(Vector3d origen) {
+			this.origen = origen;
+		}
+
+		public List<LineSegment> getHoles() {
+			return holes;
+		}
+
+		public void setHoles(List<LineSegment> holes) {
+			this.holes = holes;
+		}
+
+		public void addHole(LineSegment hole) {
+			holes.add(hole);
+		}
+
+		@Override
+		public String toString() {
+			return "Poly{" + "points=" + points + ", path=" + path + ", origen=" + origen + ", holes=" + holes + '}';
+		}
+	}
+
+	private TextExtrude(String text, Font font, double dir) {
+		this.dir = dir;
+		points = new ArrayList<>();
+		this.text=text;
+		Text textNode = new Text(text);
+		textNode.setFont(font);
+
+		// Convert Text to Path
+		Path subtract = (Path) (Shape.subtract(textNode, new Rectangle(0, 0)));
+		// Convert Path elements into lists of points defining the perimeter
+		// (exterior or interior)
+		subtract.getElements().forEach(this::getPoints);
+
+		// Group exterior polygons with their interior polygons
+		polis.stream().filter(LineSegment::isHole).forEach(hole -> {
+			polis.stream().filter(poly -> !poly.isHole())
+					.filter(poly -> !((Path) Shape.intersect(poly.getPath(), hole.getPath())).getElements().isEmpty())
+					.filter(poly -> poly.getPath().contains(new Point2D(hole.getOrigen().x, hole.getOrigen().y)))
+					.forEach(poly -> poly.addHole(hole));
+		});
+		polis.removeIf(LineSegment::isHole);
+		
 		for (int i = 0; i < sections.size(); i++) {
 			for (CSG h : holes) {
 				try {
@@ -159,7 +169,122 @@ public class TextExtrude {
 				}
 			}
 		}
-		return sections;
 	}
 
+	/**
+	 * Extrudes the specified path (convex or concave polygon without holes or
+	 * intersections, specified in CCW) into the specified direction.
+	 *
+	 * @param dir
+	 *            direction of extrusion
+	 * @param text
+	 *            text
+	 * @param font
+	 *            font configuration of the text
+	 *
+	 * @return a CSG object that consists of the extruded polygon
+	 */
+	@SuppressWarnings("restriction")
+	public static ArrayList<CSG> text(double dir, String text, Font font) {
+
+		TextExtrude te = new TextExtrude(text, font, dir);
+
+		return te.sections;
+	}
+
+	 public List<LineSegment> getLineSegment() {        
+	        return polis; 
+	    }
+	    
+	    public List<Vector3d> getOffset(){
+	        return polis.stream().sorted((p1,p2)->(int)(p1.getOrigen().x-p2.getOrigen().x))
+	                .map(LineSegment::getOrigen).collect(Collectors.toList());
+	    }
+	    
+	    private void getPoints(PathElement elem){
+	        if(elem instanceof MoveTo){
+	        	points.remove(points.size() - 1);
+				points.remove(points.size() - 1);
+				boolean hole = !Extrude.isCCW(Polygon.fromPoints(points));
+				CSG newLetter = Extrude.points(new Vector3d(0, 0, dir), points);
+
+				if (!hole)
+					sections.add(newLetter);
+				else
+					holes.add(newLetter);
+	            points=new ArrayList<>();
+	            p0=new Vector3d((float)((MoveTo)elem).getX(),(float)((MoveTo)elem).getY(),0f);
+	            points.add(p0);
+	        } else if(elem instanceof LineTo){
+	            points.add(new Vector3d((float)((LineTo)elem).getX(),(float)((LineTo)elem).getY(),0f));
+	        } else if(elem instanceof CubicCurveTo){
+	            Vector3d ini = (points.size()>0?points.get(points.size()-1):p0);
+	            IntStream.rangeClosed(1, POINTS_CURVE).forEach(i->points.add(evalCubicBezier((CubicCurveTo)elem, ini, ((double)i)/POINTS_CURVE)));
+	        } else if(elem instanceof QuadCurveTo){
+	            Vector3d ini = (points.size()>0?points.get(points.size()-1):p0);
+	            IntStream.rangeClosed(1, POINTS_CURVE).forEach(i->points.add(evalQuadBezier((QuadCurveTo)elem, ini, ((double)i)/POINTS_CURVE)));
+	        } else if(elem instanceof ClosePath){
+	            points.add(p0);
+	            // Every closed path is a polygon (exterior or interior==hole)
+	            // the text, the list of points and a new path between them are
+	            // stored in a LineSegment: a continuous line that can change direction
+	            if(Math.abs(getArea())>0.001){
+	                LineSegment line = new LineSegment(text);
+	                line.setHole(isHole());
+	                line.setPoints(points);
+	                line.setPath(generatePath());
+	                line.setOrigen(p0);
+	                polis.add(line);
+	            }
+	        } 
+	    }
+	    
+	    private Vector3d evalCubicBezier(CubicCurveTo c, Vector3d ini, double t){
+	        Vector3d p=new Vector3d((float)(Math.pow(1-t,3)*ini.x+
+	                3*t*Math.pow(1-t,2)*c.getControlX1()+
+	                3*(1-t)*t*t*c.getControlX2()+
+	                Math.pow(t, 3)*c.getX()),
+	                (float)(Math.pow(1-t,3)*ini.y+
+	                3*t*Math.pow(1-t, 2)*c.getControlY1()+
+	                3*(1-t)*t*t*c.getControlY2()+
+	                Math.pow(t, 3)*c.getY()),
+	                0f);
+	        return p;
+	    }
+	    
+	    private Vector3d evalQuadBezier(QuadCurveTo c, Vector3d ini, double t){
+	        Vector3d p=new Vector3d((float)(Math.pow(1-t,2)*ini.x+
+	                2*(1-t)*t*c.getControlX()+
+	                Math.pow(t, 2)*c.getX()),
+	                (float)(Math.pow(1-t,2)*ini.y+
+	                2*(1-t)*t*c.getControlY()+
+	                Math.pow(t, 2)*c.getY()),
+	                0f);
+	        return p;
+	    }
+	    
+	    private double getArea(){
+	        DoubleProperty res=new SimpleDoubleProperty();
+	        IntStream.range(0, points.size()-1)
+	                .forEach(i->res.set(res.get()+points.get(i).cross(points.get(i+1)).z));
+	        // System.out.println("path: "+res.doubleValue()/2);
+	        
+	        return res.doubleValue()/2d;
+	    }
+	    
+	    private boolean isHole(){
+	        // area>0 -> the path is a hole, clockwise (y up)
+	        // area<0 -> the path is a polygon, counterclockwise (y up)
+	        return getArea()>0;
+	    }
+	    
+	    private Path generatePath(){
+	        Path path = new Path(new MoveTo(points.get(0).x,points.get(0).y));
+	        points.stream().skip(1).forEach(p->path.getElements().add(new LineTo(p.x,p.y)));
+	        path.getElements().add(new ClosePath());
+	        path.setStroke(Color.GREEN);
+	        // Path must be filled to allow Shape.intersect
+	        path.setFill(Color.RED);
+	        return path;
+	    }
 }
