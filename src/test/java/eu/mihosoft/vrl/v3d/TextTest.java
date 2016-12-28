@@ -1,6 +1,6 @@
 package eu.mihosoft.vrl.v3d;
 
-import java.awt.Font;
+import javafx.scene.text.Font;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -15,7 +15,7 @@ public class TextTest {
 	 */
 	public static void main(String [] args){
 
-		TextExtrude.text(10.0, "Hello", new Font("Helvedica", Font.PLAIN, 18));
-		TextExtrude.text(10.0, "Hello World!", new Font("Times New Roman", Font.PLAIN, 18));
+		TextExtrude.text(10.0, "Hello", new Font("Helvedica", 18));
+		TextExtrude.text(10.0, "Hello World!", new Font("Times New Roman",  18));
 	}
 }
