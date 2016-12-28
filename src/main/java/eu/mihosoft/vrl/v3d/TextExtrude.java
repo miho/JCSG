@@ -131,13 +131,13 @@ public class TextExtrude {
 		subtract.getElements().forEach(this::getPoints);
 
 		// Group exterior polygons with their interior polygons
-		polis.stream().filter(LineSegment::isHole).forEach(hole -> {
-			polis.stream().filter(poly -> !poly.isHole())
-					.filter(poly -> !((Path) Shape.intersect(poly.getPath(), hole.getPath())).getElements().isEmpty())
-					.filter(poly -> poly.getPath().contains(new Point2D(hole.getOrigen().x, hole.getOrigen().y)))
-					.forEach(poly -> poly.addHole(hole));
-		});
-		polis.removeIf(LineSegment::isHole);
+//		polis.stream().filter(LineSegment::isHole).forEach(hole -> {
+//			polis.stream().filter(poly -> !poly.isHole())
+//					.filter(poly -> !((Path) Shape.intersect(poly.getPath(), hole.getPath())).getElements().isEmpty())
+//					.filter(poly -> poly.getPath().contains(new Point2D(hole.getOrigen().x, hole.getOrigen().y)))
+//					.forEach(poly -> poly.addHole(hole));
+//		});
+		//polis.removeIf(LineSegment::isHole);
 		
 		for (int i = 0; i < sections.size(); i++) {
 			for (CSG h : holes) {
@@ -187,16 +187,7 @@ public class TextExtrude {
 	    
 	    private void getPoints(PathElement elem){
 	        if(elem instanceof MoveTo){
-	        	points.remove(points.size() - 1);
-				points.remove(points.size() - 1);
-				boolean hole = !Extrude.isCCW(Polygon.fromPoints(points));
-				CSG newLetter = Extrude.points(new Vector3d(0, 0, dir), points);
-
-				if (!hole)
-					sections.add(newLetter);
-				else
-					holes.add(newLetter);
-	            points=new ArrayList<>();
+	        	loadPoints();
 	            p0=new Vector3d((float)((MoveTo)elem).getX(),(float)((MoveTo)elem).getY(),0f);
 	            points.add(p0);
 	        } else if(elem instanceof LineTo){
@@ -220,7 +211,24 @@ public class TextExtrude {
 	                line.setOrigen(p0);
 	                polis.add(line);
 	            }
+	            loadPoints();
+	            
 	        } 
+	    }
+	    
+	    private void loadPoints(){
+        	if(points.size()>4){
+	        	points.remove(points.size() - 1);
+				//points.remove(points.size() - 1);
+				boolean hole = Extrude.isCCW(Polygon.fromPoints(points));
+				CSG newLetter = Extrude.points(new Vector3d(0, 0, dir), points);
+
+				if (!hole)
+					sections.add(newLetter);
+				else
+					holes.add(newLetter);
+        	}
+            points=new ArrayList<>();
 	    }
 	    
 	    private Vector3d evalCubicBezier(CubicCurveTo c, Vector3d ini, double t){
