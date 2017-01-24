@@ -1546,6 +1546,40 @@ public class CSG {
 		bounds = new Bounds(new Vector3d(minX, minY, minZ), new Vector3d(maxX, maxY, maxZ));
 		return bounds;
 	}
+	
+	public Vector3d getCenter(){
+		return new Vector3d(
+				getCenterX(),
+				getCenterY(),
+				getCenterZ());
+	}
+	
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterX
+	 */
+	public double getCenterX() {
+		return ((getMinX()/2)+(getMaxX()/2));
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterY
+	 */
+	public double getCenterY() {
+		return  ((getMinY()/2)+(getMaxY()/2));
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterZ
+	 */
+	public double getCenterZ() {
+		return  ((getMinZ()/2)+(getMaxZ()/2));
+	}
 
 	/**
 	 * Helper function wrapping bounding box values
