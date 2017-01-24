@@ -913,19 +913,27 @@ public class CSG {
 	 * @return difference of this csg and the specified csg
 	 */
 	public CSG difference(CSG csg) {
-		// Check to see if a CSG operation is attempting to difference with no
-		// polygons
-		if (this.getPolygons().size() > 0 && csg.getPolygons().size() > 0) {
-			switch (getOptType()) {
-			case CSG_BOUND:
-				return _differenceCSGBoundsOpt(csg).historySync(this).historySync(csg);
-			case POLYGON_BOUND:
-				return _differencePolygonBoundsOpt(csg).historySync(this).historySync(csg);
-			default:
-				return _differenceNoOpt(csg).historySync(this).historySync(csg);
-			}
-		} else
+		try {
+			// Check to see if a CSG operation is attempting to difference with
+			// no
+			// polygons
+			if (this.getPolygons().size() > 0 && csg.getPolygons().size() > 0) {
+				switch (getOptType()) {
+				case CSG_BOUND:
+					return _differenceCSGBoundsOpt(csg).historySync(this).historySync(csg);
+				case POLYGON_BOUND:
+					return _differencePolygonBoundsOpt(csg).historySync(this).historySync(csg);
+				default:
+					return _differenceNoOpt(csg).historySync(this).historySync(csg);
+				}
+			} else
+				return this;
+		} catch (Exception ex) {
+			System.err.println("CSG difference failed");
+			ex.printStackTrace();
 			return this;
+		}
+
 	}
 
 	/**
