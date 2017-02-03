@@ -33,15 +33,10 @@
  */
 package eu.mihosoft.vrl.v3d;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.fxyz.shapes.primitives.Text3DMesh;
-import org.fxyz.shapes.primitives.TexturedMesh;
-import org.fxyz.utils.MeshUtils;
 
+import javafx.scene.text.Font;
 /**
  * 3d text primitive. 
  * 
@@ -50,19 +45,7 @@ import org.fxyz.utils.MeshUtils;
 public class Text3d implements Primitive {
 
     private final PropertyStorage properties = new PropertyStorage();
-
-    private final String text;
-    private String fontName;
-    private double size;
-    private double depth;
-    Text3DMesh t3dMesh;
-    private boolean noCenter;
-
-    // 08.11.2016
-    // TODO report bug to FXyz authors
-    // factor by which we multiply text generation to minimize rendering errors
-    double scaleFactor = 100;
-
+    ArrayList<CSG> letters;
     /**
      * Constructor.
      * 
@@ -91,22 +74,22 @@ public class Text3d implements Primitive {
      * @param depth text depth (z thickness)
      */
     public Text3d(String text, String fontName, double fontSize, double depth) {
-        this.text = text;
-        this.fontName = fontName;
-        this.size = fontSize;
-        this.depth = depth;
 
-        // scaled size and height (see scaleFactor docs)
-        int realSize = (int) (fontSize * scaleFactor);
-        double realHeight = depth * scaleFactor;
-
-        t3dMesh = new Text3DMesh(
-                text, fontName, realSize, false, realHeight, 0, 0);
+    	Font font = new Font(fontName,  (int) fontSize);
+    	letters = TextExtrude.text( depth,  text,  font);
+    	for (int i=0;i<letters.size();i++){
+    		letters.set(i, letters.get(i)
+    				.rotx(180)
+    				.toZMin()
+    				);
+    	}
+    	
+    	
     }
 
     @Override
     public List<Polygon> toPolygons() {
-        return new MeshRetriever(this).toCSG(noCenter).getPolygons();
+    	return letters.get(0).union(letters).getPolygons();
     }
 
     @Override
@@ -115,84 +98,7 @@ public class Text3d implements Primitive {
     }
 
     public Text3d noCenter() {
-        this.noCenter = true;
-
         return this;
     }
 
-}
-
-class MeshRetriever {
-
-    private final Text3d t3dMesh;
-
-    public MeshRetriever(Text3d t3dMesh) {
-        this.t3dMesh = t3dMesh;
-    }
-
-    public CSG toCSG(boolean noCenter) {
-        List<CSG> csgs = new ArrayList<>();
-
-        CSG result = null;
-
-        List<TexturedMesh> meshes = getMeshes();
-
-        for (int i = 0; i < meshes.size(); i++) {
-
-            TexturedMesh mesh = meshes.get(i);
-
-            CSG csg = MeshUtils.mesh2CSG(mesh);
-
-            double xTransform = mesh.getTransforms().stream().
-                    mapToDouble(tr -> tr.getTx()).sum();
-
-            csg = csg.transformed(Transform.unity().translateX(xTransform));
-
-            // rescale final mesh (see scaleFactor docs)
-            double xScale = 1.0 / t3dMesh.scaleFactor;
-            csg = csg.transformed(Transform.unity().
-                    scale(xScale, -xScale, xScale));
-
-            if (result == null) {
-                result = csg;
-            } else {
-                result = result.dumbUnion(csg);
-            }
-        }
-
-        if (!noCenter) {
-            result = result.transformed(
-                    Transform.unity().translate(
-                            -result.getBounds().getBounds().x * 0.5,
-                            -result.getBounds().getBounds().y * 0.5,
-                            -result.getBounds().getBounds().z * 0.5)
-            );
-        }
-
-        return result;
-    }
-
-    public List<TexturedMesh> getMeshes() {
-        try {
-            Field field = Text3DMesh.class.getDeclaredField("meshes");
-
-            field.setAccessible(true);
-
-            return (List<TexturedMesh>) field.get(t3dMesh.t3dMesh);
-        } catch (NoSuchFieldException ex) {
-            Logger.getLogger(MeshRetriever.class.getName()).
-                    log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(MeshRetriever.class.getName()).
-                    log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(MeshRetriever.class.getName()).
-                    log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(MeshRetriever.class.getName()).
-                    log(Level.SEVERE, null, ex);
-        }
-
-        return null;
-    }
 }
