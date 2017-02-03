@@ -26,6 +26,9 @@ mainClassName = mainClass
 repositories {
     mavenCentral()
     jcenter()
+    maven {
+        url 'https://dl.bintray.com/miho/VVecMath'
+    }
 }
 
 // javadoc is way too strict for my taste.
@@ -62,7 +65,8 @@ dependencies {
 
     compile group: 'eu.mihosoft.ext.org.fxyz', name: 'extfxyz', version: '0.4'
     compile group: 'eu.mihosoft.ext.org.fxyz', name: 'extfxyz', version: '0.4', classifier: 'sources'
-    compile group: 'java3d', name: 'vecmath', version: '1.3.1'
+    compile group: 'eu.mihosoft.vvecmath', name: 'vvecmath', version: '0.3'
+    compile group: 'eu.mihosoft.vvecmath', name: 'vvecmath', version: '0.3', classifier: 'sources'
     compile 'org.slf4j:slf4j-simple:1.6.1'
 }
 
