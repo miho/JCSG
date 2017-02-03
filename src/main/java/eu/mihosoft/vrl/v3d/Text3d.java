@@ -36,15 +36,19 @@ package eu.mihosoft.vrl.v3d;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javax.swing.SwingUtilities;
 import org.fxyz.shapes.primitives.Text3DMesh;
 import org.fxyz.shapes.primitives.TexturedMesh;
 import org.fxyz.utils.MeshUtils;
 
 /**
- * 3d text primitive. 
- * 
+ * 3d text primitive.
+ *
  * @author Michael Hoffer <info@michaelhoffer.de>
  */
 public class Text3d implements Primitive {
@@ -65,7 +69,7 @@ public class Text3d implements Primitive {
 
     /**
      * Constructor.
-     * 
+     *
      * @param text text
      */
     public Text3d(String text) {
@@ -74,7 +78,7 @@ public class Text3d implements Primitive {
 
     /**
      * Constructor.
-     * 
+     *
      * @param text text
      * @param depth text depth (z thickness)
      */
@@ -83,8 +87,8 @@ public class Text3d implements Primitive {
     }
 
     /**
-     * Constructor. 
-     * 
+     * Constructor.
+     *
      * @param text text
      * @param fontName font name, e.g., "Arial"
      * @param fontSize font size
@@ -100,8 +104,11 @@ public class Text3d implements Primitive {
         int realSize = (int) (fontSize * scaleFactor);
         double realHeight = depth * scaleFactor;
 
-        t3dMesh = new Text3DMesh(
-                text, fontName, realSize, false, realHeight, 0, 0);
+        invokeAndWait(() -> {
+            t3dMesh = new Text3DMesh(
+                    text, fontName, realSize, false, realHeight, 0, 0);
+        });
+
     }
 
     @Override
@@ -118,6 +125,54 @@ public class Text3d implements Primitive {
         this.noCenter = true;
 
         return this;
+    }
+
+    private static void invokeAndWait(Runnable action) {
+
+        if (action == null) {
+            throw new NullPointerException("action");
+        }
+
+        // run synchronously on JavaFX thread
+        if (Platform.isFxApplicationThread()) {
+            action.run();
+            return;
+        }
+
+        // init JavaFX toolkit
+        Platform.setImplicitExit(true);
+
+        setupJavaFX();
+
+        // queue on JavaFX thread and wait for completion
+        final CountDownLatch doneLatch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            try {
+                action.run();
+            } finally {
+                doneLatch.countDown();
+            }
+        });
+
+        try {
+            doneLatch.await();
+        } catch (InterruptedException e) {
+            // ignore exception
+        }
+    }
+
+    private static void setupJavaFX() throws RuntimeException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        SwingUtilities.invokeLater(() -> {
+            new JFXPanel(); // initializes JavaFX environment
+            latch.countDown();
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
@@ -195,4 +250,5 @@ class MeshRetriever {
 
         return null;
     }
+
 }
