@@ -170,6 +170,65 @@ public class Transform {
         // TODO: use quaternions
         return rotX(vec.x).rotY(vec.y).rotZ(vec.z);
     }
+    
+    
+    /**
+     * Applies a rotation operation with a specified rotation axis.
+     * 
+     * <b> Note:</b> untested.
+     * 
+     * @param axisPos axis point
+     * @param axisDir axis direction (may be unnormalized)
+     * @param degrees rotantion angle in degrees
+     * @return this transform
+     */
+    public Transform rot(Vector3d axisPos, Vector3d axisDir, double degrees) {
+        axisDir = axisDir.normalized();
+
+        Vector3d dir2 = axisDir.times(axisDir);
+
+        double posx = axisPos.x;
+        double posy = axisPos.y;
+        double posz = axisPos.z;
+
+        double dirx = axisDir.x;
+        double diry = axisDir.y;
+        double dirz = axisDir.z;
+
+        double dirxSquare = dir2.x;
+        double dirySquare = dir2.y;
+        double dirzSquare = dir2.z;
+        
+        double radians = degrees * Math.PI * (1.0 / 180.0);
+
+        double cosOfAngle = Math.cos(radians);
+        double oneMinusCosOfangle = 1 - cosOfAngle;
+        double sinOfangle = Math.sin(radians);
+
+        m.m00 = dirxSquare + (dirySquare + dirzSquare) * cosOfAngle;
+        m.m01 = dirx * diry * oneMinusCosOfangle - dirz * sinOfangle;
+        m.m02 = dirx * dirz * oneMinusCosOfangle + diry * sinOfangle;
+        m.m03 = (posx * (dirySquare + dirzSquare)
+                - dirx * (posy * diry + posz * dirz)) * oneMinusCosOfangle
+                + (posy * dirz - posz * diry) * sinOfangle;
+
+        m.m10 = dirx * diry * oneMinusCosOfangle + dirz * sinOfangle;
+        m.m11 = dirySquare + (dirxSquare + dirzSquare) * cosOfAngle;
+        m.m12 = diry * dirz * oneMinusCosOfangle - dirx * sinOfangle;
+        m.m13 = (posy * (dirxSquare + dirzSquare)
+                - diry * (posx * dirx + posz * dirz)) * oneMinusCosOfangle
+                + (posz * dirx - posx * dirz) * sinOfangle;
+
+        m.m20 = dirx * dirz * oneMinusCosOfangle - diry * sinOfangle;
+        m.m21 = diry * dirz * oneMinusCosOfangle + dirx * sinOfangle;
+        m.m22 = dirzSquare + (dirxSquare + dirySquare) * cosOfAngle;
+        m.m23 = (posz * (dirxSquare + dirySquare)
+                - dirz * (posx * dirx + posy * diry)) * oneMinusCosOfangle
+                + (posx * diry - posy * dirx) * sinOfangle;
+
+        return this;
+    }
+    
 
     /**
      * Applies a translation operation to this transform.
