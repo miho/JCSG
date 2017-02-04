@@ -111,6 +111,15 @@ public final class Polygon {
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
+        
+        for(Vertex v : vertices) {
+            v.normal = plane.normal;
+        }
+        
+        if (Vector3d.ZERO.equals(plane.normal)) {
+            throw new RuntimeException(
+                    "Normal is zero! Probably, duplicate points have been specified!\n\n"+toStlString());
+        }
     }
 
     /**
@@ -209,7 +218,7 @@ public final class Polygon {
             for (int i = 0; i < this.vertices.size() - 2; i++) {
                 sb.
                         append("  facet normal ").append(
-                                this.plane.normal.toStlString()).append("\n").
+                        this.plane.normal.toStlString()).append("\n").
                         append("    outer loop\n").
                         append("      ").append(firstVertexStl).append("\n").
                         append("      ");
@@ -349,7 +358,14 @@ public final class Polygon {
             List<Vector3d> points, PropertyStorage shared, Plane plane) {
 
         Vector3d normal
-                = (plane != null) ? plane.normal.clone() : Vector3d.xyz(0, 0, 0);
+                = (plane != null) ? plane.normal.clone() : null;
+
+        if (normal == null) {
+            normal = Plane.createFromPoints(
+                    points.get(0),
+                    points.get(1),
+                    points.get(2)).normal;
+        }
 
         List<Vertex> vertices = new ArrayList<>();
 
@@ -403,8 +419,8 @@ public final class Polygon {
         } // end for vertices
 
         return new Bounds(
-               Vector3d.xyz(minX, minY, minZ),
-               Vector3d.xyz(maxX, maxY, maxZ));
+                Vector3d.xyz(minX, minY, minZ),
+                Vector3d.xyz(maxX, maxY, maxZ));
     }
 
     public boolean contains(Vector3d p) {
@@ -429,15 +445,15 @@ public final class Polygon {
         }
         return oddNodes;
     }
-    
+
     public boolean contains(Polygon p) {
-        
+
         for (Vertex v : p.vertices) {
             if (!contains(v.pos)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
