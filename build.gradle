@@ -26,9 +26,6 @@ mainClassName = mainClass
 repositories {
     mavenCentral()
     jcenter()
-    maven {
-        url 'https://dl.bintray.com/miho/VVecMath'
-    }
 }
 
 // javadoc is way too strict for my taste.
