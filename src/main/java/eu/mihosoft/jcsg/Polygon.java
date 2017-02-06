@@ -95,6 +95,16 @@ public final class Polygon {
     }
 
     /**
+     * Indicates whether this polyon is valid, i.e., if it 
+     * @return 
+     */
+    public boolean isValid() {
+        return valid;
+    }
+    
+    private boolean valid = true;
+    
+    /**
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
      *
@@ -112,13 +122,25 @@ public final class Polygon {
                 vertices.get(1).pos,
                 vertices.get(2).pos);
         
-        for(Vertex v : vertices) {
+        validateAndInit(vertices);
+    }
+
+    private void validateAndInit(List<Vertex> vertices1) {
+        for (Vertex v : vertices1) {
             v.normal = plane.normal;
         }
-        
         if (Vector3d.ZERO.equals(plane.normal)) {
-            throw new RuntimeException(
+            valid = false;
+            System.err.println(
                     "Normal is zero! Probably, duplicate points have been specified!\n\n"+toStlString());
+//            throw new RuntimeException(
+//                    "Normal is zero! Probably, duplicate points have been specified!\n\n"+toStlString());
+        } 
+        
+        if(vertices.size()<3) {
+            throw new RuntimeException(
+                    "Invalid polygon: at least 3 vertices expected, got: "
+                            + vertices.size());
         }
     }
 
@@ -137,6 +159,8 @@ public final class Polygon {
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
+        
+        validateAndInit(vertices);
     }
 
     /**

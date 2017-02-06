@@ -130,7 +130,12 @@ final class Node {
         if (this.plane == null && !polygons.isEmpty()) {
             this.plane = polygons.get(0).plane.clone();
         } else if (this.plane == null && polygons.isEmpty()) {
-            throw new RuntimeException("Please fix me! I don't know what to do?");
+            
+            System.err.println("Please fix me! I don't know what to do?");
+            
+            // throw new RuntimeException("Please fix me! I don't know what to do?");
+            
+            return;
         }
 
         this.plane.flip();
@@ -235,6 +240,8 @@ final class Node {
         if (this.plane == null) {
             this.plane = polygons.get(0).plane.clone();
         }
+        
+        polygons = polygons.stream().filter(p->p.isValid()).distinct().collect(Collectors.toList());
 
         List<Polygon> frontP = new ArrayList<>();
         List<Polygon> backP = new ArrayList<>();
