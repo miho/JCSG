@@ -1,4 +1,3 @@
-/.nb-gradle/private/
 /build/
 /bin/
 .project
@@ -6,6 +5,8 @@
 /.settings*
 /.idea*
 /.gradle/
+/.idea/
+/.nb-gradle/
 /bin/
 /.classpath
 /.project
