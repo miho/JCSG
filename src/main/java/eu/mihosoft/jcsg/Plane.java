@@ -43,13 +43,13 @@ import java.util.List;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class Plane {
+class Plane {
 
     /**
      * EPSILON is the tolerance used by {@link #splitPolygon(Polygon, java.util.List, java.util.List, java.util.List, java.util.List)
      * } to decide if a point is on the plane.
      */
-    public static final double EPSILON = 1e-6;
+    public static double EPSILON = 1e-8;
 
     /**
      * XY plane.
