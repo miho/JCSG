@@ -64,8 +64,10 @@ public final class Polygon {
      *
      * <b>Note:</b> uses first three vertices to define the plane.
      */
-    public final Plane plane;
-
+    public final Plane _csg_plane;
+    public final eu.mihosoft.vvecmath.Plane plane;
+    
+    
     void setStorage(PropertyStorage storage) {
         this.shared = storage;
     }
@@ -117,7 +119,11 @@ public final class Polygon {
     public Polygon(List<Vertex> vertices, PropertyStorage shared) {
         this.vertices = vertices;
         this.shared = shared;
-        this.plane = Plane.createFromPoints(
+        this._csg_plane = Plane.createFromPoints(
+                vertices.get(0).pos,
+                vertices.get(1).pos,
+                vertices.get(2).pos);
+        this.plane = eu.mihosoft.vvecmath.Plane.fromPoints(
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
@@ -127,9 +133,9 @@ public final class Polygon {
 
     private void validateAndInit(List<Vertex> vertices1) {
         for (Vertex v : vertices1) {
-            v.normal = plane.normal;
+            v.normal = _csg_plane.normal;
         }
-        if (Vector3d.ZERO.equals(plane.normal)) {
+        if (Vector3d.ZERO.equals(_csg_plane.normal)) {
             valid = false;
             System.err.println(
                     "Normal is zero! Probably, duplicate points have been specified!\n\n"+toStlString());
@@ -155,7 +161,12 @@ public final class Polygon {
      */
     public Polygon(List<Vertex> vertices) {
         this.vertices = vertices;
-        this.plane = Plane.createFromPoints(
+        this._csg_plane = Plane.createFromPoints(
+                vertices.get(0).pos,
+                vertices.get(1).pos,
+                vertices.get(2).pos);
+        
+        this.plane = eu.mihosoft.vvecmath.Plane.fromPoints(
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
@@ -197,7 +208,7 @@ public final class Polygon {
         });
         Collections.reverse(vertices);
 
-        plane.flip();
+        _csg_plane.flip();
 
         return this;
     }
@@ -241,8 +252,7 @@ public final class Polygon {
             String firstVertexStl = this.vertices.get(0).toStlString();
             for (int i = 0; i < this.vertices.size() - 2; i++) {
                 sb.
-                        append("  facet normal ").append(
-                        this.plane.normal.toStlString()).append("\n").
+                        append("  facet normal ").append(this._csg_plane.normal.toStlString()).append("\n").
                         append("    outer loop\n").
                         append("      ").append(firstVertexStl).append("\n").
                         append("      ");
@@ -272,7 +282,7 @@ public final class Polygon {
         Vector3d b = this.vertices.get(1).pos;
         Vector3d c = this.vertices.get(2).pos;
 
-        this.plane.normal = b.minus(a).cross(c.minus(a));
+        this._csg_plane.normal = b.minus(a).cross(c.minus(a));
 
         return this;
     }
@@ -312,8 +322,8 @@ public final class Polygon {
         Vector3d b = this.vertices.get(1).pos;
         Vector3d c = this.vertices.get(2).pos;
 
-        this.plane.normal = b.minus(a).cross(c.minus(a)).normalized();
-        this.plane.dist = this.plane.normal.dot(a);
+        this._csg_plane.normal = b.minus(a).cross(c.minus(a)).normalized();
+        this._csg_plane.dist = this._csg_plane.normal.dot(a);
 
         if (transform.isMirror()) {
             // the transformation includes mirroring. flip polygon

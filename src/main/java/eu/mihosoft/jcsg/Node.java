@@ -128,7 +128,7 @@ final class Node {
         });
 
         if (this.plane == null && !polygons.isEmpty()) {
-            this.plane = polygons.get(0).plane.clone();
+            this.plane = polygons.get(0)._csg_plane.clone();
         } else if (this.plane == null && polygons.isEmpty()) {
             
             System.err.println("Please fix me! I don't know what to do?");
@@ -238,7 +238,7 @@ final class Node {
         if (polygons.isEmpty()) return;
 
         if (this.plane == null) {
-            this.plane = polygons.get(0).plane.clone();
+            this.plane = polygons.get(0)._csg_plane.clone();
         }
         
         polygons = polygons.stream().filter(p->p.isValid()).distinct().collect(Collectors.toList());

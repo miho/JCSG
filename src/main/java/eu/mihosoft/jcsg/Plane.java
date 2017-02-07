@@ -152,7 +152,7 @@ class Plane {
         switch (polygonType) {
             case COPLANAR:
                 //System.out.println(" -> coplanar");
-                (this.normal.dot(polygon.plane.normal) > 0 ? coplanarFront : coplanarBack).add(polygon);
+                (this.normal.dot(polygon._csg_plane.normal) > 0 ? coplanarFront : coplanarBack).add(polygon);
                 break;
             case FRONT:
                 //System.out.println(" -> front");

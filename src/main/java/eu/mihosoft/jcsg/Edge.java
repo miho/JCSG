@@ -716,8 +716,8 @@ public class Edge {
                     continue;
                 }
 
-                Vector3d nOuter = pOuter.plane.normal;
-                Vector3d nInner = pInner.plane.normal;
+                Vector3d nOuter = pOuter._csg_plane.normal;
+                Vector3d nInner = pInner._csg_plane.normal;
 
                 // TODO do we need radians or degrees?
                 double angle = nOuter.angle(nInner);
