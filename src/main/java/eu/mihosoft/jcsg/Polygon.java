@@ -66,8 +66,7 @@ public final class Polygon {
      */
     public final Plane _csg_plane;
     public final eu.mihosoft.vvecmath.Plane plane;
-    
-    
+
     void setStorage(PropertyStorage storage) {
         this.shared = storage;
     }
@@ -97,15 +96,16 @@ public final class Polygon {
     }
 
     /**
-     * Indicates whether this polyon is valid, i.e., if it 
-     * @return 
+     * Indicates whether this polyon is valid, i.e., if it
+     *
+     * @return
      */
     public boolean isValid() {
         return valid;
     }
-    
+
     private boolean valid = true;
-    
+
     /**
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
@@ -127,7 +127,7 @@ public final class Polygon {
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
-        
+
         validateAndInit(vertices);
     }
 
@@ -138,15 +138,15 @@ public final class Polygon {
         if (Vector3d.ZERO.equals(_csg_plane.normal)) {
             valid = false;
             System.err.println(
-                    "Normal is zero! Probably, duplicate points have been specified!\n\n"+toStlString());
+                    "Normal is zero! Probably, duplicate points have been specified!\n\n" + toStlString());
 //            throw new RuntimeException(
 //                    "Normal is zero! Probably, duplicate points have been specified!\n\n"+toStlString());
-        } 
-        
-        if(vertices.size()<3) {
+        }
+
+        if (vertices.size() < 3) {
             throw new RuntimeException(
                     "Invalid polygon: at least 3 vertices expected, got: "
-                            + vertices.size());
+                    + vertices.size());
         }
     }
 
@@ -165,12 +165,12 @@ public final class Polygon {
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
-        
+
         this.plane = eu.mihosoft.vvecmath.Plane.fromPoints(
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
-        
+
         validateAndInit(vertices);
     }
 
@@ -459,25 +459,69 @@ public final class Polygon {
 
     public boolean contains(Vector3d p) {
         // taken from http://www.java-gaming.org/index.php?topic=26013.0
+        // http://alienryderflex.com/polygon/
         // and http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-        double px = p.x();
-        double py = p.y();
+
+        // P not on the plane
+        if (plane.distance(p) > Plane.EPSILON) {
+            return false;
+        }
+        
+        // if P is on the plane, we proceed with projection to XY plane
+
+        //  
+        // P1--P------P2
+        //     ^
+        //     |
+        // P is on the segment if( dist(P1,P) + dist(P2,P) - dist(P1,P2) < TOL) 
+        boolean onASegment = false;
+        for (int i = 0; i < vertices.size() - 1; i++) {
+
+            Vector3d p1 = vertices.get(i).pos;
+            Vector3d p2 = vertices.get(i + 1).pos;
+
+            onASegment = p1.minus(p).magnitude() + p2.minus(p).magnitude()
+                    - p1.minus(p2).magnitude() < Plane.EPSILON;
+            
+            if(onASegment) return true;
+        }
+
+//        double px = p.x();
+//        double py = p.y();
+//        boolean oddNodes = false;
+//        double x2 = vertices.get(vertices.size() - 1).pos.x();
+//        double y2 = vertices.get(vertices.size() - 1).pos.y();
+//        double x1, y;
+//        for (int i = 0; i < vertices.size(); x2 = x1, y2 = y, ++i) {
+//            x1 = vertices.get(i).pos.x();
+//            y = vertices.get(i).pos.y();
+//            if (((y > py) && (y2 >= py))
+//                    || (y >= py) && (y2 < py)) {
+//                if ((py - y) / (y2 - y)
+//                        * (x2 - x1) < (px - x1)) {
+//                    oddNodes = !oddNodes;
+//                }
+//            }
+//        }
+//        return oddNodes;
+        int i, j = vertices.size() - 1;
         boolean oddNodes = false;
-        double x2 = vertices.get(vertices.size() - 1).pos.x();
-        double y2 = vertices.get(vertices.size() - 1).pos.y();
-        double x1, y1;
-        for (int i = 0; i < vertices.size(); x2 = x1, y2 = y1, ++i) {
-            x1 = vertices.get(i).pos.x();
-            y1 = vertices.get(i).pos.y();
-            if (((y1 < py) && (y2 >= py))
-                    || (y1 >= py) && (y2 < py)) {
-                if ((py - y1) / (y2 - y1)
-                        * (x2 - x1) < (px - x1)) {
-                    oddNodes = !oddNodes;
-                }
+        double x = p.x();
+        double y = p.y();
+        for (i = 0; i < vertices.size(); i++) {
+            double xi = vertices.get(i).pos.getX();
+            double yi = vertices.get(i).pos.getY();
+            double xj = vertices.get(j).pos.getX();
+            double yj = vertices.get(j).pos.getY();
+            if ((yi < y && yj >= y
+                    || yj < y && yi >= y)
+                    && (xi <= x || xj <= x)) {
+                oddNodes ^= (xi + (y - yi) / (yj - yi) * (xj - xi) < x);
             }
+            j = i;
         }
         return oddNodes;
+
     }
 
     public boolean contains(Polygon p) {

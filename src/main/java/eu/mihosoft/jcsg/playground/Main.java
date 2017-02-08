@@ -106,10 +106,9 @@ public class Main {
                 if (typesEqual2) {
                     continue;
                 }
-                
-                p2ToDelete.add(p2);
 
                 // cut p2 with plane1
+                List<Vector3d> segmentPoints = new ArrayList<>();
                 List<Vector3d> frontPolygon = new ArrayList<>();
                 List<Vector3d> backPolygon = new ArrayList<>();
                 for (int i = 0; i < p2.vertices.size(); i++) {
@@ -124,14 +123,32 @@ public class Main {
                     if (ti != 1 /*back*/) {
                         backPolygon.add(vi.pos);
                     }
+                    
                     if (ti != tj && (ti != 0 && tj != 0)/*spanning*/) {
                         double t = (p1.plane.getDist() - p1.plane.normal.dot(vi.pos))
                                 / p1.plane.normal.dot(vj.pos.minus(vi.pos));
                         Vertex v = vi.interpolate(vj, t);
                         frontPolygon.add(v.pos);
                         backPolygon.add(v.pos);
+                        segmentPoints.add(v.pos);
                     }
                 }
+
+                // check whether the segments are contained in the polygons
+                boolean p1ContainsIntersectionPointsOfP2WithPlane = true;
+
+                for (Vector3d fv : segmentPoints) {
+                    if (!p1.contains(fv)) {
+                        p1ContainsIntersectionPointsOfP2WithPlane = false;
+                        break;
+                    }
+                }
+
+                if (!(p1ContainsIntersectionPointsOfP2WithPlane)) {
+                    continue;
+                }
+
+                p2ToDelete.add(p2);
 
                 if (frontPolygon.size() > 2) {
                     cutsWithP1.add(Polygon.fromPoints(frontPolygon, p1.getStorage()));
@@ -141,7 +158,7 @@ public class Main {
                 }
             }
             ps2WithCuts.addAll(cutsWithP1);
-             ps2WithCuts.removeAll(p2ToDelete);
+            ps2WithCuts.removeAll(p2ToDelete);
         }
         result.p1 = ps1;
         result.p2 = ps2WithCuts;
