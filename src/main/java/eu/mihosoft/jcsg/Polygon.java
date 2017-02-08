@@ -456,54 +456,60 @@ public final class Polygon {
                 Vector3d.xyz(minX, minY, minZ),
                 Vector3d.xyz(maxX, maxY, maxZ));
     }
+    
+    public Vector3d  centroid() {
+        Vector3d sum = Vector3d.zero();
+        
+        for(Vertex v : vertices) {
+            sum = sum.plus(v.pos);
+        }
+        
+        return sum.times(1.0/vertices.size());
+    }
 
+    /**
+     * Indicates whether the specified point is contained within this polygon.
+     *
+     * @param p point
+     * @return {@code true} if the point is inside the polygon or on one of the
+     * edges; {@code false} otherwise
+     */
     public boolean contains(Vector3d p) {
-        // taken from http://www.java-gaming.org/index.php?topic=26013.0
-        // http://alienryderflex.com/polygon/
-        // and http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 
         // P not on the plane
         if (plane.distance(p) > Plane.EPSILON) {
             return false;
         }
-        
-        // if P is on the plane, we proceed with projection to XY plane
 
+        // if P is on one of the vertices, return true
+        for (int i = 0; i < vertices.size() - 1; i++) {
+            if (p.minus(vertices.get(i).pos).magnitude() < Plane.EPSILON) {
+                return true;
+            }
+        }
+
+        // if P is on the plane, we proceed with projection to XY plane
         //  
         // P1--P------P2
         //     ^
         //     |
         // P is on the segment if( dist(P1,P) + dist(P2,P) - dist(P1,P2) < TOL) 
-        boolean onASegment = false;
         for (int i = 0; i < vertices.size() - 1; i++) {
 
             Vector3d p1 = vertices.get(i).pos;
             Vector3d p2 = vertices.get(i + 1).pos;
 
-            onASegment = p1.minus(p).magnitude() + p2.minus(p).magnitude()
+            boolean onASegment = p1.minus(p).magnitude() + p2.minus(p).magnitude()
                     - p1.minus(p2).magnitude() < Plane.EPSILON;
-            
-            if(onASegment) return true;
+
+            if (onASegment) {
+                return true;
+            }
         }
 
-//        double px = p.x();
-//        double py = p.y();
-//        boolean oddNodes = false;
-//        double x2 = vertices.get(vertices.size() - 1).pos.x();
-//        double y2 = vertices.get(vertices.size() - 1).pos.y();
-//        double x1, y;
-//        for (int i = 0; i < vertices.size(); x2 = x1, y2 = y, ++i) {
-//            x1 = vertices.get(i).pos.x();
-//            y = vertices.get(i).pos.y();
-//            if (((y > py) && (y2 >= py))
-//                    || (y >= py) && (y2 < py)) {
-//                if ((py - y) / (y2 - y)
-//                        * (x2 - x1) < (px - x1)) {
-//                    oddNodes = !oddNodes;
-//                }
-//            }
-//        }
-//        return oddNodes;
+        // see from http://www.java-gaming.org/index.php?topic=26013.0
+        // see http://alienryderflex.com/polygon/
+        // see http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
         int i, j = vertices.size() - 1;
         boolean oddNodes = false;
         double x = p.x();
@@ -522,6 +528,15 @@ public final class Polygon {
         }
         return oddNodes;
 
+    }
+
+    @Deprecated
+    public boolean intersects(Polygon p) {
+        if (!getBounds().intersects(p.getBounds())) {
+            return false;
+        }
+
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     public boolean contains(Polygon p) {
