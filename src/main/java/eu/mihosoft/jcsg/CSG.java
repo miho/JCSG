@@ -59,12 +59,11 @@ import javafx.scene.shape.TriangleMesh;
  * <b>Implementation Details</b>
  *
  * All CSG operations are implemented in terms of two functions,
- * {@link Node#clipTo(Node)} and {@link Node#invert()},
- * which remove parts of a BSP tree inside another BSP tree and swap solid and
- * empty space, respectively. To find the union of {@code a} and {@code b}, we
- * want to remove everything in {@code a} inside {@code b} and everything in
- * {@code b} inside {@code a}, then combine polygons from {@code a} and
- * {@code b} into one solid:
+ * {@link Node#clipTo(Node)} and {@link Node#invert()}, which remove parts of a
+ * BSP tree inside another BSP tree and swap solid and empty space,
+ * respectively. To find the union of {@code a} and {@code b}, we want to remove
+ * everything in {@code a} inside {@code b} and everything in {@code b} inside
+ * {@code a}, then combine polygons from {@code a} and {@code b} into one solid:
  *
  * <blockquote><pre>
  *     a.clipTo(b);
@@ -239,27 +238,30 @@ public class CSG {
                 return _unionNoOpt(csg);
         }
     }
-    
+
     /**
-     * Returns a csg consisting of the polygons of this csg and the specified csg.
-     * 
+     * Returns a csg consisting of the polygons of this csg and the specified
+     * csg.
+     *
      * The purpose of this method is to allow fast union operations for objects
-     * that do not intersect. 
-     * 
-     * <p><b>WARNING:</b> this method does not apply the csg algorithms. Therefore,
+     * that do not intersect.
+     *
+     * <p>
+     * <b>WARNING:</b> this method does not apply the csg algorithms. Therefore,
      * please ensure that this csg and the specified csg do not intersect.
-     * 
+     *
      * @param csg csg
-     * 
-     * @return a csg consisting of the polygons of this csg and the specified csg
+     *
+     * @return a csg consisting of the polygons of this csg and the specified
+     * csg
      */
     public CSG dumbUnion(CSG csg) {
-        
+
         CSG result = this.clone();
         CSG other = csg.clone();
-        
+
         result.polygons.addAll(other.polygons);
-        
+
         return result;
     }
 
@@ -747,6 +749,12 @@ public class CSG {
     }
 
     public ObjFile toObj() {
+        // we triangulate the polygon to ensure 
+        // compatibility with 3d printer software
+        return toObj(3);
+    }
+
+    public ObjFile toObj(int maxNumberOfVerts) {
 
         StringBuilder objSb = new StringBuilder();
 
@@ -809,19 +817,23 @@ public class CSG {
             ps.storage.getValue("material:color").ifPresent(
                     (v) -> objSb.append("usemtl ").append(ps.materialName).append("\n"));
 
-            // we triangulate the polygon to ensure 
-            // compatibility with 3d printer software
             List<Integer> pVerts = ps.indices;
             int index1 = pVerts.get(0);
-            for (int i = 0; i < pVerts.size() - 2; i++) {
-                int index2 = pVerts.get(i + 1);
-                int index3 = pVerts.get(i + 2);
-
-                objSb.append("f ").
-                        append(index1).append(" ").
-                        append(index2).append(" ").
-                        append(index3).append("\n");
+            for (int i = 1; i < pVerts.size() - maxNumberOfVerts; i++) {
+                objSb.append("f ");
+                for (int j = 1; j < maxNumberOfVerts; j++) {
+                    objSb.append(index1).append(" ");
+                    int indexJ = pVerts.get(j);
+                    objSb.append(indexJ).append(" ");
+                }
+                objSb.append("\n");
             }
+
+            objSb.append("f ");
+            for (int i = 0; i < pVerts.size(); i++) {
+                objSb.append(pVerts.get(i)).append(" ");
+            }
+            objSb.append("\n");
         }
 
         objSb.append("\n# End Group v3d.csg").append("\n");
@@ -941,7 +953,6 @@ public class CSG {
 
         return result;
     }
- 
 
     // TODO finish experiment (20.7.2014)
     public MeshContainer toJavaFXMesh() {

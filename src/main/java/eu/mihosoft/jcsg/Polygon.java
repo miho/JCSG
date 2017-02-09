@@ -123,10 +123,8 @@ public final class Polygon {
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
-        this.plane = eu.mihosoft.vvecmath.Plane.fromPoints(
-                vertices.get(0).pos,
-                vertices.get(1).pos,
-                vertices.get(2).pos);
+        this.plane = eu.mihosoft.vvecmath.Plane.
+                fromPointAndNormal(centroid(), _csg_plane.normal);
 
         validateAndInit(vertices);
     }

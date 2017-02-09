@@ -8,7 +8,9 @@ package eu.mihosoft.jcsg.playground;
 import eu.mihosoft.jcsg.Bounds;
 import eu.mihosoft.jcsg.CSG;
 import eu.mihosoft.jcsg.Cube;
+import eu.mihosoft.jcsg.ObjFile;
 import eu.mihosoft.jcsg.Polygon;
+import eu.mihosoft.jcsg.STL;
 import eu.mihosoft.jcsg.Sphere;
 import eu.mihosoft.jcsg.Vertex;
 import eu.mihosoft.vvecmath.Plane;
@@ -20,6 +22,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,13 +35,20 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        CSG c1 = new Cube(Vector3d.zero(), Vector3d.xyz(2, 2, 2)).toCSG().
-                transformed(Transform.unity().rot(Vector3d.ZERO, Vector3d.UNITY, 45));
-        CSG c2 = new Cube(Vector3d.xyz(1, 1, 1), Vector3d.xyz(2, 2, 2)).toCSG();
-//        c1 = new Sphere(Vector3d.x(0.), 1.25, 10, 10).toCSG();
-//        c2 = new Sphere(Vector3d.x(0.75), 1.25, 10, 10).toCSG();
-        c2 = new Sphere(Vector3d.x(0.0), 1.25, 32, 32).toCSG();
+        testCut();
 
+        CSG c1 = new Cube(Vector3d.zero(), Vector3d.xyz(2, 2, 2)).toCSG();
+
+        CSG c2 = new Cube(Vector3d.xyz(1, 1, 1), Vector3d.xyz(2, 2, 2)).toCSG().transformed(Transform.unity().rot(Vector3d.ZERO, Vector3d.UNITY, 45));
+
+        Files.write(Paths.get("c1.stl"), c1.toStlString().getBytes());
+        Files.write(Paths.get("c2.stl"), c2.toStlString().getBytes());
+
+//        c1 = STL.file(Paths.get("c1.stl"));
+//        c2 = STL.file(Paths.get("c2.stl"));
+        c1 = new Sphere(Vector3d.x(0.), 1.25, 10, 10).toCSG();
+        c2 = new Sphere(Vector3d.x(1.0), 1.25, 10, 10).toCSG();
+//        c2 = new Sphere(Vector3d.x(0.0), 1.25, 32, 32).toCSG();
         List<Polygon> result1 = splitPolygons(
                 c1.getPolygons(), c2.getPolygons(),
                 c1.getBounds(), c2.getBounds());
@@ -45,11 +56,16 @@ public class Main {
         List<Polygon> result2 = splitPolygons(
                 c2.getPolygons(), c1.getPolygons(),
                 c2.getBounds(), c1.getBounds());
-        
+
+//        result1 = splitPolygons(
+//                result2, c2.getPolygons(),
+//                c1.getBounds(), c2.getBounds());
         List<Polygon> splitted = new ArrayList<>();
         splitted.addAll(result1);
         splitted.addAll(result2);
-        
+
+        CSG.fromPolygons(splitted).toObj(100).toFiles(Paths.get("test-split1.obj"));
+
         Files.write(Paths.get("test-split1.stl"),
                 CSG.fromPolygons(splitted).toStlString().getBytes());
 
@@ -131,10 +147,12 @@ public class Main {
 
         CSG result = CSG.fromPolygons(difference);
 
-        System.err.println(">> unknown polygons in C1: " + unknownOfC1.size());
-        System.err.println(">> unknown polygons in C2: " + unknownOfC2.size());
-        System.err.println(">> inside  polygons in C1: " + inC1.size());
-        System.err.println(">> inside  polygons in C2: " + inC2.size());
+        System.err.println(">> unknown  polygons in C1: " + unknownOfC1.size());
+        System.err.println(">> unknown  polygons in C2: " + unknownOfC2.size());
+        System.err.println(">> opposite polygons in C1: " + oppositeC1.size());
+        System.err.println(">> opposite polygons in C2: " + oppositeC2.size());
+        System.err.println(">> inside   polygons in C1: " + inC1.size());
+        System.err.println(">> inside   polygons in C2: " + inC2.size());
 
         Files.write(Paths.get("test.stl"), result.toStlString().getBytes());
 
@@ -150,7 +168,7 @@ public class Main {
         }
 
         Vector3d rayCenter = p1.centroid();
-        Vector3d rayDirection = p1.plane.normal;
+        Vector3d rayDirection = p1.plane.getNormal();
 
         List<RayIntersection> intersections = getPolygonsThatIntersectWithRay(
                 rayCenter, rayDirection, polygons, TOL);
@@ -173,10 +191,10 @@ public class Main {
 
         int frontOrBack = p1.plane.compare(min.polygon.centroid(), TOL);
 
-        Vector3d planePoint = p1.plane.normal.normalized().times(p1.plane.getDist());
+        Vector3d planePoint = p1.plane.getAnchor();
 
         int towardsOrAwayFrom = p1.plane.compare(
-                planePoint.plus(min.polygon.plane.normal), TOL);
+                planePoint.plus(min.polygon.plane.getNormal()), TOL);
 
         if (frontOrBack > 0 && towardsOrAwayFrom < 0) {
             return PolygonType.INSIDE;
@@ -261,8 +279,8 @@ public class Main {
         //z = z0 + t(z1  z0)
         //(x1 - x0) = dx, (y1 - y0) = dy, (z1 - z0) = dz
         //t = -(A*x0 + B*y0 + C*z0 )/(A*dx + B*dy + C*dz)
-        Vector3d normal = plane.normal;
-        Vector3d planePoint = normal.normalized().times(plane.getDist());
+        Vector3d normal = plane.getNormal();
+        Vector3d planePoint = plane.getAnchor();
 
         double A = normal.x();
         double B = normal.y();
@@ -363,25 +381,23 @@ public class Main {
 
                 // if at least two vertices of convex polygon are on the plane
                 // then there's no intersection
-                int countZeroTypes2 = 0;
-                for (int i = 0; i < typesP2.length; i++) {
-                    if (typesP2[i] == 0) {
-                        countZeroTypes2++;
-                    }
-                }
-                if (countZeroTypes2 > 1) {
-                    continue;
-                }
-
-                if (p1.plane.normal.angle(p2.plane.normal) < EPS
-                        || Math.abs(p1.plane.normal.angle(p2.plane.normal) - 180) < EPS) {
-                    System.err.println("HERE");
+//                int countZeroTypes2 = 0;
+//                for (int i = 0; i < typesP2.length; i++) {
+//                    if (typesP2[i] == 0) {
+//                        countZeroTypes2++;
+//                    }
+//                }
+//                if (countZeroTypes2 > 1) {
+//                    continue;
+//                }
+//                if (p1.plane.getNormal().angle(p2.plane.getNormal()) < EPS
+//                        || Math.abs(p1.plane.getNormal().angle(p2.plane.getNormal()) - 180) < EPS) {
+//                    System.err.println("HERE");
 //                    System.exit(-1);
-                    continue;
-                } else {
-                    System.err.println("a: " + p1.plane.normal.angle(p2.plane.normal));
-                }
-
+//                    continue;
+//                } else {
+//                    System.err.println("a: " + p1.plane.getNormal().angle(p2.plane.getNormal()));
+//                }
                 // cut p2 with plane1
                 List<Vector3d> segmentPointsP2 = new ArrayList<>();
                 List<Vector3d> frontPolygonP2 = new ArrayList<>();
@@ -423,7 +439,12 @@ public class Main {
 
     private static void cutPolygonWithPlane(Polygon polygon, Plane cutPlane,
             int[] vertexTypes, List<Vector3d> frontPolygon,
-            List<Vector3d> backPolygon, List<Vector3d> segmentPoints) {
+            List<Vector3d> backPolygon, List<Vector3d> onPlane) {
+
+        System.out.println("polygon: \n" + polygon.toStlString());
+        System.out.println("--------------------");
+        System.out.println("plane: \n -> p: " + cutPlane.getAnchor() + "\n -> n: " + cutPlane.getNormal());
+        System.out.println("--------------------");
 
         for (int i = 0; i < polygon.vertices.size(); i++) {
             int j = (i + 1) % polygon.vertices.size();
@@ -445,14 +466,87 @@ public class Main {
             }
 
             if (ti != tj && (ti != 0 && tj != 0)/*spanning*/) {
-                double t = (cutPlane.getDist() - cutPlane.normal.dot(vi.pos))
-                        / cutPlane.normal.dot(vj.pos.minus(vi.pos));
-                Vertex v = vi.interpolate(vj, t);
-                frontPolygon.add(v.pos);
-                backPolygon.add(v.pos);
-                segmentPoints.add(v.pos);
+                PlaneIntersection pI = computePlaneIntersection(cutPlane, vi.pos, vj.pos.minus(vi.pos), EPS);
+
+                if (pI.type != PlaneIntersection.IntersectionType.NON_PARALLEL) {
+                    throw new RuntimeException("I need help (3)!");
+                }
+
+                Vector3d intersectionPoint = pI.point.get();
+
+                System.out.println("i: " + i + ", j: " + j + " : " + intersectionPoint);
+
+//                double t = (cutPlane.distance(vi.pos))/vi.pos.minus(vj.pos).magnitude();
+//                System.out.println("t: " + t + ", i: " + i + ", j: " + j);
+//                System.out.println(" : vi-plane-dist: " + cutPlane.distance(vi.pos) + ", vi-vj-dist: " + vi.pos.minus(vj.pos).magnitude());
+//                System.out.println(" : vi: " + vi.pos.toStlString());
+//                System.out.println(" : vj: " + vj.pos.toStlString());
+//                System.out.println(" : " + cutPlane.distance(vi.pos)  + " , " + cutPlane.distance(vj.pos));
+//                Vertex v = vi.interpolate(vj, t);
+//                System.out.println(" : vs: " + v);
+                frontPolygon.add(intersectionPoint);
+                backPolygon.add(intersectionPoint);
+                onPlane.add(intersectionPoint);
             }
         }
+    }
+
+    public static void testCut() {
+
+        Polygon p = Polygon.fromPoints(
+                Vector3d.xyz(0, 0, 0),
+                Vector3d.xyz(1, 0, 0),
+                Vector3d.xyz(1, 0, 1),
+                Vector3d.xyz(0, 0, 1)
+        );
+        Plane plane = Plane.fromPointAndNormal(Vector3d.xyz(0.5, 0, 0.5), Vector3d.xyz(0, 0, 1));
+
+        int types[] = new int[p.vertices.size()];
+        for (int i = 0; i < p.vertices.size(); i++) {
+            types[i] = plane.compare(p.vertices.get(i).pos, EPS);
+            System.out.println("type " + i + ": " + types[i]);
+        }
+
+        List<Vector3d> front = new ArrayList<>();
+        List<Vector3d> back = new ArrayList<>();
+        List<Vector3d> on = new ArrayList<>();
+
+        cutPolygonWithPlane(p, plane, types, front, back, on);
+
+        List<Polygon> cutsWithP1 = new ArrayList<>();
+        if (front.size() > 2) {
+
+            Polygon frontCut = Polygon.fromPoints(
+                    front);
+            if (frontCut.isValid()) {
+                cutsWithP1.add(frontCut);
+            }
+        }
+        if (back.size() > 2) {
+            Polygon backCut = Polygon.fromPoints(
+                    back);
+            if (backCut.isValid()) {
+                cutsWithP1.add(backCut);
+            }
+        }
+
+        System.out.println("#polygons: " + cutsWithP1.size());
+
+        for (Polygon polygon : cutsWithP1) {
+            System.out.println(polygon.toStlString());
+        }
+
+        try {
+
+            ObjFile objF = CSG.fromPolygons(cutsWithP1).toObj();
+            objF.toFiles(Paths.get("test-split1.obj"));
+//            Files.write(Paths.get("test-split1.stl"),
+//                    CSG.fromPolygons(cutsWithP1).toStlString().getBytes());
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+//        System.exit(0);
     }
 
     enum PolygonType {
