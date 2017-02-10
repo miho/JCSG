@@ -755,6 +755,11 @@ public class CSG {
     }
 
     public ObjFile toObj(int maxNumberOfVerts) {
+        
+        if(maxNumberOfVerts != 3) {
+            throw new UnsupportedOperationException(
+                    "maxNumberOfVerts > 3 not supported yet");
+        }
 
         StringBuilder objSb = new StringBuilder();
 
@@ -817,22 +822,24 @@ public class CSG {
             ps.storage.getValue("material:color").ifPresent(
                     (v) -> objSb.append("usemtl ").append(ps.materialName).append("\n"));
 
+            // we triangulate the polygon to ensure 
+            // compatibility with 3d printer software
             List<Integer> pVerts = ps.indices;
             int index1 = pVerts.get(0);
-            for (int i = 1; i < pVerts.size() - maxNumberOfVerts; i++) {
-                objSb.append("f ");
-                for (int j = 1; j < maxNumberOfVerts; j++) {
-                    objSb.append(index1).append(" ");
-                    int indexJ = pVerts.get(j);
-                    objSb.append(indexJ).append(" ");
-                }
-                objSb.append("\n");
-            }
+            for (int i = 0; i < pVerts.size() - 2; i++) {
+                int index2 = pVerts.get(i + 1);
+                int index3 = pVerts.get(i + 2);
 
-            objSb.append("f ");
-            for (int i = 0; i < pVerts.size(); i++) {
-                objSb.append(pVerts.get(i)).append(" ");
+                objSb.append("f ").
+                        append(index1).append(" ").
+                        append(index2).append(" ").
+                        append(index3).append("\n");
             }
+//
+//            objSb.append("f ");
+//            for (int i = 0; i < pVerts.size(); i++) {
+//                objSb.append(pVerts.get(i)).append(" ");
+//            }
             objSb.append("\n");
         }
 
@@ -1119,14 +1126,16 @@ public class CSG {
         if (polygons.isEmpty()) {
             return new Bounds(Vector3d.ZERO, Vector3d.ZERO);
         }
+        
+        Vector3d initial = polygons.get(0).vertices.get(0).pos;
 
-        double minX = Double.POSITIVE_INFINITY;
-        double minY = Double.POSITIVE_INFINITY;
-        double minZ = Double.POSITIVE_INFINITY;
+        double minX = initial.x();
+        double minY = initial.y();
+        double minZ = initial.z();
 
-        double maxX = Double.NEGATIVE_INFINITY;
-        double maxY = Double.NEGATIVE_INFINITY;
-        double maxZ = Double.NEGATIVE_INFINITY;
+        double maxX = initial.x();
+        double maxY = initial.y();
+        double maxZ = initial.z();
 
         for (Polygon p : getPolygons()) {
 

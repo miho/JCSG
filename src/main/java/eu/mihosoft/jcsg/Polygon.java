@@ -65,7 +65,7 @@ public final class Polygon {
      * <b>Note:</b> uses first three vertices to define the plane.
      */
     public final Plane _csg_plane;
-    public final eu.mihosoft.vvecmath.Plane plane;
+    public eu.mihosoft.vvecmath.Plane plane;
 
     void setStorage(PropertyStorage storage) {
         this.shared = storage;
@@ -164,10 +164,8 @@ public final class Polygon {
                 vertices.get(1).pos,
                 vertices.get(2).pos);
 
-        this.plane = eu.mihosoft.vvecmath.Plane.fromPoints(
-                vertices.get(0).pos,
-                vertices.get(1).pos,
-                vertices.get(2).pos);
+        this.plane = eu.mihosoft.vvecmath.Plane.
+                fromPointAndNormal(centroid(), _csg_plane.normal);
 
         validateAndInit(vertices);
     }
@@ -280,7 +278,11 @@ public final class Polygon {
         Vector3d b = this.vertices.get(1).pos;
         Vector3d c = this.vertices.get(2).pos;
 
+        // TODO plane update correct?
         this._csg_plane.normal = b.minus(a).cross(c.minus(a));
+
+        this.plane = eu.mihosoft.vvecmath.Plane.
+                fromPointAndNormal(centroid(), _csg_plane.normal);
 
         return this;
     }
@@ -322,6 +324,13 @@ public final class Polygon {
 
         this._csg_plane.normal = b.minus(a).cross(c.minus(a)).normalized();
         this._csg_plane.dist = this._csg_plane.normal.dot(a);
+
+        this.plane = eu.mihosoft.vvecmath.Plane.
+                fromPointAndNormal(centroid(), _csg_plane.normal);
+
+        vertices.forEach((vertex) -> {
+            vertex.normal = plane.getNormal();
+        });
 
         if (transform.isMirror()) {
             // the transformation includes mirroring. flip polygon
@@ -454,15 +463,15 @@ public final class Polygon {
                 Vector3d.xyz(minX, minY, minZ),
                 Vector3d.xyz(maxX, maxY, maxZ));
     }
-    
-    public Vector3d  centroid() {
+
+    public Vector3d centroid() {
         Vector3d sum = Vector3d.zero();
-        
-        for(Vertex v : vertices) {
+
+        for (Vertex v : vertices) {
             sum = sum.plus(v.pos);
         }
-        
-        return sum.times(1.0/vertices.size());
+
+        return sum.times(1.0 / vertices.size());
     }
 
     /**
@@ -505,18 +514,51 @@ public final class Polygon {
             }
         }
 
+        // find projection plane
+        // we start with XY plane
+        int coordIndex1 = 0;
+        int coordIndex2 = 1;
+
+        boolean orthogonalToXY = Math.abs(eu.mihosoft.vvecmath.Plane.XY_PLANE.getNormal()
+                .dot(plane.getNormal())) < Plane.EPSILON;
+
+        boolean foundProjectionPlane = false;
+        if (!orthogonalToXY && !foundProjectionPlane) {
+            coordIndex1 = 0;
+            coordIndex2 = 1;
+            foundProjectionPlane = true;
+        }
+
+        boolean orthogonalToXZ = Math.abs(eu.mihosoft.vvecmath.Plane.XZ_PLANE.getNormal()
+                .dot(plane.getNormal())) < Plane.EPSILON;
+
+        if (!orthogonalToXZ && !foundProjectionPlane) {
+            coordIndex1 = 0;
+            coordIndex2 = 2;
+            foundProjectionPlane = true;
+        }
+
+        boolean orthogonalToYZ = Math.abs(eu.mihosoft.vvecmath.Plane.YZ_PLANE.getNormal()
+                .dot(plane.getNormal())) < Plane.EPSILON;
+
+        if (!orthogonalToYZ && !foundProjectionPlane) {
+            coordIndex1 = 1;
+            coordIndex2 = 2;
+            foundProjectionPlane = true;
+        }
+
         // see from http://www.java-gaming.org/index.php?topic=26013.0
         // see http://alienryderflex.com/polygon/
         // see http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
         int i, j = vertices.size() - 1;
         boolean oddNodes = false;
-        double x = p.x();
-        double y = p.y();
+        double x = p.get(coordIndex1);
+        double y = p.get(coordIndex2);
         for (i = 0; i < vertices.size(); i++) {
-            double xi = vertices.get(i).pos.getX();
-            double yi = vertices.get(i).pos.getY();
-            double xj = vertices.get(j).pos.getX();
-            double yj = vertices.get(j).pos.getY();
+            double xi = vertices.get(i).pos.get(coordIndex1);
+            double yi = vertices.get(i).pos.get(coordIndex2);
+            double xj = vertices.get(j).pos.get(coordIndex1);
+            double yj = vertices.get(j).pos.get(coordIndex2);
             if ((yi < y && yj >= y
                     || yj < y && yi >= y)
                     && (xi <= x || xj <= x)) {
