@@ -94,7 +94,7 @@ class Plane {
      * @return a plane
      */
     public static Plane createFromPoints(Vector3d a, Vector3d b, Vector3d c) {
-        Vector3d n = b.minus(a).cross(c.minus(a)).normalized();
+        Vector3d n = b.minus(a).crossed(c.minus(a)).normalized();
         return new Plane(n, n.dot(a));
     }
 

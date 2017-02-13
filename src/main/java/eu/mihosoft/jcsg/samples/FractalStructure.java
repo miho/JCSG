@@ -148,10 +148,10 @@ public class FractalStructure {
                     && Math.abs(orthoVecToRotAxis2.dot(rotationAxis)) < orthoThreshhold) {
                 this.orthoVecToRotAxis2 = orthoVecToRotAxis2.normalized();
             } else {
-                this.orthoVecToRotAxis2 = rotationAxis.cross(this.orthoVecToRotAxis1).normalized();
+                this.orthoVecToRotAxis2 = rotationAxis.crossed(this.orthoVecToRotAxis1).normalized();
             }
         } else {
-            this.orthoVecToRotAxis2 = rotationAxis.cross(this.orthoVecToRotAxis1).normalized();
+            this.orthoVecToRotAxis2 = rotationAxis.crossed(this.orthoVecToRotAxis1).normalized();
         }
 
         // x, y, z
@@ -445,7 +445,7 @@ public class FractalStructure {
                 helpCenterPoint = connectionLineVectorNormalized.times(j).plus(connectionLineVectorNormalized.times(stepSizeOnConnectionLineHalf)).plus(centerGroundPoint).plus(correctionInRotationAxisDirection);
 
                 if (secondOrthoVec == null) {
-                    secondOrthoVec = connectionLineVectorNormalized.cross(helpCenterPoint.minus(helpEdgePoint));
+                    secondOrthoVec = connectionLineVectorNormalized.crossed(helpCenterPoint.minus(helpEdgePoint));
                 }
 
                 // prevent that the last cross connactions from bottom left to top right has a to above end point in the top plane

@@ -205,7 +205,7 @@ public class Extrude {
     private static double normalizedX(Vector3d v1, Vector3d v2) {
         Vector3d v2MinusV1 = v2.minus(v1);
 
-        return v2MinusV1.dividedBy(v2MinusV1.magnitude()).times(Vector3d.X_ONE).x();
+        return v2MinusV1.divided(v2MinusV1.magnitude()).times(Vector3d.X_ONE).x();
     }
 
 //    public static void main(String[] args) {

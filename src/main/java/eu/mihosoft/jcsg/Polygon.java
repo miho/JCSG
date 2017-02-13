@@ -279,7 +279,7 @@ public final class Polygon {
         Vector3d c = this.vertices.get(2).pos;
 
         // TODO plane update correct?
-        this._csg_plane.normal = b.minus(a).cross(c.minus(a));
+        this._csg_plane.normal = b.minus(a).crossed(c.minus(a));
 
         this.plane = eu.mihosoft.vvecmath.Plane.
                 fromPointAndNormal(centroid(), _csg_plane.normal);
@@ -322,7 +322,7 @@ public final class Polygon {
         Vector3d b = this.vertices.get(1).pos;
         Vector3d c = this.vertices.get(2).pos;
 
-        this._csg_plane.normal = b.minus(a).cross(c.minus(a)).normalized();
+        this._csg_plane.normal = b.minus(a).crossed(c.minus(a)).normalized();
         this._csg_plane.dist = this._csg_plane.normal.dot(a);
 
         this.plane = eu.mihosoft.vvecmath.Plane.

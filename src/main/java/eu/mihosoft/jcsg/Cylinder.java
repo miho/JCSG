@@ -150,8 +150,8 @@ public class Cylinder implements Primitive {
         final Vector3d axisZ = ray.normalized();
         boolean isY = (Math.abs(axisZ.y()) > 0.5);
         final Vector3d axisX = Vector3d.xyz(isY ? 1 : 0, !isY ? 1 : 0, 0).
-                cross(axisZ).normalized();
-        final Vector3d axisY = axisX.cross(axisZ).normalized();
+                crossed(axisZ).normalized();
+        final Vector3d axisY = axisX.crossed(axisZ).normalized();
         Vertex startV = new Vertex(s, axisZ.negated());
         Vertex endV = new Vertex(e, axisZ.normalized());
         List<Polygon> polygons = new ArrayList<>();
