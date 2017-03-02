@@ -100,6 +100,7 @@ import javafx.scene.transform.Affine;
  * ~(~A | ~B)} where {@code ~} is the complement operator.
  */
 
+@SuppressWarnings("restriction")
 public class CSG {
 
 	/** The polygons. */
