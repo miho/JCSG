@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 
 // TODO: Auto-generated Javadoc
@@ -26,6 +25,7 @@ import javafx.scene.paint.Color;
  * The Class Text.
  */
 
+@SuppressWarnings("restriction")
 public class TextExtrude {
 	private static final String default_font = "FreeSerif";
 	private final static int POINTS_CURVE = 10;

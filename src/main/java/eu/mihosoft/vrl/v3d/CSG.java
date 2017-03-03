@@ -100,6 +100,7 @@ import javafx.scene.transform.Affine;
  * ~(~A | ~B)} where {@code ~} is the complement operator.
  */
 
+@SuppressWarnings("restriction")
 public class CSG {
 
 	/** The polygons. */
@@ -334,9 +335,14 @@ public class CSG {
 	}
 
 	public CSG move(double x, double y, double z) {
-		return movex(x).movey(y).movez(z);
+		return transformed(new Transform().translate(x,y,z));
 	}
-
+	public CSG move(Vertex v) {
+		return transformed(new Transform().translate(v.getX(),v.getY(),v.getZ()));
+	}
+	public CSG move(Vector3d v) {
+		return transformed(new Transform().translate(v.x,v.y,v.z));
+	}
 	public CSG move(double[] posVector) {
 		return move(posVector[0], posVector[1], posVector[2]);
 	}
@@ -1546,6 +1552,40 @@ public class CSG {
 		bounds = new Bounds(new Vector3d(minX, minY, minZ), new Vector3d(maxX, maxY, maxZ));
 		return bounds;
 	}
+	
+	public Vector3d getCenter(){
+		return new Vector3d(
+				getCenterX(),
+				getCenterY(),
+				getCenterZ());
+	}
+	
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterX
+	 */
+	public double getCenterX() {
+		return ((getMinX()/2)+(getMaxX()/2));
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterY
+	 */
+	public double getCenterY() {
+		return  ((getMinY()/2)+(getMaxY()/2));
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterZ
+	 */
+	public double getCenterZ() {
+		return  ((getMinZ()/2)+(getMaxZ()/2));
+	}
 
 	/**
 	 * Helper function wrapping bounding box values
@@ -1654,6 +1694,33 @@ public class CSG {
 
 		/** The none. */
 		NONE
+	}
+	
+	public ArrayList<CSG> minkowski( CSG travelingShape){
+		ArrayList<CSG> allFaces = new ArrayList<CSG>();
+		for(Polygon p: getPolygons()){
+			ArrayList<CSG> corners =new ArrayList<CSG>();
+			for(Vertex v:p.vertices){
+				corners.add(travelingShape.move(v));
+			}
+			CSG face = corners.remove(0);
+			face=face.hull(corners);
+			allFaces.add(face);
+		}
+		return allFaces;
+	}
+	
+	public CSG toolOffset(double shellThickness) {
+		
+		boolean cut =shellThickness<0;
+		shellThickness=Math.abs(shellThickness);
+		if(shellThickness<0.001)
+			return this;
+		CSG printNozzel = new Sphere(shellThickness,7,7).toCSG();
+		
+		if(cut)
+			return difference(minkowski(printNozzel));
+		return union(minkowski(printNozzel));
 	}
 
 	public CSG makeKeepaway(double shellThickness) {
