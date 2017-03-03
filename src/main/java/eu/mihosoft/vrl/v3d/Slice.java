@@ -1,8 +1,9 @@
 package eu.mihosoft.vrl.v3d;
 
-import javax.vecmath.Matrix4d;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import javax.vecmath.Matrix4d;
 
 public class Slice
 {
