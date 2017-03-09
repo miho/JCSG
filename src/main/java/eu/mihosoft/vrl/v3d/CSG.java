@@ -1695,7 +1695,33 @@ public class CSG {
 		/** The none. */
 		NONE
 	}
-	
+	/**
+	 * Hail Zeon! In case you forget the name of minkowski and are a Gundam fan
+	 * @param travelingShape
+	 * @return
+	 */
+	@Deprecated
+	public ArrayList<CSG> minovsky( CSG travelingShape){
+		return minkowski(travelingShape);
+	}
+	/**
+	 * Shortened name In case you forget the name of minkowski 
+	 * @param travelingShape
+	 * @return
+	 */
+	public ArrayList<CSG> mink( CSG travelingShape){
+		return minkowski(travelingShape);
+	}
+	/**
+	 * This is a simplified version of a minkowski transform using convex hull and the internal list of convex polygons
+	 * The shape is placed at the vertex of each point on a polygon, and the result is convex hulled together. 
+	 * This collection is returned.
+	 *  To make a normal inset, difference this collection
+	 *  To make an outset by the normals, union this collection with this object. 
+	 * 
+	 * @param travelingShape a shap to sweep around
+	 * @return
+	 */
 	public ArrayList<CSG> minkowski( CSG travelingShape){
 		ArrayList<CSG> allFaces = new ArrayList<CSG>();
 		for(Polygon p: getPolygons()){
