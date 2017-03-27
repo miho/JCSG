@@ -380,6 +380,36 @@ public class CSG {
 	public CSG movex(double howFarToMove) {
 		return this.transformed(Transform.unity().translateX(howFarToMove));
 	}
+	
+	/**
+	 * mirror about y axis.
+	 *
+
+	 * @return the csg
+	 */
+	// Helper/wrapper functions for movement
+	public CSG mirrory() {
+		return this.scaley(-1);
+	}
+
+	/**
+	 * mirror about z axis.
+	 *
+	 * @return the csg
+	 */
+	public CSG mirrorz() {
+		return this.scalez(-1);
+	}
+
+	/**
+	 * mirror about  x axis.
+	 *
+	 * @return the csg
+	 */
+	public CSG mirrorx() {
+		return this.scalex(-1);
+	}
+
 
 	public CSG rot(double x, double y, double z) {
 		return rotx(x).roty(y).rotz(z);
@@ -1702,6 +1732,7 @@ public class CSG {
 	 */
 	@Deprecated
 	public ArrayList<CSG> minovsky( CSG travelingShape){
+		System.out.println("Hail Zeon!");
 		return minkowski(travelingShape);
 	}
 	/**
