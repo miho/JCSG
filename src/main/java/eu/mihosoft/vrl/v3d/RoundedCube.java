@@ -13,7 +13,7 @@ import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
 // TODO: Auto-generated Javadoc
 /**
  * The Class RoundedCube.
- *
+ * 
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class RoundedCube extends Primitive {
