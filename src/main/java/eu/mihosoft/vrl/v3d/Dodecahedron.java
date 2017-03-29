@@ -1,5 +1,5 @@
 /**
- * Icosahedron.java
+ * Dodecahedron.java
  */
 package eu.mihosoft.vrl.v3d;
 
@@ -10,14 +10,14 @@ import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
 import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
 import eu.mihosoft.vrl.v3d.parametrics.Parameter;
 
-public class Icosahedron extends Primitive {
+public class Dodecahedron extends Primitive {
 
     /**
-     * Center of this icosahedron.
+     * Center of this dodecahedron.
      */
     private Vector3d center;
     /**
-     * Icosahedron circumscribed radius.
+     * Dodecahedron circumscribed radius.
      */
     private double radius;
 
@@ -27,33 +27,33 @@ public class Icosahedron extends Primitive {
     /** The properties. */
     private final PropertyStorage properties = new PropertyStorage();
     /**
-     * Constructor. Creates a new icosahedron with center {@code [0,0,0]} and
+     * Constructor. Creates a new dodecahedron with center {@code [0,0,0]} and
      * dimensions {@code [1,1,1]}.
      */
-    public Icosahedron() {
+    public Dodecahedron() {
         center = new Vector3d(0, 0, 0);
         radius = 1;
     }
 
     /**
-     * Constructor. Creates a new icosahedron with center {@code [0,0,0]} and
+     * Constructor. Creates a new dodecahedron with center {@code [0,0,0]} and
      * radius {@code size}.
      * 
      * @param size size
      */
-    public Icosahedron(double size) {
+    public Dodecahedron(double size) {
         center = new Vector3d(0, 0, 0);
         radius = size;
     }
 
     /**
-     * Constructor. Creates a new icosahedron with the specified center and
+     * Constructor. Creates a new dodecahedron with the specified center and
      * radius.
      *
-     * @param center center of the icosahedron
-     * @param circumradius of the icosahedron
+     * @param center center of the dodecahedron
+     * @param circumradius of the dodecahedron
      */
-    public Icosahedron(Vector3d center, double size) {
+    public Dodecahedron(Vector3d center, double size) {
         this.center = center;
         this.radius = size;
     }
@@ -67,20 +67,28 @@ public class Icosahedron extends Primitive {
     	double phi = (Math.sqrt(5)+1)/2;
     	
     	List<Vector3d> points = new ArrayList<>();
-    		points.add(new Vector3d(0,1,phi));
-			points.add(new Vector3d(0,-1,phi));
-			points.add(new Vector3d(phi,0,1));
-			points.add(new Vector3d(1,phi,0));
-			points.add(new Vector3d(-1,phi,0));
-			points.add(new Vector3d(-phi,0,1));
-			points.add(new Vector3d(1,-phi,0));
-			points.add(new Vector3d(phi,0,-1));
-			points.add(new Vector3d(0,1,-phi));
-			points.add(new Vector3d(-phi,0,-1));
-			points.add(new Vector3d(-1,-phi,0));
-			points.add(new Vector3d(0,-1,-phi));
+	    	points.add(new Vector3d(-1,-1,-1));
+	    	points.add(new Vector3d(-1,-1,+1));
+	    	points.add(new Vector3d(-1,+1,-1));
+	    	points.add(new Vector3d(-1,+1,+1));
+	    	points.add(new Vector3d(+1,-1,-1));
+	    	points.add(new Vector3d(+1,-1,+1));
+	    	points.add(new Vector3d(+1,+1,-1));
+	    	points.add(new Vector3d(+1,+1,+1));
+    		points.add(new Vector3d(0,1/phi,phi));
+			points.add(new Vector3d(0,-1/phi,phi));
+			points.add(new Vector3d(phi,0,1/phi));
+			points.add(new Vector3d(1/phi,phi,0));
+			points.add(new Vector3d(-1/phi,phi,0));
+			points.add(new Vector3d(-phi,0,1/phi));
+			points.add(new Vector3d(1/phi,-phi,0));
+			points.add(new Vector3d(phi,0,-1/phi));
+			points.add(new Vector3d(0,1/phi,-phi));
+			points.add(new Vector3d(-phi,0,-1/phi));
+			points.add(new Vector3d(-1/phi,-phi,0));
+			points.add(new Vector3d(0,-1/phi,-phi));
     	
-		List<Polygon> polygons = HullUtil.hull(points).scale(radius/(Math.sqrt(1+Math.pow(phi, 2)))).getPolygons();
+		List<Polygon> polygons = HullUtil.hull(points).scale(radius*(phi-1)).getPolygons();
 
         return polygons;
     }
@@ -99,7 +107,7 @@ public class Icosahedron extends Primitive {
      *
      * @param center the center to set
      */
-    public Icosahedron setCenter(Vector3d center) {
+    public Dodecahedron setCenter(Vector3d center) {
         this.center = center;
         return this;
     }
@@ -131,10 +139,10 @@ public class Icosahedron extends Primitive {
     }
 
     /**
-     * Defines that this icosahedron will not be centered.
-     * @return this icosahedron
+     * Defines that this dodecahedron will not be centered.
+     * @return this dodecahedron
      */
-    public Icosahedron noCenter() {
+    public Dodecahedron noCenter() {
         centered = false;
         return this;
     }
