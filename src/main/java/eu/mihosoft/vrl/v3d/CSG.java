@@ -1783,7 +1783,7 @@ public class CSG {
 		shellThickness=Math.abs(shellThickness);
 		if(shellThickness<0.001)
 			return this;
-		CSG printNozzel = new Sphere(shellThickness,7,7).toCSG();
+		CSG printNozzel = new Icosahedron(shellThickness).toCSG();
 		
 		if(cut)
 			return difference(minkowski(printNozzel));
