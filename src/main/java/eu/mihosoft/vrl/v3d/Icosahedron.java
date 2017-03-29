@@ -38,7 +38,7 @@ public class Icosahedron extends Primitive {
     /**
      * Constructor. Creates a new icosahedron with center {@code [0,0,0]} and
      * radius {@code size}.
-     *
+     * This is a platonic solid
      * @param size size
      */
     public Icosahedron(double size) {
