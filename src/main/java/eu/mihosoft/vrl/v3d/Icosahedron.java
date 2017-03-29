@@ -38,7 +38,7 @@ public class Icosahedron extends Primitive {
     /**
      * Constructor. Creates a new icosahedron with center {@code [0,0,0]} and
      * radius {@code size}.
-     * This is a platonic solid
+     * 
      * @param size size
      */
     public Icosahedron(double size) {
@@ -131,8 +131,8 @@ public class Icosahedron extends Primitive {
     }
 
     /**
-     * Defines that this cube will not be centered.
-     * @return this cube
+     * Defines that this icosahedron will not be centered.
+     * @return this icosahedron
      */
     public Icosahedron noCenter() {
         centered = false;
