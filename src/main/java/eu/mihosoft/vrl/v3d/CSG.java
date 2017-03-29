@@ -135,6 +135,12 @@ public class CSG {
 	private HashMap<String, IParametric> mapOfparametrics = null;
 	private IRegenerate regenerate = null;
 	private boolean markForRegeneration = false;
+	private static ICSGProgress progressMoniter=new ICSGProgress() {
+		@Override
+		public void progressUpdate(int currentIndex, int finalIndex, String type, CSG intermediateShape) {
+			System.out.println(type+"ing "+currentIndex+" of "+finalIndex);
+		}
+	};
 
 	/**
 	 * Instantiates a new csg.
@@ -691,8 +697,10 @@ public class CSG {
 
 		CSG result = this;
 
-		for (CSG csg : csgs) {
+		for (int i=0;i<csgs.size();i++) {
+			CSG csg = csgs.get(i);
 			result = result.union(csg);
+			progressMoniter.progressUpdate(i, csgs.size(), "Union", result);
 		}
 
 		return result;
@@ -903,6 +911,7 @@ public class CSG {
 
 		for (int i = 1; i < csgs.size(); i++) {
 			csgsUnion = csgsUnion.union(csgs.get(i));
+			progressMoniter.progressUpdate(i, csgs.size(), "Difference", csgsUnion);
 			csgsUnion.historySync(csgs.get(i));
 		}
 
@@ -1101,6 +1110,7 @@ public class CSG {
 
 		for (int i = 1; i < csgs.size(); i++) {
 			csgsUnion = csgsUnion.union(csgs.get(i));
+			progressMoniter.progressUpdate(i, csgs.size(), "Intersect", csgsUnion);
 			csgsUnion.historySync(csgs.get(i));
 		}
 
@@ -2037,6 +2047,14 @@ public class CSG {
 			}
 		}
 		return false;
+	}
+
+	public static ICSGProgress getProgressMoniter() {
+		return progressMoniter;
+	}
+
+	public static void setProgressMoniter(ICSGProgress progressMoniter) {
+		CSG.progressMoniter = progressMoniter;
 	}
 
 }
