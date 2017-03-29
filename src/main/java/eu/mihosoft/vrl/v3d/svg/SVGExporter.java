@@ -28,7 +28,7 @@ import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
-public class SVGFactory extends Application {
+public class SVGExporter extends Application {
 
 	private static Pane snapshotGroup;
 	private static final double MMTOPX = 3.5409643774783404;
@@ -37,7 +37,7 @@ public class SVGFactory extends Application {
 		launch(new String[] {});
 	}
 	@SuppressWarnings("static-access")
-	public static File exportSVG(CSG currentCsg, File defaultDir) {
+	public static File export(CSG currentCsg, File defaultDir) {
 		
 		currentCsg = currentCsg.toYMin().toXMin();// prep CSG so it is in frame in the smae orentation as the z0 plane
 
@@ -277,7 +277,7 @@ public class SVGFactory extends Application {
 		).toCSG();// this converts from the geometry to an object we can work
 					// with
 
-		exportSVG(main.difference(cut).intersect(new Cube(400, 400, 2).toCSG()), new File("export.svg"));
+		export(main.difference(cut).intersect(new Cube(400, 400, 2).toCSG()), new File("export.svg"));
 
 		//
 	}
