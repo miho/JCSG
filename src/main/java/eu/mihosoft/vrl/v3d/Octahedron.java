@@ -64,15 +64,15 @@ public class Octahedron extends Primitive {
     @Override
     public List<Polygon> toPolygons() {
     	
-    	double sqrt2 = Math.sqrt(2);
+    	double sqrt2_2 = Math.sqrt(2)/2;
     	
     	List<Vector3d> points = new ArrayList<>();
     		points.add(new Vector3d(0,0,-1));
 			points.add(new Vector3d(0,0,+1));
-			points.add(new Vector3d(-sqrt2,-sqrt2,0));
-			points.add(new Vector3d(-sqrt2,+sqrt2,0));
-			points.add(new Vector3d(+sqrt2,-sqrt2,0));
-			points.add(new Vector3d(+sqrt2,+sqrt2,0));
+			points.add(new Vector3d(-sqrt2_2,-sqrt2_2,0));
+			points.add(new Vector3d(-sqrt2_2,+sqrt2_2,0));
+			points.add(new Vector3d(+sqrt2_2,-sqrt2_2,0));
+			points.add(new Vector3d(+sqrt2_2,+sqrt2_2,0));
     	
 		List<Polygon> polygons = HullUtil.hull(points).scale(radius).getPolygons();
 
