@@ -205,7 +205,7 @@ public class CSG {
 
 		current = meshContainer.getAsMeshViews().get(0);
 		if (getColor() == null)
-			setColor(Color.RED);
+			setColor(Color.web("#007956")); 
 		else {
 			PhongMaterial m = new PhongMaterial(getColor());
 			current.setMaterial(m);
@@ -1820,8 +1820,6 @@ public class CSG {
 	}
 
 	public CSG addCreationEventStackTraceList(ArrayList<Exception> incoming) {
-		int i = 0;
-
 		for (Exception ex : incoming) {
 			addStackTrace(ex);
 
@@ -1872,6 +1870,7 @@ public class CSG {
 					this.setParameter(vals, dyingCSG.getMapOfparametrics().get(param));
 			}
 		}
+		this.setColor(dyingCSG.getColor());
 		return this;
 	}
 
