@@ -30,15 +30,21 @@ public class Slice {
 		polygons.addAll(incoming.intersect(planeCSG).getPolygons().stream().filter(Slice::isPolygonAtZero)
 				.collect(Collectors.toList()));
 		
-		
-		List<Polygon> triangles = new ArrayList<>();
-		
 		/* Convert the list of polygons to a list of triangles */
+		List<Polygon> triangles = new ArrayList<>();
 		for (int i=0;i<polygons.size();i++) {
 			eu.mihosoft.vrl.v3d.ext.org.poly2tri.Polygon p = PolygonUtil.fromCSGPolygon(polygons.get(i));
 			eu.mihosoft.vrl.v3d.ext.org.poly2tri.Poly2Tri.triangulate(p);
 			List<DelaunayTriangle> t = p.getTriangles();
 			for (int j=0;j<t.size();j++) triangles.add(t.get(j).toPolygon());
+		}
+		
+		/* List every edge */
+		List<Edge> edges = new ArrayList<>();
+		for (Polygon t : triangles) {
+			edges.add(new Edge(t.vertices.get(0), t.vertices.get(1)));
+			edges.add(new Edge(t.vertices.get(1), t.vertices.get(2)));
+			edges.add(new Edge(t.vertices.get(2), t.vertices.get(0)));
 		}
 		
 		return polygons;
