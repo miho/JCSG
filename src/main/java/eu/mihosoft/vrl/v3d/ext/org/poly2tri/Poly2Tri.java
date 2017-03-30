@@ -68,7 +68,7 @@ package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 /**
  * The Class Poly2Tri.
  */
-class Poly2Tri
+public class Poly2Tri
 {
 //    private final static Logger logger = LoggerFactory.getLogger( Poly2Tri.class );
 
