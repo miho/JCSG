@@ -1,13 +1,19 @@
 package eu.mihosoft.vrl.v3d;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.vecmath.Matrix4d;
 
-public class Slice {
+import eu.mihosoft.vrl.v3d.ext.org.poly2tri.DelaunayTriangle;
+import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
+
+public class Slice {	
 	private static ISlice sliceEngine = (incoming, slicePlane, normalInsetDistance) -> {
-		List<Polygon> finalSlice = new ArrayList<>();
+		double COINCIDENCE_TOLERANCE = 0.0001;
+		
+		List<Polygon> polygons = new ArrayList<>();
 
 		// Invert the incoming transform
 		Matrix4d inverse = slicePlane.scale(1.0D / slicePlane.getScale()).getInternalMatrix();
@@ -22,10 +28,21 @@ public class Slice {
 
 		// Loop over each polygon in the slice of the incoming CSG
 		// Add the polygon to the final slice if it lies entirely in the z plane
-		finalSlice.addAll(incoming.intersect(planeCSG).getPolygons().stream().filter(Slice::isPolygonAtZero)
+		polygons.addAll(incoming.intersect(planeCSG).getPolygons().stream().filter(Slice::isPolygonAtZero)
 				.collect(Collectors.toList()));
 		
-		return finalSlice;
+		
+		List<Polygon> triangles = new ArrayList<>();
+		
+		/* Convert the list of polygons to a list of triangles */
+		for (int i=0;i<polygons.size();i++) {
+			eu.mihosoft.vrl.v3d.ext.org.poly2tri.Polygon p = PolygonUtil.fromCSGPolygon(polygons.get(i));
+			eu.mihosoft.vrl.v3d.ext.org.poly2tri.Poly2Tri.triangulate(p);
+			List<DelaunayTriangle> t = p.getTriangles();
+			for (int j=0;j<t.size();j++) triangles.add(t.get(j).toPolygon());
+		}
+		
+		return polygons;
 	};
 
 	/**
@@ -73,12 +90,5 @@ public class Slice {
 
 	public static void setSliceEngine(ISlice sliceEngine) {
 		Slice.sliceEngine = sliceEngine;
-	}
-
-	private static class VertexComparator implements Comparator<Vertex> {
-		@Override
-		public int compare(Vertex o1, Vertex o2) {
-			return o1.getX() == o2.getX() && o1.getY() == o2.getY() && o1.getZ() == o2.getZ() ? 0 : 1;
-		}
 	}
 }
