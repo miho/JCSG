@@ -11,7 +11,7 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 
 public class Slice {	
 	private static ISlice sliceEngine = (incoming, slicePlane, normalInsetDistance) -> {
-		
+		double COINCIDENCE_TOLERANCE = 0.0001;
 		List<Polygon> polygons = new ArrayList<>();
 
 		// Invert the incoming transform
@@ -45,6 +45,21 @@ public class Slice {
 			edges.add(new Edge(t.vertices.get(0), t.vertices.get(1)));
 			edges.add(new Edge(t.vertices.get(1), t.vertices.get(2)));
 			edges.add(new Edge(t.vertices.get(2), t.vertices.get(0)));
+		}
+		
+		/* Remove internal edges */
+		for (int i=0;i<edges.size();i++) {
+			boolean match = false;
+			for (int j=0;j<edges.size() || match;j++) {
+				if (i!=j &&
+						edges.get(i).getP1().pos.minus(edges.get(j).getP2().pos).magnitude()<=COINCIDENCE_TOLERANCE &&
+						edges.get(i).getP2().pos.minus(edges.get(j).getP1().pos).magnitude()<=COINCIDENCE_TOLERANCE) {
+					edges.remove(i);
+					edges.remove(j);
+					i--;
+					match = false;
+				}
+			}
 		}
 		
 		return polygons;
