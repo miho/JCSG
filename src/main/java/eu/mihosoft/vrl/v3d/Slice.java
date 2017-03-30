@@ -11,7 +11,6 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 
 public class Slice {	
 	private static ISlice sliceEngine = (incoming, slicePlane, normalInsetDistance) -> {
-		double COINCIDENCE_TOLERANCE = 0.0001;
 		
 		List<Polygon> polygons = new ArrayList<>();
 
