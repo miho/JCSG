@@ -71,7 +71,7 @@ import java.util.List;
 /**
  * The Class Polygon.
  */
-class Polygon implements Triangulatable
+public class Polygon implements Triangulatable
 {
 //    private final static Logger //logger = LoggerFactory.getLogger( Polygon.class );
 
