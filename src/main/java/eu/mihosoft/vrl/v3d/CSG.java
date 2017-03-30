@@ -116,9 +116,11 @@ public class CSG {
 	private PropertyStorage storage;
 	/** The current. */
 	private MeshView current;
+	
+	private static Color defaultcolor=Color.web("#007956");
 
 	/** The color. */
-	private Color color;
+	private Color color=getDefaultColor();
 
 	/** The manipulator. */
 	private Affine manipulator;
@@ -204,12 +206,10 @@ public class CSG {
 		MeshContainer meshContainer = toJavaFXMesh(null);
 
 		current = meshContainer.getAsMeshViews().get(0);
-		if (getColor() == null)
-			setColor(Color.web("#007956")); 
-		else {
-			PhongMaterial m = new PhongMaterial(getColor());
-			current.setMaterial(m);
-		}
+
+		PhongMaterial m = new PhongMaterial(getColor());
+		current.setMaterial(m);
+		
 
 		if (getManipulator() != null) {
 			current.getTransforms().clear();
@@ -2054,6 +2054,14 @@ public class CSG {
 
 	public static void setProgressMoniter(ICSGProgress progressMoniter) {
 		CSG.progressMoniter = progressMoniter;
+	}
+
+	public static Color getDefaultColor() {
+		return defaultcolor;
+	}
+
+	public static void setDefaultColor(Color defaultcolor) {
+		CSG.defaultcolor = defaultcolor;
 	}
 
 }
