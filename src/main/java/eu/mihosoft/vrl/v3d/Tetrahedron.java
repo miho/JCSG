@@ -64,13 +64,13 @@ public class Tetrahedron extends Primitive {
     @Override
     public List<Polygon> toPolygons() {
     	
-    	double sqrt2_2 = Math.sqrt(2)/2;
+    	double _1_sqrt2 = 1/Math.sqrt(2);
     	
     	List<Vector3d> points = new ArrayList<>();
-    		points.add(new Vector3d(+1,+1,+1));
-			points.add(new Vector3d(+1,-1,+1));
-			points.add(new Vector3d(-1,+1,-1));
-			points.add(new Vector3d(-1,-1,+1));
+    		points.add(new Vector3d(-1,0,-_1_sqrt2));
+			points.add(new Vector3d(+1,0,-_1_sqrt2));
+			points.add(new Vector3d(0,-1,+_1_sqrt2));
+			points.add(new Vector3d(0,+1,+_1_sqrt2));
     	
 		List<Polygon> polygons = HullUtil.hull(points).scale(radius/Math.sqrt(3)).getPolygons();
 
