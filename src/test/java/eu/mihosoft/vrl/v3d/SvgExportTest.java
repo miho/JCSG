@@ -2,14 +2,20 @@ package eu.mihosoft.vrl.v3d;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
 
+import eu.mihosoft.vrl.v3d.svg.SVGExporter;
+
 public class SvgExportTest {
 
 	@Test
-	public void test() {
+	public void test() throws IOException {
 		double normalInsetDistance=0;
 		Transform slicePlane = new Transform();
 		
@@ -29,14 +35,7 @@ public class SvgExportTest {
 		
 		List<Polygon> polygons = Slice.slice(incoming, slicePlane , normalInsetDistance);
 		
-		
-		for(Polygon p:polygons){
-			for (Vertex v:p.vertices){
-				Vector3d position = v.pos;
-				// load this point into the SVG
-				
-			}
-		}
+		SVGExporter.export(polygons, new File("SVGExportTest.svg"));
 		
 	}
 
