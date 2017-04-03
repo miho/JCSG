@@ -69,7 +69,7 @@ import java.util.ArrayList;
 /**
  * The Class DelaunayTriangle.
  */
-class DelaunayTriangle
+public class DelaunayTriangle
 {
     //private final static Logger logger    = LoggerFactory.getLogger( DelaunayTriangle.class );
 
@@ -954,5 +954,23 @@ class DelaunayTriangle
     public void isInterior( boolean b )
     {
         interior = b;        
+    }
+    
+    /**
+     * Converts a DelaunayTriangle to a standard Polygon
+     * 
+     * @param index the index of the point
+     * 
+     * @return the coordinates of the point as a Vector3d
+     */
+    public eu.mihosoft.vrl.v3d.Polygon toPolygon() {
+    	eu.mihosoft.vrl.v3d.Vector3d normal = new eu.mihosoft.vrl.v3d.Vector3d(0,0,1);
+    	eu.mihosoft.vrl.v3d.Vector3d p0 = new eu.mihosoft.vrl.v3d.Vector3d(points[0].getX(),points[0].getY(),points[0].getZ());
+    	eu.mihosoft.vrl.v3d.Vector3d p1 = new eu.mihosoft.vrl.v3d.Vector3d(points[1].getX(),points[1].getY(),points[1].getZ());
+    	eu.mihosoft.vrl.v3d.Vector3d p2 = new eu.mihosoft.vrl.v3d.Vector3d(points[2].getX(),points[2].getY(),points[2].getZ());
+    	eu.mihosoft.vrl.v3d.Vertex v0 = new eu.mihosoft.vrl.v3d.Vertex(p0, normal);
+    	eu.mihosoft.vrl.v3d.Vertex v1 = new eu.mihosoft.vrl.v3d.Vertex(p1, normal);
+    	eu.mihosoft.vrl.v3d.Vertex v2 = new eu.mihosoft.vrl.v3d.Vertex(p2, normal);
+    	return new eu.mihosoft.vrl.v3d.Polygon(v0,v1,v2);
     }
 }

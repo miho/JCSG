@@ -62,7 +62,7 @@ public class PolygonUtil {
      * @param polygon the polygon to convert
      * @return a CSG polygon to a poly2tri polygon (including holes)
      */
-    private static eu.mihosoft.vrl.v3d.ext.org.poly2tri.Polygon fromCSGPolygon(
+    public static eu.mihosoft.vrl.v3d.ext.org.poly2tri.Polygon fromCSGPolygon(
             eu.mihosoft.vrl.v3d.Polygon polygon) {
         
         // convert polygon
