@@ -47,10 +47,10 @@ public class SvgExportTest {
 		List<Polygon> polygons = new ArrayList<Polygon>();
 		
 		List<Vertex> vertices = new ArrayList<Vertex>();
-		vertices.add(new Vertex(new Vector3d(0, 0), new Vector3d(0, 0)));
+		vertices.add(new Vertex(new Vector3d(-30, 0), new Vector3d(0, 0)));
 		vertices.add(new Vertex(new Vector3d(100, 0), new Vector3d(0, 0)));
 		vertices.add(new Vertex(new Vector3d(100, 100), new Vector3d(0, 0)));
-		vertices.add(new Vertex(new Vector3d(0, 100), new Vector3d(0, 0)));
+		vertices.add(new Vertex(new Vector3d(-30, 100), new Vector3d(0, 0)));
 
 		List<Vertex> vertices2 = new ArrayList<Vertex>();
 		vertices2.add(new Vertex(new Vector3d(50, 50), new Vector3d(0, 0)));

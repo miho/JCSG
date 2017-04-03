@@ -29,11 +29,12 @@ public class SVGExporter {
 	public static void export(List<Polygon> polygons , File defaultDir) throws IOException {
 		
 
-		String header="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"+
-		"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n";
+		
 		String footer="</svg>";
 		String section	="";	
-		String output = header;
+		String output = "";
+		double min []={0,0};
+		double max []={0,0};
 		for(Polygon p:polygons){
 			section = "  <polyline points=\"";
 			
@@ -43,10 +44,28 @@ public class SVGExporter {
 			}
 			//Close loop
 			Vector3d position = p.vertices.get(0).pos;
-			section+=((int)position.x*Scale)+","+((int)position.y*Scale)+" ";
+			double x = (position.x*Scale);
+			double y = (position.x*Scale);
+			section+=x+","+y+" ";
 			output+=section+"\" stroke=\"red\" stroke-width=\"0.01\" fill=\"none\" />\n";
+			if(x>max[0]){
+				max[0]=x;
+			}
+			if(x<min[0]){
+				min[0]=x;
+			}
+			if(y>max[1]){
+				max[1]=y;
+			}
+			if(y<min[1]){
+				min[1]=y;
+			}
 		}
+		String header="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"+
+				"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\""+min[0]+" " +min[1]+" "+(Math.abs(max[0])*2+Math.abs(min[0]))+" " +(Math.abs(max[1])*2+Math.abs(min[1]))+"\">\n";
+		
 		output+=footer;
+		output = header+output;
 		
 		// if file doesnt exists, then create it
 		if (!defaultDir.exists()) {
