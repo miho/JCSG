@@ -17,7 +17,8 @@ import eu.mihosoft.vrl.v3d.Vertex;
 @SuppressWarnings("restriction")
 public class SVGExporter {
 
-
+	private static final double Scale = 100.0/28.222;
+	
 	public static void export(CSG currentCsg, File defaultDir) throws IOException {
 		Transform slicePlane = new Transform();
 
@@ -35,13 +36,15 @@ public class SVGExporter {
 		String output = header;
 		for(Polygon p:polygons){
 			section = "  <polyline points=\"";
-			double Scale = 25.4 / 96.0;
+			
 			for (Vertex v:p.vertices){
 				Vector3d position = v.pos;
 				section+=((int)position.x*Scale)+","+((int)position.y*Scale)+" ";
 			}
-			
-			output+=section+"\" stroke=\"red\" stroke-width=\"1\" fill=\"none\" />\n";
+			//Close loop
+			Vector3d position = p.vertices.get(0).pos;
+			section+=((int)position.x*Scale)+","+((int)position.y*Scale)+" ";
+			output+=section+"\" stroke=\"red\" stroke-width=\"0.01\" fill=\"none\" />\n";
 		}
 		output+=footer;
 		
