@@ -32,8 +32,8 @@ public class SVGExporter {
 	public static void export(List<Polygon> polygons , File defaultDir) throws IOException {
 		
 
-		String header="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"+
-		"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
+		String header="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"+
+		"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n";
 		String footer="</svg>";
 		String section	="";	
 		String output = header;
