@@ -40,29 +40,32 @@ public class SVGExporter {
 			
 			for (Vertex v:p.vertices){
 				Vector3d position = v.pos;
-				section+=((int)position.x*Scale)+","+((int)position.y*Scale)+" ";
+				double x = (position.x*Scale);
+				double y = (position.y*Scale);
+				section+=x+","+y+" ";
+				if(x>max[0]){
+					max[0]=x;
+				}
+				if(x<min[0]){
+					min[0]=x;
+				}
+				if(y>max[1]){
+					max[1]=y;
+				}
+				if(y<min[1]){
+					min[1]=y;
+				}
 			}
 			//Close loop
 			Vector3d position = p.vertices.get(0).pos;
 			double x = (position.x*Scale);
-			double y = (position.x*Scale);
+			double y = (position.y*Scale);
 			section+=x+","+y+" ";
-			output+=section+"\" stroke=\"red\" stroke-width=\"0.01\" fill=\"none\" />\n";
-			if(x>max[0]){
-				max[0]=x;
-			}
-			if(x<min[0]){
-				min[0]=x;
-			}
-			if(y>max[1]){
-				max[1]=y;
-			}
-			if(y<min[1]){
-				min[1]=y;
-			}
+			output+=section+"\" stroke=\"red\" stroke-width=\"0.1\" fill=\"none\" />\n";
+			
 		}
 		String header="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"+
-				"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\""+min[0]+" " +min[1]+" "+(Math.abs(max[0])*2+Math.abs(min[0]))+" " +(Math.abs(max[1])*2+Math.abs(min[1]))+"\">\n";
+				"<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\""+(min[0]-1)+" " +(min[1]-1)+" "+(Math.abs(max[0])+Math.abs(min[0])+2)+" " +(Math.abs(max[1])+Math.abs(min[1])+2)+"\">\n";
 		
 		output+=footer;
 		output = header+output;
