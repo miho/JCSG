@@ -38,6 +38,8 @@ public class  SVGLoad {
 	private static final String GROUP_ELEMENT_NAME = "g";
 	private Document svgDocument;
 	boolean holePolarity = true;
+	private ArrayList<CSG> sections=null;
+	private List<Polygon> polygons=null;
 	public void setHolePolarity(boolean p){
 		holePolarity = p;
 	}
@@ -95,16 +97,6 @@ public class  SVGLoad {
 		}
 
 		/**
-		 * Returns the value for the id attribute of the path element. If the id
-		 * isn't present, this will probably throw a NullPointerException.
-		 * 
-		 * @return A non-null, but possibly empty String.
-		 */
-		private String getId() {
-			return getPathElement().getAttributes().getNamedItem("id").getNodeValue();
-		}
-
-		/**
 		 * Typecasts the given pathNode to an SVGOMPathElement for later
 		 * analysis.
 		 * 
@@ -139,6 +131,8 @@ public class  SVGLoad {
 	public SVGLoad(URI uri) throws IOException {
 		setSVGDocument(createSVGDocument(uri));
 	}
+	
+	
 
 	public  ArrayList<CSG> extrude(double thickness) throws IOException {
 
@@ -149,6 +143,29 @@ public class  SVGLoad {
 		return new SVGLoad(f.toURI()).extrude( thickness);
 
 	}
+	/**
+	 * This function will create a list of polygons that can be exported back to an SVG
+	 * @param f the file containing the SVG data
+	 * @return
+	 * @throws IOException
+	 */
+	public  static List<Polygon> toPolygons(File f) throws IOException {
+		return new SVGLoad(f.toURI()).toPolygons();
+
+	}
+	private List<Polygon> toPolygons() {
+		if(polygons==null){
+			try {
+				extrude(1);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return polygons;
+	}
+
+
 
 	public static ArrayList<CSG> extrude(File f, double thickness, double resolution) throws IOException{
 		return new SVGLoad(f.toURI()).extrude( thickness, resolution);
@@ -246,7 +263,7 @@ public class  SVGLoad {
 
 	private void loadComposite(String code,ArrayList<CSG> sections,double thickness, double resolution,double mvx ,double mvy){
 		ArrayList<CSG> holes =new ArrayList<CSG> ();
-		
+
 		//Count the occourences of M
 		int count = code.length() - code.replace("M", "").length();
 		if(count<2){
@@ -304,10 +321,12 @@ public class  SVGLoad {
 		}
 		p.add(path.eval((float) (1.0-resolution/2.0)));
 		//System.out.println(" Path " + code);
-		boolean hole = Extrude.isCCW(Polygon.fromPoints(p));
+		Polygon poly = Polygon.fromPoints(p);
+		boolean hole = Extrude.isCCW(poly);
 		if(!holePolarity)
 			hole=!hole;
 		try {
+			polygons.add(poly);
 			CSG newbit = Extrude.points(new Vector3d(0, 0, thickness), p)
 						.movex(mvx)
 						.movey(mvy)
@@ -343,40 +362,11 @@ public class  SVGLoad {
 		// println "Loading converter"
 		NodeList pn = getSVGDocument().getDocumentElement().getElementsByTagName("g");
 		;
-		//System.out.println("List of groups " + pn.getClass());
-		ArrayList<CSG> sections = new ArrayList<CSG>();
-		loadAllGroups( pn,sections,  thickness,  resolution,0,0);
-
+		if(sections == null){
+			sections = new ArrayList<CSG>();
+			loadAllGroups( pn,sections,  thickness,  resolution,0,0);
+		}
 		return sections;
-	}
-
-	/**
-	 * Returns a list of elements in the SVG document with names that match
-	 * PATH_ELEMENT_NAME.
-	 * 
-	 * @return The list of "path" elements in the SVG document.
-	 */
-	private NodeList getPathElements(NodeList group) {
-		return getSVGDocumentRoot().getElementsByTagName(PATH_ELEMENT_NAME);
-	}
-
-	/**
-	 * Returns a list of elements in the SVG document with names that match
-	 * PATH_ELEMENT_NAME.
-	 * 
-	 * @return The list of "path" elements in the SVG document.
-	 */
-	private NodeList getGroupElements() {
-		return getSVGDocumentRoot().getElementsByTagName(GROUP_ELEMENT_NAME);
-	}
-
-	/**
-	 * Returns an SVGOMSVGElement that is the document's root element.
-	 * 
-	 * @return The SVG document typecast into an SVGOMSVGElement.
-	 */
-	private SVGOMSVGElement getSVGDocumentRoot() {
-		return (SVGOMSVGElement) getSVGDocument().getDocumentElement();
 	}
 
 	/**
