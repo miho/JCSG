@@ -326,6 +326,8 @@ public class  SVGLoad {
 		if(!holePolarity)
 			hole=!hole;
 		try {
+			if(polygons==null)
+				polygons= new ArrayList<Polygon>();
 			polygons.add(poly);
 			CSG newbit = Extrude.points(new Vector3d(0, 0, thickness), p)
 						.movex(mvx)
