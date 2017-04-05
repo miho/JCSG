@@ -16,7 +16,7 @@ import eu.mihosoft.vrl.v3d.Vertex;
 @SuppressWarnings("restriction")
 public class SVGExporter {
 
-	private static final double Scale = 100.0 / 28.222;
+	private static final double Scale = 3.543335;// SVG px to MM scale factor
 
 	public static void export(CSG currentCsg, File defaultDir) throws IOException {
 		Transform slicePlane = new Transform();
