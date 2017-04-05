@@ -43,43 +43,54 @@ public class Slice {
 		/* List every edge */
 		List<Edge> edges = new ArrayList<>();
 		for (Polygon t : triangles) {
+			if(t.vertices.size()!=3){
+				throw new RuntimeException("Triangulation failed and an invalid poly is created!");
+			}
 			edges.add(new Edge(t.vertices.get(0), t.vertices.get(1)));
 			edges.add(new Edge(t.vertices.get(1), t.vertices.get(2)));
 			edges.add(new Edge(t.vertices.get(2), t.vertices.get(0)));
 		}
 
 		/* Remove internal edges */
-		for (int i = 0; i < edges.size(); i++) {
-			boolean match = false;
-			for (int j = 0; j < edges.size() && !match; j++) {
-				if (edges.get(i).getP1().pos.minus(edges.get(j).getP2().pos).magnitude() <= COINCIDENCE_TOLERANCE
-						&& edges.get(i).getP2().pos.minus(edges.get(j).getP1().pos)
-								.magnitude() <= COINCIDENCE_TOLERANCE) {
-					edges.remove(i);
-					edges.remove(j);
-					i--;
-					match = false;
-				}
-			}
-		}
+//		for (int i = 0; i < edges.size(); i++) {
+//			boolean match = false;
+//			for (int j = 0; j < edges.size() && !match; j++) {
+//				if (edges.get(i)
+//						.getP1()
+//						.pos
+//						.minus(
+//								edges
+//								.get(j)
+//								.getP2().pos)
+//						.magnitude() <= COINCIDENCE_TOLERANCE
+//						&& edges.get(i).getP2().pos.minus(edges.get(j).getP1().pos)
+//								.magnitude() <= COINCIDENCE_TOLERANCE) {
+//					edges.remove(i);
+//					edges.remove(j);
+//					i--;
+//					match = false;
+//				}
+//			}
+//		}
+//
+//		/* Generate polygons from edges */
+//		List<Polygon> polygons = new ArrayList<>();
+//		for (int edgeIndex = 0; edges.size() > 0;) {
+//			List<Vertex> vertices = new ArrayList<>();
+//			vertices.add(edges.get(0).getP1());
+//			for (; edges.get(edgeIndex).getP2().pos.minus(vertices.get(0).pos).magnitude() <= COINCIDENCE_TOLERANCE;) {
+//				vertices.add(edges.get(edgeIndex).getP2());
+//				edges.remove(edgeIndex);
+//				for (; edgeIndex < edges.size() && !(vertices.get(vertices.size() - 1).pos
+//						.minus(edges.get(edgeIndex).getP1().pos).magnitude() <= COINCIDENCE_TOLERANCE); edgeIndex++)
+//					;
+//			}
+//			edges.remove(edgeIndex);
+//			polygons.add(new Polygon(vertices));
+//		}
 
-		/* Generate polygons from edges */
-		List<Polygon> polygons = new ArrayList<>();
-		for (int edgeIndex = 0; edges.size() > 0;) {
-			List<Vertex> vertices = new ArrayList<>();
-			vertices.add(edges.get(0).getP1());
-			for (; edges.get(edgeIndex).getP2().pos.minus(vertices.get(0).pos).magnitude() <= COINCIDENCE_TOLERANCE;) {
-				vertices.add(edges.get(edgeIndex).getP2());
-				edges.remove(edgeIndex);
-				for (; edgeIndex < edges.size() && !(vertices.get(vertices.size() - 1).pos
-						.minus(edges.get(edgeIndex).getP1().pos).magnitude() <= COINCIDENCE_TOLERANCE); edgeIndex++)
-					;
-			}
-			edges.remove(edgeIndex);
-			polygons.add(new Polygon(vertices));
-		}
-
-		return polygons;
+		//return polygons;
+		return triangles;
 	};
 
 	/**
