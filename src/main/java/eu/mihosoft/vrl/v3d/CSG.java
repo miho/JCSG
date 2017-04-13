@@ -1772,10 +1772,10 @@ public class CSG {
 	 * This is a simplified version of a minkowski transform using convex hull and the internal list of convex polygons
 	 * The shape is placed at the vertex of each point on a polygon, and the result is convex hulled together. 
 	 * This collection is returned.
-	 *  To make a normal inset, difference this collection
+	 *  To make a normal insets, difference this collection
 	 *  To make an outset by the normals, union this collection with this object. 
 	 * 
-	 * @param travelingShape a shap to sweep around
+	 * @param travelingShape a shape to sweep around
 	 * @return
 	 */
 	public ArrayList<CSG> minkowski( CSG travelingShape){
@@ -1791,7 +1791,38 @@ public class CSG {
 		}
 		return allFaces;
 	}
-	
+	/**
+	 * minkowskiDifference performs an efficient difference of the minkowski transform 
+	 * of the intersection of an object. if you have 2 objects and need them to fit with a 
+	 * specific tolerance as desctribed as the distance from he normal of the surface, then 
+	 * this function will effectinatly compute that value. 
+	 * @param itemToDifference the object that needs to fit
+	 * @param minkowskiObject the object to represent the offset
+	 * @return
+	 */
+	public CSG minkowskiDifference(CSG itemToDifference, CSG minkowskiObject) {
+		CSG intersection = this.intersect(itemToDifference);
+		
+		ArrayList<CSG> csgDiff = intersection.mink(minkowskiObject);
+		CSG result = this.difference(intersection);
+		for (int i=0;i<csgDiff.size();i++){
+			result= result.difference(csgDiff.get(i));
+			progressMoniter.progressUpdate(i, csgDiff.size(), "Minkowski difference", result);
+		}
+		return result;
+	}
+	/**
+	 * minkowskiDifference performs an efficient difference of the minkowski transform 
+	 * of the intersection of an object. if you have 2 objects and need them to fit with a 
+	 * specific tolerance as desctribed as the distance from he normal of the surface, then 
+	 * this function will effectinatly compute that value. 
+	 * @param itemToDifference the object that needs to fit
+	 * @param tolerance the tolerance distance
+	 * @return
+	 */
+	public CSG minkowskiDifference(CSG itemToDifference, double tolerance) {
+		return minkowskiDifference(itemToDifference,new Icosahedron(Math.abs(tolerance)).toCSG());
+	}
 	public CSG toolOffset(double shellThickness) {
 		
 		boolean cut =shellThickness<0;
