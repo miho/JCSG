@@ -738,7 +738,22 @@ public class CSG {
 
 		return HullUtil.hull(this, storage).historySync(this);
 	}
-
+	
+	public static CSG unionAll(CSG... csgs){
+		return unionAll(Arrays.asList(csgs));
+	}
+	public static CSG unionAll(List<CSG> csgs){
+		CSG first = csgs.remove(0);
+		return first.union(csgs);
+	}
+	
+	public static CSG hullAll(CSG... csgs){
+		return hullAll(Arrays.asList(csgs));
+	}
+	public static CSG hullAll(List<CSG> csgs){
+		CSG first = csgs.remove(0);
+		return first.hull(csgs);
+	}
 	/**
 	 * Returns the convex hull of this csg and the union of the specified csgs.
 	 *
