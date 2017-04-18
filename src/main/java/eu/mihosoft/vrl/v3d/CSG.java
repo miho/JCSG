@@ -1794,7 +1794,7 @@ public class CSG {
 	/**
 	 * minkowskiDifference performs an efficient difference of the minkowski transform 
 	 * of the intersection of an object. if you have 2 objects and need them to fit with a 
-	 * specific tolerance as desctribed as the distance from he normal of the surface, then 
+	 * specific tolerance as described as the distance from he normal of the surface, then 
 	 * this function will effectinatly compute that value. 
 	 * @param itemToDifference the object that needs to fit
 	 * @param minkowskiObject the object to represent the offset
@@ -1814,14 +1814,17 @@ public class CSG {
 	/**
 	 * minkowskiDifference performs an efficient difference of the minkowski transform 
 	 * of the intersection of an object. if you have 2 objects and need them to fit with a 
-	 * specific tolerance as desctribed as the distance from he normal of the surface, then 
+	 * specific tolerance as described as the distance from he normal of the surface, then 
 	 * this function will effectinatly compute that value. 
 	 * @param itemToDifference the object that needs to fit
 	 * @param tolerance the tolerance distance
 	 * @return
 	 */
 	public CSG minkowskiDifference(CSG itemToDifference, double tolerance) {
-		return minkowskiDifference(itemToDifference,new Icosahedron(Math.abs(tolerance)).toCSG());
+		double shellThickness = Math.abs(tolerance);
+		if(shellThickness<0.001)
+			return this;
+		return minkowskiDifference(itemToDifference,new Icosahedron(shellThickness).toCSG());
 	}
 	public CSG toolOffset(double shellThickness) {
 		
