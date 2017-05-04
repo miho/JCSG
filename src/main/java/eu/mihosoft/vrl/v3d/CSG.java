@@ -1779,17 +1779,14 @@ public class CSG {
 	 * @return
 	 */
 	public ArrayList<CSG> minkowski( CSG travelingShape){
-		ArrayList<CSG> allFaces = new ArrayList<CSG>();
-		for(Polygon p: getPolygons()){
-			ArrayList<CSG> corners =new ArrayList<CSG>();
+		HashMap<Vertex,CSG> map= new HashMap<>();
+		for(Polygon p: travelingShape.getPolygons()){
 			for(Vertex v:p.vertices){
-				corners.add(travelingShape.move(v));
+				if(map.get(v)==null)// use hashmap to avoid duplicate locations
+					map.put(v,this.move(v));
 			}
-			CSG face = corners.remove(0);
-			face=face.hull(corners);
-			allFaces.add(face);
 		}
-		return allFaces;
+		return  new ArrayList<CSG>(map.values());
 	}
 	/**
 	 * minkowskiDifference performs an efficient difference of the minkowski transform 
@@ -1804,7 +1801,7 @@ public class CSG {
 		CSG intersection = this.intersect(itemToDifference);
 		
 		ArrayList<CSG> csgDiff = intersection.mink(minkowskiObject);
-		CSG result = this.difference(intersection);
+		CSG result = this;
 		for (int i=0;i<csgDiff.size();i++){
 			result= result.difference(csgDiff.get(i));
 			progressMoniter.progressUpdate(i, csgDiff.size(), "Minkowski difference", result);
@@ -1824,7 +1821,7 @@ public class CSG {
 		double shellThickness = Math.abs(tolerance);
 		if(shellThickness<0.001)
 			return this;
-		return minkowskiDifference(itemToDifference,new Icosahedron(shellThickness).toCSG());
+		return minkowskiDifference(itemToDifference,new Cube(shellThickness).toCSG());
 	}
 	public CSG toolOffset(double shellThickness) {
 		
@@ -1832,10 +1829,16 @@ public class CSG {
 		shellThickness=Math.abs(shellThickness);
 		if(shellThickness<0.001)
 			return this;
-		CSG printNozzel = new Icosahedron(shellThickness).toCSG();
+		CSG printNozzel = new Cube(shellThickness).toCSG();
 		
-		if(cut)
-			return difference(minkowski(printNozzel));
+		if(cut){
+			ArrayList<CSG> mikObjs = minkowski(printNozzel);
+			CSG remaining = this;
+			for(CSG bit: mikObjs){
+				remaining=remaining.intersect(bit);
+			}
+			return remaining;
+		}
 		return union(minkowski(printNozzel));
 	}
 
