@@ -60,9 +60,10 @@ public class Cylinder extends Primitive {
     
     /** The end radius. */
     private double endRadius;
-    
+    private static int defaultNumSlices=16;
+
     /** The num slices. */
-    private int numSlices;
+    private int numSlices=defaultNumSlices;
 
     /** The properties. */
     private final PropertyStorage properties = new PropertyStorage();
@@ -77,7 +78,7 @@ public class Cylinder extends Primitive {
         this.end = new Vector3d(0, 0.5, 0);
         this.startRadius = 1;
         this.endRadius = 1;
-        this.numSlices = 16;
+        this.numSlices = defaultNumSlices;
     }
 
     /**
@@ -153,6 +154,38 @@ public class Cylinder extends Primitive {
         this.endRadius = endRadius<MINIMUM_RADIUS?MINIMUM_RADIUS:endRadius;
         this.numSlices = numSlices;
     }
+    /**
+     * Constructor. Creates a cylinder ranging from {@code [0,0,0]} to
+     * {@code [0,0,height]} with the specified {@code radius} and
+     * {@code height}. The resolution of the tessellation can be controlled with
+     * {@code numSlices}.
+     *
+     * @param radius cylinder radius
+     * @param height cylinder height
+     */
+    public Cylinder(double radius, double height) {
+        this.start = Vector3d.ZERO;
+        this.end = Vector3d.Z_ONE.times(height);
+        this.startRadius = radius<MINIMUM_RADIUS?MINIMUM_RADIUS:radius;
+        this.endRadius = radius<MINIMUM_RADIUS?MINIMUM_RADIUS:radius;
+    }
+
+    /**
+     * Constructor. Creates a cylinder ranging from {@code [0,0,0]} to
+     * {@code [0,0,height]} with the specified {@code radius} and
+     * {@code height}. The resolution of the tessellation can be controlled with
+     * {@code numSlices}.
+     *
+     * @param startRadius cylinder start radius
+     * @param endRadius cylinder end radius
+     * @param height cylinder height
+     */
+    public Cylinder(double startRadius, double endRadius, double height) {
+        this.start = Vector3d.ZERO;
+        this.end = Vector3d.Z_ONE.times(height);
+        this.startRadius = startRadius<MINIMUM_RADIUS?MINIMUM_RADIUS:startRadius;
+        this.endRadius = endRadius<MINIMUM_RADIUS?MINIMUM_RADIUS:endRadius;
+    }
     public Cylinder(LengthParameter startRadius, LengthParameter endRadius, LengthParameter height, int numSlices) {
         this(startRadius.getMM(),endRadius.getMM(),height.getMM(),numSlices);
         parametrics.add(startRadius);
@@ -161,6 +194,15 @@ public class Cylinder extends Primitive {
     }
     public Cylinder(LengthParameter startRadius,  LengthParameter height, int numSlices) {
         this(startRadius,startRadius,height,numSlices);
+    }
+    public Cylinder(LengthParameter startRadius, LengthParameter endRadius, LengthParameter height) {
+        this(startRadius.getMM(),endRadius.getMM(),height.getMM());
+        parametrics.add(startRadius);
+        parametrics.add(endRadius);
+        parametrics.add(height);
+    }
+    public Cylinder(LengthParameter startRadius,  LengthParameter height) {
+        this(startRadius,startRadius,height);
     }
     /* (non-Javadoc)
      * @see eu.mihosoft.vrl.v3d.Primitive#toPolygons()
