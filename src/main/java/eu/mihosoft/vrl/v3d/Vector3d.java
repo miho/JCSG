@@ -45,18 +45,15 @@ import java.util.Random;
  *
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
-public class Vector3d {
+public class Vector3d extends javax.vecmath.Vector3d{
 
-    /** The x. */
-    public double x;
-    
-    /** The y. */
-    public double y;
-    
-    /** The z. */
-    public double z;
 
-    /** The Constant ZERO. */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1878117798187075166L;
+
+	/** The Constant ZERO. */
     public static final Vector3d ZERO = new Vector3d(0, 0, 0);
     
     /** The Constant UNITY. */

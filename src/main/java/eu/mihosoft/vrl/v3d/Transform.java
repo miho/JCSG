@@ -34,6 +34,8 @@
 package eu.mihosoft.vrl.v3d;
 
 import javax.vecmath.Matrix4d;
+import javax.vecmath.Quat4d;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -219,6 +221,51 @@ public class Transform {
         };
         getInternalMatrix().mul(new Matrix4d(elemenents));
         return this;
+    }
+    // rotations
+    public double getQuataurionX(){
+    	Matrix4d rotation = getInternalMatrix();
+		Quat4d q1 = new Quat4d();
+		rotation.get(q1);
+		
+		return q1.x;
+    }
+    public double getQuataurionY(){
+    	Matrix4d rotation = getInternalMatrix();
+		Quat4d q1 = new Quat4d();
+		rotation.get(q1);
+		
+		return q1.y;
+    }
+    public double getQuataurionZ(){
+    	Matrix4d rotation = getInternalMatrix();
+		Quat4d q1 = new Quat4d();
+		rotation.get(q1);
+		
+		return q1.z;
+    }
+    public double getQuataurionW(){
+    	Matrix4d rotation = getInternalMatrix();
+		Quat4d q1 = new Quat4d();
+		rotation.get(q1);
+		
+		return q1.w;
+    }
+    // translations
+    public double getX(){
+    	javax.vecmath.Vector3d t1=new javax.vecmath.Vector3d();
+		getInternalMatrix().get(t1);
+		return t1.x;
+    }
+    public double getY(){
+    	javax.vecmath.Vector3d t1=new javax.vecmath.Vector3d();
+		getInternalMatrix().get(t1);
+		return t1.y;
+    }
+    public double getZ(){
+    	javax.vecmath.Vector3d t1=new javax.vecmath.Vector3d();
+		getInternalMatrix().get(t1);
+		return t1.z;
     }
 
     /**

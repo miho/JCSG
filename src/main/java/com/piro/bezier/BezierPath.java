@@ -33,6 +33,7 @@ public class BezierPath
     
     protected void parsePathList(String list)
     {
+    	//Oh come on... well i have no idea what this regx is going to parse for, good luck
         final Matcher matchPathCmd = Pattern.compile("([MmLlHhVvAaQqTtCcSsZz])|([-+]?((\\d*\\.\\d+)|(\\d+))([eE][-+]?\\d+)?)").matcher(list);
 
         //Tokenize
