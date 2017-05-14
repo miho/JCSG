@@ -344,45 +344,54 @@ public class Extrude {
 
 	public static CSG byPath(List<List<Vector3d>> points, double height) {
 
-		return byPath(points, height, 20);
+		return byPath(points, height, 200);
 
 	}
 
 	public static CSG byPath(List<List<Vector3d>> points, double height, int resolution) {
+		ArrayList<Transform> trPath = pathToTransforms(points, resolution);
 		List<Vector3d> finalPath = new ArrayList<>();
-		ArrayList<Double> start = (ArrayList<Double>) Arrays.asList((double) 0, (double) 0, (double) 0);
+		for (Transform tr : trPath) {
+			javax.vecmath.Vector3d t1 = new javax.vecmath.Vector3d();
+			tr.getInternalMatrix().get(t1);
+			Vector3d finalPoint = new Vector3d(t1.x, t1.y, 0);
+			finalPath.add(finalPoint);
+		}
+		return Extrude.points(new Vector3d(0, 0, height), finalPath);
+	}
+
+	public static ArrayList<Transform> pathToTransforms(List<List<Vector3d>> points, int resolution) {
+		String pathStringA = "";
+		String pathStringB = "";
 		for (List<Vector3d> sections : points) {
 			if (sections.size() == 4) {
+				Vector3d controlA = sections.get(1);
+				Vector3d controlB = sections.get(2);
+				Vector3d endPoint = sections.get(3);
 
-				ArrayList<Double> controlA = (ArrayList<Double>) Arrays.asList(sections.get(1).x - start.get(0),
-						sections.get(1).y - start.get(1), (double) 0);
-				ArrayList<Double> controlB = (ArrayList<Double>) Arrays.asList(sections.get(2).x - start.get(0),
-						sections.get(2).y - start.get(1), (double) 0);
-				;
-				ArrayList<Double> endPoint = (ArrayList<Double>) Arrays.asList(sections.get(3).x - start.get(0),
-						sections.get(3).y - start.get(1), (double) 0);
-				;
-				ArrayList<Transform> lineParts = Extrude.bezierToTransforms(controlA, controlB, endPoint, resolution);
-				for (Transform tr : lineParts) {
-					javax.vecmath.Vector3d t1 = new javax.vecmath.Vector3d();
-					tr.getInternalMatrix().get(t1);
-					Vector3d finalPoint = new Vector3d(t1.x + start.get(0), t1.y + start.get(1), 0);
-					finalPath.add(finalPoint);
-				}
-				start.set(0, sections.get(3).x);
-				start.set(1, sections.get(3).y);
-				start.set(2, (double) 0);
+				pathStringA += ("C " + controlA.x + "," + controlA.y + " " + controlB.x + "," + controlB.y + " "
+						+ endPoint.x + "," + endPoint.y + "\n");
+				pathStringB += ("C " + controlA.x + "," + controlA.z + " " + controlB.x + "," + controlB.z + " "
+						+ endPoint.x + "," + endPoint.z + "\n");
+
 			} else if (sections.size() == 1) {
-				Vector3d finalPoint = new Vector3d(sections.get(0).x, sections.get(0).y, 0);
-				finalPath.add(finalPoint);
 
-				start.set(0, sections.get(0).x);
-				start.set(1, sections.get(0).y);
-				start.set(2, (double) 0);
+				pathStringA += "L " + (double) sections.get(0).x + "," + (double) sections.get(0).y + "\n";
+				pathStringB += "L " + (double) sections.get(0).x + "," + (double) sections.get(0).z + "\n";
+
 			}
 		}
+		BezierPath path = new BezierPath();
+		path.parsePathString(pathStringA);
+		BezierPath path2 = new BezierPath();
+		path2.parsePathString(pathStringB);
 
-		return Extrude.points(new Vector3d(0, 0, height), finalPath);
+		return Extrude.bezierToTransforms(path, path2, resolution);
+	}
+
+	public static ArrayList<CSG> moveAlongProfile(CSG object, List<List<Vector3d>> points, int resolution) {
+
+		return Extrude.move(object, pathToTransforms(points, resolution));
 	}
 
 	public static ArrayList<Transform> bezierToTransforms(ArrayList<Double> controlA, ArrayList<Double> controlB,
