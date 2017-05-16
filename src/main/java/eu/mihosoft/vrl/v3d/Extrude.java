@@ -394,16 +394,40 @@ public class Extrude {
 		return Extrude.move(object, pathToTransforms(points, resolution));
 	}
 
-	public static ArrayList<Transform> bezierToTransforms(ArrayList<Double> controlA, ArrayList<Double> controlB,
-			ArrayList<Double> endPoint, int iterations) {
+	public static ArrayList<Transform> bezierToTransforms(Vector3d start, Vector3d controlA, Vector3d controlB,
+			Vector3d endPoint, int iterations) {
 		BezierPath path = new BezierPath();
-		path.parsePathString("C " + controlA.get(0) + "," + controlA.get(1) + " " + controlB.get(0) + ","
-				+ controlB.get(1) + " " + endPoint.get(0) + "," + endPoint.get(1));
+		path.parsePathString("M "+start.x+","+start.y+"\n"+
+				"C " + controlA.x + "," + controlA.y + " " + controlB.x + "," + controlB.y + " "
+				+ endPoint.x + "," + endPoint.y);
 		BezierPath path2 = new BezierPath();
-		path2.parsePathString("C " + controlA.get(0) + "," + controlA.get(2) + " " + controlB.get(0) + ","
-				+ controlB.get(2) + " " + endPoint.get(0) + "," + endPoint.get(2));
+		path2.parsePathString("M "+start.x+","+start.z+"\n"+
+				"C " + controlA.x + "," + controlA.z + " " + controlB.x + "," + controlB.z + " "
+				+ endPoint.x + "," + endPoint.z);
 
 		return bezierToTransforms(path, path2, iterations);
+	}
+	public static ArrayList<Transform> bezierToTransforms(List<Vector3d> parts, int iterations) {
+		if(parts.size() == 3)
+			return bezierToTransforms(parts.get(0), parts.get(1), parts.get(2), iterations);
+		if(parts.size() == 2)
+			return bezierToTransforms(parts.get(0), parts.get(0), parts.get(1),parts.get(1), iterations);
+		if(parts.size() == 1)
+			return bezierToTransforms(new Vector3d(0, 0,0) , new Vector3d(0, 0,0), parts.get(0),parts.get(0), iterations);
+		return bezierToTransforms(parts.get(0), parts.get(1), parts.get(2),parts.get(3), iterations);
+	}
+
+	public static ArrayList<Transform> bezierToTransforms(Vector3d controlA, Vector3d controlB, Vector3d endPoint,
+			int iterations) {
+		return bezierToTransforms(new Vector3d(0, 0,0), controlA, controlB, endPoint, iterations);
+	}
+
+	public static ArrayList<Transform> bezierToTransforms(ArrayList<Double> controlA, ArrayList<Double> controlB,
+			ArrayList<Double> endPoint, int iterations) {
+
+		return bezierToTransforms(new Vector3d(controlA.get(0), controlA.get(1), controlA.get(2)),
+				new Vector3d(controlB.get(0), controlB.get(1), controlB.get(2)),
+				new Vector3d(endPoint.get(0), endPoint.get(1), endPoint.get(2)), iterations);
 	}
 
 	public static ArrayList<CSG> revolve(CSG slice, double radius, int numSlices) {
