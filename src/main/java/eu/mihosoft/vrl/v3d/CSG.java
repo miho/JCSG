@@ -994,7 +994,7 @@ public class CSG {
 			CSG intersectingParts = csg
 					.intersect(this);
 			
-			if (this.getPolygons().size() > 0 && intersectingParts.getPolygons().size() > 0) {
+			if (intersectingParts.getPolygons().size() > 0) {
 				switch (getOptType()) {
 				case CSG_BOUND:
 					return _differenceCSGBoundsOpt(intersectingParts).historySync(this).historySync(intersectingParts);
