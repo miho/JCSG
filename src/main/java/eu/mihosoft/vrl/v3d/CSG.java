@@ -989,9 +989,22 @@ public class CSG {
 			} else
 				return this;
 		} catch (Exception ex) {
-			System.err.println("CSG difference failed");
+			System.err.println("CSG difference failed, performing workaround");
 			ex.printStackTrace();
-			return this;
+			CSG intersectingParts = csg
+					.intersect(this);
+			
+			if (this.getPolygons().size() > 0 && intersectingParts.getPolygons().size() > 0) {
+				switch (getOptType()) {
+				case CSG_BOUND:
+					return _differenceCSGBoundsOpt(intersectingParts).historySync(this).historySync(intersectingParts);
+				case POLYGON_BOUND:
+					return _differencePolygonBoundsOpt(intersectingParts).historySync(this).historySync(intersectingParts);
+				default:
+					return _differenceNoOpt(intersectingParts).historySync(this).historySync(intersectingParts);
+				}
+			} else
+				return this;
 		}
 
 	}
