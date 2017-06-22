@@ -64,8 +64,8 @@ dependencies {
 
     compile group: 'eu.mihosoft.ext.org.fxyz', name: 'extfxyz', version: '0.4'
     compile group: 'eu.mihosoft.ext.org.fxyz', name: 'extfxyz', version: '0.4', classifier: 'sources'
-    compile group: 'eu.mihosoft.vvecmath', name: 'vvecmath', version: '0.3.6'
-    compile group: 'eu.mihosoft.vvecmath', name: 'vvecmath', version: '0.3.6', classifier: 'sources'
+    compile group: 'eu.mihosoft.vvecmath', name: 'vvecmath', version: '0.3.7'
+    compile group: 'eu.mihosoft.vvecmath', name: 'vvecmath', version: '0.3.7', classifier: 'sources'
     compile 'org.slf4j:slf4j-simple:1.6.1'
 }
 
