@@ -1,7 +1,7 @@
 /**
  * Extrude.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
+ * Copyright 2014-2017 Michael Hoffer <info@michaelhoffer.de>. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.jcsg;
 
+import eu.mihosoft.vvecmath.Transform;
 import eu.mihosoft.vvecmath.Vector3d;
 import eu.mihosoft.jcsg.ext.org.poly2tri.PolygonUtil;
 import java.util.ArrayList;
@@ -82,6 +83,105 @@ public class Extrude {
 
         return extrude(dir, Polygon.fromPoints(toCCW(newList)));
     }
+
+    /**
+     * Extrudes the specified path (convex or concave polygon without holes or
+     * intersections, specified in CCW) into the specified direction.
+     *
+     * @param dir direction
+     * @param points path (convex or concave polygon without holes or
+     * intersections)
+     *
+     * @return a list containing the extruded polygon
+     */
+    public static List<Polygon> points(Vector3d dir, boolean top, boolean bottom, Vector3d... points) {
+
+        return extrude(dir, Polygon.fromPoints(toCCW(Arrays.asList(points))), top, bottom);
+    }
+
+    /**
+     * Extrudes the specified path (convex or concave polygon without holes or
+     * intersections, specified in CCW) into the specified direction.
+     *
+     * @param dir direction
+     * @param points1 path (convex or concave polygon without holes or
+     * intersections)
+     * @param points1 path (convex or concave polygon without holes or
+     * intersections)
+     *
+     * @return a list containing the extruded polygon
+     */
+    public static List<Polygon> points(Vector3d dir, boolean top, boolean bottom, List<Vector3d> points1) {
+
+        List<Vector3d> newList1 = new ArrayList<>(points1);
+
+        return extrude(dir, Polygon.fromPoints(toCCW(newList1)), top, bottom);
+    }
+
+    /**
+     * Combines two polygons into one CSG object. Polygons p1 and p2 are treated as top and
+     * bottom of a tube segment with p1 and p2 as the profile. <b>Note:</b> both polygons must have the
+     * same number of vertices. This method does not guarantee intersection-free CSGs. It is in the
+     * responsibility of the caller to ensure that the orientation of p1 and p2 allow for
+     * intersection-free combination of both.
+     *
+     * @param p1 first polygon
+     * @param p2 second polygon
+     * @return List of polygons
+     */
+    public static CSG combine(Polygon p1, Polygon p2) {
+        return CSG.fromPolygons(combine(p1,p2,true,true));
+    }
+
+    /**
+     * Combines two polygons into one CSG object. Polygons p1 and p2 are treated as top and
+     * bottom of a tube segment with p1 and p2 as the profile. <b>Note:</b> both polygons must have the
+     * same number of vertices. This method does not guarantee intersection-free CSGs. It is in the
+     * responsibility of the caller to ensure that the orientation of p1 and p2 allow for
+     * intersection-free combination of both.
+     *
+     * @param p1 first polygon
+     * @param p2 second polygon
+     * @param bottom defines whether to close the bottom of the tube
+     * @param top defines whether to close the top of the tube
+     * @return List of polygons
+     */
+    public static List<Polygon> combine(Polygon p1, Polygon p2, boolean bottom, boolean top) {
+        List<Polygon> newPolygons = new ArrayList<>();
+
+        if (p1.vertices.size() != p2.vertices.size()) {
+            throw new RuntimeException("Polygons must have the same number of vertices");
+        }
+
+        int numVertices = p1.vertices.size();
+
+        if (bottom) {
+            newPolygons.add(p1.flipped());
+        }
+
+        for (int i = 0; i < numVertices; i++) {
+
+            int nexti = (i + 1) % numVertices;
+
+            Vector3d bottomV1 = p1.vertices.get(i).pos;
+            Vector3d topV1 = p2.vertices.get(i).pos;
+            Vector3d bottomV2 = p1.vertices.get(nexti).pos;
+            Vector3d topV2 = p2.vertices.get(nexti).pos;
+
+            List<Vector3d> pPoints;
+
+            pPoints = Arrays.asList(bottomV2, topV2, topV1);
+            newPolygons.add(Polygon.fromPoints(pPoints, p1.getStorage()));
+            pPoints = Arrays.asList(bottomV2,  topV1, bottomV1);
+            newPolygons.add(Polygon.fromPoints(pPoints, p1.getStorage()));
+        }
+
+        if (top) {
+            newPolygons.add(p2);
+        }
+
+        return newPolygons;
+    }
     
     private static CSG extrude(Vector3d dir, Polygon polygon1) {
         List<Polygon> newPolygons = new ArrayList<>();
@@ -117,6 +217,78 @@ public class Extrude {
         return CSG.fromPolygons(newPolygons);
 
     }
+
+
+    private static List<Polygon> extrude(Vector3d dir, Polygon polygon1, boolean top, boolean bottom) {
+        List<Polygon> newPolygons = new ArrayList<>();
+
+
+        if (bottom) {
+            newPolygons.addAll(PolygonUtil.concaveToConvex(polygon1));
+        }
+
+        Polygon polygon2 = polygon1.translated(dir);
+
+        Transform rot = Transform.unity();
+
+        Vector3d a = polygon2.plane.getNormal().normalized();
+        Vector3d b = dir.normalized();
+
+        Vector3d c = a.crossed(b);
+
+        double l = c.magnitude(); // sine of angle
+
+        if (l > 1e-9) {
+
+            Vector3d axis = c.times(1.0 / l);
+            double angle = a.angle(b);
+
+            double sx = 0;
+            double sy = 0;
+            double sz = 0;
+
+            int n = polygon2.vertices.size();
+
+            for (Vertex v : polygon2.vertices) {
+                sx += v.pos.x();
+                sy += v.pos.y();
+                sz += v.pos.z();
+            }
+
+            Vector3d center = Vector3d.xyz(sx / n, sy / n, sz / n);
+
+            rot = rot.rot(center, axis, angle * Math.PI / 180.0);
+
+            for (Vertex v : polygon2.vertices) {
+                v.pos = rot.transform(v.pos);
+            }
+        }
+
+        int numvertices = polygon1.vertices.size();
+        for (int i = 0; i < numvertices; i++) {
+
+            int nexti = (i + 1) % numvertices;
+
+            Vector3d bottomV1 = polygon1.vertices.get(i).pos;
+            Vector3d topV1 = polygon2.vertices.get(i).pos;
+            Vector3d bottomV2 = polygon1.vertices.get(nexti).pos;
+            Vector3d topV2 = polygon2.vertices.get(nexti).pos;
+
+            List<Vector3d> pPoints = Arrays.asList(bottomV2, topV2, topV1, bottomV1);
+
+            newPolygons.add(Polygon.fromPoints(pPoints, polygon1.getStorage()));
+        }
+
+        polygon2 = polygon2.flipped();
+        List<Polygon> topPolygons = PolygonUtil.concaveToConvex(polygon2);
+        if (top) {
+            newPolygons.addAll(topPolygons);
+        }
+
+        return newPolygons;
+
+    }
+
 
     static List<Vector3d> toCCW(List<Vector3d> points) {
 
