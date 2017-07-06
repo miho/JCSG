@@ -140,6 +140,12 @@ public class Extrude {
         return result;
     }
 
+    /**
+     * Indicates whether the specified polygon is defined counter-clockwise.
+     * @param polygon polygon
+     * @return {@code true} if the specified polygon is defined counter-clockwise;
+     * {@code false} otherwise
+     */
     public static boolean isCCW(Polygon polygon) {
         // thanks to Sepp Reiter for explaining me the algorithm!
         
