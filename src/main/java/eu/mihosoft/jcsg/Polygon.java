@@ -65,7 +65,16 @@ public final class Polygon {
      * <b>Note:</b> uses first three vertices to define the plane.
      */
     public final Plane _csg_plane;
-    public eu.mihosoft.vvecmath.Plane plane;
+    private eu.mihosoft.vvecmath.Plane plane;
+    
+    /**
+     * Returns the plane defined by this triangle. 
+     * 
+     * @return plane
+     */
+    public eu.mihosoft.vvecmath.Plane getPlane() {
+        return plane;
+    }
 
     void setStorage(PropertyStorage storage) {
         this.shared = storage;

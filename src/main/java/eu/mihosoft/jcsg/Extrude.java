@@ -231,7 +231,7 @@ public class Extrude {
 
         Transform rot = Transform.unity();
 
-        Vector3d a = polygon2.plane.getNormal().normalized();
+        Vector3d a = polygon2.getPlane().getNormal().normalized();
         Vector3d b = dir.normalized();
 
         Vector3d c = a.crossed(b);

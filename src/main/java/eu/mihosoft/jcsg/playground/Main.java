@@ -175,7 +175,7 @@ public class Main {
         }
 
         Vector3d rayCenter = p1.centroid();
-        Vector3d rayDirection = p1.plane.getNormal();
+        Vector3d rayDirection = p1.getPlane().getNormal();
 
         List<RayIntersection> intersections = getPolygonsThatIntersectWithRay(
                 rayCenter, rayDirection, polygons, TOL);
@@ -192,7 +192,7 @@ public class Main {
         int i = 0;
         for (RayIntersection ri : intersections) {
 
-            int frontOrBack = p1.plane.compare(ri.intersectionPoint, TOL);
+            int frontOrBack = p1.getPlane().compare(ri.intersectionPoint, TOL);
 
             if (frontOrBack < 0) {
                 // System.out.println("  -> skipping intersection behind ray " + i);
@@ -210,7 +210,7 @@ public class Main {
 
             //System.out.println("dist-"+i+": " + dist);
 
-            if (dist < TOL && ri.polygon.plane.getNormal().dot(rayDirection) < TOL) {
+            if (dist < TOL && ri.polygon.getPlane().getNormal().dot(rayDirection) < TOL) {
                 // System.out.println("  -> skipping intersection " + i);
                 continue;
             }
@@ -234,12 +234,12 @@ public class Main {
         //    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         //}
 
-        int frontOrBack = p1.plane.compare(min.intersectionPoint, TOL);
+        int frontOrBack = p1.getPlane().compare(min.intersectionPoint, TOL);
 
-        Vector3d planePoint = p1.plane.getAnchor();
+        Vector3d planePoint = p1.getPlane().getAnchor();
 
-        int sameOrOpposite = p1.plane.compare(
-                planePoint.plus(min.polygon.plane.getNormal()), TOL
+        int sameOrOpposite = p1.getPlane().compare(
+                planePoint.plus(min.polygon.getPlane().getNormal()), TOL
         );
 
         if (frontOrBack > 0 && sameOrOpposite > 0) {
@@ -308,7 +308,7 @@ public class Main {
             return ""
                     + "[\n"
                     + " -> point:          " + intersectionPoint + "\n"
-                    + " -> polygon-normal: " + polygon.plane.getNormal() + "\n"
+                    + " -> polygon-normal: " + polygon.getPlane().getNormal() + "\n"
                     + " -> type:           " + type + "\n"
                     + "]";
         }
@@ -319,7 +319,7 @@ public class Main {
             Vector3d point, Vector3d direction, List<Polygon> polygons, double TOL) {
         List<RayIntersection> intersection = new ArrayList<>();
         for (Polygon p : polygons) {
-            PlaneIntersection res = computePlaneIntersection(p.plane, point, direction, TOL);
+            PlaneIntersection res = computePlaneIntersection(p.getPlane(), point, direction, TOL);
             if (res.point.isPresent()) {
                 if (p.contains(res.point.get())) {
                     intersection.add(new RayIntersection(res.point.get(), p, res.type));
@@ -412,7 +412,7 @@ public class Main {
                     continue;
                 }
 
-                List<Polygon> cutsOfP2WithP1 = cutPolygonWithPlaneIf(p2, p1.plane,
+                List<Polygon> cutsOfP2WithP1 = cutPolygonWithPlaneIf(p2, p1.getPlane(),
                         (Predicate<List<Vector3d>>) segments -> {
 
                             //if(true)return true;
@@ -540,10 +540,10 @@ public class Main {
         List<RayIntersection> intersections =
                 getPolygonsThatIntersectWithRay(
                         p.centroid(),
-                        p.plane.getNormal(),
+                        p.getPlane().getNormal(),
                         cubePolys, EPS);
 
-        System.out.println("my normal: " + p.plane.getNormal());
+        System.out.println("my normal: " + p.getPlane().getNormal());
 
         System.out.println("#intersections: " + intersections.size());
         for (RayIntersection ri : intersections) {
