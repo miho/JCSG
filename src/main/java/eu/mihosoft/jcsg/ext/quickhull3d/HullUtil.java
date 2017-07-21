@@ -21,7 +21,15 @@ public class HullUtil {
     private HullUtil() {
         throw new AssertionError("Don't instantiate me!", null);
     }
-
+    /**
+     * Hull.
+     *
+     * @param points the points
+     * @return the csg
+     */
+    public static CSG hull(List<eu.mihosoft.vvecmath.Vector3d> points) {
+    	return hull(points, new PropertyStorage());
+    }
     public static CSG hull(List<eu.mihosoft.vvecmath.Vector3d> points, PropertyStorage storage) {
 
         Point3d[] hullPoints = points.stream().map((vec) -> new Point3d(vec.x(), vec.y(), vec.z())).toArray(Point3d[]::new);
