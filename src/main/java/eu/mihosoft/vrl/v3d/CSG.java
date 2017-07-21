@@ -1895,7 +1895,7 @@ public class CSG {
 	private void addStackTrace(Exception creationEventStackTrace2) {
 		for (StackTraceElement el : creationEventStackTrace2.getStackTrace()) {
 			try {
-				if (el.getFileName().contains(".groovy") && el.getLineNumber() > 0) {
+				if (!el.getFileName().contains(".java") && el.getLineNumber() > 0) {
 					boolean dupLine = false;
 					String thisline = el.getFileName() + ":" + el.getLineNumber();
 					for (String s : groovyFileLines) {
