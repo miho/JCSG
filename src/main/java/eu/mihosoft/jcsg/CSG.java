@@ -545,14 +545,39 @@ public class CSG {
      */
     public CSG difference(CSG csg) {
 
-        switch (getOptType()) {
-            case CSG_BOUND:
-                return _differenceCSGBoundsOpt(csg);
-            case POLYGON_BOUND:
-                return _differencePolygonBoundsOpt(csg);
-            default:
-                return _differenceNoOpt(csg);
-        }
+		try {
+			// Check to see if a CSG operation is attempting to difference with
+			// no
+			// polygons
+			if (this.getPolygons().size() > 0 && csg.getPolygons().size() > 0) {
+				switch (getOptType()) {
+				case CSG_BOUND:
+					return _differenceCSGBoundsOpt(csg);
+				case POLYGON_BOUND:
+					return _differencePolygonBoundsOpt(csg);
+				default:
+					return _differenceNoOpt(csg);
+				}
+			} else
+				return this;
+		} catch (Exception ex) {
+			//System.err.println("CSG difference failed, performing workaround");
+			ex.printStackTrace();
+			CSG intersectingParts = csg
+					.intersect(this);
+			
+			if (intersectingParts.getPolygons().size() > 0) {
+				switch (getOptType()) {
+				case CSG_BOUND:
+					return _differenceCSGBoundsOpt(intersectingParts);
+				case POLYGON_BOUND:
+					return _differencePolygonBoundsOpt(intersectingParts);
+				default:
+					return _differenceNoOpt(intersectingParts);
+				}
+			} else
+				return this;
+		}
     }
 
     private CSG _differenceCSGBoundsOpt(CSG csg) {
@@ -1199,5 +1224,559 @@ public class CSG {
         POLYGON_BOUND,
         NONE
     }
+    
+    /**
+     * Public API section
+     * These are publicly accessible helper functions
+     */
+    
+	/**
+	 * To z min.
+	 *
+	 * @param target
+	 *            the target
+	 * @return the csg
+	 */
+	public CSG toZMin(CSG target) {
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMin().z()));
+	}
+
+	/**
+	 * To z max.
+	 *
+	 * @param target
+	 *            the target
+	 * @return the csg
+	 */
+	public CSG toZMax(CSG target) {
+		return this.transformed(new Transform().translateZ(-target.getBounds().getMax().z()));
+	}
+
+	/**
+	 * To x min.
+	 *
+	 * @param target
+	 *            the target
+	 * @return the csg
+	 */
+	public CSG toXMin(CSG target) {
+		return this.transformed(new Transform().translateX(-target.getBounds().getMin().x()));
+	}
+
+	/**
+	 * To x max.
+	 *
+	 * @param target
+	 *            the target
+	 * @return the csg
+	 */
+	public CSG toXMax(CSG target) {
+		return this.transformed(new Transform().translateX(-target.getBounds().getMax().x()));
+	}
+
+	/**
+	 * To y min.
+	 *
+	 * @param target
+	 *            the target
+	 * @return the csg
+	 */
+	public CSG toYMin(CSG target) {
+		return this.transformed(new Transform().translateY(-target.getBounds().getMin().y()));
+	}
+
+	/**
+	 * To y max.
+	 *
+	 * @param target
+	 *            the target
+	 * @return the csg
+	 */
+	public CSG toYMax(CSG target) {
+		return this.transformed(new Transform().translateY(-target.getBounds().getMax().y()));
+	}
+
+	/**
+	 * To z min.
+	 *
+	 * @return the csg
+	 */
+	public CSG toZMin() {
+		return toZMin(this);
+	}
+
+	/**
+	 * To z max.
+	 *
+	 * @return the csg
+	 */
+	public CSG toZMax() {
+		return toZMax(this);
+	}
+
+	/**
+	 * To x min.
+	 *
+	 * @return the csg
+	 */
+	public CSG toXMin() {
+		return toXMin(this);
+	}
+
+	/**
+	 * To x max.
+	 *
+	 * @return the csg
+	 */
+	public CSG toXMax() {
+		return toXMax(this);
+	}
+
+	/**
+	 * To y min.
+	 *
+	 * @return the csg
+	 */
+	public CSG toYMin() {
+		return toYMin(this);
+	}
+
+	/**
+	 * To y max.
+	 *
+	 * @return the csg
+	 */
+	public CSG toYMax() {
+		return toYMax(this);
+	}
+
+	public CSG move(double x, double y, double z) {
+		return transformed(new Transform().translate(x,y,z));
+	}
+	public CSG move(Vertex v) {
+		return transformed(new Transform().translate(v.pos));
+	}
+	public CSG move(Vector3d v) {
+		return transformed(new Transform().translate(v.x(),v.y(),v.z()));
+	}
+	public CSG move(double[] posVector) {
+		return move(posVector[0], posVector[1], posVector[2]);
+	}
+
+	/**
+	 * Movey.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	// Helper/wrapper functions for movement
+	public CSG movey(double howFarToMove) {
+		return this.transformed(Transform.unity().translateY(howFarToMove));
+	}
+
+	/**
+	 * Movez.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	public CSG movez(double howFarToMove) {
+		return this.transformed(Transform.unity().translateZ(howFarToMove));
+	}
+
+	/**
+	 * Movex.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	public CSG movex(double howFarToMove) {
+		return this.transformed(Transform.unity().translateX(howFarToMove));
+	}
+	
+	/**
+	 * mirror about y axis.
+	 *
+
+	 * @return the csg
+	 */
+	// Helper/wrapper functions for movement
+	public CSG mirrory() {
+		return this.scaley(-1);
+	}
+
+	/**
+	 * mirror about z axis.
+	 *
+	 * @return the csg
+	 */
+	public CSG mirrorz() {
+		return this.scalez(-1);
+	}
+
+	/**
+	 * mirror about  x axis.
+	 *
+	 * @return the csg
+	 */
+	public CSG mirrorx() {
+		return this.scalex(-1);
+	}
+
+
+	public CSG rot(double x, double y, double z) {
+		return rotx(x).roty(y).rotz(z);
+	}
+
+	public CSG rot(double[] posVector) {
+		return rot(posVector[0], posVector[1], posVector[2]);
+	}
+
+	/**
+	 * Rotz.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	// Rotation function, rotates the object
+	public CSG rotz(double degreesToRotate) {
+		return this.transformed(new Transform().rotZ(degreesToRotate));
+	}
+
+	/**
+	 * Roty.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	public CSG roty(double degreesToRotate) {
+		return this.transformed(new Transform().rotY(degreesToRotate));
+	}
+
+	/**
+	 * Rotx.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	public CSG rotx(double degreesToRotate) {
+		return this.transformed(new Transform().rotX(degreesToRotate));
+	}
+
+	/**
+	 * Scalez.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	// Scale function, scales the object
+	public CSG scalez(double scaleValue) {
+		return this.transformed(new Transform().scaleZ(scaleValue));
+	}
+
+	/**
+	 * Scaley.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public CSG scaley(double scaleValue) {
+		return this.transformed(new Transform().scaleY(scaleValue));
+	}
+
+	/**
+	 * Scalex.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public CSG scalex(double scaleValue) {
+		return this.transformed(new Transform().scaleX(scaleValue));
+	}
+
+	/**
+	 * Scale.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public CSG scale(double scaleValue) {
+		return this.transformed(new Transform().scale(scaleValue));
+	}
+	
+	public static CSG unionAll(CSG... csgs){
+		return unionAll(Arrays.asList(csgs));
+	}
+	public static CSG unionAll(List<CSG> csgs){
+		CSG first = csgs.remove(0);
+		return first.union(csgs);
+	}
+	
+	public static CSG hullAll(CSG... csgs){
+		return hullAll(Arrays.asList(csgs));
+	}
+	public static CSG hullAll(List<CSG> csgs){
+		CSG first = csgs.remove(0);
+		return first.hull(csgs);
+	}
+	public Vector3d getCenter(){
+		return Vector3d.xyz(
+				getCenterX(),
+				getCenterY(),
+				getCenterZ());
+	}
+	
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterX
+	 */
+	public double getCenterX() {
+		return ((getMinX()/2)+(getMaxX()/2));
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterY
+	 */
+	public double getCenterY() {
+		return  ((getMinY()/2)+(getMaxY()/2));
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return CenterZ
+	 */
+	public double getCenterZ() {
+		return  ((getMinZ()/2)+(getMaxZ()/2));
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MaxX
+	 */
+	public double getMaxX() {
+		return getBounds().getMax().x();
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MaxY
+	 */
+	public double getMaxY() {
+		return getBounds().getMax().y();
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MaxZ
+	 */
+	public double getMaxZ() {
+		return getBounds().getMax().z();
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MinX
+	 */
+	public double getMinX() {
+		return getBounds().getMin().x();
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MinY
+	 */
+	public double getMinY() {
+		return getBounds().getMin().y();
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return tMinZ
+	 */
+	public double getMinZ() {
+		return getBounds().getMin().z();
+	}
+	/**
+	 * Hail Zeon! In case you forget the name of minkowski and are a Gundam fan
+	 * @param travelingShape
+	 * @return
+	 */
+	@Deprecated
+	public ArrayList<CSG> minovsky( CSG travelingShape){
+		System.out.println("Hail Zeon!");
+		return minkowski(travelingShape);
+	}
+	/**
+	 * Shortened name In case you forget the name of minkowski 
+	 * @param travelingShape
+	 * @return
+	 */
+	public ArrayList<CSG> mink( CSG travelingShape){
+		return minkowski(travelingShape);
+	}
+	/**
+	 * This is a simplified version of a minkowski transform using convex hull and the internal list of convex polygons
+	 * The shape is placed at the vertex of each point on a polygon, and the result is convex hulled together. 
+	 * This collection is returned.
+	 *  To make a normal insets, difference this collection
+	 *  To make an outset by the normals, union this collection with this object. 
+	 * 
+	 * This will hull the elements together forming a smooth shell, this process is much slower
+	 * @param travelingShape a shape to sweep around
+	 * @return
+	 */
+	public ArrayList<CSG> minkowskiHull( CSG travelingShape){
+ 		ArrayList<CSG> allFaces = new ArrayList<CSG>();
+ 		for(Polygon p: getPolygons()){
+ 			ArrayList<CSG> corners =new ArrayList<CSG>();
+ 			for(Vertex v:p.vertices){
+ 				corners.add(travelingShape.move(v));
+ 			}
+ 			CSG face = corners.remove(0);
+ 			face=face.hull(corners);
+ 			allFaces.add(face);
+ 		}
+ 		return allFaces;
+ 	}
+
+	/**
+	 * This is a simplified version of a minkowski transform using convex hull and the internal list of convex polygons
+	 * The shape is placed at the vertex of each point on a polygon, and the result is convex hulled together. 
+	 * This collection is returned.
+	 *  To make a normal insets, difference this collection
+	 *  To make an outset by the normals, union this collection with this object. 
+	 * 
+	 * @param travelingShape a shape to sweep around
+	 * @return
+	 */
+	public ArrayList<CSG> minkowski( CSG travelingShape){
+		HashMap<Vertex,CSG> map= new HashMap<>();
+		for(Polygon p: travelingShape.getPolygons()){
+			for(Vertex v:p.vertices){
+				if(map.get(v)==null)// use hashmap to avoid duplicate locations
+					map.put(v,this.move(v));
+			}
+		}
+		return  new ArrayList<CSG>(map.values());
+	}
+	/**
+	 * minkowskiDifference performs an efficient difference of the minkowski transform 
+	 * of the intersection of an object. if you have 2 objects and need them to fit with a 
+	 * specific tolerance as described as the distance from he normal of the surface, then 
+	 * this function will effectinatly compute that value. 
+	 * @param itemToDifference the object that needs to fit
+	 * @param minkowskiObject the object to represent the offset
+	 * @return
+	 */
+	public CSG minkowskiDifference(CSG itemToDifference, CSG minkowskiObject) {
+		CSG intersection = this.intersect(itemToDifference);
+		
+		ArrayList<CSG> csgDiff = intersection.mink(minkowskiObject);
+		CSG result = this;
+		for (int i=0;i<csgDiff.size();i++){
+			result= result.difference(csgDiff.get(i));
+			//progressMoniter.progressUpdate(i, csgDiff.size(), "Minkowski difference", result);
+		}
+		return result;
+	}
+	/**
+	 * minkowskiDifference performs an efficient difference of the minkowski transform 
+	 * of the intersection of an object. if you have 2 objects and need them to fit with a 
+	 * specific tolerance as described as the distance from he normal of the surface, then 
+	 * this function will effectinatly compute that value. 
+	 * @param itemToDifference the object that needs to fit
+	 * @param tolerance the tolerance distance
+	 * @return
+	 */
+	public CSG minkowskiDifference(CSG itemToDifference, double tolerance) {
+		double shellThickness = Math.abs(tolerance);
+		if(shellThickness<0.001)
+			return this;
+		return minkowskiDifference(itemToDifference,new Cube(shellThickness).toCSG());
+	}
+	public CSG toolOffset(double shellThickness) {
+		
+		boolean cut =shellThickness<0;
+		shellThickness=Math.abs(shellThickness);
+		if(shellThickness<0.001)
+			return this;
+		CSG printNozzel = new Icosahedron(shellThickness).toCSG();
+		
+		if(cut){
+			ArrayList<CSG> mikObjs = minkowski(printNozzel);
+			CSG remaining = this;
+			for(CSG bit: mikObjs){
+				remaining=remaining.intersect(bit);
+			}
+			return remaining;
+		}
+		return union(minkowski(printNozzel));
+	}
+
+	public CSG makeKeepaway(double shellThickness) {
+
+		double x = Math.abs(this.getBounds().getMax().x()) + Math.abs(this.getBounds().getMin().x());
+		double y = Math.abs(this.getBounds().getMax().y()) + Math.abs(this.getBounds().getMin().y());
+
+		double z = Math.abs(this.getBounds().getMax().z()) + Math.abs(this.getBounds().getMin().z());
+
+		double xtol = (x + shellThickness) / x;
+		double ytol = (y + shellThickness) / y;
+		double ztol = (z + shellThickness) / z;
+
+		double xPer = -(Math.abs(this.getBounds().getMax().x()) - Math.abs(this.getBounds().getMin().x())) / x;
+		double yPer = -(Math.abs(this.getBounds().getMax().y()) - Math.abs(this.getBounds().getMin().y())) / y;
+		double zPer = -(Math.abs(this.getBounds().getMax().z()) - Math.abs(this.getBounds().getMin().z())) / z;
+
+		// println " Keep away x = "+y+" new = "+ytol
+		return this.transformed(new Transform().scale(xtol, ytol, ztol))
+				.transformed(new Transform().translateX(shellThickness * xPer))
+				.transformed(new Transform().translateY(shellThickness * yPer))
+				.transformed(new Transform().translateZ(shellThickness * zPer));
+
+	}
+	/**
+	 * A test to see if 2 CSG's are touching. The fast-return is a bounding box
+	 * check If bounding boxes overlap, then an intersection is performed and
+	 * the existance of an interscting object is returned
+	 * 
+	 * @param incoming
+	 * @return
+	 */
+	public boolean touching(CSG incoming) {
+		// Fast bounding box overlap check, quick fail if not intersecting
+		// bounding boxes
+		if (this.getMaxX() > incoming.getMinX() && this.getMinX() < incoming.getMaxX()
+				&& this.getMaxY() > incoming.getMinY() && this.getMinY() < incoming.getMaxY()
+				&& this.getMaxZ() > incoming.getMinZ() && this.getMinZ() < incoming.getMaxZ()) {
+			// Run a full intersection
+			CSG inter = this.intersect(incoming);
+			if (inter.getPolygons().size() > 0) {
+				// intersection success
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
