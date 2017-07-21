@@ -520,6 +520,22 @@ public class CSG {
 
         return difference(Arrays.asList(csgs));
     }
+    private CSG simpleDifference(CSG csg){
+    	// Check to see if a CSG operation is attempting to difference with
+		// no
+		// polygons
+		if (this.getPolygons().size() > 0 && csg.getPolygons().size() > 0) {
+			switch (getOptType()) {
+			case CSG_BOUND:
+				return _differenceCSGBoundsOpt(csg);
+			case POLYGON_BOUND:
+				return _differencePolygonBoundsOpt(csg);
+			default:
+				return _differenceNoOpt(csg);
+			}
+		} else
+			return this;
+    }
 
     /**
      * Return a new CSG solid representing the difference of this csg and the
@@ -546,37 +562,14 @@ public class CSG {
     public CSG difference(CSG csg) {
 
 		try {
-			// Check to see if a CSG operation is attempting to difference with
-			// no
-			// polygons
-			if (this.getPolygons().size() > 0 && csg.getPolygons().size() > 0) {
-				switch (getOptType()) {
-				case CSG_BOUND:
-					return _differenceCSGBoundsOpt(csg);
-				case POLYGON_BOUND:
-					return _differencePolygonBoundsOpt(csg);
-				default:
-					return _differenceNoOpt(csg);
-				}
-			} else
-				return this;
+
+			return simpleDifference( csg);
 		} catch (Exception ex) {
 			//System.err.println("CSG difference failed, performing workaround");
 			ex.printStackTrace();
 			CSG intersectingParts = csg
 					.intersect(this);
-			
-			if (intersectingParts.getPolygons().size() > 0) {
-				switch (getOptType()) {
-				case CSG_BOUND:
-					return _differenceCSGBoundsOpt(intersectingParts);
-				case POLYGON_BOUND:
-					return _differencePolygonBoundsOpt(intersectingParts);
-				default:
-					return _differenceNoOpt(intersectingParts);
-				}
-			} else
-				return this;
+			return simpleDifference( intersectingParts);
 		}
     }
 
