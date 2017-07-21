@@ -1616,6 +1616,33 @@ public class CSG {
 	public double getMinZ() {
 		return getBounds().getMin().z();
 	}
+	
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MinX
+	 */
+	public double getTotalX() {
+		return (-this.getMinX()+this.getMaxX());
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MinY
+	 */
+	public double getTotalY() {
+		return (-this.getMinY()+this.getMaxY());
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return tMinZ
+	 */
+	public double getTotalZ() {
+		return (-this.getMinZ()+this.getMaxZ());
+	}
 	/**
 	 * Hail Zeon! In case you forget the name of minkowski and are a Gundam fan
 	 * @param travelingShape
@@ -1713,7 +1740,75 @@ public class CSG {
 		if(shellThickness<0.001)
 			return this;
 		return minkowskiDifference(itemToDifference,new Cube(shellThickness).toCSG());
+	}	
+	/**
+	 * minkowskiDifference performs an efficient difference of the minkowski transform 
+	 * of the intersection of an object. if you have 2 objects and need them to fit with a 
+	 * specific tolerance as described as the distance from he normal of the surface, then 
+	 * this function will effectinatly compute that value. 
+	 * 	 * This uses the deep minkowski and takse a long time
+
+	 * @param itemToDifference the object that needs to fit
+	 * @param minkowskiObject the object to represent the offset
+	 * @return
+	 */
+	public CSG minkowskiHullDifference(CSG itemToDifference, CSG minkowskiObject) {
+		CSG intersection = this.intersect(itemToDifference);
+		
+		ArrayList<CSG> csgDiff = intersection.minkowskiHull(minkowskiObject);
+		CSG result = this;
+		for (int i=0;i<csgDiff.size();i++){
+			result= result.difference(csgDiff.get(i));
+			//progressMoniter.progressUpdate(i, csgDiff.size(), "Minkowski difference", result);
+		}
+		return result;
 	}
+	/**
+	 * minkowskiDifference performs an efficient difference of the minkowski transform 
+	 * of the intersection of an object. if you have 2 objects and need them to fit with a 
+	 * specific tolerance as described as the distance from he normal of the surface, then 
+	 * this function will effectinatly compute that value. 
+	 * 	 * This uses the deep minkowski and takse a long time
+
+	 * @param itemToDifference the object that needs to fit
+	 * @param tolerance the tolerance distance
+	 * @return
+	 */
+	public CSG minkowskiHullDifference(CSG itemToDifference, double tolerance) {
+		double shellThickness = Math.abs(tolerance);
+		if(shellThickness<0.001)
+			return this;
+		return minkowskiHullDifference(itemToDifference,new Cube(shellThickness).toCSG());
+	}
+	/**
+	 * A more accurate tooling offset using an Icosohedron as the corner setting. 
+	 * This uses the deep minkowski and takse a long time
+	 * @param shellThickness
+	 * @return
+	 */
+	public CSG toolHullOffset(double shellThickness) {
+		
+		boolean cut =shellThickness<0;
+		shellThickness=Math.abs(shellThickness);
+		if(shellThickness<0.001)
+			return this;
+		CSG printNozzel = new Icosahedron(shellThickness).toCSG();
+		
+		if(cut){
+			ArrayList<CSG> mikObjs = minkowskiHull(printNozzel);
+			CSG remaining = this;
+			for(CSG bit: mikObjs){
+				remaining=remaining.intersect(bit);
+			}
+			return remaining;
+		}
+		return union(minkowskiHull(printNozzel));
+	}
+	/**
+	 * A more accurate tooling offset using an Icosohedron as the corner setting. 
+	 * @param shellThickness
+	 * @return
+	 */
 	public CSG toolOffset(double shellThickness) {
 		
 		boolean cut =shellThickness<0;
@@ -1732,7 +1827,13 @@ public class CSG {
 		}
 		return union(minkowski(printNozzel));
 	}
-
+	/**
+	 * makeKeepaway
+	 * 
+	 * Perform a dumb scale version of a keepaway. This is inaccurate, but fast
+	 * @param shellThickness
+	 * @return
+	 */
 	public CSG makeKeepaway(double shellThickness) {
 
 		double x = Math.abs(this.getBounds().getMax().x()) + Math.abs(this.getBounds().getMin().x());
@@ -1777,6 +1878,22 @@ public class CSG {
 			}
 		}
 		return false;
+	}
+	/**
+	 * Get Bounding box
+	 * @return A CSG that completely encapsulates the base CSG, centered around it
+	 */
+	CSG getBoundingBox(){
+		return new Cube(   (-this.getMinX()+this.getMaxX()),
+				(-this.getMinY()+this.getMaxY()),
+				(-this.getMinZ()+this.getMaxZ()))
+				.toCSG()
+				.toXMax()
+				.movex(this.getMaxX())
+				.toYMax()
+				.movey(this.getMaxY())
+				.toZMax()
+				.movez(this.getMaxZ());
 	}
 
 }
