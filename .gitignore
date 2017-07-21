@@ -2,3 +2,7 @@
 /.gradle/
 /.idea/
 /.nb-gradle/
+/bin/
+/.settings/
+/.classpath
+/.project
