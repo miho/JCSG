@@ -36,6 +36,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * File util class.
@@ -73,5 +75,31 @@ public class FileUtil {
      */
     public static String read(Path p) throws IOException {
         return new String(Files.readAllBytes(p), Charset.forName("UTF-8"));
+    }
+    
+    
+    /**
+     * Saves the specified csg using STL ASCII format.
+     *
+     * @param path destination path
+     * @param csg csg to save
+     * @throws java.io.IOException
+     */
+    public static void toStlFile(Path path, CSG csg) throws IOException {
+        try (BufferedWriter out = Files.newBufferedWriter(path, Charset.forName("UTF-8"),
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+
+            out.append("solid v3d.csg\n");
+            csg.getPolygons().stream().forEach(
+                    (Polygon p) -> {
+                        try {
+                            out.append(p.toStlString());
+                        } catch (IOException ex) {
+                            Logger.getLogger(CSG.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new RuntimeException(ex);
+                        }
+                    });
+            out.append("endsolid v3d.csg\n");
+        }
     }
 }

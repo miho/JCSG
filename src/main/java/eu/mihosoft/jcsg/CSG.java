@@ -1,47 +1,47 @@
 /**
  * CSG.java
  *
- * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights
- * reserved.
+ * Copyright 2014-2014 Michael Hoffer <info@michaelhoffer.de>. All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met:
  *
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+ * disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+ * following disclaimer in the documentation and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY Michael Hoffer <info@michaelhoffer.de> "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Michael Hoffer <info@michaelhoffer.de> OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * The views and conclusions contained in the software and documentation are
- * those of the authors and should not be interpreted as representing official
- * policies, either expressed or implied, of Michael Hoffer
+ * The views and conclusions contained in the software and documentation are those of the authors and should not be
+ * interpreted as representing official policies, either expressed or implied, of Michael Hoffer
  * <info@michaelhoffer.de>.
  */
 package eu.mihosoft.jcsg;
 
+import static eu.mihosoft.jcsg.STL.file;
 import eu.mihosoft.vvecmath.Vector3d;
 import eu.mihosoft.vvecmath.Transform;
 import eu.mihosoft.jcsg.ext.quickhull3d.HullUtil;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.scene.paint.Color;
@@ -53,17 +53,15 @@ import javafx.scene.shape.TriangleMesh;
  * This implementation is a Java port of
  * <a
  * href="https://github.com/evanw/csg.js/">https://github.com/evanw/csg.js/</a>
- * with some additional features like polygon extrude, transformations etc.
- * Thanks to the author for creating the CSG.js library.<br><br>
+ * with some additional features like polygon extrude, transformations etc. Thanks to the author for creating the CSG.js
+ * library.<br><br>
  *
  * <b>Implementation Details</b>
  *
- * All CSG operations are implemented in terms of two functions,
- * {@link Node#clipTo(Node)} and {@link Node#invert()}, which remove parts of a
- * BSP tree inside another BSP tree and swap solid and empty space,
- * respectively. To find the union of {@code a} and {@code b}, we want to remove
- * everything in {@code a} inside {@code b} and everything in {@code b} inside
- * {@code a}, then combine polygons from {@code a} and {@code b} into one solid:
+ * All CSG operations are implemented in terms of two functions, {@link Node#clipTo(Node)} and {@link Node#invert()},
+ * which remove parts of a BSP tree inside another BSP tree and swap solid and empty space, respectively. To find the
+ * union of {@code a} and {@code b}, we want to remove everything in {@code a} inside {@code b} and everything in
+ * {@code b} inside {@code a}, then combine polygons from {@code a} and {@code b} into one solid:
  *
  * <blockquote><pre>
  *     a.clipTo(b);
@@ -71,11 +69,9 @@ import javafx.scene.shape.TriangleMesh;
  *     a.build(b.allPolygons());
  * </pre></blockquote>
  *
- * The only tricky part is handling overlapping coplanar polygons in both trees.
- * The code above keeps both copies, but we need to keep them in one tree and
- * remove them in the other tree. To remove them from {@code b} we can clip the
- * inverse of {@code b} against {@code a}. The code for union now looks like
- * this:
+ * The only tricky part is handling overlapping coplanar polygons in both trees. The code above keeps both copies, but
+ * we need to keep them in one tree and remove them in the other tree. To remove them from {@code b} we can clip the
+ * inverse of {@code b} against {@code a}. The code for union now looks like this:
  *
  * <blockquote><pre>
  *     a.clipTo(b);
@@ -86,9 +82,8 @@ import javafx.scene.shape.TriangleMesh;
  *     a.build(b.allPolygons());
  * </pre></blockquote>
  *
- * Subtraction and intersection naturally follow from set operations. If union
- * is {@code A | B}, differenceion is {@code A - B = ~(~A | B)} and intersection
- * is {@code A & B =
+ * Subtraction and intersection naturally follow from set operations. If union is {@code A | B}, differenceion is
+ * {@code A - B = ~(~A | B)} and intersection is {@code A & B =
  * ~(~A | ~B)} where {@code ~} is the complement operator.
  */
 public class CSG {
@@ -203,8 +198,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the union of this csg and the
-     * specified csg.
+     * Return a new CSG solid representing the union of this csg and the specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
      *
@@ -240,20 +234,17 @@ public class CSG {
     }
 
     /**
-     * Returns a csg consisting of the polygons of this csg and the specified
-     * csg.
+     * Returns a csg consisting of the polygons of this csg and the specified csg.
      *
-     * The purpose of this method is to allow fast union operations for objects
-     * that do not intersect.
+     * The purpose of this method is to allow fast union operations for objects that do not intersect.
      *
      * <p>
-     * <b>WARNING:</b> this method does not apply the csg algorithms. Therefore,
-     * please ensure that this csg and the specified csg do not intersect.
+     * <b>WARNING:</b> this method does not apply the csg algorithms. Therefore, please ensure that this csg and the
+     * specified csg do not intersect.
      *
      * @param csg csg
      *
-     * @return a csg consisting of the polygons of this csg and the specified
-     * csg
+     * @return a csg consisting of the polygons of this csg and the specified csg
      */
     public CSG dumbUnion(CSG csg) {
 
@@ -266,8 +257,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the union of this csg and the
-     * specified csgs.
+     * Return a new CSG solid representing the union of this csg and the specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
      *
@@ -301,8 +291,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the union of this csg and the
-     * specified csgs.
+     * Return a new CSG solid representing the union of this csg and the specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
      *
@@ -414,9 +403,8 @@ public class CSG {
     }
 
     /**
-     * Optimizes for intersection. If csgs do not intersect create a new csg
-     * that consists of the polygon lists of this csg and the specified csg. In
-     * this case no further space partitioning is performed.
+     * Optimizes for intersection. If csgs do not intersect create a new csg that consists of the polygon lists of this
+     * csg and the specified csg. In this case no further space partitioning is performed.
      *
      * @param csg csg
      * @return the union of this csg and the specified csg
@@ -458,8 +446,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the difference of this csg and the
-     * specified csgs.
+     * Return a new CSG solid representing the difference of this csg and the specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
      *
@@ -495,8 +482,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the difference of this csg and the
-     * specified csgs.
+     * Return a new CSG solid representing the difference of this csg and the specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
      *
@@ -522,8 +508,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the difference of this csg and the
-     * specified csg.
+     * Return a new CSG solid representing the difference of this csg and the specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
      *
@@ -606,8 +591,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the intersection of this csg and the
-     * specified csg.
+     * Return a new CSG solid representing the intersection of this csg and the specified csg.
      *
      * <b>Note:</b> Neither this csg nor the specified csg are weighted.
      *
@@ -643,8 +627,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the intersection of this csg and the
-     * specified csgs.
+     * Return a new CSG solid representing the intersection of this csg and the specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
      *
@@ -681,8 +664,7 @@ public class CSG {
     }
 
     /**
-     * Return a new CSG solid representing the intersection of this csg and the
-     * specified csgs.
+     * Return a new CSG solid representing the intersection of this csg and the specified csgs.
      *
      * <b>Note:</b> Neither this csg nor the specified csgs are weighted.
      *
@@ -718,6 +700,7 @@ public class CSG {
         toStlString(sb);
         return sb.toString();
     }
+
 
     /**
      * Returns this csg in STL string format.
@@ -755,8 +738,8 @@ public class CSG {
     }
 
     public ObjFile toObj(int maxNumberOfVerts) {
-        
-        if(maxNumberOfVerts != 3) {
+
+        if (maxNumberOfVerts != 3) {
             throw new UnsupportedOperationException(
                     "maxNumberOfVerts > 3 not supported yet");
         }
@@ -1126,7 +1109,7 @@ public class CSG {
         if (polygons.isEmpty()) {
             return new Bounds(Vector3d.ZERO, Vector3d.ZERO);
         }
-        
+
         Vector3d initial = polygons.get(0).vertices.get(0).pos;
 
         double minX = initial.x();
