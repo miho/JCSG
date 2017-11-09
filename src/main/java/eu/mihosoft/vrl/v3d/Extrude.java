@@ -439,8 +439,9 @@ public class Extrude {
 	public static ArrayList<CSG> revolve(CSG slice, double radius, double archLen,List<List<Vector3d>> points, int numSlices) {
 		ArrayList<CSG> parts = new ArrayList<CSG>();
 		double increment = archLen / ((double) numSlices);
+		CSG slicePRofile = slice.movey(radius);
 		for (int i = 0; i < archLen + increment; i += increment) {
-			parts.add(slice.movey(radius).rotz(i));
+			parts.add(slicePRofile.rotz(i));
 		}
 		if(points!=null){
 			ArrayList<Transform> pathtransforms = pathToTransforms(points, numSlices);
