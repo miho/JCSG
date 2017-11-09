@@ -431,14 +431,23 @@ public class Extrude {
 	}
 
 	public static ArrayList<CSG> revolve(CSG slice, double radius, int numSlices) {
-		return revolve(slice, radius, 360.0, numSlices);
+		return revolve(slice, radius, 360.0,null, numSlices);
 	}
-
-	public static ArrayList<CSG> revolve(CSG slice, double radius, double archLen, int numSlices) {
+	public static ArrayList<CSG> revolve(CSG slice, double radius,double archLen, int numSlices) {
+		return revolve(slice, radius, archLen,null, numSlices);
+	}
+	public static ArrayList<CSG> revolve(CSG slice, double radius, double archLen,List<List<Vector3d>> points, int numSlices) {
 		ArrayList<CSG> parts = new ArrayList<CSG>();
 		double increment = archLen / ((double) numSlices);
 		for (int i = 0; i < archLen + increment; i += increment) {
 			parts.add(slice.movey(radius).rotz(i));
+		}
+		if(points!=null){
+			ArrayList<Transform> pathtransforms = pathToTransforms(points, numSlices);
+			for (int i = 0; i < parts.size() ; i++) {
+				CSG sweep = parts.get(i).transformed(pathtransforms.get(i));
+				parts.set(i, sweep);
+			}
 		}
 		for (int i = 0; i < parts.size() - 1; i++) {
 			CSG sweep = parts.get(i).union(parts.get(i + 1)).hull();
