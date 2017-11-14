@@ -33,6 +33,7 @@
  */
 package eu.mihosoft.vrl.v3d;
 
+
 import eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil;
 import eu.mihosoft.vrl.v3d.parametrics.CSGDatabase;
 import eu.mihosoft.vrl.v3d.parametrics.IParametric;
@@ -137,6 +138,7 @@ public class CSG {
 	private HashMap<String, IParametric> mapOfparametrics = null;
 	private IRegenerate regenerate = null;
 	private boolean markForRegeneration = false;
+	private String name = "";
 	private static ICSGProgress progressMoniter=new ICSGProgress() {
 		@Override
 		public void progressUpdate(int currentIndex, int finalIndex, String type, CSG intermediateShape) {
@@ -1708,7 +1710,33 @@ public class CSG {
 	public double getMinZ() {
 		return getBounds().getMin().z;
 	}
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MinX
+	 */
+	public double getTotalX() {
+		return (-this.getMinX()+this.getMaxX());
+	}
 
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return MinY
+	 */
+	public double getTotalY() {
+		return (-this.getMinY()+this.getMaxY());
+	}
+
+	/**
+	 * Helper function wrapping bounding box values
+	 * 
+	 * @return tMinZ
+	 */
+	public double getTotalZ() {
+		return (-this.getMinZ()+this.getMaxZ());
+	}
+	
 	/**
 	 * Gets the opt type.
 	 *
@@ -2127,6 +2155,33 @@ public class CSG {
 
 	public static void setDefaultColor(Color defaultcolor) {
 		CSG.defaultcolor = defaultcolor;
+	}
+	/**
+	 * Get Bounding box
+	 * @return A CSG that completely encapsulates the base CSG, centered around it
+	 */
+	CSG getBoundingBox(){
+		return new Cube(   (-this.getMinX()+this.getMaxX()),
+				(-this.getMinY()+this.getMaxY()),
+				(-this.getMinZ()+this.getMaxZ()))
+				.toCSG()
+				.toXMax()
+				.movex(this.getMaxX())
+				.toYMax()
+				.movey(this.getMaxY())
+				.toZMax()
+				.movez(this.getMaxZ());
+	}
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	@Override
+	public String toString(){
+		return getName()+" "+getColor();
 	}
 
 }
