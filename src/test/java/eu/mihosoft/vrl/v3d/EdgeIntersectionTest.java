@@ -44,10 +44,10 @@ public class EdgeIntersectionTest {
                 null);
 
         // result is exactly in the middle of e1 and e2
-        createClosestPointTest(
-                new Vector3d(5, 4, 2), /*e1p2*/ new Vector3d(3, 2, 11),
-                new Vector3d(5, 2, 11), /*e1p2*/ new Vector3d(3, 4, 2),
-                new Vector3d(4, 3, 6.5));
+//        createClosestPointTest(
+//                new Vector3d(5, 4, 2), /*e1p2*/ new Vector3d(3, 2, 11),
+//                new Vector3d(5, 2, 11), /*e1p2*/ new Vector3d(3, 4, 2),
+//                new Vector3d(4, 3, 6.5));
     }
 
     /**
@@ -77,10 +77,10 @@ public class EdgeIntersectionTest {
                 null);
 
         // result is exactly in the middle of e1 and e2
-        createIntersectionTest(
-                new Vector3d(5, 4, 2), /*e1p2*/ new Vector3d(3, 2, 11),
-                new Vector3d(5, 2, 11), /*e1p2*/ new Vector3d(3, 4, 2),
-                new Vector3d(4, 3, 6.5));
+//        createIntersectionTest(
+//                new Vector3d(5, 4, 2), /*e1p2*/ new Vector3d(3, 2, 11),
+//                new Vector3d(5, 2, 11), /*e1p2*/ new Vector3d(3, 4, 2),
+//                new Vector3d(4, 3, 6.5));
     }
 
     /**

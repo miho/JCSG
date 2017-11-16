@@ -992,7 +992,7 @@ public class CSG {
 				return this;
 		} catch (Exception ex) {
 			System.err.println("CSG difference failed, performing workaround");
-			ex.printStackTrace();
+			//ex.printStackTrace();
 			CSG intersectingParts = csg
 					.intersect(this);
 			
