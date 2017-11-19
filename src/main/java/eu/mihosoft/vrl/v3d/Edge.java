@@ -119,7 +119,7 @@ public class Edge {
      * @param plane the plane
      * @return the polygon
      */
-    private static Polygon toPolygon(List<Vector3d> points, Plane plane) {
+    public static Polygon toPolygon(List<Vector3d> points, Plane plane) {
 
 //        List<Vector3d> points = edges.stream().().map(e -> e.p1.pos).
 //                collect(Collectors.toList());
@@ -405,7 +405,7 @@ public class Edge {
      * @param boundaryEdges boundary edges (all paths must be closed)
      * @return the list
      */
-    private static List<Polygon> boundaryPaths(List<Edge> boundaryEdges) {
+    public static List<Polygon> boundaryPaths(List<Edge> boundaryEdges) {
         List<Polygon> result = new ArrayList<>();
 
         boolean[] used = new boolean[boundaryEdges.size()];
@@ -710,7 +710,7 @@ public class Edge {
      * @param planeGroup the plane group
      * @return the list
      */
-    private static List<Edge> boundaryEdgesOfPlaneGroup(List<Polygon> planeGroup) {
+    public static List<Edge> boundaryEdgesOfPlaneGroup(List<Polygon> planeGroup) {
         List<Edge> edges = new ArrayList<>();
 
         Stream<Polygon> pStream;
@@ -805,7 +805,7 @@ public class Edge {
      * @param e the e
      * @return true, if successful
      */
-    private static boolean falseBoundaryEdgeSharedWithOtherEdge(Edge fbe, Edge e) {
+    public static boolean falseBoundaryEdgeSharedWithOtherEdge(Edge fbe, Edge e) {
 
         // we don't consider edges with shared end-points since we are only
         // interested in "false-boundary-edge"-cases
