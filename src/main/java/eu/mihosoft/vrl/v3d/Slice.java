@@ -12,11 +12,6 @@ import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
 public class Slice {
 	private static ISlice sliceEngine = new ISlice (){
 		
-
-
-		boolean touhing(Vertex point, Edge e){
-			return e.contains(point.pos);
-		}
 		double length(Edge e){
 			
 			return Math.sqrt(Math.pow(e.getP1().getX()-e.getP2().getX(),2)+
@@ -24,15 +19,7 @@ public class Slice {
 			Math.pow(e.getP1().getZ()-e.getP2().getZ(),2)
 				);
 		}
-		
-		boolean same(Edge point, Edge e){
-			if(e.getP1()==point.getP1() && e.getP2()==point.getP2() )
-				return true;
-			if(e.getP1()==point.getP2() && e.getP2()==point.getP1() )
-				return true	;
-				
-			return false;
-		}
+
 		boolean touching(Vertex p1, Vertex p2){
 			double COINCIDENCE_TOLERANCE = 0.001;
 			if(Math.abs( p1.getX()-p2.getX())>COINCIDENCE_TOLERANCE){
@@ -78,7 +65,9 @@ public class Slice {
 			// Loop over each polygon in the slice of the incoming CSG
 			// Add the polygon to the final slice if it lies entirely in the z plane
 			for(Polygon p: incoming
-					.intersect(planeCSG)						
+					.transformed(slicePlane)
+					.intersect(planeCSG)
+					.toolOffset(normalInsetDistance)
 					.getPolygons()){
 				if(isPolygonAtZero(p)){
 					rawPolygons.add(p);
