@@ -139,6 +139,7 @@ public class CSG {
 	private IRegenerate regenerate = null;
 	private boolean markForRegeneration = false;
 	private String name = "";
+	private ArrayList<Transform> slicePlanes=null;
 	private static ICSGProgress progressMoniter=new ICSGProgress() {
 		@Override
 		public void progressUpdate(int currentIndex, int finalIndex, String type, CSG intermediateShape) {
@@ -2184,4 +2185,14 @@ public class CSG {
 		return getName()+" "+getColor();
 	}
 
+	public ArrayList<Transform> getSlicePlanes() {
+		return slicePlanes;
+	}
+
+	public void addSlicePlane(Transform slicePlane) {
+		if(slicePlanes==null)
+			slicePlanes=new ArrayList<>();
+		this.slicePlanes.add( slicePlane);
+	
+	}
 }

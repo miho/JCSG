@@ -207,8 +207,9 @@ public class Sphere extends Primitive {
      *
      * @param center the center to set
      */
-    public void setCenter(Vector3d center) {
+    public Sphere setCenter(Vector3d center) {
         this.center = center;
+        return this;
     }
 
     /**
@@ -225,8 +226,8 @@ public class Sphere extends Primitive {
      *
      * @param radius the radius to set
      */
-    public void setRadius(double radius) {
-        this.radius = radius;
+    public Sphere setRadius(double radius) {
+        this.radius = radius;return this;
     }
 
     /**
@@ -243,8 +244,8 @@ public class Sphere extends Primitive {
      *
      * @param numSlices the numSlices to set
      */
-    public void setNumSlices(int numSlices) {
-        this.numSlices = numSlices;
+    public Sphere setNumSlices(int numSlices) {
+        this.numSlices = numSlices;return this;
     }
 
     /**
@@ -261,8 +262,8 @@ public class Sphere extends Primitive {
      *
      * @param numStacks the numStacks to set
      */
-    public void setNumStacks(int numStacks) {
-        this.numStacks = numStacks;
+    public Sphere setNumStacks(int numStacks) {
+        this.numStacks = numStacks;return this;
     }
 
     /* (non-Javadoc)
