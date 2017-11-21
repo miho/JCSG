@@ -140,6 +140,8 @@ public class CSG {
 	private boolean markForRegeneration = false;
 	private String name = "";
 	private ArrayList<Transform> slicePlanes=null;
+	private ArrayList<String> exportFormats=null;
+	
 	private static ICSGProgress progressMoniter=new ICSGProgress() {
 		@Override
 		public void progressUpdate(int currentIndex, int finalIndex, String type, CSG intermediateShape) {
@@ -2182,7 +2184,9 @@ public class CSG {
 	}
 	@Override
 	public String toString(){
-		return getName()+" "+getColor();
+		if(name==null)
+			return getColor().toString();
+		return getName()+" "+getColor().toString();
 	}
 
 	public ArrayList<Transform> getSlicePlanes() {
@@ -2194,5 +2198,21 @@ public class CSG {
 			slicePlanes=new ArrayList<>();
 		this.slicePlanes.add( slicePlane);
 	
+	}
+
+	/**
+	 * @return the exportFormats
+	 */
+	public ArrayList<String> getExportFormats() {
+		return exportFormats;
+	}
+
+	/**
+	 * @param exportFormats the exportFormat to add
+	 */
+	public void addExportFormat(String exportFormat) {
+		if(this.exportFormats==null)
+			this.exportFormats= new ArrayList<>();
+		this.exportFormats.add(exportFormat);
 	}
 }
