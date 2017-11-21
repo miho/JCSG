@@ -2206,6 +2206,13 @@ public class CSG {
 	public ArrayList<String> getExportFormats() {
 		return exportFormats;
 	}
+	/**
+	 * @return the exportFormats
+	 */
+	public void clearExportFormats() {
+		if(exportFormats!=null)
+			exportFormats.clear();
+	}
 
 	/**
 	 * @param exportFormats the exportFormat to add
@@ -2213,6 +2220,12 @@ public class CSG {
 	public void addExportFormat(String exportFormat) {
 		if(this.exportFormats==null)
 			this.exportFormats= new ArrayList<>();
-		this.exportFormats.add(exportFormat);
+		for(String f:exportFormats){
+			if(f.toLowerCase().contains(exportFormat.toLowerCase())){
+				return;
+			}
+		}
+		this.exportFormats.add(exportFormat.toLowerCase());
 	}
+	
 }
