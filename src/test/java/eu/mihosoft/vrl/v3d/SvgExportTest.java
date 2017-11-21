@@ -115,12 +115,8 @@ public class SvgExportTest {
 	public void testManyCSGSlices() throws IOException {
 
 		CSG carrot = new Cube(10, 10, 10).toCSG()
-				// .toXMin()
 				.difference(new Cube(4, 4, 100).toCSG()
-		// .toXMin()
 		);
-		// .roty(30)
-		// .rotx(30)
 
 		Transform slicePlane = new Transform();
 		slicePlane.rotY(30);
@@ -128,15 +124,16 @@ public class SvgExportTest {
 		carrot.addSlicePlane(new Transform());
 		carrot.addSlicePlane(slicePlane);
 		
-		CSG sphere = new Sphere(10)
+		CSG sphere = new Sphere(10,80,80)
 						.setCenter(new Vector3d(30, 30))
 						.toCSG();
-		for(int i=0;i<5;i++){
+		for(int i=0;i<10;i++){
 			Transform sp = new Transform();
 			sp.translateZ(0.9*i);
 			sphere.addSlicePlane(sp);
 		}
-		
+		carrot.setName("Square Sections");
+		sphere.setName("Circle Sections");
 		SVGExporter.export(Arrays.asList(carrot,sphere), new File("SVGExportTest5.svg"));
 	}
 }
