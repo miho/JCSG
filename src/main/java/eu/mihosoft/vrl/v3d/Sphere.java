@@ -49,7 +49,11 @@ import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
  */
 public class Sphere extends Primitive {
 
-    /** The center. */
+    private static final int NUM_SLICES = 16;
+
+	private static final int NUM_STACKS = 8;
+
+	/** The center. */
     private Vector3d center;
     
     /** The radius. */
@@ -106,8 +110,8 @@ public class Sphere extends Primitive {
     public Sphere(double radius, int numSlices, int numStacks) {
         init();
         this.radius = radius;
-        this.numSlices = numSlices;
-        this.numStacks = numStacks;
+        this.setNumSlices(numSlices);
+        this.setNumStacks(numStacks);
     }
 
     /**
@@ -122,8 +126,8 @@ public class Sphere extends Primitive {
     public Sphere(Vector3d center, double radius, int numSlices, int numStacks) {
         this.center = center;
         this.radius = radius;
-        this.numSlices = numSlices;
-        this.numStacks = numStacks;
+        this.setNumSlices(numSlices);
+        this.setNumStacks(numStacks);
     }
 
     /**
@@ -132,8 +136,8 @@ public class Sphere extends Primitive {
     private void init() {
         center = new Vector3d(0, 0, 0);
         radius = 1;
-        numSlices = 16;
-        numStacks = 8;
+        setNumSlices(NUM_SLICES);
+        setNumStacks(NUM_STACKS);
     }
 
     /**
@@ -163,29 +167,29 @@ public class Sphere extends Primitive {
     public List<Polygon> toPolygons() {
         List<Polygon> polygons = new ArrayList<>();
 
-        for (int i = 0; i < numSlices; i++) {
-            for (int j = 0; j < numStacks; j++) {
+        for (int i = 0; i < getNumSlices(); i++) {
+            for (int j = 0; j < getNumStacks(); j++) {
                 final List<Vertex> vertices = new ArrayList<>();
 
                 vertices.add(
-                        sphereVertex(center, radius, i / (double) numSlices,
-                                j / (double) numStacks)
+                        sphereVertex(center, radius, i / (double) getNumSlices(),
+                                j / (double) getNumStacks())
                 );
                 if (j > 0) {
                     vertices.add(
-                            sphereVertex(center, radius, (i + 1) / (double) numSlices,
-                                    j / (double) numStacks)
+                            sphereVertex(center, radius, (i + 1) / (double) getNumSlices(),
+                                    j / (double) getNumStacks())
                     );
                 }
-                if (j < numStacks - 1) {
+                if (j < getNumStacks() - 1) {
                     vertices.add(
-                            sphereVertex(center, radius, (i + 1) / (double) numSlices,
-                                    (j + 1) / (double) numStacks)
+                            sphereVertex(center, radius, (i + 1) / (double) getNumSlices(),
+                                    (j + 1) / (double) getNumStacks())
                     );
                 }
                 vertices.add(
-                        sphereVertex(center, radius, i / (double) numSlices,
-                                (j + 1) / (double) numStacks)
+                        sphereVertex(center, radius, i / (double) getNumSlices(),
+                                (j + 1) / (double) getNumStacks())
                 );
                 polygons.add(new Polygon(vertices, getProperties()));
             }
@@ -245,6 +249,8 @@ public class Sphere extends Primitive {
      * @param numSlices the numSlices to set
      */
     public Sphere setNumSlices(int numSlices) {
+    	if(numSlices>(NUM_SLICES*4))
+    		numSlices=(NUM_SLICES*4);
         this.numSlices = numSlices;return this;
     }
 
@@ -263,6 +269,8 @@ public class Sphere extends Primitive {
      * @param numStacks the numStacks to set
      */
     public Sphere setNumStacks(int numStacks) {
+    	if(numStacks>(NUM_STACKS*4))
+    		numStacks=(NUM_STACKS*4);
         this.numStacks = numStacks;return this;
     }
 
