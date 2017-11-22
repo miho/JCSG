@@ -188,8 +188,12 @@ public class SVGExporter {
 	}
 	public static void export(List<CSG> currentCsg, File defaultDir) throws IOException {
 		SVGExporter svg = new SVGExporter();
-		for(CSG tmp:currentCsg)
+		int i=0;
+		for(CSG tmp:currentCsg){
+			System.out.println("Slicing CSG "+tmp.getName()+" "+i+" of "+(currentCsg.size()-1));
 			addCsg(tmp,svg);
+			i++;
+		}
 		write(svg.make(), defaultDir);
 	}
 	private static void addCsg(CSG currentCsg, SVGExporter svg) throws IOException {

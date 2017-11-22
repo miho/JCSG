@@ -423,14 +423,14 @@ public class Edge {
 
                 boundaryPath.add(finalEdge.p1.pos);
 
-                System.out.print("edge: " + edge.p2.pos);
+//                System.out.print("edge: " + edge.p2.pos);
 
                 Optional<Edge> nextEdgeResult = boundaryEdges.stream().
                         filter(e -> finalEdge.p2.equals(e.p1)).findFirst();
 
                 if (!nextEdgeResult.isPresent()) {
-                    System.out.println("ERROR: unclosed path:"
-                            + " no edge found with " + finalEdge.p2);
+//                    System.out.println("ERROR: unclosed path:"
+//                            + " no edge found with " + finalEdge.p2);
                     break;
                 }
 
@@ -443,7 +443,7 @@ public class Edge {
                 }
 
                 edge = nextEdge;
-                System.out.println("-> edge: " + edge.p1.pos);
+//                System.out.println("-> edge: " + edge.p1.pos);
                 used[nextEdgeIndex] = true;
             }
 
@@ -460,8 +460,8 @@ public class Edge {
             }
 
         }
-
-        System.out.println("paths: " + result.size());
+//
+//        System.out.println("paths: " + result.size());
 
         return result;
     }
