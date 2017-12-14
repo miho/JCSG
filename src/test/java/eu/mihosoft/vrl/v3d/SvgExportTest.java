@@ -13,6 +13,7 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.mihosoft.vrl.v3d.svg.SVGExporter;
+import eu.mihosoft.vrl.v3d.svg.SVGLoad;
 
 public class SvgExportTest {
 
@@ -109,8 +110,18 @@ public class SvgExportTest {
 		carrot.addSlicePlane(new Transform());
 		carrot.addSlicePlane(slicePlane);
 		
-		SVGExporter.export(carrot, new File("SVGExportTest4.svg"));
-	}	
+		File defaultDir = new File("SVGExportTest4.svg");
+        SVGExporter.export(carrot, defaultDir);
+		
+	}@Test
+    public void svgLoadSlices() throws IOException {
+
+      File defaultDir = new File("svg/SVGExportTest6.svg");
+      SVGLoad s = new SVGLoad(defaultDir.toURI());
+      ArrayList<CSG>gear = s.extrude(10,0.001);
+      System.out.println("SVG Elements ="+gear);
+      
+  }   	
 	@Test
 	public void testManyCSGSlices() throws IOException {
 
