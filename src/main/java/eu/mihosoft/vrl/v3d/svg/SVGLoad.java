@@ -302,8 +302,11 @@ public class  SVGLoad {
 				
 				
 			}
-			sections.addAll(tmp);
-			//sections.addAll(holes)
+			if(tmp.size()==0 && holes.size()!=0){
+	             sections.addAll(holes);
+
+			}else
+			  sections.addAll(tmp);
 		}
 		System.out.println("SVG has this many elements loaded: "+sections.size());
 		//BowlerStudioController.setCsg(sections,null);
