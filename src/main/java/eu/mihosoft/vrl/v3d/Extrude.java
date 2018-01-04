@@ -81,7 +81,7 @@ public class Extrude {
 		 *            the polygon1
 		 * @return the csg
 		 */
-		private CSG extrude(Vector3d dir, Polygon polygon1) {
+		public CSG extrude(Vector3d dir, Polygon polygon1) {
 
 			return monotoneExtrude(dir, polygon1);
 		}
@@ -279,14 +279,14 @@ public class Extrude {
 	}
 
 	public static ArrayList<Transform> bezierToTransforms(BezierPath pathA, BezierPath pathB, int iterations) {
-	    ArrayList<Transform> p = new ArrayList<Transform>();
+	  ArrayList<Transform> p = new ArrayList<Transform>();
 	    Vector3d pointAStart = pathA.eval(0);
 	    Vector3d pointBStart = pathB.eval(0);
 	    double x = pointAStart.x, y = pointAStart.y, z =  pointBStart.y;
 	    double lastx = x, lasty = y, lastz = z;
 	    
 	    for (int i = 0; i < iterations - 1; i++) {
-	        float pathFunction = (float)(i/(iterations - 1))+(float)0.00001;
+	        float pathFunction = (float) ((float)(i/(iterations - 1)));
 	        Vector3d pointA = pathA.eval(pathFunction);
 	        Vector3d pointB = pathB.eval(pathFunction);
 
@@ -318,8 +318,8 @@ public class Extrude {
 	        lasty = y;
 	        lastz = z;
 	    }
-	    Vector3d pointA = pathA.eval((float) 0.99999);
-	    Vector3d pointB = pathB.eval((float) 0.99999);
+	    Vector3d pointA = pathA.eval((float) 1);
+	    Vector3d pointB = pathB.eval((float) 1);
 
 	    x = pointA.x;
 	    y = pointA.y;
@@ -364,32 +364,51 @@ public class Extrude {
 	}
 
 	public static ArrayList<Transform> pathToTransforms(List<List<Vector3d>> points, int resolution) {
-		String pathStringA = "";
-		String pathStringB = "";
-		for (List<Vector3d> sections : points) {
-			if (sections.size() == 4) {
-				Vector3d controlA = sections.get(1);
-				Vector3d controlB = sections.get(2);
-				Vector3d endPoint = sections.get(3);
-
-				pathStringA += ("C " + controlA.x + "," + controlA.y + " " + controlB.x + "," + controlB.y + " "
-						+ endPoint.x + "," + endPoint.y + "\n");
-				pathStringB += ("C " + controlA.x + "," + controlA.z + " " + controlB.x + "," + controlB.z + " "
-						+ endPoint.x + "," + endPoint.z + "\n");
-
-			} else if (sections.size() == 1) {
-
-				pathStringA += "L " + (double) sections.get(0).x + "," + (double) sections.get(0).y + "\n";
-				pathStringB += "L " + (double) sections.get(0).x + "," + (double) sections.get(0).z + "\n";
-
-			}
-		}
-		BezierPath path = new BezierPath();
-		path.parsePathString(pathStringA);
-		BezierPath path2 = new BezierPath();
-		path2.parsePathString(pathStringB);
-
-		return Extrude.bezierToTransforms(path, path2, resolution);
+	  
+	    Vector3d start = points.get(0).get(0);
+	    String pathStringA = "M "+ start.x + "," + start.y;
+	    String pathStringB = pathStringA;
+	    
+	    for (List<Vector3d> sections : points) {
+	        if (sections.size() == 4) {
+	        Vector3d controlA= sections.get(1);
+	        Vector3d controlB= sections.get(2);
+	        Vector3d endPoint = sections.get(3);
+	        /*
+	            ArrayList<Double> controlA = (ArrayList<Double>) Arrays.asList(sections.get(1).x - start.get(0),
+	                    sections.get(1).y - start.get(1), sections.get(1).z - start.get(2));
+	                    
+	            ArrayList<Double> controlB = (ArrayList<Double>) Arrays.asList(sections.get(2).x - start.get(0),
+	                    sections.get(2).y - start.get(1),  sections.get(2).z - start.get(2));
+	            ;
+	            ArrayList<Double> endPoint = (ArrayList<Double>) Arrays.asList(sections.get(3).x - start.get(0),
+	                    sections.get(3).y - start.get(1), sections.get(3).z - start.get(2));
+	            ;
+	            */
+	            
+	            pathStringA+=("C " + controlA.x + "," + controlA.y + " " + controlB.x + ","+ controlB.y + " " + endPoint.x + "," + endPoint.y+"\n");
+	            pathStringB+=("C " + controlA.x + "," + controlA.z + " " + controlB.x + ","+ controlB.z + " " + endPoint.x + "," + endPoint.z+"\n");
+	            //start.set(0, sections.get(3).x);
+	            //start.set(1, sections.get(3).y);
+	            //start.set(2,sections.get(3).z);
+	            
+	        } else if (sections.size() == 1) {
+	            
+	            pathStringA+="L " + (double)sections.get(0).x + "," +  (double)sections.get(0).y +"\n";
+	            pathStringB+="L " + (double)sections.get(0).x + "," +  (double)sections.get(0).z +"\n";
+	            //start.set(0, sections.get(0).x);
+	            //start.set(1, sections.get(0).y);
+	            //start.set(2, sections.get(0).z);
+	        }
+	    }
+	    //println "A string = " +pathStringA
+	    //println "B String = " +pathStringB
+	    BezierPath path = new BezierPath();
+	    path.parsePathString(pathStringA);
+	    BezierPath path2 = new BezierPath();
+	    path2.parsePathString(pathStringB);
+	    
+	    return Extrude.bezierToTransforms(path, path2, resolution);
 	}
 
 	public static ArrayList<CSG> moveAlongProfile(CSG object, List<List<Vector3d>> points, int resolution) {

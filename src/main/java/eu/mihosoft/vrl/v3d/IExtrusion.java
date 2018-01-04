@@ -10,4 +10,14 @@ public interface IExtrusion {
 	 * @return
 	 */
 	CSG extrude(Vector3d dir, List<Vector3d> points) ;
+    /**
+     * Extrude.
+     *
+     * @param dir
+     *            the dir
+     * @param polygon1
+     *            the polygon1
+     * @return the csg
+     */
+	CSG extrude(Vector3d dir, Polygon polygon1);
 }
