@@ -38,6 +38,7 @@ public class SVGExporter {
 	private ArrayList<String> layers= new ArrayList<>() ;
 	private int layerCounter = 1;
 	private int groupCounter = 1;
+	private int lineCounter=0;
 	private String name="";
 	public SVGExporter(){
 		
@@ -50,13 +51,17 @@ public class SVGExporter {
 		}
 		
 		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
-				+ "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\"" + (min[0] - 1) + " "
-				+ (min[1] - 1) + " " + (Math.abs(max[0]) + Math.abs(min[0]) + 2) + " "
-				+ (Math.abs(max[1]) + Math.abs(min[1]) + 2) + "\""
-				+  " id=\"svg2\" "+
-				   "version=\"1.1\" "+
-				   "inkscape:version=\"0.91 r13725\" "
-						+ ">\n";
+				+ "<svg    xmlns:dc=\"http://purl.org/dc/elements/1.1/\""+
+   " xmlns:cc=\"http://creativecommons.org/ns#\""+
+   " xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""+
+  " xmlns:svg=\"http://www.w3.org/2000/svg\""+
+  " xmlns=\"http://www.w3.org/2000/svg\""+
+  " xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\""+
+  " xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\" version=\"1.1\" viewBox=\"" + (min[0] - 1) + " "
+				+ (min[1] - 1) + " " + (Math.abs(max[0]) + Math.abs(min[0]) + 2) + " "+ 
+				(Math.abs(max[1]) + Math.abs(min[1]) + 2) + "\""+ 
+				" id=\"svg2\" "+
+				 ">\n";
 		header+= " <defs  \n"+
 				"  id=\"defs4\" /> \n"+
 				" <sodipodi:namedview \n"+
@@ -69,18 +74,8 @@ public class SVGExporter {
 				"  inkscape:document-units=\"mm\" \n"+
 				"  inkscape:current-layer=\"layer1\" \n"+
 				" showgrid=\"false\" \n"+
-				"   <metadata \n"+
-				"     id=\"metadata7\"> \n"+
-				"    <rdf:RDF> \n"+
-				"      <cc:Work \n"+
-				"         rdf:about=\"\"> \n"+
-				"        <dc:format>image/svg+xml</dc:format> \n"+
-				"       <dc:type \n"+
-				"          rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" /> \n"+
-					"       <dc:title></dc:title> \n"+
-					"      </cc:Work> \n"+
-					"     </rdf:RDF> \n"+
-					"   </metadata> \n";
+				"  />\n";
+
 		output += footer;
 		output = header + output;
 		return output;
@@ -153,7 +148,7 @@ public class SVGExporter {
 		double x = (position.x * Scale);
 		double y = (position.y * Scale);
 		section += x + "," + y + " ";
-		section= section + "\" stroke=\""+color+"\" stroke-width=\"0.1\" fill=\"none\" />\n";
+		section= section + "\" \nstroke=\""+color+"\" \nstroke-width=\"1\" \nfill=\"none\"\nid=\"line"+(lineCounter++)+"\" />\n";
 		polylines.add(section);
 	}
 

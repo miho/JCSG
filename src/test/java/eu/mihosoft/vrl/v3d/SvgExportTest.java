@@ -39,6 +39,7 @@ public class SvgExportTest {
 		List<Polygon> polygons = Slice.slice(incoming, slicePlane, normalInsetDistance);
 
 		SVGExporter.export(polygons, new File("SVGExportTest.svg"), false);
+		
 
 	}
 
@@ -63,6 +64,7 @@ public class SvgExportTest {
 		Polygon outline = new Polygon(vertices);
 		polygons.add(outline2);
 		polygons.add(outline);
+		
 		SVGExporter.export(polygons, new File("SVGExportTest2.svg"), false);
 
 	}
@@ -124,10 +126,26 @@ public class SvgExportTest {
   }   	
 	@Test
 	public void testManyCSGSlices() throws IOException {
-
-		CSG carrot = new Cube(10, 10, 10).toCSG()
-				.difference(new Cube(4, 4, 100).toCSG()
-		);
+	// Create a CSG to slice
+	  CSG pin = new Cylinder(10, 100)
+	      .toCSG();
+	  CSG cubePin = new Cube(20,20, 100)
+	      .toCSG();
+	  CSG carrot = new Cylinder(100,  10)
+	  .toCSG()
+	  .difference(
+	      new Cylinder(40, 100)
+	      .toCSG()
+	      .movex(75)
+	      ,
+	      pin.movex(60),
+	      pin.movex(-60),
+	      cubePin.movey(60),
+	      cubePin.movey(-60)
+	      
+	      )
+	      .movex(-200)
+	      .movey(-100);
 
 		Transform slicePlane = new Transform();
 		slicePlane.rotY(30);
@@ -145,6 +163,8 @@ public class SvgExportTest {
 		}
 		carrot.setName("Square Sections");
 		sphere.setName("Circle Sections");
-		SVGExporter.export(Arrays.asList(carrot,sphere), new File("SVGExportTest5.svg"));
+		File f = new File("SVGExportTest5.svg");
+		SVGExporter.export(Arrays.asList(carrot,sphere),f);
+		SVGLoad. toPolygons( f);
 	}
 }
