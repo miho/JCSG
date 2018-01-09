@@ -278,93 +278,32 @@ public class Extrude {
 		Extrude.extrusionEngine = extrusionEngine;
 	}
 
-	public static ArrayList<Transform> bezierToTransforms(BezierPath pathA, BezierPath pathB, int iterations) {
-	  ArrayList<Transform> p = new ArrayList<Transform>();
-	    Vector3d pointAStart = pathA.eval(0);
-	    Vector3d pointBStart = pathB.eval(0);
-	    double x = pointAStart.x, y = pointAStart.y, z =  pointBStart.y;
-	    double lastx = x, lasty = y, lastz = z;
-	    
-	    for (int i = 0; i < iterations - 1; i++) {
-	        float pathFunction = (float) ((float)(i/(iterations - 1)));
-	        Vector3d pointA = pathA.eval(pathFunction);
-	        Vector3d pointB = pathB.eval(pathFunction);
-
-	        x = pointA.x;
-	        y = pointA.y;
-	        z = pointB.y;
-	        
-	        Transform t = new Transform();
-	        t.translateX(x);
-	        t.translateY(y);
-	        t.translateZ(z);
-
-	        double ydiff = y - lasty;
-	        double zdiff = z - lastz;
-	        double xdiff = x - lastx;
-
-	        // t.rotX(45-Math.toDegrees(Math.atan2(zdiff,ydiff)))
-
-	        double rise = zdiff;
-	        double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
-	        double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
-	        double roty = Math.toDegrees(Math.atan2(rise, run));
-
-	        t.rotZ(-rotz);
-	        t.rotY(roty);
-	        // println "z = "+rotz+" y = "+roty
-	        p.add(t);
-	        lastx = x;
-	        lasty = y;
-	        lastz = z;
-	    }
-	    Vector3d pointA = pathA.eval((float) 1);
-	    Vector3d pointB = pathB.eval((float) 1);
-
-	    x = pointA.x;
-	    y = pointA.y;
-	    z = pointB.y;
-	    Transform t = new Transform();
-	    t.translateX(x);
-	    t.translateY(y);
-	    t.translateZ(z);
-
-	    double ydiff = y - lasty;
-	    double zdiff = z - lastz;
-	    double xdiff = x - lastx;
-
-	    double rise = zdiff;
-	    double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
-	    double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
-	    double roty = Math.toDegrees(Math.atan2(rise, run));
-
-	    t.rotZ(-rotz);
-	    t.rotY(roty);
-	    p.add(t);
-
-	    return p;
-	}
-
 	public static CSG byPath(List<List<Vector3d>> points, double height) {
 
-		return byPath(points, height, 200);
+	    return byPath(points, height, 200);
 
 	}
 
 	public static CSG byPath(List<List<Vector3d>> points, double height, int resolution) {
-		ArrayList<Transform> trPath = pathToTransforms(points, resolution);
-		List<Vector3d> finalPath = new ArrayList<>();
-		for (Transform tr : trPath) {
-			javax.vecmath.Vector3d t1 = new javax.vecmath.Vector3d();
-			tr.getInternalMatrix().get(t1);
-			Vector3d finalPoint = new Vector3d(t1.x, t1.y, 0);
-			finalPath.add(finalPoint);
-		}
-		return Extrude.points(new Vector3d(0, 0, height), finalPath);
+	    ArrayList<Transform> trPath = pathToTransforms(points, resolution);
+	    ArrayList<Vector3d> finalPath = new ArrayList<>();
+	    for (Transform tr : trPath) {
+	        javax.vecmath.Vector3d t1 = new javax.vecmath.Vector3d();
+	        tr.getInternalMatrix().get(t1);
+	        Vector3d finalPoint = new Vector3d(t1.x , t1.y , 0);
+	        finalPath.add(finalPoint);
+	    }
+	    //showEdges(finalPath,(double)0.0,javafx.scene.paint.Color.RED)
+	    //println "Path size = " +finalPath.size()
+	    //List<Polygon> p =  Polygon.fromConcavePoints(finalPath)
+	    //for(Polygon pl:p)
+	    //  BowlerStudioController.getBowlerStudio()addObject(pl,null)
+	    //return new Cube(height).toCSG()
+	    return Extrude.points(new Vector3d(0, 0, height), finalPath);
 	}
-
-	public static ArrayList<Transform> pathToTransforms(List<List<Vector3d>> points, int resolution) {
-	  
+	public static ArrayList<Transform> pathToTransforms(List<List<Vector3d>> points, int resolution){
+	    
+	    
 	    Vector3d start = points.get(0).get(0);
 	    String pathStringA = "M "+ start.x + "," + start.y;
 	    String pathStringB = pathStringA;
@@ -408,48 +347,120 @@ public class Extrude {
 	    BezierPath path2 = new BezierPath();
 	    path2.parsePathString(pathStringB);
 	    
-	    return Extrude.bezierToTransforms(path, path2, resolution);
+	    return bezierToTransforms(path, path2, resolution);
 	}
 
-	public static ArrayList<CSG> moveAlongProfile(CSG object, List<List<Vector3d>> points, int resolution) {
+	public static ArrayList<CSG> moveAlongProfile(CSG object, List<List<Vector3d>> points, int resolution){
 
-		return Extrude.move(object, pathToTransforms(points, resolution));
+	    return Extrude.move(object,pathToTransforms(points,  resolution));
 	}
+	public static ArrayList<Transform> bezierToTransforms(
+	    Vector3d controlA, Vector3d controlB,
+	        Vector3d endPoint, int iterations) {
+	    BezierPath path = new BezierPath();
+	    path.parsePathString("C " + controlA.x + "," + controlA.y + " " + controlB.x + ","
+	            + controlB.y + " " + endPoint.x + "," + endPoint.y);
+	    BezierPath path2 = new BezierPath();
+	    path2.parsePathString("C " + controlA.x + "," + controlA.z + " " + controlB.x + ","
+	            + controlB.z + " " + endPoint.x + "," + endPoint.z);
 
-	public static ArrayList<Transform> bezierToTransforms(Vector3d start, Vector3d controlA, Vector3d controlB,
-			Vector3d endPoint, int iterations) {
-		BezierPath path = new BezierPath();
-		path.parsePathString("M "+start.x+","+start.y+"\n"+
-				"C " + controlA.x + "," + controlA.y + " " + controlB.x + "," + controlB.y + " "
-				+ endPoint.x + "," + endPoint.y);
-		BezierPath path2 = new BezierPath();
-		path2.parsePathString("M "+start.x+","+start.z+"\n"+
-				"C " + controlA.x + "," + controlA.z + " " + controlB.x + "," + controlB.z + " "
-				+ endPoint.x + "," + endPoint.z);
-
-		return bezierToTransforms(path, path2, iterations);
+	    return bezierToTransforms(path, path2, iterations);
 	}
 	public static ArrayList<Transform> bezierToTransforms(List<Vector3d> parts, int iterations) {
-		if(parts.size() == 3)
-			return bezierToTransforms(parts.get(0), parts.get(1), parts.get(2), iterations);
-		if(parts.size() == 2)
-			return bezierToTransforms(parts.get(0), parts.get(0), parts.get(1),parts.get(1), iterations);
-		if(parts.size() == 1)
-			return bezierToTransforms(new Vector3d(0, 0,0) , new Vector3d(0, 0,0), parts.get(0),parts.get(0), iterations);
-		return bezierToTransforms(parts.get(0), parts.get(1), parts.get(2),parts.get(3), iterations);
+	  //System.out.println("Bezier type "+parts.size());
+	    if(parts.size() == 3)
+	        return bezierToTransforms(parts.get(0), parts.get(1), parts.get(2), iterations);
+	    if(parts.size() == 2)
+	        return bezierToTransforms(parts.get(0), parts.get(0), parts.get(1),parts.get(1), iterations);
+	    if(parts.size() == 1)
+	        return bezierToTransforms(new Vector3d(0, 0,0) , new Vector3d(0, 0,0), parts.get(0),parts.get(0), iterations);
+	    return bezierToTransforms(parts.get(0), parts.get(1), parts.get(2),parts.get(3), iterations);
 	}
+	public static ArrayList<Transform> bezierToTransforms(BezierPath pathA, BezierPath pathB, int iterations) {
+	    ArrayList<Transform> p = new ArrayList<Transform>();
+	    Vector3d pointAStart = pathA.eval(0);
+	    Vector3d pointBStart = pathB.eval(0);
+	    double x = pointAStart.x, y = pointAStart.y, z =  pointBStart.y;
+	    double lastx = x, lasty = y, lastz = z;
+	    
+	    for (int i = 0; i < iterations - 1; i++) {
+	        float pathFunction = (float)(((float)i)/((float)(iterations - 1)));
+	        Vector3d pointA = pathA.eval(pathFunction);
+	        Vector3d pointB = pathB.eval(pathFunction);
 
-	public static ArrayList<Transform> bezierToTransforms(Vector3d controlA, Vector3d controlB, Vector3d endPoint,
-			int iterations) {
-		return bezierToTransforms(new Vector3d(0, 0,0), controlA, controlB, endPoint, iterations);
+	        x = pointA.x;
+	        y = pointA.y;
+	        z = pointB.y;
+	        
+	        Transform t = new Transform();
+	        t.translateX(x);
+	        t.translateY(y);
+	        t.translateZ(z);
+
+	        double ydiff = y - lasty;
+	        double zdiff = z - lastz;
+	        double xdiff = x - lastx;
+
+	        // t.rotX(45-Math.toDegrees(Math.atan2(zdiff,ydiff)))
+
+	        double rise = zdiff;
+	        double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
+	        double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
+	        double roty = Math.toDegrees(Math.atan2(rise, run));
+
+	        t.rotZ(-rotz);
+	        t.rotY(roty);
+	        //if(i==0)
+	            //System.out.println( "  Tr = "+x+" "+y+" "+z+" path = "+pathFunction);
+	        // println "z = "+rotz+" y = "+roty
+	        p.add(t);
+	        lastx = x;
+	        lasty = y;
+	        lastz = z;
+	    }
+	    Vector3d pointA = pathA.eval((float) 1);
+	    Vector3d pointB = pathB.eval((float) 1);
+
+	    x = pointA.x;
+	    y = pointA.y;
+	    z = pointB.y;
+	    Transform t = new Transform();
+	    t.translateX(x);
+	    t.translateY(y);
+	    t.translateZ(z);
+
+	    double ydiff = y - lasty;
+	    double zdiff = z - lastz;
+	    double xdiff = x - lastx;
+
+	    double rise = zdiff;
+	    double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
+	    double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
+	    double roty = Math.toDegrees(Math.atan2(rise, run));
+
+	    t.rotZ(-rotz);
+	    t.rotY(roty);
+	    p.add(t);
+
+	    return p;
 	}
-
-	public static ArrayList<Transform> bezierToTransforms(ArrayList<Double> controlA, ArrayList<Double> controlB,
-			ArrayList<Double> endPoint, int iterations) {
-
-		return bezierToTransforms(new Vector3d(controlA.get(0), controlA.get(1), controlA.get(2)),
-				new Vector3d(controlB.get(0), controlB.get(1), controlB.get(2)),
-				new Vector3d(endPoint.get(0), endPoint.get(1), endPoint.get(2)), iterations);
+	public static ArrayList<Transform> bezierToTransforms(Vector3d start, Vector3d controlA, Vector3d controlB,
+	        Vector3d endPoint, int iterations) {
+	    String startString = "M "+start.x+","+start.y+"\n"+
+            "C " + controlA.x + "," + controlA.y + " " + controlB.x + "," + controlB.y + " "
+            + endPoint.x + "," + endPoint.y;
+	    String b = "M "+start.x+","+start.z+"\n"+
+            "C " + controlA.x + "," + controlA.z + " " + controlB.x + "," + controlB.z + " "
+            + endPoint.x + "," + endPoint.z;
+	    //println "Start = "+startString
+	    BezierPath path = new BezierPath();
+	    path.parsePathString(startString);
+	    BezierPath path2 = new BezierPath();
+	    path2.parsePathString(b);
+	    //newParts.remove(parts.size()-1)
+	    //newParts.remove(0)
+	    //System.out.println("Parsing "+startString+" \nand\n"+b);
+	    return  bezierToTransforms(path, path2, iterations);
 	}
 
 	public static ArrayList<CSG> revolve(CSG slice, double radius, int numSlices) {
@@ -532,7 +543,7 @@ public class Extrude {
 
 	public static ArrayList<CSG> moveBezier(CSG slice, ArrayList<Double> controlA, ArrayList<Double> controlB,
 			ArrayList<Double> endPoint, int numSlices) {
-		ArrayList<Transform> p = bezierToTransforms(controlA, controlB, endPoint, numSlices);
+		ArrayList<Transform> p = bezierToTransforms(fromDouble(controlA), fromDouble(controlB), fromDouble(endPoint), numSlices);
 
 		return move(slice, p);
 	}
@@ -541,9 +552,12 @@ public class Extrude {
 			ArrayList<Double> controlB, ArrayList<Double> endPoint) {
 
 		int numSlices = slice.size();
-		ArrayList<Transform> p = bezierToTransforms(controlA, controlB, endPoint, numSlices);
+		ArrayList<Transform> p = bezierToTransforms(fromDouble(controlA), fromDouble(controlB), fromDouble(endPoint), numSlices);
 		return move(slice, p);
 
+	}
+	private static Vector3d fromDouble(ArrayList<Double> controlA){
+	  return new Vector3d(controlA.get(0), controlA.get(1), controlA.get(2));
 	}
 
 	public static ArrayList<CSG> moveBezier(CSG slice, BezierPath pathA, int numSlices) {

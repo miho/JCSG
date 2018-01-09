@@ -173,17 +173,19 @@ public class SVGLoad {
     return new SVGLoad(f.toURI()).toPolygons();
 
   }
-
-  private List<Polygon> toPolygons() {
+  public List<Polygon> toPolygons(double resolution) {
     if (polygons == null) {
       try {
-        loadAllGroups(0.005, 0, 0);
+        loadAllGroups(resolution, 0, 0);
       } catch (Exception e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }
     return polygons;
+  }
+  public List<Polygon> toPolygons() {
+    return  toPolygons(0.001);
   }
 
 
@@ -229,7 +231,7 @@ public class SVGLoad {
 
         String[] transformValues = transformValue.replaceAll("translate", "").replaceAll("\\(", "")
             .replaceAll("\\)", "").split("\\,");
-        System.out.println(id.getNodeValue() + " " + transformValues);
+        //System.out.println(id.getNodeValue() + " " + transformValues);
         mvx = Double.parseDouble(transformValues[0]);
         mvy = Double.parseDouble(transformValues[1]);
 
