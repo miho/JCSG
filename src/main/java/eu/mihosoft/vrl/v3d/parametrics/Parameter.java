@@ -54,7 +54,8 @@ public class Parameter {
 		if(value!=newVal){
 			value=newVal;
 			ArrayList<IParameterChanged> listeners = CSGDatabase.getParamListeners(name);
-			for(IParameterChanged l:listeners){
+			for(int i=0;i<listeners.size();i++){
+			  IParameterChanged l=listeners.get(i);
 				l.parameterChanged(name, this);
 			}
 		}
