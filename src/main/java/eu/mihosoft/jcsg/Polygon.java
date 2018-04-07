@@ -273,6 +273,38 @@ public final class Polygon {
     }
 
     /**
+     * Returns a triangulated version of this polygon.
+     *
+     * @return triangles
+     */
+    public List<Polygon> toTriangles() {
+
+        List<Polygon> result = new ArrayList<>();
+
+        if (this.vertices.size() >= 3) {
+
+            // TODO: improve the triangulation?
+            //
+            // If our polygon has more vertices, create
+            // multiple triangles:
+            Vertex firstVertexStl = this.vertices.get(0);
+            for (int i = 0; i < this.vertices.size() - 2; i++) {
+
+                // create triangle
+                Polygon polygon = Polygon.fromPoints(
+                        firstVertexStl.pos,
+                        this.vertices.get(i + 1).pos,
+                        this.vertices.get(i + 2).pos
+                );
+
+                result.add(polygon);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Translates this polygon.
      *
      * @param v the vector that defines the translation
