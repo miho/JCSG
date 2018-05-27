@@ -2163,7 +2163,7 @@ public class CSG {
 	 * Get Bounding box
 	 * @return A CSG that completely encapsulates the base CSG, centered around it
 	 */
-	CSG getBoundingBox(){
+	public CSG getBoundingBox(){
 		return new Cube(   (-this.getMinX()+this.getMaxX()),
 				(-this.getMinY()+this.getMaxY()),
 				(-this.getMinZ()+this.getMaxZ()))
