@@ -6,6 +6,7 @@
 package eu.mihosoft.vrl.v3d.ext.quickhull3d;
 
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.PropertyStorage;
 import java.util.ArrayList;
@@ -19,70 +20,106 @@ import java.util.List;
  */
 public class HullUtil {
 
-    /**
-     * Instantiates a new hull util.
-     */
-    private HullUtil() {
-        throw new AssertionError("Don't instantiate me!", null);
-    }
-    /**
-     * Hull.
-     *
-     * @param points the points
-     * @return the csg
-     */
-    public static CSG hull(List<eu.mihosoft.vrl.v3d.Vector3d> points) {
-    	return hull(points, new PropertyStorage());
-    }
+	/**
+	 * Instantiates a new hull util.
+	 */
+	private HullUtil() {
+		throw new AssertionError("Don't instantiate me!", null);
+	}
 
-    /**
-     * Hull.
-     *
-     * @param points the points
-     * @param storage the storage
-     * @return the csg
-     */
-    public static CSG hull(List<eu.mihosoft.vrl.v3d.Vector3d> points, PropertyStorage storage) {
+	/**
+	 * Hull.
+	 *
+	 * @param points
+	 *            the points
+	 * @return the csg
+	 */
+	public static CSG hull(List<?> points) {
+		List<Vector3d> plist = new ArrayList<>();
+		if (Vector3d.class.isInstance(points.get(0))) {
+			points.stream().forEach((pobj) -> plist.add((Vector3d) pobj));
+			return hull(plist, new PropertyStorage());
 
-        Point3d[] hullPoints = points.stream().map((vec) -> new Point3d(vec.x, vec.y, vec.z)).toArray(Point3d[]::new);
+		}
+		if (CSG.class.isInstance(points.get(0))) {
+			for (Object csg : points)
+				((CSG) csg).getPolygons().forEach((p) -> p.vertices.forEach((v) -> plist.add(v.pos)));
 
-        QuickHull3D hull = new QuickHull3D();
-        hull.build(hullPoints);
-        hull.triangulate();
+			return hull(plist, new PropertyStorage());
+		}
+		throw new RuntimeException("Objects in list are of unknown type: " + points.get(0).getClass().getName()+"\r\nExpected CSG or Vector3d ");
+	}
 
-        int[][] faces = hull.getFaces();
+	/**
+	 * Hull.
+	 *
+	 * @param points
+	 *            the points
+	 * @param storage
+	 *            the storage
+	 * @return the csg
+	 */
+	public static CSG hull(List<Vector3d> points, PropertyStorage storage) {
 
-        List<Polygon> polygons = new ArrayList<>();
+		Point3d[] hullPoints = points.stream().map((vec) -> new Point3d(vec.x, vec.y, vec.z)).toArray(Point3d[]::new);
 
-        List<eu.mihosoft.vrl.v3d.Vector3d> vertices = new ArrayList<>();
+		QuickHull3D hull = new QuickHull3D();
+		hull.build(hullPoints);
+		hull.triangulate();
 
-        for (int[] verts : faces) {
+		int[][] faces = hull.getFaces();
 
-            for (int i : verts) {
-                vertices.add(points.get(hull.getVertexPointIndices()[i]));
-            }
+		List<Polygon> polygons = new ArrayList<>();
 
-            polygons.add(Polygon.fromPoints(vertices, storage));
+		List<Vector3d> vertices = new ArrayList<>();
 
-            vertices.clear();
-        }
+		for (int[] verts : faces) {
 
-        return CSG.fromPolygons(polygons);
-    }
+			for (int i : verts) {
+				vertices.add(points.get(hull.getVertexPointIndices()[i]));
+			}
 
-    /**
-     * Hull.
-     *
-     * @param csg the csg
-     * @param storage the storage
-     * @return the csg
-     */
-    public static CSG hull(CSG csg, PropertyStorage storage) {
+			polygons.add(Polygon.fromPoints(vertices, storage));
 
-        List<eu.mihosoft.vrl.v3d.Vector3d> points = new ArrayList<>(csg.getPolygons().size() * 3);
+			vertices.clear();
+		}
 
-        csg.getPolygons().forEach((p) -> p.vertices.forEach((v) -> points.add(v.pos)));
+		return CSG.fromPolygons(polygons);
+	}
 
-        return hull(points, storage);
-    }
+	/**
+	 * Hull.
+	 *
+	 * @param csg
+	 *            the csg
+	 * @param storage
+	 *            the storage
+	 * @return the csg
+	 */
+	public static CSG hull(CSG csg, PropertyStorage storage) {
+
+		List<Vector3d> points = new ArrayList<>(csg.getPolygons().size() * 3);
+
+		csg.getPolygons().forEach((p) -> p.vertices.forEach((v) -> points.add(v.pos)));
+
+		return hull(points, storage);
+	}
+
+	/**
+	 * Hull.
+	 *
+	 * @param csg
+	 *            the csg
+	 * @param storage
+	 *            the storage
+	 * @return the csg
+	 */
+	public static CSG hull(CSG... csgList) {
+
+		List<Vector3d> points = new ArrayList<>();
+		for (CSG csg : csgList)
+			csg.getPolygons().forEach((p) -> p.vertices.forEach((v) -> points.add(v.pos)));
+
+		return hull(points, new PropertyStorage());
+	}
 }
