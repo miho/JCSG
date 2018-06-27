@@ -214,6 +214,7 @@ public final class Polygon {
         Collections.reverse(vertices);
 
         _csg_plane.flip();
+        this.plane = plane.flipped();
 
         return this;
     }
