@@ -159,10 +159,11 @@ public class CSG {
 	public CSG prepForManufacturing() {
 		if (getManufacturing() == null)
 			return this;
-		CSG ret = getManufacturing().prep(this)
-				.setName(getName())
-				.setColor(getColor())
-				;
+		CSG ret = getManufacturing().prep(this);
+		if(ret == null)
+			return null;
+		ret.setName(getName());
+		ret.setColor(getColor());
 		ret.slicePlanes=slicePlanes;
 		ret.mapOfparametrics=mapOfparametrics;
 		ret.exportFormats=exportFormats;
