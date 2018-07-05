@@ -7,6 +7,7 @@ import javafx.scene.image.WritableImage;
 import java.util.HashMap;
 import eu.mihosoft.vrl.v3d.CSG;
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.layout.AnchorPane;
@@ -446,7 +447,12 @@ public class Slice {
 	public static List<Polygon> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) {
 		if(DefaultSliceImp.class.isInstance(sliceEngine)) {
 			// avoid concurrecy issues
-			return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
+			try {
+				return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
+			}catch(IllegalStateException e) {
+				new JFXPanel();
+				return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
+			}
 		}
 		return getSliceEngine().slice(incoming, slicePlane, normalInsetDistance);
 	}
