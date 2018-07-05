@@ -214,7 +214,8 @@ public class Slice {
 			int[] pixStart = pixelVersionOfPoints.get(0);
 			pixelVersionOfPoints.remove(0);
 			int[] nextPoint = pixStart;
-			ArrayList<int[]> listOfPointsForThisPoly = (ArrayList<int[]>) Arrays.asList(pixStart);
+			ArrayList<int[]> listOfPointsForThisPoly = new ArrayList<>();
+			listOfPointsForThisPoly.add(pixStart);
 
 			// if(display)showPoints([nextPoint],20,javafx.scene.paint.Color.ORANGE)
 			int lastSearchIndex = 0;
