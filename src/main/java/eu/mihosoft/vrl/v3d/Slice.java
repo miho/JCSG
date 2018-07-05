@@ -224,7 +224,7 @@ public class Slice {
 				Object[] results = searchNext(nextPoint, obj_img, lastSearchIndex);
 				// println "Searching "+results
 				if (results == null) {
-					listOfPointsForThisPoly = new ArrayList<>();
+					listOfPointsForThisPoly.clear();
 					if (pixelVersionOfPoints.size() > 0) {
 						pixStart = pixelVersionOfPoints.remove(0);
 						nextPoint = pixStart;
