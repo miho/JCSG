@@ -2006,7 +2006,15 @@ public class CSG {
 	}
 
 	public CSG prepMfg() {
-		return prepForManufacturing();
+		
+		CSG ret = prepForManufacturing()
+				.setName(getName())
+				.setColor(getColor())
+				;
+		ret.slicePlanes=slicePlanes;
+		ret.mapOfparametrics=mapOfparametrics;
+		ret.exportFormats=exportFormats;
+		return ret;
 	}
 
 	public PrepForManufacturing getManufacturing() {
@@ -2179,8 +2187,9 @@ public class CSG {
 		return name;
 	}
 
-	public void setName(String name) {
+	public CSG setName(String name) {
 		this.name = name;
+		return this;
 	}
 	@Override
 	public String toString(){
