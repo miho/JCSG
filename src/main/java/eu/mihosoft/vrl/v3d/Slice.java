@@ -463,7 +463,7 @@ public class Slice {
 		return maxRes;
 	}
 
-	public void setMaxRes(int maxRes) {
-		this.maxRes = maxRes;
+	public static void setMaxRes(int mr) {
+		maxRes = mr;
 	}
 }
