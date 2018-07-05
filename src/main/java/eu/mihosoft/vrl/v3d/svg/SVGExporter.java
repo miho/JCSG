@@ -197,7 +197,7 @@ public class SVGExporter {
 	private static void addCsg(CSG currentCsg, SVGExporter svg) throws IOException {
 		svg.setName(currentCsg.getName());
 		for(Transform slicePlane:currentCsg.getSlicePlanes()){
-			List<Polygon> polygons = Slice.slice(currentCsg, slicePlane, 0);
+			List<Polygon> polygons = Slice.slice(currentCsg.prepMfg(), slicePlane, 0);
 			for( Polygon p: polygons){
 				svg.toPolyLine(p );
 			}
