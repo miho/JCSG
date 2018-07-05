@@ -156,7 +156,18 @@ public class CSG {
 		storage = new PropertyStorage();
 		addStackTrace(creationEventStackTrace);
 	}
-
+	public CSG prepForManufacturing() {
+		if (getManufacturing() == null)
+			return this;
+		CSG ret = getManufacturing().prep(this)
+				.setName(getName())
+				.setColor(getColor())
+				;
+		ret.slicePlanes=slicePlanes;
+		ret.mapOfparametrics=mapOfparametrics;
+		ret.exportFormats=exportFormats;
+		return ret;
+	}
 	/**
 	 * Gets the color.
 	 *
@@ -1999,22 +2010,10 @@ public class CSG {
 		return groovyFileLines;
 	}
 
-	public CSG prepForManufacturing() {
-		if (getManufacturing() == null)
-			return this;
-		return getManufacturing().prep(this);
-	}
+
 
 	public CSG prepMfg() {
-		
-		CSG ret = prepForManufacturing()
-				.setName(getName())
-				.setColor(getColor())
-				;
-		ret.slicePlanes=slicePlanes;
-		ret.mapOfparametrics=mapOfparametrics;
-		ret.exportFormats=exportFormats;
-		return ret;
+		return prepForManufacturing();
 	}
 
 	public PrepForManufacturing getManufacturing() {
