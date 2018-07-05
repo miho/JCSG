@@ -20,12 +20,12 @@ import javafx.scene.transform.Scale;
 import javafx.scene.image.PixelReader;
 
 public class Slice {
-	private static class DefaultSLiceImp implements ISlice {
+	private static int maxRes = 3000;
+	private static class DefaultSliceImp implements ISlice {
 		double sizeinPixelSpace = 1500;
 		HashMap<WritableImage, PixelReader> readers = new HashMap<>();
 		// pixelData=new HashMap<>();
 		ArrayList<int[]> usedPixels = new ArrayList<>();
-		int maxRes = 2000;
 		int minRes = 200;
 		private boolean done;
 
@@ -47,8 +47,8 @@ public class Slice {
 			double size = sizeinPixelSpace * (mySize / 200) * (polys.size() / 300);
 			if (size < minRes)
 				size = minRes;
-			if (size > maxRes)
-				size = maxRes;
+			if (size > getMaxRes())
+				size = getMaxRes();
 			// println "Vectorizing "+polys.size()+" polygons at pixel resolution: "+size
 
 			double xPix = size * (ratioOrentation ? 1.0 : ratio);
@@ -296,7 +296,7 @@ public class Slice {
 			// if(display)BowlerStudioController.getBowlerStudio().getJfx3dmanager().clearUserNode()
 			// BowlerStudioController.getBowlerStudio() .addObject(polys, new File("."));
 			System.out.println(
-					"DS Slice took: " + (((double) (System.currentTimeMillis() - startTime)) / 1000.0) + " seconds");
+					"Slice took: " + (((double) (System.currentTimeMillis() - startTime)) / 1000.0) + " seconds");
 			return polys;
 		}
 
@@ -406,7 +406,7 @@ public class Slice {
 		}
 	};
 
-	private static ISlice sliceEngine = new DefaultSLiceImp();
+	private static ISlice sliceEngine = new DefaultSliceImp();
 
 	/**
 	 * Returns true if this polygon lies entirely in the z plane
@@ -444,6 +444,10 @@ public class Slice {
 	}
 
 	public static List<Polygon> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) {
+		if(DefaultSliceImp.class.isInstance(sliceEngine)) {
+			// avoid concurrecy issues
+			return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
+		}
 		return getSliceEngine().slice(incoming, slicePlane, normalInsetDistance);
 	}
 
@@ -453,5 +457,13 @@ public class Slice {
 
 	public static void setSliceEngine(ISlice sliceEngine) {
 		Slice.sliceEngine = sliceEngine;
+	}
+
+	public static int getMaxRes() {
+		return maxRes;
+	}
+
+	public void setMaxRes(int maxRes) {
+		this.maxRes = maxRes;
 	}
 }
