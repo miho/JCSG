@@ -27,7 +27,7 @@ public class Slice {
 		HashMap<WritableImage, PixelReader> readers = new HashMap<>();
 		// pixelData=new HashMap<>();
 		ArrayList<int[]> usedPixels = new ArrayList<>();
-		int minRes = 200;
+		int minRes = 1000;
 		private boolean done;
 
 		Object[] toPixMap(CSG slicePart) {
