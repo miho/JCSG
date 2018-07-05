@@ -1,28 +1,14 @@
 package eu.mihosoft.vrl.v3d;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.vecmath.Matrix4d;
-
-import eu.mihosoft.vrl.v3d.ext.org.poly2tri.DelaunayTriangle;
-import eu.mihosoft.vrl.v3d.ext.org.poly2tri.PolygonUtil;
-import eu.mihosoft.vrl.v3d.parametrics.LengthParameter;
-import eu.mihosoft.vrl.v3d.svg.ImageTracer;
-import eu.mihosoft.vrl.v3d.svg.SVGLoad;
+import javafx.scene.image.WritableImage;
+import java.util.HashMap;
+import eu.mihosoft.vrl.v3d.CSG;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -31,317 +17,396 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.MeshView;
 import javafx.scene.transform.Scale;
+import javafx.scene.image.PixelReader;
 
 public class Slice {
-	private static ISlice sliceEngine = new ISlice (){
-	    
-	    int xPix;
-	    int yPix;
-	    boolean done =false;
-	    boolean first=true;
-	    int toPix(int x,int y){
-	        return ((x)*(yPix+2))+y+1;
-	    }
-	       /**
-	     * Determines whether the specified point lies on tthis edge.
-	     *
-	     * @param p point to check
-	     * @param TOL tolerance
-	     * @return <code>true</code> if the specified point lies on this line
-	     * segment; <code>false</code> otherwise
-	     */
-	    public boolean containsPoint(Vector3d p,Vertex p1 ,Vertex p2,double TOL) {
+	private static class DefaultSLiceImp implements ISlice {
+		double sizeinPixelSpace = 1500;
+		HashMap<WritableImage, PixelReader> readers = new HashMap<>();
+		// pixelData=new HashMap<>();
+		ArrayList<int[]> usedPixels = new ArrayList<>();
+		int maxRes = 2000;
+		int minRes = 200;
+		private boolean done;
 
-	        double x = p.x;
-	        double x1 = p1.pos.x;
-	        double x2 = p2.pos.x;
+		Object[] toPixMap(CSG slicePart) {
 
-	        double y = p.y;
-	        double y1 = p1.pos.y;
-	        double y2 = p2.pos.y;
+			// BowlerStudioController.getBowlerStudio()
+			// .addObject((Object)slicePart.movez(1),(File)null)
+			// BowlerStudioController.getBowlerStudio()
+			// .addObject((Object)rawPolygons,(File)null)
+			double ratio = slicePart.getTotalY() / slicePart.getTotalX();
+			boolean ratioOrentation = slicePart.getTotalX() > slicePart.getTotalY();
+			if (ratioOrentation)
+				ratio = slicePart.getTotalX() / slicePart.getTotalY();
+			ratio = 1 / ratio;
+			;
+			double mySize = slicePart.getTotalX() > slicePart.getTotalY() ? slicePart.getTotalX()
+					: slicePart.getTotalY();
+			List<Polygon> polys = slicePart.getPolygons();
+			double size = sizeinPixelSpace * (mySize / 200) * (polys.size() / 300);
+			if (size < minRes)
+				size = minRes;
+			if (size > maxRes)
+				size = maxRes;
+			// println "Vectorizing "+polys.size()+" polygons at pixel resolution: "+size
 
-	        double AB = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) );
-	        double AP = Math.sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1) );
-	        double PB = Math.sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y));
+			double xPix = size * (ratioOrentation ? 1.0 : ratio);
+			double yPix = size * (!ratioOrentation ? 1.0 : ratio);
+			double xOffset = slicePart.getMinX();
+			double yOffset = slicePart.getMinY();
+			double scaleX = slicePart.getTotalX() / xPix;
+			double scaleY = slicePart.getTotalY() / yPix;
 
-	        return Math.abs(AB - (AP + PB)) < TOL;
-	    }
-	        /**
-	     * Contains.
-	     *
-	     * @param p the p
-	     * @return true, if successful
-	     */
-	    public boolean polygonContains(Vector3d p,Polygon poly) {
-	        // taken from http://www.java-gaming.org/index.php?topic=26013.0
-	        // and http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-	        double px = p.x;
-	        double py = p.y;
-	        boolean oddNodes = false;
-	        double x2 = poly.vertices.get(poly.vertices.size() - 1).pos.x;
-	        double y2 = poly.vertices.get(poly.vertices.size() - 1).pos.y;
-	        double x1, y1;
-	        for (int i = 0; i < poly.vertices.size();  ++i) {
-	            Vertex v1 = poly.vertices.get(i);
-	        Vertex v2;
-	        if(i<poly.vertices.size()-1){
-	            v2=poly.vertices.get(i+1);
-	        }else
-	            v2=poly.vertices.get(0);
-	        
-	         if (containsPoint(p,v1,v2,0.0000001)) {
-	             return true;
-	         }
-	            x1 = poly.vertices.get(i).pos.x;
-	            y1 = poly.vertices.get(i).pos.y;
-	            if (((y1 < py) && (y2 >= py))
-	                    || (y1 >= py) && (y2 < py)) {
-	                if ((py - y1) / (y2 - y1)
-	                        * (x2 - x1) < (px - x1)) {
-	                    oddNodes = !oddNodes;
-	                }
-	            }
-	            x2 = x1;
-	            y2 = y1;
-	            
-	        }
-	        return oddNodes;
-	    }
-	/**
-	     * An interface for slicking CSG objects into lists of points that can be extruded back out
-	     * @param incoming            Incoming CSG to be sliced
-	     * @param slicePlane          Z coordinate of incoming CSG to slice at
-	     * @param normalInsetDistance Inset for sliced output
-	     * @return                    A set of polygons defining the sliced shape
-	     */
-	    public List<Polygon> slice(CSG incoming, Transform slicePlane, double normalInsetDistance){
-	      if(first){
-	        new JFXPanel();
-	      }
-	      first=false;
-	        List<Polygon> rawPolygons = new ArrayList<>();
+			// println "New Slicer Image x=" +xPix+" by y="+yPix+" at x="+xOffset+"
+			// y="+yOffset
 
-	        // Actual slice plane
-	        CSG planeCSG = incoming.getBoundingBox()
-	                .toZMin();
-	        // Loop over each polygon in the slice of the incoming CSG
-	        // Add the polygon to the final slice if it lies entirely in the z plane
-	        System.out. println ("Preparing CSG slice");
-	        CSG slicePart =incoming
-	                .transformed(slicePlane)
-	                .intersect(planeCSG);
-	        for(Polygon p: slicePart                        
-	                .getPolygons()){
-	            if(Slice.isPolygonAtZero(p)){
-	                rawPolygons.add(p);
-	            }
-	        }
-	        //BowlerStudioController.getBowlerStudio() .addObject((Object)slicePart.movez(1),(File)null)
-	        //BowlerStudioController.getBowlerStudio() .addObject((Object)rawPolygons,(File)null)
-	        double ratio = slicePart.getTotalY()/slicePart.getTotalX(); 
-	        
-	        //LengthParameter printerOffset           = new LengthParameter("printerOffset",0.5,[1.2,0]);
-	        double scalePixel = 0.25;
-	        double size = slicePart.getTotalX()/0.5/scalePixel;
-	        if(slicePart.getTotalY()>slicePart.getTotalX() ){
-	            size = slicePart.getTotalY()/0.5/scalePixel;
-	            ratio = slicePart.getTotalX()/slicePart.getTotalY();
-	        }
-	        xPix = (int) (size*(ratio>1?1.0:ratio));
-	        yPix = (int) (size*(ratio<1?1.0:ratio));
-	        int pixels = (xPix+2)*(yPix+2);
-	        double xOffset = slicePart.getMinX();
-	        double yOffset = slicePart.getMinY();
-	        double scale = slicePart.getTotalX()/xPix;
-	        
-	        boolean [] pix =new boolean [pixels];
-	        System.out. println ("Image x=" +xPix+" by y="+yPix+" at x="+xOffset+" y="+yOffset);
-	        long start = System.currentTimeMillis();
-	        int imageOffset =20;
-	        WritableImage obj_img = new WritableImage(xPix+imageOffset, yPix+imageOffset);
-	        //int snWidth = (int) 4096;
-	        //int snHeight = (int) 4096;
+			double imageOffset = 180.0;
+			double imageOffsetMotion = imageOffset * scaleX / 2;
+			int imgx = (int) (xPix + imageOffset);
+			int imgy = (int) (yPix + imageOffset);
+			WritableImage obj_img = new WritableImage(imgx, imgy);
+			// int snWidth = (int) 4096;
+			// int snHeight = (int) 4096;
 
-	        MeshView sliceMesh = slicePart.getMesh();
-	        sliceMesh.getTransforms().add(javafx.scene.transform.Transform.translate(imageOffset/10, imageOffset/10));
-	        AnchorPane anchor = new AnchorPane(sliceMesh);
-	        AnchorPane.setBottomAnchor(sliceMesh, (double) 0);
-	        AnchorPane.setTopAnchor(sliceMesh, (double) 0);
-	        AnchorPane.setLeftAnchor(sliceMesh, (double) 0);
-	        AnchorPane.setRightAnchor(sliceMesh, (double) 0);
-	        Pane snapshotGroup = new Pane(anchor);
-	        snapshotGroup.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+			MeshView sliceMesh = slicePart.getMesh();
+			sliceMesh.getTransforms()
+					.add(javafx.scene.transform.Transform.translate(imageOffsetMotion, imageOffsetMotion));
+			AnchorPane anchor = new AnchorPane(sliceMesh);
+			AnchorPane.setBottomAnchor(sliceMesh, (double) 0);
+			AnchorPane.setTopAnchor(sliceMesh, (double) 0);
+			AnchorPane.setLeftAnchor(sliceMesh, (double) 0);
+			AnchorPane.setRightAnchor(sliceMesh, (double) 0);
+			Pane snapshotGroup = new Pane(anchor);
+			snapshotGroup.prefHeight((double) (yPix + imageOffset));
+			snapshotGroup.prefWidth((double) (xPix + imageOffset));
+			snapshotGroup
+					.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 
+			SnapshotParameters snapshotParameters = new SnapshotParameters();
+			snapshotParameters.setTransform(new Scale(1 / scaleX, 1 / scaleY));
+			snapshotParameters.setDepthBuffer(true);
+			snapshotParameters.setFill(Color.TRANSPARENT);
+			done = false;
+			Runnable r = new Runnable() {
+				@Override
+				public void run() {
+					snapshotGroup.snapshot(snapshotParameters, obj_img);
+					done = true;
+				}
+			};
+			Platform.runLater(r);
+			while (done == false) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
-	        SnapshotParameters snapshotParameters = new SnapshotParameters();
-	        snapshotParameters.setTransform(new Scale(1/scale, 1/scale));
-	        snapshotParameters.setDepthBuffer(true);
-	        snapshotParameters.setFill(Color.TRANSPARENT);
-	        done =false;
-	        Runnable r =new Runnable() {
-	            @Override
-	            public void run() {
-	                snapshotGroup.snapshot(snapshotParameters, obj_img);
-	                done=true;
-	            }
-	        };
-	        Platform.runLater(r);
-	        while(done== false){
-	            try {
-                Thread.sleep(10);
-              } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-              }
-	        }
-	        
-	            byte alpha = (byte) 0;
-	        for(int i=0;i<xPix;i++){
-	            for(int j=0;j<yPix;j++){
-	                int color = obj_img.getPixelReader().getArgb(i, j);
-	                if((color & 0xff000000)>0)
-	                    pix[toPix(i,j)]=true;
-	                else
-	                    pix[toPix(i,j)]=false;
-	            }
-	        }
-	        System.out. println ("Find boundries ");
-	        
-	    
-	        
-	        ImageView sliceImage = new ImageView(obj_img);
-	        
-	        sliceImage.getTransforms().add(javafx.scene.transform.Transform.translate(xOffset-imageOffset/10, yOffset-imageOffset/10));
-	        sliceImage.getTransforms().add(javafx.scene.transform.Transform.scale(scale,scale ));
-	        //BowlerStudioController.getBowlerStudio() .addNode(sliceImage);
-	        //
+			// println "Find boundries "
 
-	        double MMTOPX = 3.5409643774783404;
-	        float outputScale = (float) (MMTOPX / scale);
-	        // Options
-	        HashMap<String, Float> options = new HashMap<String, Float>();
+			return new Object[] { obj_img, scaleX, xOffset - imageOffsetMotion, scaleY, yOffset - imageOffsetMotion,
+					imageOffsetMotion, imageOffset };
+		}
 
-	        // Tracing
-	        options.put("ltres", 1f);// Error treshold for
-	                                    // straight lines.
-	        options.put("qtres", 1f);// Error treshold for
-	                                    // quadratic splines.
-	        options.put("pathomit", 0.02f);// Edge node paths
-	                                    // shorter than this
-	                                    // will be discarded for
-	                                    // noise reduction.
+		int[] toPixels(double absX, double absY, double xOff, double yOff, double scaleX, double scaleY) {
+			return new int[] { (int) ((absX - xOff) / scaleX), (int) ((absY - yOff) / scaleY) };
+		}
 
-	        // Color quantization
-	        options.put("colorsampling", 1f); // 1f means true ;
-	                                            // 0f means
-	                                            // false:
-	                                            // starting with
-	                                            // generated
-	                                            // palette
-	        options.put("numberofcolors", 16f);// Number of
-	                                            // colors to use
-	                                            // on palette if
-	                                            // pal object is
-	                                            // not defined.
-	        options.put("mincolorratio", 0.02f);// Color
-	                                            // quantization
-	                                            // will
-	                                            // randomize a
-	                                            // color if
-	                                            // fewer pixels
-	                                            // than (total
-	                                            // pixels*mincolorratio)
-	                                            // has it.
-	        options.put("colorquantcycles", 1f);// Color
-	                                            // quantization
-	                                            // will be
-	                                            // repeated this
-	                                            // many times.
-	        //
-	        // SVG rendering
-	        options.put("scale", outputScale);// Every
-	                                            // coordinate
-	                                            // will be
-	                                            // multiplied
-	                                            // with this, to
-	                                            // scale the
-	                                            // SVG.
-	        options.put("simplifytolerance", 1f);//
-	        options.put("roundcoords", 2f); // 1f means rounded
-	                                        // to 1 decimal
-	                                        // places, like 7.3
-	                                        // ; 3f means
-	                                        // rounded to 3
-	                                        // places, like
-	                                        // 7.356 ; etc.
-	        options.put("lcpr", 0f);// Straight line control
-	                                // point radius, if this is
-	                                // greater than zero, small
-	                                // circles will be drawn in
-	                                // the SVG. Do not use this
-	                                // for big/complex images.
-	        options.put("qcpr",0f);// Quadratic spline control
-	                                // point radius, if this is
-	                                // greater than zero, small
-	                                // circles and lines will be
-	                                // drawn in the SVG. Do not
-	                                // use this for big/complex
-	                                // images.
-	        options.put("desc", 0f); // 1f means true ; 0f means
-	                                    // false: SVG
-	                                    // descriptions
-	                                    // deactivated
-	        options.put("viewbox", 1f); // 1f means true ; 0f
-	                                    // means false: fixed
-	                                    // width and height
+		boolean pixelBlack(double absX, double absY, WritableImage obj_img) {
+			if (readers.get(obj_img) == null) {
+				readers.put(obj_img, obj_img.getPixelReader());
+			}
+			PixelReader pixelReader = readers.get(obj_img);
+			return pixelReader.getColor((int) absX, (int) absY).getOpacity() != 0;
+		}
 
-	        // Selective Gauss Blur
-	        options.put("blurradius", 0f); // 0f means
-	                                        // deactivated; 1f
-	                                        // .. 5f : blur with
-	                                        // this radius
-	        options.put("blurdelta", 20f); // smaller than this
-	                                    // RGB difference
-	                                    // will be blurred
-	        System.out.print ("\nTracing...");
-	        BufferedImage bi = SwingFXUtils.fromFXImage(obj_img,(BufferedImage)null);
-	        try{
-    	        String svg = ImageTracer.imageToSVG(bi,options,(byte[][])null);
-    	        int headerStart = svg.indexOf(">")+1;
-    	        int headerEnd = svg.lastIndexOf("<");
-    	        //println "headerStart "+headerStart+ " headerEnd "+headerEnd
-    	        String header = svg.substring(0,headerStart);
-    	        String footer = svg.substring(headerEnd,svg.length());
-    	        String body = svg.substring(headerStart,headerEnd);
-    	        body = "<g id=\"g37\">\n"+body+"</g>\n";
-    	        svg=header+body+footer;
-    	        //println header+"\n\n"
-    	        //println body+"\n\n"
-    	        //println footer+"\n\n"
-    	        File tmpsvg = new File( System.getProperty("java.io.tmpdir")+"/"+Math.random());
-    	        tmpsvg.createNewFile();
-    	        FileWriter fw = new FileWriter(tmpsvg.getAbsoluteFile());
-    	        BufferedWriter bw = new BufferedWriter(fw);
-    	        bw.write(svg);
-    	        bw.close();
-    	        Transform tr = new Transform()
-    	                    .translate(xOffset-imageOffset/10, yOffset-imageOffset/10,0)
-    	                    .scale(scale/28.3);
-    	        List<Polygon>  svgPolys = SVGLoad.toPolygons(tmpsvg);
-    	        for(Polygon P:svgPolys){
-    	             P.transform(tr);
-    	        }
-    	        tmpsvg.delete();
-    	        System.out.print( "Done Slicing! Took "+((double)(System.currentTimeMillis()-start)/1000.0)+"\n\n");
-    	        svgPolys.remove(0);
-    	        //println svg
-    	        //BowlerStudioController.getBowlerStudio() .addObject((Object)svgPolys,(File)null)
-    	        return  svgPolys;
-	        }catch(Exception ex){
-	          ex.printStackTrace();
-	        }
-	        return rawPolygons;
-	    }
+		boolean pixelEdge(double absX, double absY, WritableImage obj_img) {
+			for (int i = -1; i < 2; i++) {
+				int x = (int) (absX + i);
+				for (int j = -1; j < 2; j++) {
+					int y = (int) (absY + j);
+					try {
+						if (!pixelBlack(x, y, obj_img)) {
+							return true;
+						}
+					} catch (Throwable t) {
+						// BowlerStudio.printStackTrace(t);
+					}
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * An interface for slicking CSG objects into lists of points that can be
+		 * extruded back out
+		 * 
+		 * @param incoming
+		 *            Incoming CSG to be sliced
+		 * @param slicePlane
+		 *            Z coordinate of incoming CSG to slice at
+		 * @param normalInsetDistance
+		 *            Inset for sliced output
+		 * @return A set of polygons ining the sliced shape
+		 */
+		public List<Polygon> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) {
+			if (Thread.interrupted()) {
+				return null;
+			}
+			long startTime = System.currentTimeMillis();
+			// if(display)BowlerStudioController.getBowlerStudio().getJfx3dmanager().clearUserNode()
+			List<Polygon> rawPolygons = new ArrayList<>();
+
+			// Actual slice plane
+			CSG planeCSG = incoming.getBoundingBox().toZMin();
+			planeCSG = planeCSG.intersect(planeCSG.toZMax().movez(0.01));
+			// Loop over each polygon in the slice of the incoming CSG
+			// Add the polygon to the final slice if it lies entirely in the z plane
+			// println "Preparing CSG slice"
+			CSG slicePart = incoming.transformed(slicePlane).intersect(planeCSG);
+			for (Polygon p : slicePart.getPolygons()) {
+				if (Slice.isPolygonAtZero(p)) {
+					rawPolygons.add(p);
+				}
+			}
+
+			Object[] parts = toPixMap(slicePart);
+			WritableImage obj_img = (WritableImage) parts[0];
+			double scaleX = (double) parts[1];
+			double xOffset = (double) parts[2];
+			double scaleY = (double) parts[3];
+			double yOffset = (double) parts[4];
+
+			ArrayList<Vector3d> points = new ArrayList<>();
+			for (Polygon p : rawPolygons) {
+				for (Vertex v : p.vertices) {
+					points.add(v.pos);
+				}
+			}
+
+			ArrayList<Polygon> polys = new ArrayList<>();
+			ArrayList<int[]> pixelVersionOfPoints = new ArrayList<>();
+			for (Vector3d it : points) {
+				int[] pix = toPixels(it.x, it.y, xOffset, yOffset, scaleX, scaleY);
+				if (pixelEdge(pix[0], pix[1], obj_img)) {
+					pixelVersionOfPoints.add(pix);
+				}
+			}
+
+			ArrayList<int[]> pixelVersionOfPointsFiltered = new ArrayList<>();
+			for (int[] d : pixelVersionOfPoints) {
+				boolean testIt = false;
+				for (int[] x : pixelVersionOfPointsFiltered) {
+					if (withinAPix(x, d)) {
+						testIt = true;
+					}
+
+				}
+				if (!testIt) {
+					pixelVersionOfPointsFiltered.add(d);
+				}
+			}
+			pixelVersionOfPoints = pixelVersionOfPointsFiltered;
+			// if(display)showPoints(pixelVersionOfPoints)
+			int[] pixStart = pixelVersionOfPoints.get(0);
+			pixelVersionOfPoints.remove(0);
+			int[] nextPoint = pixStart;
+			ArrayList<int[]> listOfPointsForThisPoly = (ArrayList<int[]>) Arrays.asList(pixStart);
+
+			// if(display)showPoints([nextPoint],20,javafx.scene.paint.Color.ORANGE)
+			int lastSearchIndex = 0;
+			while ((pixelVersionOfPoints.size() > 0 || listOfPointsForThisPoly.size() > 0) && !Thread.interrupted()) {
+
+				Object[] results = searchNext(nextPoint, obj_img, lastSearchIndex);
+				// println "Searching "+results
+				if (results == null) {
+					listOfPointsForThisPoly = new ArrayList<>();
+					if (pixelVersionOfPoints.size() > 0) {
+						pixStart = pixelVersionOfPoints.remove(0);
+						nextPoint = pixStart;
+						listOfPointsForThisPoly.clear();
+						listOfPointsForThisPoly.add(nextPoint);
+						// if(display)showPoints([nextPoint],40,javafx.scene.paint.Color.BLACK)
+					} else
+						break;
+					continue;
+				}
+				nextPoint = (int[]) results[0];
+				lastSearchIndex = (int) results[1];
+				// if(display)showPoints([nextPoint],2,javafx.scene.paint.Color.YELLOW)
+				// Thread.sleep(10)
+				ArrayList<int[]> toRemove = new ArrayList<>();
+				for (int[] it : pixelVersionOfPoints) {
+					if (withinAPix(nextPoint, it)) {
+						toRemove.add(it);
+					}
+				}
+
+				if (toRemove.size() > 0) {
+					// println "Found "+toRemove
+					for (int[] d : toRemove) {
+						// if(display)showPoints([d],30,javafx.scene.paint.Color.GREEN)
+						pixelVersionOfPoints.remove(d);
+						listOfPointsForThisPoly.add(d);
+					}
+
+				} else {
+					if (listOfPointsForThisPoly.size() > 2) {
+						if (withinAPix(nextPoint, pixStart)) {
+							// if(display)println "Closed Polygon Found!"
+							// Thread.sleep(1000)
+							List<Vector3d> p = new ArrayList<>();
+							for (int[] it : listOfPointsForThisPoly) {
+								p.add(new Vector3d((it[0] * scaleX) + xOffset, (it[1] * scaleY) + yOffset, 0));
+							}
+
+							Polygon polyNew = Polygon.fromPoints(p);
+							polys.add(polyNew);
+							listOfPointsForThisPoly.clear();
+							if (pixelVersionOfPoints.size() > 0) {
+								pixStart = pixelVersionOfPoints.remove(0);
+								nextPoint = pixStart;
+								listOfPointsForThisPoly.add(nextPoint);
+							}
+							// if(display)showPoints([nextPoint],20,javafx.scene.paint.Color.ORANGE)
+						}
+					}
+				}
+
+			}
+			if (listOfPointsForThisPoly.size() > 0) {
+				// println "Spare Polygon Found!"
+				// Thread.sleep(1000)
+				List<Vector3d> p = new ArrayList<>();
+				for (int[] it : listOfPointsForThisPoly) {
+					p.add(new Vector3d((it[0] * scaleX) + xOffset, (it[1] * scaleY) + yOffset, 0));
+				}
+				polys.add(Polygon.fromPoints(p));
+				// if(display)BowlerStudioController.getBowlerStudio() .addObject(polys, new
+				// File("."))
+			}
+
+			readers.clear();
+			// pixelData.clear();
+			usedPixels.clear();
+			// if(display)BowlerStudioController.getBowlerStudio().getJfx3dmanager().clearUserNode()
+			// BowlerStudioController.getBowlerStudio() .addObject(polys, new File("."));
+			System.out.println(
+					"DS Slice took: " + (((double) (System.currentTimeMillis() - startTime)) / 1000.0) + " seconds");
+			return polys;
+		}
+
+		Object[] searchNext(int[] pixStart, WritableImage obj_img, int lastSearchIndex) {
+
+			double index = 1;
+			Object[] ret = searchNextDepth(pixStart, obj_img, index, lastSearchIndex);
+
+			while (ret == null && index < 10 && !Thread.interrupted()) {
+				index += 0.5;
+				ret = searchNextDepth(pixStart, obj_img, index, 0);
+			}
+			return ret;
+
+		}
+
+		Object[] searchNextDepth(int[] pixStart, WritableImage obj_img, double searchSize, int lastSearchIndex) {
+			ArrayList<int[]> locations = new ArrayList<>();
+			double inc = Math.toDegrees(Math.atan2(1, searchSize));
+			if (searchSize > 2) {
+				for (double i = 0; i < 360 + inc; i += inc) {
+					int x = (int) Math.round(Math.cos(Math.toRadians(i)) * searchSize);
+					int y = (int) Math.round(Math.sin(Math.toRadians(i)) * searchSize);
+					locations.add(new int[] { pixStart[0] + x, pixStart[1] + y });
+				}
+			} else {
+
+				// arrange the pixels in the data array based on a CCW search
+				for (int i = (int) -searchSize; i < searchSize + 1; i++) {
+					locations.add(new int[] { (int) (pixStart[0] + searchSize), pixStart[1] + i });
+				}
+				// after the firat loop, leave off the first index to avoid duplicates
+				for (int i = (int) (searchSize - 1); i > -searchSize - 1; i--) {
+					locations.add(new int[] { pixStart[0] + i, (int) (pixStart[1] + searchSize) });
+				}
+				for (int i = (int) (searchSize - 1); i > -searchSize - 1; i--) {
+					locations.add(new int[] { (int) (pixStart[0] - searchSize), pixStart[1] + i });
+				}
+				for (int i = (int) (-searchSize + 1); i < searchSize + 1; i++) {
+					locations.add(new int[] { pixStart[0] + i, (int) (pixStart[1] - searchSize) });
+				}
+
+			}
+			// println inc+" "+locations
+			// if(searchSize>2)println "\t\t "+searchSize
+			int searchArraySize = locations.size();
+			if (lastSearchIndex >= searchArraySize) {
+				lastSearchIndex = 0;
+			}
+			int end = lastSearchIndex - 1;
+			if (end < 0)
+				end = searchArraySize - 1;
+			// rotate throught he data looking for CCW edge
+			for (int i = lastSearchIndex; i != end
+					&& !Thread.interrupted(); i = (i + 1 >= searchArraySize ? 0 : i + 1)) {
+				// println "\t\t "+i+" start = " +lastSearchIndex+" end = "+end+" array size =
+				// "+searchArraySize
+				int counterCW = i - 1;
+				if (counterCW < 0)
+					counterCW = searchArraySize - 1;
+				int[] ccw = locations.get(counterCW);
+				int[] self = locations.get(i);
+				boolean w = !pixelBlack(self[0], self[1], obj_img);
+				boolean b = pixelBlack(ccw[0], ccw[1], obj_img);
+
+				boolean useMe = true;
+				for (int[] it : usedPixels) {
+					if (it[0] == self[0] && it[1] == self[1]) {
+						useMe = false;
+						break;
+					}
+				}
+				if (w && b && useMe) {
+					usedPixels.add(self);
+					// edge detected doing a ccw rotation search
+					return new Object[] { self, i };
+				} else {
+					// if(display)showPoints([self],1,javafx.scene.paint.Color.WHITE) ;
+				}
+			}
+			return null;
+			/*
+			 * //println "From "+pixStart x= pixStart[0] y=pixStart[1] ul =
+			 * pixelBlack(x+1,y+1,obj_img) uc = pixelBlack(x+1,y,obj_img) ur =
+			 * pixelBlack(x+1,y-1,obj_img) l= pixelBlack(x,y+1,obj_img) r=
+			 * pixelBlack(x,y-1,obj_img) bl = pixelBlack(x-1,y+1,obj_img) bc =
+			 * pixelBlack(x-1,y,obj_img) br = pixelBlack(x-1,y-1,obj_img) me =
+			 * pixelBlack(x,y,obj_img) println
+			 * "Ul = "+ul+" uc "+uc+" ur "+ur+" \r\nl "+l+" c "+me+" r "+r+"\r\nbl "+bl+
+			 * " bc "+bc+" br "+br
+			 */
+
+		}
+
+		boolean withinAPix(int[] incoming, int[] out) {
+			int pixSize = 2;
+			for (int i = -pixSize; i < pixSize + 1; i++) {
+				int x = incoming[0] + i;
+				for (int j = -pixSize; j < pixSize + 1; j++) {
+					int y = incoming[1] + j;
+					if (x == out[0] && y == out[1]) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 	};
+
+	private static ISlice sliceEngine = new DefaultSLiceImp();
+
 	/**
 	 * Returns true if this polygon lies entirely in the z plane
 	 *
