@@ -1,5 +1,6 @@
 package com.piro.bezier;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -14,6 +15,8 @@ public class BezierPath
     static final Matcher matchPoint = Pattern.compile("\\s*(\\d+)[^\\d]+(\\d+)\\s*").matcher("");
 
     BezierListProducer path;
+
+	private ArrayList<Vector3d> pointList = new ArrayList<Vector3d>();
     
     /** Creates a new instance of Animate */
     public BezierPath()
@@ -168,5 +171,13 @@ public class BezierPath
         
         return point;
     }
+    /**
+     * Evaluates this animation element for the passed interpolation time.  Interp
+     * must be on [0..1].
+     */
+    public ArrayList<Vector3d> evaluate()
+    {
 
+        return pointList;
+    }
 }

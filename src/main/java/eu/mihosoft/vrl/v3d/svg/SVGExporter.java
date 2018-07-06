@@ -128,7 +128,7 @@ public class SVGExporter {
 		for (Vertex v : p.vertices) {
 			Vector3d position = v.pos;
 			double x = (position.x * Scale);
-			double y = (position.y * Scale);
+			double y = -(position.y * Scale);
 			section += x + "," + y + " ";
 			if (x > max[0]) {
 				max[0] = x;
@@ -146,7 +146,7 @@ public class SVGExporter {
 		// Close loop
 		Vector3d position = p.vertices.get(0).pos;
 		double x = (position.x * Scale);
-		double y = (position.y * Scale);
+		double y = -(position.y * Scale);
 		section += x + "," + y + " ";
 		section= section + "\" \nstroke=\""+color+"\" \nstroke-width=\"1\" \nfill=\"none\"\nid=\"line"+(lineCounter++)+"\" />\n";
 		polylines.add(section);

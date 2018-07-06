@@ -323,6 +323,7 @@ public class SVGLoad {
     ArrayList<Vector3d> p = new ArrayList<Vector3d>();
     for (double i = 0; i < 1.0; i += resolution) {
       Vector3d point = path.eval((float) i);
+      //point.y=-point.y;
       // println point
       p.add(point);
     }
