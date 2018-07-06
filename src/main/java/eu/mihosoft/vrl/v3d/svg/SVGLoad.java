@@ -43,6 +43,7 @@ public class SVGLoad {
 	private ArrayList<CSG> holes = null;
 
 	private List<Polygon> polygons = null;
+	private ISVGLoadProgress progress = null;
 
 	public void setHolePolarity(boolean p) {
 		holePolarity = p;
@@ -406,6 +407,9 @@ public class SVGLoad {
 					newbit.setColor(Color.RED);
 					//sections.add(newbit);
 				}
+				if(progress!=null) {
+					progress.onShape(newbit);
+				}
 				//
 				//
 			} catch (Exception ex) {
@@ -472,5 +476,13 @@ public class SVGLoad {
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
 		return factory.createDocument(uri.toString());
+	}
+
+	public ISVGLoadProgress getProgress() {
+		return progress;
+	}
+
+	public void setProgress(ISVGLoadProgress progress) {
+		this.progress = progress;
 	}
 }
