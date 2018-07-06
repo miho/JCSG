@@ -1006,6 +1006,7 @@ public class CSG {
 			} else
 				return this;
 		} catch (Exception ex) {
+			try {
 			System.err.println("CSG difference failed, performing workaround");
 			//ex.printStackTrace();
 			CSG intersectingParts = csg
@@ -1022,6 +1023,9 @@ public class CSG {
 				}
 			} else
 				return this;
+			}catch(Exception e) {
+				return this;
+			}
 		}
 
 	}

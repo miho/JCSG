@@ -587,4 +587,12 @@ public final class Polygon {
 	public Exception getCreationEventStackTrace() {
 		return creationEventStackTrace;
 	}
+
+	public List<Vector3d> getPoints() {
+		ArrayList<Vector3d> p =new ArrayList<>();
+		for(Vertex v:vertices) {
+			p.add(v.pos);
+		}
+		return p;
+	}
 }

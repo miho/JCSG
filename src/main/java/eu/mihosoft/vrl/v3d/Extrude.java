@@ -382,9 +382,10 @@ public class Extrude {
 	    Vector3d pointBStart = pathB.eval(0);
 	    double x = pointAStart.x, y = pointAStart.y, z =  pointBStart.y;
 	    double lastx = x, lasty = y, lastz = z;
-	    
+	    //float min = (float) 0.0001;
 	    for (int i = 0; i < iterations - 1; i++) {
 	        float pathFunction = (float)(((float)i)/((float)(iterations - 1)));
+
 	        Vector3d pointA = pathA.eval(pathFunction);
 	        Vector3d pointB = pathB.eval(pathFunction);
 
@@ -396,16 +397,21 @@ public class Extrude {
 	        t.translateX(x);
 	        t.translateY(y);
 	        t.translateZ(z);
-
-	        double ydiff = y - lasty;
-	        double zdiff = z - lastz;
-	        double xdiff = x - lastx;
-
+	        
+	        Vector3d pointAEst = pathA.eval((float) (pathFunction+(1.0/(double)iterations)));
+	        Vector3d pointBEst = pathB.eval((float) (pathFunction+(1.0/(double)iterations)));
+	        double  xest = pointAEst.x;
+	        double  yest = pointAEst.y;
+	        double  zest = pointBEst.y;
+	        double ydiff = yest - y;
+	        double zdiff = zest - z;
+	        double xdiff = xest - x;
 	        // t.rotX(45-Math.toDegrees(Math.atan2(zdiff,ydiff)))
 
 	        double rise = zdiff;
 	        double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
 	        double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
+	        System.out.println("Rot z = "+rotz+" x="+xdiff+" y="+ydiff);
 	        double roty = Math.toDegrees(Math.atan2(rise, run));
 
 	        t.rotZ(-rotz);

@@ -148,8 +148,8 @@ public class BezierPath
     public Vector3d eval(float interp)
     {
     	Vector3d point=new Vector3d(0, 0);// = new Vector3d();
-    	if(interp<0.0001)
-    	  interp=(float) 0.0001;
+    	if(interp<0.001)
+    	  interp=(float) 0.001;
     	if(interp>0.9999)
           interp=(float) 0.9999;
         
