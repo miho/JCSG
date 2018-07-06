@@ -411,7 +411,7 @@ public class Extrude {
 	        double rise = zdiff;
 	        double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
 	        double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
-	        System.out.println("Rot z = "+rotz+" x="+xdiff+" y="+ydiff);
+	        //System.out.println("Rot z = "+rotz+" x="+xdiff+" y="+ydiff);
 	        double roty = Math.toDegrees(Math.atan2(rise, run));
 
 	        t.rotZ(-rotz);
