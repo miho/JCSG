@@ -29,6 +29,7 @@ import org.w3c.dom.svg.SVGPathSegList;
 import com.piro.bezier.BezierPath;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Extrude;
+import eu.mihosoft.vrl.v3d.Plane;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
@@ -50,6 +51,9 @@ public class SVGLoad {
 	private ISVGLoadProgress progress = null;
 	private double thickness;
 	private boolean negativeThickness = false;
+	private double height = 0;
+	private double width = 0;
+
 	private static ISVGLoadProgress progressDefault = new ISVGLoadProgress() {
 
 		@Override
@@ -234,6 +238,14 @@ public class SVGLoad {
 	private void loadAllGroups(double resolution, Transform startingFrame) {
 
 		NodeList pn = getSVGDocument().getDocumentElement().getChildNodes();// .getElementsByTagName("g");
+		try {
+			height = Double.parseDouble(getSVGDocument().getDocumentElement().getAttribute("height").split("mm")[0]);
+			width = Double.parseDouble(getSVGDocument().getDocumentElement().getAttribute("width").split("mm")[0]);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			height = 0;
+			width = 0;
+		}
 		// println "Loading groups from "+pn.getClass()
 		int pnCount = pn.getLength();
 		for (int j = 0; j < pnCount; j++) {
@@ -366,29 +378,39 @@ public class SVGLoad {
 		// println code
 		BezierPath path = new BezierPath();
 		path.parsePathString(code);
-		ArrayList<Vector3d> p = new ArrayList<Vector3d>();
-		for (double i = 0; i < 1.0; i += resolution) {
-			Vector3d point = path.eval((float) i);
-			point.y = point.y;// *scaley;
-			point.x = point.x;// *scalex;
-			// println point
-			p.add(point);
+
+		ArrayList<Vector3d> p = path.evaluate();
+		for(Vector3d point:p) {
+			point.transform(startingFrame);
+			point.transform(new Transform().scale((1.0 / SVGExporter.Scale)));
+			point.transform(new Transform().translate(0, -height, 0));
+			//point.transform(new Transform().rotZ(-180));
+			point.transform(new Transform().rotY(180));
 		}
-		p.add(path.eval((float) (1.0 - resolution / 2.0)));
+
 		// System.out.println(" Path " + code);
 		Polygon poly = Polygon.fromPoints(p);
-		poly.transform(startingFrame);
+
+		//poly.transform(new Transform().rotX(180));
+		
+		
+		//poly.transform(new Transform().rotY(180));
+		//poly.transform(new Transform().rotZ(180));
+		//tmp.rotx(180).toZMin().movey(height);
 		if (polygons == null)
 			polygons = new ArrayList<Polygon>();
-		polygons.add(poly);
+		
 		boolean hole = Extrude.isCCW(poly);
 		poly = Polygon.fromPoints(Extrude.toCCW(poly.getPoints()));
+
+	
+		polygons.add(poly);
 		if (!hp)
 			hole = !hole;
 		CSG newbit;
 
 		newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), poly)
-				.scale((1.0 / SVGExporter.Scale));// SVG
+				.rotz(180);
 		// to
 		// mm
 
@@ -408,7 +430,7 @@ public class SVGLoad {
 				// newbit.setColor(Color.RED);
 				// sections.add(newbit);
 			}
-			
+
 			//
 			//
 		} catch (Exception ex) {
@@ -454,6 +476,8 @@ public class SVGLoad {
 
 	private void loadExtrusionSectoins() {
 		// sections.addAll(holes);
+		// return;
+
 		if (getSections().size() == 0 && getHoles().size() != 0) {
 			getSections().addAll(getHoles());
 			getHoles().clear();
@@ -485,25 +509,23 @@ public class SVGLoad {
 		}
 		for (int i = 0; i < getSections().size(); i++) {
 			CSG tmp = getSections().get(i);
-			boolean touching = false;
-			for (CSG c : getHoles()) {
-				if (tmp.touching(c)) {
-					touching = true;
-					break;
-				}
-			}
-			if (touching) {
-				for (CSG h : getHoles()) {
-					CSG intermTmp= tmp.difference(h);
-					if(intermTmp.getPolygons().size()==0) {
-						tmp = h.difference(tmp);
-						//getHoles().remove(h);
-					}else {
-						tmp=intermTmp;
+			//boolean touching = false;
+			for (int j=0;j<getHoles().size();j++) {
+				CSG c  = getHoles().get(j);
+				if (tmp.touching(c) && tmp.getPolygons().size()>0) {
+					CSG intermTmp = tmp.difference(c);
+					if (intermTmp.getPolygons().size() > 0) {
+						tmp = intermTmp;						// getHoles().remove(h);
+					} else {
+						// only apply holes that dont obliterate the part
+						//getSections().add(c);
+						//getHoles().remove(c);
+						//j--;
 					}
 				}
 			}
-			tmp = tmp.rotx(180).toZMin();// .movey(ymax);
+
+			//tmp = tmp.rotx(180).toZMin().movey(height);
 			if (progress != null) {
 				progress.onShape(tmp);
 			} else {
@@ -511,6 +533,7 @@ public class SVGLoad {
 			}
 			getSections().set(i, tmp);
 		}
+
 	}
 
 	/**
