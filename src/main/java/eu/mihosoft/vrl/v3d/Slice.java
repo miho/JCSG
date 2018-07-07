@@ -445,18 +445,24 @@ public class Slice {
 	}
 
 	public static List<Polygon> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) {
-		if(DefaultSliceImp.class.isInstance(sliceEngine)) {
-			// avoid concurrecy issues
-			try {
-				return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
-			}catch(IllegalStateException e) {
-				new JFXPanel();
-				return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
+		try {
+			if(DefaultSliceImp.class.isInstance(sliceEngine)) {
+				// avoid concurrecy issues
+				try {
+					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
+				}catch(IllegalStateException e) {
+					new JFXPanel();
+					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
+				}
 			}
+			return getSliceEngine().slice(incoming, slicePlane, normalInsetDistance);
+		}catch(Throwable e) {
+			return incoming.getPolygons();
 		}
-		return getSliceEngine().slice(incoming, slicePlane, normalInsetDistance);
 	}
-
+	public static List<Polygon> slice(CSG incoming) {
+		return slice(incoming, new Transform(),0);
+	}
 	public static ISlice getSliceEngine() {
 		return sliceEngine;
 	}
