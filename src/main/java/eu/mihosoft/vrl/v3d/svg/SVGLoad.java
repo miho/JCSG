@@ -387,9 +387,10 @@ public class SVGLoad {
 			hole = !hole;
 		CSG newbit;
 
-		newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), poly).scale((1.0/SVGExporter.Scale));// SVG
-																											// to
-																											// mm
+		newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), poly)
+				.scale((1.0 / SVGExporter.Scale));// SVG
+		// to
+		// mm
 
 		if (negativeThickness) {
 			newbit = newbit.toZMax();
@@ -407,7 +408,7 @@ public class SVGLoad {
 				// newbit.setColor(Color.RED);
 				// sections.add(newbit);
 			}
-
+			
 			//
 			//
 		} catch (Exception ex) {
@@ -453,11 +454,28 @@ public class SVGLoad {
 
 	private void loadExtrusionSectoins() {
 		// sections.addAll(holes);
-		if(getSections().size()==0&& getHoles().size()!=0) {
+		if (getSections().size() == 0 && getHoles().size() != 0) {
 			getSections().addAll(getHoles());
 			getHoles().clear();
 		}
-		if(getSections().size()==0)
+		ArrayList<CSG> notHoles = new ArrayList<>();
+		for (CSG c : holes) {
+			boolean touchesSomething = false;
+			for (CSG p : sections) {
+				if (p.touching(c)) {
+					touchesSomething = true;
+					break;
+				}
+			}
+			if (!touchesSomething) {
+				notHoles.add(c);
+			}
+		}
+		for (CSG c : notHoles) {
+			holes.remove(c);
+			sections.add(c);
+		}
+		if (getSections().size() == 0)
 			return;
 		double ymax = getSections().get(0).getMaxY();
 		for (CSG c : getSections()) {
@@ -468,15 +486,24 @@ public class SVGLoad {
 		for (int i = 0; i < getSections().size(); i++) {
 			CSG tmp = getSections().get(i);
 			boolean touching = false;
-			for(CSG c:getHoles()) {
-				if(tmp.touching(c)) {
-					touching=true;
+			for (CSG c : getHoles()) {
+				if (tmp.touching(c)) {
+					touching = true;
 					break;
 				}
 			}
-			if(touching)
-				tmp = tmp.difference(getHoles());
-			tmp = tmp.rotx(180).toZMin().movey(ymax);
+			if (touching) {
+				for (CSG h : getHoles()) {
+					CSG intermTmp= tmp.difference(h);
+					if(intermTmp.getPolygons().size()==0) {
+						tmp = h.difference(tmp);
+						//getHoles().remove(h);
+					}else {
+						tmp=intermTmp;
+					}
+				}
+			}
+			tmp = tmp.rotx(180).toZMin();// .movey(ymax);
 			if (progress != null) {
 				progress.onShape(tmp);
 			} else {
