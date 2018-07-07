@@ -28,6 +28,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGPathSegList;
 import com.piro.bezier.BezierPath;
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.Edge;
 import eu.mihosoft.vrl.v3d.Extrude;
 import eu.mihosoft.vrl.v3d.Plane;
 import eu.mihosoft.vrl.v3d.Polygon;
@@ -326,18 +327,22 @@ public class SVGLoad {
 
 	// SVGOMGElement
 	private void loadPath(Node pathNode, double resolution, Transform startingFrame) {
-
+		Transform newFrame;
 		// NodeList pathNodes = element.getElementsByTagName("path");
 		// Node transforms = element.getAttributes().getNamedItem("transform");
 		if (pathNode != null) {
 			// System.out.println("\tPath
 			// "+pathNode.getAttributes().getNamedItem("id").getNodeValue());
-			Node transforms = pathNode.getAttributes().getNamedItem("transform");
-			Transform newFrame = getNewframe(startingFrame, transforms);
-			MetaPostPath2 mpp = new MetaPostPath2(pathNode);
-			String code = mpp.toCode();
+			if (pathNode.getAttributes() != null) {
+				Node transforms = pathNode.getAttributes().getNamedItem("transform");
+				newFrame = getNewframe(startingFrame, transforms);
+				MetaPostPath2 mpp = new MetaPostPath2(pathNode);
+				String code = mpp.toCode();
 
-			loadComposite(code, resolution, newFrame);
+				loadComposite(code, resolution, newFrame);
+			} else {
+				newFrame = startingFrame;
+			}
 
 		}
 
@@ -373,44 +378,45 @@ public class SVGLoad {
 		// System.out.println("SVG has this many elements loaded: "+sections.size());
 		// BowlerStudioController.setCsg(sections,null);
 	}
-
+	public static boolean isCCW(Polygon polygon) {
+		double runningTotal=0;
+		List<Edge> edges = Edge.fromPolygon(polygon);
+		for(Edge e:edges) {
+			//runningTotal+=((e.getP1().pos.x-e.getP2().pos.x)*(e.getP1().pos.y-e.getP2().pos.y));
+			runningTotal+=e.getP1().pos.x*e.getP2().pos.y;
+			runningTotal-=e.getP2().pos.x*e.getP1().pos.y;
+		}
+		
+		return runningTotal<0;
+	}
 	private void loadSingle(String code, double resolution, Transform startingFrame) {
 		// println code
 		BezierPath path = new BezierPath();
 		path.parsePathString(code);
 
 		ArrayList<Vector3d> p = path.evaluate();
-		for(Vector3d point:p) {
+		for (Vector3d point : p) {
 			point.transform(startingFrame);
 			point.transform(new Transform().scale((1.0 / SVGExporter.Scale)));
 			point.transform(new Transform().translate(0, -height, 0));
-			//point.transform(new Transform().rotZ(-180));
+			 point.transform(new Transform().rotZ(-180));
 			point.transform(new Transform().rotY(180));
 		}
 
 		// System.out.println(" Path " + code);
 		Polygon poly = Polygon.fromPoints(p);
-
-		//poly.transform(new Transform().rotX(180));
-		
-		
-		//poly.transform(new Transform().rotY(180));
-		//poly.transform(new Transform().rotZ(180));
-		//tmp.rotx(180).toZMin().movey(height);
 		if (polygons == null)
 			polygons = new ArrayList<Polygon>();
-		
-		boolean hole = Extrude.isCCW(poly);
+
+		boolean hole = isCCW(poly);
 		poly = Polygon.fromPoints(Extrude.toCCW(poly.getPoints()));
 
-	
 		polygons.add(poly);
 		if (!hp)
 			hole = !hole;
 		CSG newbit;
 
-		newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), poly)
-				.rotz(180);
+		newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), poly);//.rotz(180);
 		// to
 		// mm
 
@@ -426,9 +432,10 @@ public class SVGLoad {
 				getSections().add(newbit);
 			} else {
 				// println "Hole"
-				getHoles().add(newbit);
-				// newbit.setColor(Color.RED);
-				// sections.add(newbit);
+				
+				//getHoles().add(newbit);
+				newbit.setColor(Color.RED);
+				sections.add(newbit);
 			}
 
 			//
@@ -509,23 +516,23 @@ public class SVGLoad {
 		}
 		for (int i = 0; i < getSections().size(); i++) {
 			CSG tmp = getSections().get(i);
-			//boolean touching = false;
-			for (int j=0;j<getHoles().size();j++) {
-				CSG c  = getHoles().get(j);
-				if (tmp.touching(c) && tmp.getPolygons().size()>0) {
+			// boolean touching = false;
+			for (int j = 0; j < getHoles().size(); j++) {
+				CSG c = getHoles().get(j);
+				if (tmp.touching(c) && tmp.getPolygons().size() > 0) {
 					CSG intermTmp = tmp.difference(c);
 					if (intermTmp.getPolygons().size() > 0) {
-						tmp = intermTmp;						// getHoles().remove(h);
+						tmp = intermTmp; // getHoles().remove(h);
 					} else {
 						// only apply holes that dont obliterate the part
-						//getSections().add(c);
-						//getHoles().remove(c);
-						//j--;
+						// getSections().add(c);
+						// getHoles().remove(c);
+						// j--;
 					}
 				}
 			}
 
-			//tmp = tmp.rotx(180).toZMin().movey(height);
+			// tmp = tmp.rotx(180).toZMin().movey(height);
 			if (progress != null) {
 				progress.onShape(tmp);
 			} else {

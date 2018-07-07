@@ -197,6 +197,7 @@ public class Extrude {
 	 * @return true, if is ccw
 	 */
 	public static boolean isCCW(Polygon polygon) {
+		
 		// thanks to Sepp Reiter for explaining me the algorithm!
 
 		if (polygon.vertices.size() < 3) {
@@ -253,6 +254,7 @@ public class Extrude {
 		// indicates whether edge points from highestLeftVertexIndex towards
 		// the sel index (ccw)
 		return selectedVIndex > highestLeftVertexIndex;
+		
 	}
 
 	/**
