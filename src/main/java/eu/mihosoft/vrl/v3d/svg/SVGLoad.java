@@ -445,6 +445,11 @@ public class SVGLoad {
 			// BowlerStudio.printStackTrace(ex);
 			//
 		}
+		if (progress != null) {
+			progress.onShape(newbit);
+		} else {
+			progressDefault.onShape(newbit);
+		}
 	}
 
 	public ArrayList<CSG> extrude(double t, double resolution) throws IOException {
@@ -533,11 +538,7 @@ public class SVGLoad {
 			}
 
 			// tmp = tmp.rotx(180).toZMin().movey(height);
-			if (progress != null) {
-				progress.onShape(tmp);
-			} else {
-				progressDefault.onShape(tmp);
-			}
+			
 			getSections().set(i, tmp);
 		}
 
