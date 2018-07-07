@@ -39,7 +39,6 @@ public class HullUtil {
 		if (Vector3d.class.isInstance(points.get(0))) {
 			points.stream().forEach((pobj) -> plist.add((Vector3d) pobj));
 			return hull(plist, new PropertyStorage());
-
 		}
 		if (CSG.class.isInstance(points.get(0))) {
 			for (Object csg : points)

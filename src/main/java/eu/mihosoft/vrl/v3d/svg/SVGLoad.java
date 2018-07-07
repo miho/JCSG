@@ -6,7 +6,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.vecmath.Matrix4d;
+
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GVTBuilder;
@@ -45,15 +49,16 @@ public class SVGLoad {
 	private List<Polygon> polygons = null;
 	private ISVGLoadProgress progress = null;
 	private double thickness;
-	private boolean negativeThickness=false;
+	private boolean negativeThickness = false;
 	private static ISVGLoadProgress progressDefault = new ISVGLoadProgress() {
-		
+
 		@Override
 		public void onShape(CSG newShape) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	};
+
 	public void setHolePolarity(boolean p) {
 		hp = p;
 	}
@@ -199,7 +204,7 @@ public class SVGLoad {
 	public List<Polygon> toPolygons(double resolution) {
 		if (polygons == null) {
 			try {
-				loadAllGroups(resolution, 0, 0);
+				loadAllGroups(resolution, new Transform());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -226,86 +231,121 @@ public class SVGLoad {
 		return new SVGLoad(uri).extrude(thickness, resolution);
 	}
 
-	private void loadAllGroups(double resolution, double mvx, double mvy) {
+	private void loadAllGroups(double resolution, Transform startingFrame) {
 
-		NodeList pn = getSVGDocument().getDocumentElement().getChildNodes();//.getElementsByTagName("g");
+		NodeList pn = getSVGDocument().getDocumentElement().getChildNodes();// .getElementsByTagName("g");
 		// println "Loading groups from "+pn.getClass()
 		int pnCount = pn.getLength();
 		for (int j = 0; j < pnCount; j++) {
 			if (SVGOMGElement.class.isInstance(pn.item(j))) {
 				SVGOMGElement element = (SVGOMGElement) pn.item(j);
-				loadGroup( element,  resolution,  mvx,  mvy);
+				loadGroup(element, resolution, startingFrame);
 			}
 			// else
 			// println "UNKNOWN ELEMENT "+pn.item(j).getClass()
 		}
 
 	}
-	
-	private void loadGroup(SVGOMGElement element, double resolution, double mvx, double mvy) {
-		Node transforms = element.getAttributes().getNamedItem("transform");
-		Node id = element.getAttributes().getNamedItem("id");
-		System.out.println("Group Loading: " +id.getNodeValue());
-		String transformValue = "translate(0,0)";
-		if (transforms != null) {
-			transformValue = transforms.getNodeValue();
-		}
-		if (transformValue.contains("matrix")) {
-			transformValue = "translate(0,0)";
-			// println "Replacing matrix"
-		}
 
-		String[] transformValues = transformValue.replaceAll("translate", "").replaceAll("\\(", "")
-				.replaceAll("\\)", "").split("\\,");
-		// System.out.println(id.getNodeValue() + " " + transformValues);
-		mvx = Double.parseDouble(transformValues[0]);
-		mvy = Double.parseDouble(transformValues[1]);
-		
-		NodeList children= element.getChildNodes();
-		for(int i=0;i<children.getLength();i++) {
-			Node n =children.item(i);
-			if(SVGOMGElement.class.isInstance(n)) {
-				loadGroup( (SVGOMGElement)n,  resolution,  mvx,  mvy);
-			}else {
-				//System.out.println("\tNot group: "+n.getAttributes().getNamedItem("id").getNodeValue());
-				loadPath(n,  resolution,  mvx,  mvy);
+	private void loadGroup(SVGOMGElement element, double resolution, Transform startingFrame) {
+		Node transforms = element.getAttributes().getNamedItem("transform");
+		Transform newFrame = getNewframe(startingFrame, transforms);
+		System.out.println("Group " + element.getAttribute("id") + " root " + newFrame.getX() + " " + newFrame.getY());
+		NodeList children = element.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node n = children.item(i);
+			if (SVGOMGElement.class.isInstance(n)) {
+				loadGroup((SVGOMGElement) n, resolution, newFrame);
+			} else {
+				// System.out.println("\tNot group:
+				// "+n.getAttributes().getNamedItem("id").getNodeValue());
+				try {
+					loadPath(n, resolution, newFrame);
+				} catch (Throwable t) {
+
+					t.printStackTrace();
+				}
 			}
 		}
 	}
 
+	private Transform getNewframe(Transform startingFrame, Node transforms) {
+		if (transforms == null)
+			return startingFrame;
+		Transform newFrame = new Transform().apply(startingFrame);
+		String transformValue = transforms.getNodeValue();
+		System.out.println("\tApply " + transformValue + " root " + startingFrame.getX() + " " + startingFrame.getY());
+		if (transformValue.contains("translate")) {
+			String[] transformValues = transformValue.replaceAll("translate", "").replaceAll("\\(", "")
+					.replaceAll("\\)", "").split("\\,");
+			// System.out.println(id.getNodeValue() + " " + transformValues);
+			// mvx +=Double.parseDouble(transformValues[0]);
+			// mvy += Double.parseDouble(transformValues[1]);
+			// newFrame.getInternalMatrix().m03=Double.parseDouble(transformValues[0]);
+			// newFrame.getInternalMatrix().m13=Double.parseDouble(transformValues[1]);
+			newFrame.apply(new Transform().translate(Double.parseDouble(transformValues[0]),
+					Double.parseDouble(transformValues[1]), 0));
+
+		} else if (transformValue.contains("scale")) {
+			String[] transformValues = transformValue.replaceAll("scale", "").replaceAll("\\(", "")
+					.replaceAll("\\)", "").split("\\,");
+			// System.out.println(id.getNodeValue() + " " + transformValues);
+			double scalex = Double.parseDouble(transformValues[0]);
+			double scaley = Double.parseDouble(transformValues[1]);
+			newFrame.scale(scalex, scaley, 1);
+
+		} else if (transformValue.contains("matrix")) {
+			String[] transformValues = transformValue.replaceAll("matrix", "").replaceAll("\\(", "")
+					.replaceAll("\\)", "").split("\\,");
+			// System.out.println("Matrix found " +new
+			// ArrayList<>(Arrays.asList(transformValues)));
+			double a = Double.parseDouble(transformValues[0]);
+			double b = Double.parseDouble(transformValues[1]);
+			double c = Double.parseDouble(transformValues[2]);
+			double d = Double.parseDouble(transformValues[3]);
+			double e = Double.parseDouble(transformValues[4]);
+			double f = Double.parseDouble(transformValues[5]);
+			double elemenents[] = { a, c, 0, e, b, d, 0, f, 0, 0, 1, 0, 0, 0, 0, 1 };
+			newFrame.apply(new Transform(new Matrix4d(elemenents)));
+
+		}
+		return newFrame;
+	}
+
 	// SVGOMGElement
-	private void loadPath(Node pathNode, double resolution, double mvx, double mvy) {
+	private void loadPath(Node pathNode, double resolution, Transform startingFrame) {
 
-		//NodeList pathNodes = element.getElementsByTagName("path");
+		// NodeList pathNodes = element.getElementsByTagName("path");
 		// Node transforms = element.getAttributes().getNamedItem("transform");
-		if (pathNode!= null) {
+		if (pathNode != null) {
+			// System.out.println("\tPath
+			// "+pathNode.getAttributes().getNamedItem("id").getNodeValue());
+			Node transforms = pathNode.getAttributes().getNamedItem("transform");
+			Transform newFrame = getNewframe(startingFrame, transforms);
+			MetaPostPath2 mpp = new MetaPostPath2(pathNode);
+			String code = mpp.toCode();
 
-				System.out.println("Path "+pathNode.getAttributes().getNamedItem("id").getNodeValue());
+			loadComposite(code, resolution, newFrame);
 
-				MetaPostPath2 mpp = new MetaPostPath2(pathNode);
-				String code = mpp.toCode();
-
-				loadComposite(code, resolution, mvx, mvy);
-			
 		}
 
 	}
 
-	private void loadComposite(String code, double resolution, double mvx, double mvy) {
+	private void loadComposite(String code, double resolution, Transform startingFrame) {
 		// Count the occourences of M
 		int count = code.length() - code.replace("M", "").length();
 		if (count < 2) {
 			// println "Single path found"
 
-			//setHolePolarity(true);
+			// setHolePolarity(true);
 			try {
-				loadSingle(code, resolution, mvx, mvy);
+				loadSingle(code, resolution, startingFrame);
 			} catch (Exception ex) {
 				// BowlerStudio.printStackTrace(ex);
 			}
 		} else {
 
-			//setHolePolarity(false);
+			// setHolePolarity(false);
 			String[] pathParts = code.split("M");
 			// println "Complex path found "+ pathParts.length ;
 			for (int i = 0; i < pathParts.length; i++) {
@@ -314,7 +354,7 @@ public class SVGLoad {
 				if (sectionedPart.length() > 1) {
 
 					// println "Seperated complex: "
-					loadSingle(sectionedPart, resolution, mvx, mvy);
+					loadSingle(sectionedPart, resolution, startingFrame);
 				}
 			}
 		}
@@ -322,57 +362,52 @@ public class SVGLoad {
 		// BowlerStudioController.setCsg(sections,null);
 	}
 
-	private void loadSingle(String code, double resolution, double mvx, double mvy) {
+	private void loadSingle(String code, double resolution, Transform startingFrame) {
 		// println code
 		BezierPath path = new BezierPath();
 		path.parsePathString(code);
 		ArrayList<Vector3d> p = new ArrayList<Vector3d>();
 		for (double i = 0; i < 1.0; i += resolution) {
 			Vector3d point = path.eval((float) i);
-			// point.y=-point.y;
+			point.y = point.y;// *scaley;
+			point.x = point.x;// *scalex;
 			// println point
 			p.add(point);
 		}
 		p.add(path.eval((float) (1.0 - resolution / 2.0)));
 		// System.out.println(" Path " + code);
 		Polygon poly = Polygon.fromPoints(p);
-		Transform transform = new Transform();
-		transform.translate(mvx, mvy, 0);
-		poly.transform(transform);
+		poly.transform(startingFrame);
 		if (polygons == null)
 			polygons = new ArrayList<Polygon>();
 		polygons.add(poly);
 		boolean hole = Extrude.isCCW(poly);
-		poly=Polygon.fromPoints(Extrude.toCCW(poly.getPoints()));
+		poly = Polygon.fromPoints(Extrude.toCCW(poly.getPoints()));
 		if (!hp)
 			hole = !hole;
 		CSG newbit;
-		
-		newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), poly).scale(0.376975);// SVG
+
+		newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), poly).scale((1.0/SVGExporter.Scale));// SVG
 																											// to
 																											// mm
-		
-		if(negativeThickness) {
-			newbit=newbit.toZMax();
+
+		if (negativeThickness) {
+			newbit = newbit.toZMax();
 		}
 		// scale
-		
+
 		try {
 
 			if (!hole) {
 				// println "NOT hole"
-				sections.add(newbit);
+				getSections().add(newbit);
 			} else {
 				// println "Hole"
-				holes.add(newbit);
-				newbit.setColor(Color.RED);
-				//sections.add(newbit);
+				getHoles().add(newbit);
+				// newbit.setColor(Color.RED);
+				// sections.add(newbit);
 			}
-			if(progress!=null) {
-				progress.onShape(newbit);
-			}else {
-				progressDefault.onShape(newbit);
-			}
+
 			//
 			//
 		} catch (Exception ex) {
@@ -383,13 +418,13 @@ public class SVGLoad {
 	}
 
 	public ArrayList<CSG> extrude(double t, double resolution) throws IOException {
-		this.thickness=t;
-		
-		if(thickness<0) {
-			thickness=-thickness;
-			negativeThickness=true;
-		}else {
-			negativeThickness=false;
+		this.thickness = t;
+
+		if (thickness < 0) {
+			thickness = -thickness;
+			negativeThickness = true;
+		} else {
+			negativeThickness = false;
 		}
 		/**
 		 * Reads a file and parses the path elements.
@@ -403,21 +438,52 @@ public class SVGLoad {
 		// SVGLoad converter = new eu.mihosoft.vrl.v3d.svg.SVGLoad(uri.toString());
 		// println "Loading converter"
 
-		if (sections == null)
-			sections = new ArrayList<CSG>();
-		if (holes == null)
-			holes = new ArrayList<CSG>();
-		sections.clear();
-		holes.clear();
-		
-		loadAllGroups(resolution, 0, 0);
+		if (getSections() == null)
+			setSections(new ArrayList<CSG>());
+		if (getHoles() == null)
+			setHoles(new ArrayList<CSG>());
+		getSections().clear();
+		getHoles().clear();
+
+		loadAllGroups(resolution, new Transform());
 		loadExtrusionSectoins();
-				
-		return sections;
+
+		return getSections();
 	}
 
-	private void loadExtrusionSectoins() {			
-		sections.addAll(holes);		
+	private void loadExtrusionSectoins() {
+		// sections.addAll(holes);
+		if(getSections().size()==0&& getHoles().size()!=0) {
+			getSections().addAll(getHoles());
+			getHoles().clear();
+		}
+		if(getSections().size()==0)
+			return;
+		double ymax = getSections().get(0).getMaxY();
+		for (CSG c : getSections()) {
+			if (c.getMaxY() > ymax) {
+				ymax = c.getMaxY();
+			}
+		}
+		for (int i = 0; i < getSections().size(); i++) {
+			CSG tmp = getSections().get(i);
+			boolean touching = false;
+			for(CSG c:getHoles()) {
+				if(tmp.touching(c)) {
+					touching=true;
+					break;
+				}
+			}
+			if(touching)
+				tmp = tmp.difference(getHoles());
+			tmp = tmp.rotx(180).toZMin().movey(ymax);
+			if (progress != null) {
+				progress.onShape(tmp);
+			} else {
+				progressDefault.onShape(tmp);
+			}
+			getSections().set(i, tmp);
+		}
 	}
 
 	/**
@@ -490,5 +556,21 @@ public class SVGLoad {
 
 	public static void setProgressDefault(ISVGLoadProgress progressDefault) {
 		SVGLoad.progressDefault = progressDefault;
+	}
+
+	public ArrayList<CSG> getHoles() {
+		return holes;
+	}
+
+	public void setHoles(ArrayList<CSG> holes) {
+		this.holes = holes;
+	}
+
+	public ArrayList<CSG> getSections() {
+		return sections;
+	}
+
+	public void setSections(ArrayList<CSG> sections) {
+		this.sections = sections;
 	}
 }

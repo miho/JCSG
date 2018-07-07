@@ -20,8 +20,8 @@ import javafx.scene.paint.Color;
 public class SVGExporter {
 	private String footer = "</svg>";
 	private String section = "";
-	
-	private static final double Scale = 3.543335;// SVG px to MM scale factor
+	//0.376975
+	public static final double Scale = 3.543307;// SVG px to MM scale factor
 	private int colorTicker=0;
 	private  List<String> colorNames = Arrays.asList("crimson","gray","black","darkmagenta","darkolivegreen","darkgreen",
 			"darkblue",
@@ -41,7 +41,7 @@ public class SVGExporter {
 	private int lineCounter=0;
 	private String name="";
 	public SVGExporter(){
-		
+	
 	}
 	public String make(){
 		makeLayer();// make the final group
