@@ -240,8 +240,17 @@ public class SVGLoad {
 
 		NodeList pn = getSVGDocument().getDocumentElement().getChildNodes();// .getElementsByTagName("g");
 		try {
-			height = Double.parseDouble(getSVGDocument().getDocumentElement().getAttribute("height").split("mm")[0]);
-			width = Double.parseDouble(getSVGDocument().getDocumentElement().getAttribute("width").split("mm")[0]);
+			String hval = getSVGDocument().getDocumentElement().getAttribute("height");
+			String wval = getSVGDocument().getDocumentElement().getAttribute("width");
+			height = Double.parseDouble(hval.split("mm")[0]);
+			width = Double.parseDouble(wval.split("mm")[0]);
+			if(!hval.contains("mm")) {
+				height=height*(1/SVGExporter.Scale);
+			}
+			if(!wval.contains("mm")) {
+				width=height*(1/SVGExporter.Scale);
+			}
+			System.out.println("Page size height = "+height+" width ="+width);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			height = 0;
@@ -338,10 +347,8 @@ public class SVGLoad {
 				newFrame = getNewframe(startingFrame, transforms);
 				MetaPostPath2 mpp = new MetaPostPath2(pathNode);
 				String code = mpp.toCode();
-
+				System.out.println("\tPath "+pathNode.getAttributes().getNamedItem("id").getNodeValue()+" "+newFrame);
 				loadComposite(code, resolution, newFrame);
-			} else {
-				newFrame = startingFrame;
 			}
 
 		}
@@ -393,13 +400,13 @@ public class SVGLoad {
 		// println code
 		BezierPath path = new BezierPath();
 		path.parsePathString(code);
-
+		
 		ArrayList<Vector3d> p = path.evaluate();
 		for (Vector3d point : p) {
 			point.transform(startingFrame);
 			point.transform(new Transform().scale((1.0 / SVGExporter.Scale)));
 			point.transform(new Transform().translate(0, -height, 0));
-			 point.transform(new Transform().rotZ(-180));
+			point.transform(new Transform().rotZ(-180));
 			point.transform(new Transform().rotY(180));
 		}
 

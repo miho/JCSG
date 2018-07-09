@@ -21,7 +21,8 @@ public class SVGExporter {
 	private String footer = "</svg>";
 	private String section = "";
 	//0.376975
-	public static final double Scale = 3.543307;// SVG px to MM scale factor
+	//public static final double Scale = 3.543307;// SVG px to MM scale facto
+	public static final double Scale = 3.543307;
 	private int colorTicker=0;
 	private  List<String> colorNames = Arrays.asList("crimson","gray","black","darkmagenta","darkolivegreen","darkgreen",
 			"darkblue",

@@ -102,7 +102,7 @@ import javafx.scene.transform.Affine;
  */
 
 @SuppressWarnings("restriction")
-public class CSG {
+public class CSG implements IuserAPI{
 
 	/** The polygons. */
 	private List<Polygon> polygons;
