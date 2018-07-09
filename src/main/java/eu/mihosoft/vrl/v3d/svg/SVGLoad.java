@@ -250,7 +250,7 @@ public class SVGLoad {
 			if(!wval.contains("mm")) {
 				width=height*(1/SVGExporter.Scale);
 			}
-			System.out.println("Page size height = "+height+" width ="+width);
+			//System.out.println("Page size height = "+height+" width ="+width);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			height = 0;
@@ -272,7 +272,7 @@ public class SVGLoad {
 	private void loadGroup(SVGOMGElement element, double resolution, Transform startingFrame) {
 		Node transforms = element.getAttributes().getNamedItem("transform");
 		Transform newFrame = getNewframe(startingFrame, transforms);
-		System.out.println("Group " + element.getAttribute("id") + " root " + newFrame.getX() + " " + newFrame.getY());
+		//System.out.println("Group " + element.getAttribute("id") + " root " + newFrame.getX() + " " + newFrame.getY());
 		NodeList children = element.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node n = children.item(i);
@@ -296,7 +296,7 @@ public class SVGLoad {
 			return startingFrame;
 		Transform newFrame = new Transform().apply(startingFrame);
 		String transformValue = transforms.getNodeValue();
-		System.out.println("\tApply " + transformValue + " root " + startingFrame.getX() + " " + startingFrame.getY());
+		//System.out.println("\tApply " + transformValue + " root " + startingFrame.getX() + " " + startingFrame.getY());
 		if (transformValue.contains("translate")) {
 			String[] transformValues = transformValue.replaceAll("translate", "").replaceAll("\\(", "")
 					.replaceAll("\\)", "").split("\\,");
@@ -347,7 +347,7 @@ public class SVGLoad {
 				newFrame = getNewframe(startingFrame, transforms);
 				MetaPostPath2 mpp = new MetaPostPath2(pathNode);
 				String code = mpp.toCode();
-				System.out.println("\tPath "+pathNode.getAttributes().getNamedItem("id").getNodeValue()+" "+newFrame);
+				//System.out.println("\tPath "+pathNode.getAttributes().getNamedItem("id").getNodeValue()+" "+newFrame);
 				loadComposite(code, resolution, newFrame);
 			}
 
