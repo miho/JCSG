@@ -1,14 +1,18 @@
 package eu.mihosoft.vrl.v3d.svg;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.vecmath.Matrix4d;
 
 import org.apache.batik.bridge.BridgeContext;
@@ -19,12 +23,15 @@ import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.dom.svg.SVGItem;
 import org.apache.batik.dom.svg.SVGOMGElement;
+import org.apache.batik.dom.svg.SVGOMImageElement;
 import org.apache.batik.dom.svg.SVGOMPathElement;
 import org.apache.batik.dom.svg.SVGOMSVGElement;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGImageElement;
 import org.w3c.dom.svg.SVGPathSegList;
 import com.piro.bezier.BezierPath;
 import eu.mihosoft.vrl.v3d.CSG;
@@ -54,7 +61,35 @@ public class SVGLoad {
 	private boolean negativeThickness = false;
 	private double height = 0;
 	private double width = 0;
+	private static final HashMap<String,Double> units=new HashMap<>();
+	static {
+		units.put("mm", (1/SVGExporter.Scale));
+		units.put("px", 1.0);
+		units.put("cm", units.get("mm")/10.0);
+		units.put("in", units.get("mm")/25.4);
+		units.put("ft", units.get("in")/12.0);
+		units.put("m", units.get("mm")/1000.0);
 
+	}
+	
+	private static double toPx(String value) {
+		for(String key : units.keySet()) {
+			if(value.endsWith(key)) {
+				String []split = value.split(key);
+				if(key.contentEquals("m")&& split.length>1) {
+					// meters but not meters units
+					break;
+				}
+				//System.out.println("Units set to "+key+" for "+value);
+				return Double.parseDouble(split[0])/ units.get(key);
+			}
+		}
+		return Double.parseDouble(value);
+	}
+	private static double toMM(String value) {
+		Double px= toPx(value);
+		return px*units.get("mm");
+	}
 	private static ISVGLoadProgress progressDefault = new ISVGLoadProgress() {
 
 		@Override
@@ -237,20 +272,14 @@ public class SVGLoad {
 	}
 
 	private void loadAllGroups(double resolution, Transform startingFrame) {
-
+		
 		NodeList pn = getSVGDocument().getDocumentElement().getChildNodes();// .getElementsByTagName("g");
 		try {
 			String hval = getSVGDocument().getDocumentElement().getAttribute("height");
 			String wval = getSVGDocument().getDocumentElement().getAttribute("width");
-			height = Double.parseDouble(hval.split("mm")[0]);
-			width = Double.parseDouble(wval.split("mm")[0]);
-			if(!hval.contains("mm")) {
-				height=height*(1/SVGExporter.Scale);
-			}
-			if(!wval.contains("mm")) {
-				width=height*(1/SVGExporter.Scale);
-			}
-			//System.out.println("Page size height = "+height+" width ="+width);
+			height = toMM(hval);
+			width = toMM(wval);
+			System.out.println("Page size height = "+height+" width ="+width);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			height = 0;
@@ -300,20 +329,15 @@ public class SVGLoad {
 		if (transformValue.contains("translate")) {
 			String[] transformValues = transformValue.replaceAll("translate", "").replaceAll("\\(", "")
 					.replaceAll("\\)", "").split("\\,");
-			// System.out.println(id.getNodeValue() + " " + transformValues);
-			// mvx +=Double.parseDouble(transformValues[0]);
-			// mvy += Double.parseDouble(transformValues[1]);
-			// newFrame.getInternalMatrix().m03=Double.parseDouble(transformValues[0]);
-			// newFrame.getInternalMatrix().m13=Double.parseDouble(transformValues[1]);
-			newFrame.apply(new Transform().translate(Double.parseDouble(transformValues[0]),
-					Double.parseDouble(transformValues[1]), 0));
+			newFrame.apply(new Transform().translate(toPx(transformValues[0]),
+					toPx(transformValues[1]), 0));
 
 		} else if (transformValue.contains("scale")) {
 			String[] transformValues = transformValue.replaceAll("scale", "").replaceAll("\\(", "")
 					.replaceAll("\\)", "").split("\\,");
 			// System.out.println(id.getNodeValue() + " " + transformValues);
-			double scalex = Double.parseDouble(transformValues[0]);
-			double scaley = Double.parseDouble(transformValues[1]);
+			double scalex = toPx(transformValues[0]);
+			double scaley = toPx(transformValues[1]);
 			newFrame.scale(scalex, scaley, 1);
 
 		} else if (transformValue.contains("matrix")) {
@@ -321,12 +345,12 @@ public class SVGLoad {
 					.replaceAll("\\)", "").split("\\,");
 			// System.out.println("Matrix found " +new
 			// ArrayList<>(Arrays.asList(transformValues)));
-			double a = Double.parseDouble(transformValues[0]);
-			double b = Double.parseDouble(transformValues[1]);
-			double c = Double.parseDouble(transformValues[2]);
-			double d = Double.parseDouble(transformValues[3]);
-			double e = Double.parseDouble(transformValues[4]);
-			double f = Double.parseDouble(transformValues[5]);
+			double a = toPx(transformValues[0]);
+			double b = toPx(transformValues[1]);
+			double c = toPx(transformValues[2]);
+			double d = toPx(transformValues[3]);
+			double e = toPx(transformValues[4]);
+			double f = toPx(transformValues[5]);
 			double elemenents[] = { a, c, 0, e, b, d, 0, f, 0, 0, 1, 0, 0, 0, 0, 1 };
 			newFrame.apply(new Transform(new Matrix4d(elemenents)));
 
@@ -345,10 +369,40 @@ public class SVGLoad {
 			if (pathNode.getAttributes() != null) {
 				Node transforms = pathNode.getAttributes().getNamedItem("transform");
 				newFrame = getNewframe(startingFrame, transforms);
-				MetaPostPath2 mpp = new MetaPostPath2(pathNode);
-				String code = mpp.toCode();
-				//System.out.println("\tPath "+pathNode.getAttributes().getNamedItem("id").getNodeValue()+" "+newFrame);
-				loadComposite(code, resolution, newFrame);
+				try {
+					if(SVGOMPathElement.class.isInstance(pathNode)) {
+						MetaPostPath2 mpp = new MetaPostPath2(pathNode);
+						String code = mpp.toCode();
+						//System.out.println("\tPath "+pathNode.getAttributes().getNamedItem("id").getNodeValue()+" "+newFrame);
+						loadComposite(code, resolution, newFrame);
+					}else if(SVGOMImageElement.class.isInstance(pathNode)) {
+						SVGImageElement image = (SVGOMImageElement) pathNode;
+						System.out.println("Loading Image element..");
+						double x=toPx(image.getAttributes().getNamedItem("x").getNodeValue());
+						double y=toPx(image.getAttributes().getNamedItem("y").getNodeValue());
+						double pheight=toPx(image.getAttributes().getNamedItem("height").getNodeValue());
+						double pwidth=toPx(image.getAttributes().getNamedItem("width").getNodeValue());
+						String []imageData = null;
+						for(int i=0;i<image.getAttributes().getLength();i++) {
+							Node n = image.getAttributes().item(i);
+							if(n.getNodeName().contains("href"))
+								try {
+									imageData=n.getNodeValue().split("/");
+									
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+						}
+						//TODO parse the Image string into an Image object
+						//for(int i=0;i<10;i++)
+						//	System.out.println(imageData[i]);
+					}
+				}catch (java.lang.ClassCastException ex){
+					// attempt to load image
+					System.out.println("Found "+pathNode.getClass());
+					//ex.printStackTrace();
+				}
 			}
 
 		}
