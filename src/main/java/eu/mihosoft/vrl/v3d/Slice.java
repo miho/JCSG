@@ -167,7 +167,7 @@ public class Slice {
 			// Loop over each polygon in the slice of the incoming CSG
 			// Add the polygon to the final slice if it lies entirely in the z plane
 			// println "Preparing CSG slice"
-			CSG slicePart = incoming.transformed(slicePlane).intersect(planeCSG);
+			CSG slicePart = incoming.transformed(slicePlane.inverse()).intersect(planeCSG);
 			for (Polygon p : slicePart.getPolygons()) {
 				if (Slice.isPolygonAtZero(p)) {
 					rawPolygons.add(p);
