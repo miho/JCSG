@@ -599,5 +599,170 @@ public class Transform {
 
 		return this;
 	}
+	
+	public Transform move(Number x, Number y, Number z) {
+		return this.apply(new Transform().translate(x.doubleValue(),y.doubleValue(),z.doubleValue()));
+	}
+	public Transform move(Vertex v) {
+		return this.apply(new Transform().translate(v.getX(),v.getY(),v.getZ()));
+	}
+	public Transform move(Vector3d v) {
+		return this.apply(new Transform().translate(v.x,v.y,v.z));
+	}
+	public Transform move(Number[] posVector) {
+		return move(posVector[0], posVector[1], posVector[2]);
+	}
+
+	/**
+	 * Movey.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	// Helper/wrapper functions for movement
+	public Transform movey(Number howFarToMove) {
+		return this.apply(Transform.unity().translateY(howFarToMove.doubleValue()));
+	}
+
+	/**
+	 * Movez.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	public Transform movez(Number howFarToMove) {
+		return this.apply(Transform.unity().translateZ(howFarToMove.doubleValue()));
+	}
+
+	/**
+	 * Movex.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	public Transform movex(Number howFarToMove) {
+		return this.apply(Transform.unity().translateX(howFarToMove.doubleValue()));
+	}
+	
+	/**
+	 * mirror about y axis.
+	 *
+
+	 * @return the csg
+	 */
+	// Helper/wrapper functions for movement
+	public Transform mirrory() {
+		return this.scaley(-1);
+	}
+
+	/**
+	 * mirror about z axis.
+	 *
+	 * @return the csg
+	 */
+	public Transform mirrorz() {
+		return this.scalez(-1);
+	}
+
+	/**
+	 * mirror about  x axis.
+	 *
+	 * @return the csg
+	 */
+	public Transform mirrorx() {
+		return this.scalex(-1);
+	}
+
+
+	public Transform rot(Number x, Number y, Number z) {
+		return rotx(x.doubleValue()).roty(y.doubleValue()).rotz(z.doubleValue());
+	}
+
+	public Transform rot(Number[] posVector) {
+		return rot(posVector[0], posVector[1], posVector[2]);
+	}
+
+	/**
+	 * Rotz.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	// Rotation function, rotates the object
+	public Transform rotz(Number degreesToRotate) {
+		return this.apply(new Transform().rotZ(degreesToRotate.doubleValue()));
+	}
+
+	/**
+	 * Roty.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	public Transform roty(Number degreesToRotate) {
+		return this.apply(new Transform().rotY(degreesToRotate.doubleValue()));
+	}
+
+	/**
+	 * Rotx.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	public Transform rotx(Number degreesToRotate) {
+		return this.apply(new Transform().rotX(degreesToRotate.doubleValue()));
+	}
+
+	/**
+	 * Scalez.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	// Scale function, scales the object
+	public Transform scalez(Number scaleValue) {
+		return this.apply(new Transform().scaleZ(scaleValue.doubleValue()));
+	}
+
+	/**
+	 * Scaley.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public Transform scaley(Number scaleValue) {
+		return this.apply(new Transform().scaleY(scaleValue.doubleValue()));
+	}
+
+	/**
+	 * Scalex.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public Transform scalex(Number scaleValue) {
+		return this.apply(new Transform().scaleX(scaleValue.doubleValue()));
+	}
+
+	/**
+	 * Scale.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public Transform scale(Number scaleValue) {
+		return this.apply(new Transform().scale(scaleValue.doubleValue()));
+	}
+
 
 }
