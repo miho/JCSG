@@ -377,7 +377,7 @@ public class SVGLoad {
 						loadComposite(code, resolution, newFrame);
 					}else if(SVGOMImageElement.class.isInstance(pathNode)) {
 						SVGImageElement image = (SVGOMImageElement) pathNode;
-						System.out.println("Loading Image element..");
+						//System.out.println("Loading Image element..");
 						double x=toPx(image.getAttributes().getNamedItem("x").getNodeValue());
 						double y=toPx(image.getAttributes().getNamedItem("y").getNodeValue());
 						double pheight=toPx(image.getAttributes().getNamedItem("height").getNodeValue());
