@@ -357,8 +357,8 @@ public class CSG implements IuserAPI{
 		return toYMax(this);
 	}
 
-	public CSG move(double x, double y, double z) {
-		return transformed(new Transform().translate(x,y,z));
+	public CSG move(Number x, Number y, Number z) {
+		return transformed(new Transform().translate(x.doubleValue(),y.doubleValue(),z.doubleValue()));
 	}
 	public CSG move(Vertex v) {
 		return transformed(new Transform().translate(v.getX(),v.getY(),v.getZ()));
@@ -366,7 +366,7 @@ public class CSG implements IuserAPI{
 	public CSG move(Vector3d v) {
 		return transformed(new Transform().translate(v.x,v.y,v.z));
 	}
-	public CSG move(double[] posVector) {
+	public CSG move(Number[] posVector) {
 		return move(posVector[0], posVector[1], posVector[2]);
 	}
 
@@ -378,8 +378,8 @@ public class CSG implements IuserAPI{
 	 * @return the csg
 	 */
 	// Helper/wrapper functions for movement
-	public CSG movey(double howFarToMove) {
-		return this.transformed(Transform.unity().translateY(howFarToMove));
+	public CSG movey(Number howFarToMove) {
+		return this.transformed(Transform.unity().translateY(howFarToMove.doubleValue()));
 	}
 
 	/**
@@ -389,8 +389,8 @@ public class CSG implements IuserAPI{
 	 *            the how far to move
 	 * @return the csg
 	 */
-	public CSG movez(double howFarToMove) {
-		return this.transformed(Transform.unity().translateZ(howFarToMove));
+	public CSG movez(Number howFarToMove) {
+		return this.transformed(Transform.unity().translateZ(howFarToMove.doubleValue()));
 	}
 
 	/**
@@ -400,8 +400,8 @@ public class CSG implements IuserAPI{
 	 *            the how far to move
 	 * @return the csg
 	 */
-	public CSG movex(double howFarToMove) {
-		return this.transformed(Transform.unity().translateX(howFarToMove));
+	public CSG movex(Number howFarToMove) {
+		return this.transformed(Transform.unity().translateX(howFarToMove.doubleValue()));
 	}
 	
 	/**
@@ -434,11 +434,11 @@ public class CSG implements IuserAPI{
 	}
 
 
-	public CSG rot(double x, double y, double z) {
-		return rotx(x).roty(y).rotz(z);
+	public CSG rot(Number x, Number y, Number z) {
+		return rotx(x.doubleValue()).roty(y.doubleValue()).rotz(z.doubleValue());
 	}
 
-	public CSG rot(double[] posVector) {
+	public CSG rot(Number[] posVector) {
 		return rot(posVector[0], posVector[1], posVector[2]);
 	}
 
@@ -450,8 +450,8 @@ public class CSG implements IuserAPI{
 	 * @return the csg
 	 */
 	// Rotation function, rotates the object
-	public CSG rotz(double degreesToRotate) {
-		return this.transformed(new Transform().rotZ(degreesToRotate));
+	public CSG rotz(Number degreesToRotate) {
+		return this.transformed(new Transform().rotZ(degreesToRotate.doubleValue()));
 	}
 
 	/**
@@ -461,8 +461,8 @@ public class CSG implements IuserAPI{
 	 *            the degrees to rotate
 	 * @return the csg
 	 */
-	public CSG roty(double degreesToRotate) {
-		return this.transformed(new Transform().rotY(degreesToRotate));
+	public CSG roty(Number degreesToRotate) {
+		return this.transformed(new Transform().rotY(degreesToRotate.doubleValue()));
 	}
 
 	/**
@@ -472,8 +472,8 @@ public class CSG implements IuserAPI{
 	 *            the degrees to rotate
 	 * @return the csg
 	 */
-	public CSG rotx(double degreesToRotate) {
-		return this.transformed(new Transform().rotX(degreesToRotate));
+	public CSG rotx(Number degreesToRotate) {
+		return this.transformed(new Transform().rotX(degreesToRotate.doubleValue()));
 	}
 
 	/**
@@ -484,8 +484,8 @@ public class CSG implements IuserAPI{
 	 * @return the csg
 	 */
 	// Scale function, scales the object
-	public CSG scalez(double scaleValue) {
-		return this.transformed(new Transform().scaleZ(scaleValue));
+	public CSG scalez(Number scaleValue) {
+		return this.transformed(new Transform().scaleZ(scaleValue.doubleValue()));
 	}
 
 	/**
@@ -495,8 +495,8 @@ public class CSG implements IuserAPI{
 	 *            the scale value
 	 * @return the csg
 	 */
-	public CSG scaley(double scaleValue) {
-		return this.transformed(new Transform().scaleY(scaleValue));
+	public CSG scaley(Number scaleValue) {
+		return this.transformed(new Transform().scaleY(scaleValue.doubleValue()));
 	}
 
 	/**
@@ -506,8 +506,8 @@ public class CSG implements IuserAPI{
 	 *            the scale value
 	 * @return the csg
 	 */
-	public CSG scalex(double scaleValue) {
-		return this.transformed(new Transform().scaleX(scaleValue));
+	public CSG scalex(Number scaleValue) {
+		return this.transformed(new Transform().scaleX(scaleValue.doubleValue()));
 	}
 
 	/**
@@ -517,8 +517,8 @@ public class CSG implements IuserAPI{
 	 *            the scale value
 	 * @return the csg
 	 */
-	public CSG scale(double scaleValue) {
-		return this.transformed(new Transform().scale(scaleValue));
+	public CSG scale(Number scaleValue) {
+		return this.transformed(new Transform().scale(scaleValue.doubleValue()));
 	}
 
 	/**
@@ -1883,8 +1883,8 @@ public class CSG implements IuserAPI{
 			return this;
 		return minkowskiDifference(itemToDifference,new Cube(shellThickness).toCSG());
 	}
-	public CSG toolOffset(double shellThickness) {
-		
+	public CSG toolOffset(Number sn) {
+		double shellThickness =sn.doubleValue();
 		boolean cut =shellThickness<0;
 		shellThickness=Math.abs(shellThickness);
 		if(shellThickness<0.001)
@@ -1902,7 +1902,8 @@ public class CSG implements IuserAPI{
 		return union(minkowski(printNozzel));
 	}
 
-	public CSG makeKeepaway(double shellThickness) {
+	public CSG makeKeepaway(Number sn) {
+		double shellThickness =sn.doubleValue();
 
 		double x = Math.abs(this.getBounds().getMax().x) + Math.abs(this.getBounds().getMin().x);
 		double y = Math.abs(this.getBounds().getMax().y) + Math.abs(this.getBounds().getMin().y);
