@@ -50,7 +50,7 @@ import javax.vecmath.Quat4d;
  *
  * 
  * // t applies rotation and translation Transform t =
- * Transform.unity().rotX(45).translate(2,1,0);
+ * new Transform().rotX(45).translate(2,1,0);
  * 
  *
  * TODO: use quaternions for rotations.
@@ -601,13 +601,13 @@ public class Transform {
 	}
 	
 	public Transform move(Number x, Number y, Number z) {
-		return this.apply(new Transform().translate(x.doubleValue(),y.doubleValue(),z.doubleValue()));
+		return new Transform().translate(x.doubleValue(),y.doubleValue(),z.doubleValue()).apply(this);
 	}
 	public Transform move(Vertex v) {
-		return this.apply(new Transform().translate(v.getX(),v.getY(),v.getZ()));
+		return new Transform().translate(v.getX(),v.getY(),v.getZ()).apply(this);
 	}
 	public Transform move(Vector3d v) {
-		return this.apply(new Transform().translate(v.x,v.y,v.z));
+		return new Transform().translate(v.x,v.y,v.z).apply(this);
 	}
 	public Transform move(Number[] posVector) {
 		return move(posVector[0], posVector[1], posVector[2]);
@@ -622,7 +622,7 @@ public class Transform {
 	 */
 	// Helper/wrapper functions for movement
 	public Transform movey(Number howFarToMove) {
-		return this.apply(Transform.unity().translateY(howFarToMove.doubleValue()));
+		return new Transform().translateY(howFarToMove.doubleValue()).apply(this);
 	}
 
 	/**
@@ -633,7 +633,7 @@ public class Transform {
 	 * @return the csg
 	 */
 	public Transform movez(Number howFarToMove) {
-		return this.apply(Transform.unity().translateZ(howFarToMove.doubleValue()));
+		return new Transform().translateZ(howFarToMove.doubleValue()).apply(this);
 	}
 
 	/**
@@ -644,7 +644,7 @@ public class Transform {
 	 * @return the csg
 	 */
 	public Transform movex(Number howFarToMove) {
-		return this.apply(Transform.unity().translateX(howFarToMove.doubleValue()));
+		return new Transform().translateX(howFarToMove.doubleValue()).apply(this);
 	}
 	
 	/**
@@ -655,7 +655,7 @@ public class Transform {
 	 */
 	// Helper/wrapper functions for movement
 	public Transform mirrory() {
-		return this.scaley(-1);
+		return this.scaleY(-1);
 	}
 
 	/**
@@ -664,7 +664,7 @@ public class Transform {
 	 * @return the csg
 	 */
 	public Transform mirrorz() {
-		return this.scalez(-1);
+		return this.scaleZ(-1);
 	}
 
 	/**
@@ -673,16 +673,7 @@ public class Transform {
 	 * @return the csg
 	 */
 	public Transform mirrorx() {
-		return this.scalex(-1);
-	}
-
-
-	public Transform rot(Number x, Number y, Number z) {
-		return rotx(x.doubleValue()).roty(y.doubleValue()).rotz(z.doubleValue());
-	}
-
-	public Transform rot(Number[] posVector) {
-		return rot(posVector[0], posVector[1], posVector[2]);
+		return this.scaleX(-1);
 	}
 
 	/**
@@ -694,7 +685,7 @@ public class Transform {
 	 */
 	// Rotation function, rotates the object
 	public Transform rotz(Number degreesToRotate) {
-		return this.apply(new Transform().rotZ(degreesToRotate.doubleValue()));
+		return new Transform().rotZ(degreesToRotate.doubleValue()).apply(this);
 	}
 
 	/**
@@ -705,7 +696,7 @@ public class Transform {
 	 * @return the csg
 	 */
 	public Transform roty(Number degreesToRotate) {
-		return this.apply(new Transform().rotY(degreesToRotate.doubleValue()));
+		return new Transform().rotY(degreesToRotate.doubleValue()).apply(this);
 	}
 
 	/**
@@ -716,53 +707,7 @@ public class Transform {
 	 * @return the csg
 	 */
 	public Transform rotx(Number degreesToRotate) {
-		return this.apply(new Transform().rotX(degreesToRotate.doubleValue()));
+		return new Transform().rotX(degreesToRotate.doubleValue()).apply(this);
 	}
-
-	/**
-	 * Scalez.
-	 *
-	 * @param scaleValue
-	 *            the scale value
-	 * @return the csg
-	 */
-	// Scale function, scales the object
-	public Transform scalez(Number scaleValue) {
-		return this.apply(new Transform().scaleZ(scaleValue.doubleValue()));
-	}
-
-	/**
-	 * Scaley.
-	 *
-	 * @param scaleValue
-	 *            the scale value
-	 * @return the csg
-	 */
-	public Transform scaley(Number scaleValue) {
-		return this.apply(new Transform().scaleY(scaleValue.doubleValue()));
-	}
-
-	/**
-	 * Scalex.
-	 *
-	 * @param scaleValue
-	 *            the scale value
-	 * @return the csg
-	 */
-	public Transform scalex(Number scaleValue) {
-		return this.apply(new Transform().scaleX(scaleValue.doubleValue()));
-	}
-
-	/**
-	 * Scale.
-	 *
-	 * @param scaleValue
-	 *            the scale value
-	 * @return the csg
-	 */
-	public Transform scale(Number scaleValue) {
-		return this.apply(new Transform().scale(scaleValue.doubleValue()));
-	}
-
 
 }
