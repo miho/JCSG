@@ -561,7 +561,8 @@ public class Extrude {
 			}
 		}
 		for (int i = 0; i < parts.size() - 1; i++) {
-			CSG sweep = parts.get(i).union(parts.get(i + 1)).hull();
+			
+			CSG sweep = CSG.hullAll(parts.get(i),parts.get(i + 1));
 			parts.set(i, sweep);
 		}
 
@@ -606,20 +607,12 @@ public class Extrude {
 	}
 
 	public static ArrayList<CSG> move(ArrayList<CSG> slice, ArrayList<Transform> p) {
-		ArrayList<CSG> s = new ArrayList<CSG>();
-		// s.add(slice.get(0));
-		for (int i = 0; i < slice.size() && i < p.size(); i++) {
-			s.add(slice.get(i).transformed(p.get(i)));
-		}
-		return s;
+
+		return CSG.move(slice, p);
 	}
 
 	public static ArrayList<CSG> move(CSG slice, ArrayList<Transform> p) {
-		ArrayList<CSG> bits = new ArrayList<CSG>();
-		for (Transform t : p) {
-			bits.add(slice.clone());
-		}
-		return move(bits, p);
+		return slice.move(p);
 	}
 
 	public static ArrayList<CSG> moveBezier(CSG slice, ArrayList<Double> controlA, ArrayList<Double> controlB,
