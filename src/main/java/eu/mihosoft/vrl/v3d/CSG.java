@@ -404,6 +404,21 @@ public class CSG implements IuserAPI{
 		return this.transformed(Transform.unity().translateX(howFarToMove.doubleValue()));
 	}
 	
+	public  ArrayList<CSG> move( ArrayList<Transform> p) {
+		ArrayList<CSG> bits = new ArrayList<CSG>();
+		for (Transform t : p) {
+			bits.add(this.clone());
+		}
+		return move(bits, p);
+	}
+	public static ArrayList<CSG> move(ArrayList<CSG> slice, ArrayList<Transform> p) {
+		ArrayList<CSG> s = new ArrayList<CSG>();
+		// s.add(slice.get(0));
+		for (int i = 0; i < slice.size() && i < p.size(); i++) {
+			s.add(slice.get(i).transformed(p.get(i)));
+		}
+		return s;
+	}
 	/**
 	 * mirror about y axis.
 	 *
@@ -768,8 +783,8 @@ public class CSG implements IuserAPI{
 		return hullAll(Arrays.asList(csgs));
 	}
 	public static CSG hullAll(List<CSG> csgs){
-		CSG first = csgs.remove(0);
-		return first.hull(csgs);
+		//CSG first = csgs.remove(0);
+		return HullUtil.hull(csgs);// first.hull(csgs);
 	}
 	/**
 	 * Returns the convex hull of this csg and the union of the specified csgs.
