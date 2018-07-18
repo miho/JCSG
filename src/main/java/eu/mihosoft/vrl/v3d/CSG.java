@@ -104,7 +104,7 @@ import javafx.scene.transform.Affine;
 @SuppressWarnings("restriction")
 public class CSG implements IuserAPI{
 
-	private static int numFacesInOffset = 20;
+	private static int numFacesInOffset = 15;
 
 	/** The polygons. */
 	private List<Polygon> polygons;
@@ -1909,7 +1909,7 @@ public class CSG implements IuserAPI{
 		double z = shellThickness;
 		if(z>this.getTotalZ()/2)
 			z=this.getTotalZ()/2;
-		CSG printNozzel = new Sphere(z,getNumFacesForOffsets()/2,getNumFacesForOffsets()/4).toCSG().movez(-z/2);
+		CSG printNozzel = new Sphere(z/2.0,getNumFacesForOffsets()/2,4).toCSG();
 		
 		if(cut){
 			ArrayList<CSG> mikObjs = minkowski(printNozzel);
