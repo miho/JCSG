@@ -160,14 +160,21 @@ public class Slice {
 			long startTime = System.currentTimeMillis();
 			// if(display)BowlerStudioController.getBowlerStudio().getJfx3dmanager().clearUserNode()
 			List<Polygon> rawPolygons = new ArrayList<>();
-
+			CSG finalPart = incoming.transformed(slicePlane.inverse()
+					).toolOffset(normalInsetDistance);
 			// Actual slice plane
-			CSG planeCSG = incoming.getBoundingBox().toZMin();
-			planeCSG = planeCSG.intersect(planeCSG.toZMax().movez(0.01));
+			CSG planeCSG = finalPart.getBoundingBox().toZMin();
+			planeCSG = planeCSG
+					.intersect(planeCSG
+							.toZMax()
+							.movez(0.00001)
+							);
 			// Loop over each polygon in the slice of the incoming CSG
 			// Add the polygon to the final slice if it lies entirely in the z plane
 			// println "Preparing CSG slice"
-			CSG slicePart = incoming.transformed(slicePlane.inverse()).intersect(planeCSG);
+			CSG slicePart = finalPart
+					
+					.intersect(planeCSG);
 			for (Polygon p : slicePart.getPolygons()) {
 				if (Slice.isPolygonAtZero(p)) {
 					rawPolygons.add(p);
@@ -463,6 +470,9 @@ public class Slice {
 	public static List<Polygon> slice(CSG incoming) {
 		return slice(incoming, new Transform(),0);
 	}
+	public static List<Polygon> slice(CSG incoming, double normalInsetDistance) {
+		return slice(incoming, new Transform(),normalInsetDistance);
+	}
 	public static ISlice getSliceEngine() {
 		return sliceEngine;
 	}
@@ -474,7 +484,10 @@ public class Slice {
 	public static int getMaxRes() {
 		return maxRes;
 	}
-
+	
+	public static void setNumFacesInOffset(int numFacesInOffset) {
+		CSG.setNumFacesInOffset( numFacesInOffset);
+	}
 	public static void setMaxRes(int mr) {
 		maxRes = mr;
 	}
