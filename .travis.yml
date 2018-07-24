@@ -3,6 +3,8 @@ sudo: false
 language: java
 jdk:
   - oraclejdk8
+  - oraclejdk9
+  - oraclejdk10
   
 before_install:
   - "export DISPLAY=:99.0"
