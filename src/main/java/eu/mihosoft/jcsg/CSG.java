@@ -1183,4 +1183,46 @@ public class CSG {
         NONE
     }
 
+    /**
+     * Computes and returns the volume of this CSG based on a triangulated version
+     * of the internal mesh. 
+     * @return volume of this csg
+     */
+    public double computeVolume() {
+        if(getPolygons().isEmpty()) return 0;
+
+        // triangulate polygons (parallel for larger meshes)
+        Stream<Polygon> polyStream;
+        if(getPolygons().size()>200) {
+            polyStream = getPolygons().parallelStream();
+        } else {
+            polyStream = getPolygons().stream();
+        }
+        List<Polygon> triangles = polyStream.
+          flatMap(poly->poly.toTriangles().stream()).
+          collect(Collectors.toList());
+
+        // compute sum over signed volumes of triangles
+        // we use parallel streams for larger meshes
+        // see http://chenlab.ece.cornell.edu/Publication/Cha/icip01_Cha.pdf
+        Stream<Polygon> triangleStream;
+        if(triangles.size()>200) {
+            triangleStream = triangles.parallelStream();
+        } else {
+            triangleStream = triangles.stream();
+        }
+
+        double volume = triangleStream.mapToDouble(tri-> {
+            Vector3d p1 = tri.vertices.get(0).pos;
+            Vector3d p2 = tri.vertices.get(1).pos;
+            Vector3d p3 = tri.vertices.get(2).pos;
+
+            return p1.dot(p2.crossed(p3)) / 6.0;
+        }).sum();
+
+        volume = Math.abs(volume);
+
+        return volume;    
+    }
+
 }
