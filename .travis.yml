@@ -4,7 +4,7 @@ language: java
 jdk:
   - oraclejdk8
   - oraclejdk9
-  - oraclejdk10
+  # - oraclejdk10 openjdk 10 is broken on travis (maybe they use the wrong download link?)
   
 before_install:
   - "export DISPLAY=:99.0"
