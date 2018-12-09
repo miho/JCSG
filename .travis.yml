@@ -13,7 +13,7 @@ install:
     - TERM=dumb ./gradlew --refresh-dependencies --stacktrace
 
 script:
-    - TERM=dumb ./gradlew  compileJava jar javadoc test --stacktrace
+    - TERM=dumb ./gradlew  compileJava javadoc test --stacktrace
 
 after_failure:
   - "cat ./build/test-results/*.xml"
