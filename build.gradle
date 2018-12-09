@@ -1,9 +1,16 @@
+plugins {
+  id 'org.openjfx.javafxplugin' version '0.0.5'
+}
 
 apply plugin: 'java'
 apply plugin: 'signing'
 apply plugin: 'maven'
 apply plugin: 'application'
 
+
+javafx {
+    modules = [ 'javafx.scene.text' ]
+}
 
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
