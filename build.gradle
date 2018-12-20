@@ -3,7 +3,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'net.nemerosa.versioning' version '2.6.1'
-    id 'com.jfrog.bintray' version '1.7.2'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 sourceCompatibility = '1.8'
