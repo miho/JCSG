@@ -5,6 +5,8 @@ JCSG
 
 Java implementation of BSP based CSG (Constructive Solid Geometry). It is the only simple and free Java implementation I am aware of. This implementation uses an optimized CSG algorithm based on [csg.js](https://github.com/evanw/csg.js) (see `CSG` and `Node` classes). Thanks to the author for creating the [csg.js](https://github.com/evanw/csg.js) library.
 
+There's also the related [VCSG](https://github.com/miho/VCSG) library, a [plugin for VRL-Studio](https://github.com/VRL-Studio/VRL-JCSG) and two extension libraries: [JCSG-MeshExtension](https://github.com/miho/JCSG-MeshExtensions) and [JCSG-PathExtension](https://github.com/miho/JCSG-PathExtensions).
+
 In addition to CSG this library provides the following features:
 
 - optimized `difference()` and `union()` operations (many thanks to Sebastian Reiter)
