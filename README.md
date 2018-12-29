@@ -85,6 +85,6 @@ try {
 
 ## Thanks to
 
- - [JetBrains](https://www.jetbrains.com) for their [IntelliJ IDEA](https://www.jetbrains.com/idea/) license(s).
+ - [JetBrains](https://www.jetbrains.com) for their [IntelliJ IDEA](https://www.jetbrains.com/idea/) license(s)
 
- - the author for creating the [csg.js](https://github.com/evanw/csg.js) library
+ - Evan Wallace for creating the Javascript library [csg.js](https://github.com/evanw/csg.js)
