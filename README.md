@@ -83,4 +83,8 @@ try {
 }
 ```
 
-Thanks to [JetBrains](https://www.jetbrains.com) for their [IntelliJ IDEA](https://www.jetbrains.com/idea/) license(s).
+## Thanks to
+
+ - [JetBrains](https://www.jetbrains.com) for their [IntelliJ IDEA](https://www.jetbrains.com/idea/) license(s).
+
+ - the author for creating the [csg.js](https://github.com/evanw/csg.js) library
