@@ -87,4 +87,4 @@ try {
 
  - [JetBrains](https://www.jetbrains.com) for their [IntelliJ IDEA](https://www.jetbrains.com/idea/) license(s)
 
- - Evan Wallace for creating the Javascript library [csg.js](https://github.com/evanw/csg.js)
+ - Evan Wallace for creating the JavaScript library [csg.js](https://github.com/evanw/csg.js)
