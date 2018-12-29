@@ -83,4 +83,4 @@ try {
 }
 ```
 
-Thanks to [JetBrains](https://www.jetbrains.com) for the [IntelliJ IDEA](https://www.jetbrains.com/idea/) licenses.
+Thanks to [JetBrains](https://www.jetbrains.com) for their [IntelliJ IDEA](https://www.jetbrains.com/idea/) license(s).
