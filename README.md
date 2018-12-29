@@ -82,3 +82,5 @@ try {
     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 }
 ```
+
+Thanks to [JetBrains](https://www.jetbrains.com) for the [IntelliJ IDEA](https://www.jetbrains.com/idea/) licenses.
