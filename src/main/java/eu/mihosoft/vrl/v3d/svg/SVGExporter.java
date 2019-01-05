@@ -50,7 +50,10 @@ public class SVGExporter {
 		for(String s:layers){
 			output+=s+"\n";
 		}
-		
+		double totalX = Math.abs(max[0]) + Math.abs(min[0]);
+		double totalY = Math.abs(max[1]) + Math.abs(min[1]);
+		double totalXmm = totalX/Scale;
+		double totalYmm = totalY/Scale;
 		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
 				+ "<svg    xmlns:dc=\"http://purl.org/dc/elements/1.1/\""+
    " xmlns:cc=\"http://creativecommons.org/ns#\""+
@@ -59,9 +62,11 @@ public class SVGExporter {
   " xmlns=\"http://www.w3.org/2000/svg\""+
   " xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\""+
   " xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\" version=\"1.1\" viewBox=\"" + (min[0] - 1) + " "
-				+ (min[1] - 1) + " " + (Math.abs(max[0]) + Math.abs(min[0]) + 2) + " "+ 
-				(Math.abs(max[1]) + Math.abs(min[1]) + 2) + "\""+ 
+				+ (min[1] - 1) + " " + (totalX+ 2) + " "+ 
+				(totalY + 2) + "\""+ 
 				" id=\"svg2\" "+
+				 "width=\""+totalXmm+"mm\""+
+				   "\n height=\""+totalYmm+"mm\""+
 				 ">\n";
 		header+= " <defs  \n"+
 				"  id=\"defs4\" /> \n"+
