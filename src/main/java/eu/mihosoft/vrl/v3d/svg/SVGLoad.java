@@ -1,18 +1,14 @@
 package eu.mihosoft.vrl.v3d.svg;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.vecmath.Matrix4d;
 
 import org.apache.batik.bridge.BridgeContext;
@@ -25,9 +21,7 @@ import org.apache.batik.dom.svg.SVGItem;
 import org.apache.batik.dom.svg.SVGOMGElement;
 import org.apache.batik.dom.svg.SVGOMImageElement;
 import org.apache.batik.dom.svg.SVGOMPathElement;
-import org.apache.batik.dom.svg.SVGOMSVGElement;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -37,7 +31,6 @@ import com.piro.bezier.BezierPath;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Edge;
 import eu.mihosoft.vrl.v3d.Extrude;
-import eu.mihosoft.vrl.v3d.Plane;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
@@ -61,18 +54,20 @@ public class SVGLoad {
 	private boolean negativeThickness = false;
 	private double height = 0;
 	private double width = 0;
-	private static final HashMap<String,Double> units=new HashMap<>();
-	static {
-		units.put("mm", (1/SVGExporter.Scale));
-		units.put("px", 1.0);
-		units.put("cm", units.get("mm")/10.0);
-		units.put("in", units.get("mm")/25.4);
-		units.put("ft", units.get("in")/12.0);
-		units.put("m", units.get("mm")/1000.0);
-
-	}
+	private Double scale=null;
+	private HashMap<String,Double> units=new HashMap<>();
+//	static {
+//		units.put("mm", (1/SVGExporter.Scale));
+//		units.put("px", 1.0);
+//		units.put("cm", units.get("mm")/10.0);
+//		units.put("in", units.get("mm")/25.4);
+//		units.put("ft", units.get("in")/12.0);
+//		units.put("m", units.get("mm")/1000.0);
+//
+//	}
 	
-	private static double toPx(String value) {
+	private  double toPx(String value) {
+
 		for(String key : units.keySet()) {
 			if(value.endsWith(key)) {
 				String []split = value.split(key);
@@ -86,9 +81,22 @@ public class SVGLoad {
 		}
 		return Double.parseDouble(value);
 	}
-	private static double toMM(String value) {
+	private void setScale(double value) {
+		scale=value;
+		units.put("mm", (1/getScale()));
+		units.put("px", 1.0);
+		units.put("cm", units.get("mm")/10.0);
+		units.put("in", units.get("mm")/25.4);
+		units.put("ft", units.get("in")/12.0);
+		units.put("m", units.get("mm")/1000.0);
+	}
+	private Double getScale() {
+		return scale.doubleValue();
+	}
+	
+	private  double toMM(String value) {
 		Double px= toPx(value);
-		return px*units.get("mm");
+		return px*1/getScale();
 	}
 	private static ISVGLoadProgress progressDefault = new ISVGLoadProgress() {
 
@@ -277,13 +285,19 @@ public class SVGLoad {
 		try {
 			String hval = getSVGDocument().getDocumentElement().getAttribute("height");
 			String wval = getSVGDocument().getDocumentElement().getAttribute("width");
+			String viewbox = getSVGDocument().getDocumentElement().getAttribute("viewBox");
+			double viewW = Double.parseDouble(viewbox.split(" ")[2]);
+			setScale( 1);// use to compute bounds
 			height = toMM(hval);
 			width = toMM(wval);
-			System.out.println("Page size height = "+height+" width ="+width);
+			double value =width/viewW;
+			System.out.println("Page size height = "+height+" width ="+width+" with scale "+value);
+			setScale( value);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			height = 0;
 			width = 0;
+			setScale(  3.543307); // Assume 90 DPI and mm
 		}
 		// println "Loading groups from "+pn.getClass()
 		int pnCount = pn.getLength();
@@ -458,7 +472,7 @@ public class SVGLoad {
 		ArrayList<Vector3d> p = path.evaluate();
 		for (Vector3d point : p) {
 			point.transform(startingFrame);
-			point.transform(new Transform().scale((1.0 / SVGExporter.Scale)));
+			point.transform(new Transform().scale((1.0 / getScale())));
 			point.transform(new Transform().translate(0, -height, 0));
 			point.transform(new Transform().rotZ(-180));
 			point.transform(new Transform().rotY(180));

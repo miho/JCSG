@@ -22,7 +22,7 @@ public class SVGExporter {
 	private String section = "";
 	//0.376975
 	//public static final double Scale = 3.543307;// SVG px to MM scale facto
-	public static final double Scale = 3.543307;
+	private static final double Scale = 3.543307;
 	private int colorTicker=0;
 	private  List<String> colorNames = Arrays.asList("crimson","gray","black","darkmagenta","darkolivegreen","darkgreen",
 			"darkblue",
@@ -61,9 +61,9 @@ public class SVGExporter {
   " xmlns:svg=\"http://www.w3.org/2000/svg\""+
   " xmlns=\"http://www.w3.org/2000/svg\""+
   " xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\""+
-  " xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\" version=\"1.1\" viewBox=\"" + (min[0] - 1) + " "
-				+ (min[1] - 1) + " " + (totalX+ 2) + " "+ 
-				(totalY + 2) + "\""+ 
+  " xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\" version=\"1.1\" viewBox=\"" + (min[0] ) + " "
+				+ (min[1] ) + " " + (totalX) + " "+ 
+				(totalY ) + "\""+ 
 				" id=\"svg2\" "+
 				 "width=\""+totalXmm+"mm\""+
 				   "\n height=\""+totalYmm+"mm\""+
