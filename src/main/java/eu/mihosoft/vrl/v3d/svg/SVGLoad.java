@@ -290,8 +290,8 @@ public class SVGLoad {
 			setScale( 1);// use to compute bounds
 			height = toMM(hval);
 			width = toMM(wval);
-			double value =width/viewW;
-			System.out.println("Page size height = "+height+" width ="+width+" with scale "+value);
+			double value =viewW/width;
+			System.out.println("Page size height = "+height+" width ="+width+" with scale "+(int)(value*25.4)+" DPI ");
 			setScale( value);
 		} catch (Throwable t) {
 			t.printStackTrace();
