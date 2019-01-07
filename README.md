@@ -26,7 +26,7 @@ In addition to CSG this library provides the following features:
 
 
 
-##Maven
+## Maven
 ```
 <dependency>
   <groupId>com.neuronrobotics</groupId>
@@ -36,15 +36,15 @@ In addition to CSG this library provides the following features:
 </dependency>
 ```
 
-##Gradle
+## Gradle
 ```
 repositories {
 	//com.neuronrobotics hosting point
 	maven { url 'https://oss.sonatype.org/content/repositories/staging/' }
 }
 dependencies {
-  compile "com.neuronrobotics:JavaCad:0.18.1"
- }
+	compile "com.neuronrobotics:JavaCad:0.18.1"
+}
 
 ```
 
