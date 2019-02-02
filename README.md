@@ -27,23 +27,27 @@ In addition to CSG this library provides the following features:
 
 
 ## Maven
+![](https://img.shields.io/nexus/r/https/oss.sonatype.org/com.neuronrobotics/JavaCad.svg?style=flat)
+
 ```
 <dependency>
   <groupId>com.neuronrobotics</groupId>
   <artifactId>JavaCad</artifactId>
-  <version>0.18.1</version>
+  <version>VERSION_FROM_BADGE</version>
   <type>zip</type>
 </dependency>
 ```
 
 ## Gradle
+![](https://img.shields.io/nexus/r/https/oss.sonatype.org/com.neuronrobotics/JavaCad.svg?style=flat)
+
 ```
 repositories {
 	//com.neuronrobotics hosting point
 	maven { url 'https://oss.sonatype.org/content/repositories/staging/' }
 }
 dependencies {
-	compile "com.neuronrobotics:JavaCad:0.18.1"
+	compile "com.neuronrobotics:JavaCad:VERSION_FROM_BADGE"
 }
 
 ```
