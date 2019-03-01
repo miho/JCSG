@@ -91,24 +91,6 @@ ext {
     buildTime = new java.text.SimpleDateFormat('HH:mm:ss.SSSZ').format(buildTimeAndDate)
 }
 
-// create a fat-jar (class files plus dependencies
-// excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
-jar {
-
-
-	doFirst { 
-	    // dependencies except VRL
-	    from (configurations.runtime.asFileTree.
-	        filter({file->return !file.name.startsWith("vrl-0")}).
-	        files.collect { zipTree(it) } ){
-	    	exclude 'META-INF/MANIFEST.MF'
-			exclude 'META-INF/*.SF'
-			exclude 'META-INF/*.DSA'
-			exclude 'META-INF/*.RSA'
-	    }
-	}
-
-}
 
 group = "com.neuronrobotics"
 archivesBaseName = props."app.name"
@@ -166,5 +148,6 @@ uploadArchives {
 	  }
 	}
   }
-  */
+  
 
+*/
