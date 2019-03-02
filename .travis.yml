@@ -9,8 +9,6 @@ before_install:
   - "export TERM=dumb"
   - "sh -e /etc/init.d/xvfb start"
 
-install:
-    - TERM=dumb ./gradlew --refresh-dependencies --stacktrace
 
 script:
     - TERM=dumb ./gradlew  compileJava javadoc test --stacktrace
