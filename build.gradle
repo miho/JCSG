@@ -16,10 +16,6 @@ File buildDir = file(".");
 Properties props = new Properties()
 props.load(new FileInputStream(buildDir.getAbsolutePath()+"/src/main/resources/com/neuronrobotics/javacad/build.properties"))
 
-task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '2.1'
-}
-
 
 task sourcesJar(type: Jar) {
 	classifier = 'sources'
