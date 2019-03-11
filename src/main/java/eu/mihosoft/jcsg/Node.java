@@ -35,7 +35,6 @@ package eu.mihosoft.jcsg;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -239,8 +238,7 @@ final class Node {
         if (polygons.isEmpty()) return;
 
         if (this.plane == null) {
-            Random random = new Random();
-            this.plane = polygons.get(random.nextInt(polygons.size()))._csg_plane.clone();
+            this.plane = polygons.get(0)._csg_plane.clone();
         }
         
         polygons = polygons.stream().filter(p->p.isValid()).distinct().collect(Collectors.toList());
@@ -253,14 +251,6 @@ final class Node {
             this.plane.splitPolygon(
                     polygon, this.polygons, this.polygons, frontP, backP);
         });
-        
-        // this must be coplanar or we have some other issue
-        if (polygons.size() == 1 && this.polygons.size() != 1) {
-          this.polygons.addAll(frontP);
-          this.polygons.addAll(backP);
-          frontP.clear();
-          backP.clear();
-        }
 
         if (frontP.size() > 0) {
             if (this.front == null) {
