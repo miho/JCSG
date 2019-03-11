@@ -18,7 +18,7 @@ public class AppleTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AppleTest.class);
 
-  String originalFilename = "Apple.stl";
+  String originalFilename = "src/test/resources/Apple.stl";
 
   @After
   public void tearDown() throws Exception {}

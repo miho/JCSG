@@ -149,7 +149,7 @@ class Plane {
 
         // fix for stackoverflow
         if (this.normal.equals(polygon._csg_plane.normal) && polygonType!=SPANNING && polygonType!=COPLANAR) {
-          LOGGER.info("our plane is not spanning and not coplannar but it should be " + this.normal.dot(polygon._csg_plane.normal));
+          System.out.println("our plane is not spanning and not coplannar but it should be " + this.normal.dot(polygon._csg_plane.normal));
           polygonType=COPLANAR;
         }
         
