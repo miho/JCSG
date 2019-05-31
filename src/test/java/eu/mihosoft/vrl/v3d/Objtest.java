@@ -8,8 +8,10 @@ public class Objtest {
 
 	@Test
 	public void test() {
-		String s = new Cube (1).toCSG().toObjString();
-		System.out.println(s);
+		String s = new Cube (1).toCSG().toObjString()
+				.split("# Faces")[1]
+				.split("# End")[0].trim();
+		assertFalse(s.length()<4);		
 	}
 
 }
