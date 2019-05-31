@@ -28,18 +28,18 @@ public class Fillet extends Primitive {
   }
 
 
-  private static CSG corner(double rad, double angle) {
+  public static CSG corner(double rad, double angle) {
     return CSG.unionAll(Extrude.revolve(new Fillet(rad, 0.01).toCSG().rotz(-90), 0, angle, 4))
         .difference(Extrude.revolve(new Sphere(rad).toCSG().toYMin().toZMin(), 0, angle, 4));
     // .rotz(180)
   }
 
-  CSG outerFillet(CSG base, double rad) {
+  public static CSG outerFillet(CSG base, double rad) {
     List<Polygon> polys = Slice.slice(base);
     return base.union(outerFillet(polys, rad));
   }
 
-  CSG outerFillet(List<Polygon> polys, double rad) {
+  public static CSG outerFillet(List<Polygon> polys, double rad) {
 
     ArrayList<CSG> parts = new ArrayList<>();
     for (Polygon p : polys) {
