@@ -1380,6 +1380,7 @@ public class CSG implements IuserAPI{
 					polyIndices.add(vertices.indexOf(v) + 1);
 				}
 			});
+			indices.add(new PolygonStruct(storage, polyIndices, " "));
 
 		}
 
