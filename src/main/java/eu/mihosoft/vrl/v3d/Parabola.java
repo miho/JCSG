@@ -34,7 +34,7 @@ public class Parabola {
 
   public Parabola fromFocalLength(double Radius, double Focus) {
     this.Radius = Radius;
-    if (Math.abs(a) == 0) {
+    if (Math.abs(Focus) == 0) {
       throw new RuntimeException("A value in parabola must be non zero");
     }
     FocalLength = Focus;
