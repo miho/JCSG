@@ -7,7 +7,7 @@ import javafx.scene.image.WritableImage;
 import java.util.HashMap;
 import eu.mihosoft.vrl.v3d.CSG;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
+//import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.layout.AnchorPane;
@@ -458,7 +458,7 @@ public class Slice {
 				try {
 					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
 				}catch(IllegalStateException e) {
-					new JFXPanel();
+					//new JFXPanel();
 					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
 				}
 			}
