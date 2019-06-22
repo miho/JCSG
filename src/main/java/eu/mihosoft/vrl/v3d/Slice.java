@@ -458,7 +458,7 @@ public class Slice {
 				try {
 					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
 				}catch(IllegalStateException e) {
-					//new JFXPanel();
+					javafx.application.Application.launch(); // this will prepare JavaFX toolkit and environment
 					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
 				}
 			}
