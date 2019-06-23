@@ -459,17 +459,8 @@ public class Slice {
 				try {
 					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
 				}catch(IllegalStateException e) {
-					new Thread() {
-						public void run() {
-							JavaFXInitializer.go();
-						}
-					}.start();
-					try {
-						JavaFXInitializer.latch.await();
-					} catch (InterruptedException ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
-					}
+					JavaFXInitializer.go();
+					
 					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
 				}
 			}
