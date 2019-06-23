@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 import javafx.scene.image.WritableImage;
 import java.util.HashMap;
 import eu.mihosoft.vrl.v3d.CSG;
@@ -114,7 +113,6 @@ public class Slice {
 			return new Object[] { obj_img, scaleX, xOffset - imageOffsetMotion, scaleY, yOffset - imageOffsetMotion,
 					imageOffsetMotion, imageOffset };
 		}
-
 		int[] toPixels(double absX, double absY, double xOff, double yOff, double scaleX, double scaleY) {
 			return new int[] { (int) ((absX - xOff) / scaleX), (int) ((absY - yOff) / scaleY) };
 		}
@@ -453,16 +451,7 @@ public class Slice {
 		// floating point error)
 		return vertex.getZ() < SLICE_UPPER_BOUND && vertex.getZ() > SLICE_LOWER_BOUND;
 	}
-	public static class JavaFXInitializer extends javafx.application.Application {
-		public JavaFXInitializer(){
-			
-		}
-		public static void go() {
-			launch();
-		}
-		@Override
-		public void start(Stage primaryStage) throws Exception {}
-	}
+
 	public static List<Polygon> slice(CSG incoming, Transform slicePlane, double normalInsetDistance) {
 		try {
 			if(DefaultSliceImp.class.isInstance(sliceEngine)) {
@@ -470,7 +459,17 @@ public class Slice {
 				try {
 					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
 				}catch(IllegalStateException e) {
-					JavaFXInitializer.go();; // this will prepare JavaFX toolkit and environment
+					new Thread() {
+						public void run() {
+							JavaFXInitializer.go();
+						}
+					}.start();
+					try {
+						JavaFXInitializer.latch.await();
+					} catch (InterruptedException ex) {
+						// TODO Auto-generated catch block
+						ex.printStackTrace();
+					}
 					return new DefaultSliceImp().slice(incoming, slicePlane, normalInsetDistance);
 				}
 			}
