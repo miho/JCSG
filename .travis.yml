@@ -1,17 +1,22 @@
-sudo: false
-
 language: java
-jdk:
-  - oraclejdk8
-
 before_install:
   - "export DISPLAY=:99.0"
   - "export TERM=dumb"
   - "sh -e /etc/init.d/xvfb start"
 
-
 script:
-    - TERM=dumb ./gradlew  compileJava javadoc test --stacktrace
+    - TERM=dumb ./gradlew  jar  javadoc test --stacktrace
+cache:
+  directories:
+  - $HOME/.m2
+
+jdk:
+  - oraclejdk8
+
+# for running tests on Travis CI container infrastructure for faster builds
+sudo: true
+dist: trusty
+
 
 after_failure:
   - "cat ./build/test-results/*.xml"
