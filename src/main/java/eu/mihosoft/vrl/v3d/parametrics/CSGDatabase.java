@@ -201,10 +201,8 @@ public class CSGDatabase {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		else{
-			loadDatabaseFromFile(dbFile);
-		}
 		CSGDatabase.dbFile = dbFile;
+		loadDatabaseFromFile(dbFile);
 	}
 
 }
