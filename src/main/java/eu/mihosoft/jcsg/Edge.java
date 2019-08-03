@@ -599,11 +599,11 @@ public class Edge {
 
         Stream<Polygon> pStream;
 
-        if (planeGroup.size() > 200) {
-            pStream = planeGroup.parallelStream();
-        } else {
+        // if (planeGroup.size() > 200) {
+        //     pStream = planeGroup.parallelStream();
+        // } else {
             pStream = planeGroup.stream();
-        }
+        // }
 
         pStream.map((p) -> Edge.fromPolygon(p)).forEach((pEdges) -> {
             edges.addAll(pEdges);
@@ -611,11 +611,11 @@ public class Edge {
 
         Stream<Edge> edgeStream;
 
-        if (edges.size() > 200) {
-            edgeStream = edges.parallelStream();
-        } else {
+        // if (edges.size() > 200) {
+            // edgeStream = edges.parallelStream();
+        // } else {
             edgeStream = edges.stream();
-        }
+        // }
 
         // find potential boundary edges, i.e., edges that occur once (freq=1)
         List<Edge> potentialBoundaryEdges = new ArrayList<>();
