@@ -111,6 +111,10 @@ javafx {
     modules = [ 'javafx.graphics', 'javafx.fxml']
 }
 
+test {
+    maxHeapSize = '2G'
+}
+
 
 def pomConfig = {
     name 'jcsg'
