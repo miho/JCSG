@@ -101,7 +101,8 @@ jar {
           'Specification-Title': project.name,
           'Specification-Version': project.version,
           'Implementation-Title': project.name,
-          'Implementation-Version': project.version
+          'Implementation-Version': project.version,
+          'Automatic-Module-Name': eu.mihosoft.jcsg
         )
     }
 }
