@@ -6,14 +6,14 @@ plugins {
     id 'com.jfrog.bintray' version '1.8.4'
 }
 
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 //apply from: 'http://gradle-plugins.mihosoft.eu/latest/vlicenseheader.gradle'
 //repairHeaders.licenseHeaderText = new File(projectDir,'./license-template.txt')
 
-task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '4.9'
+wrapper {
+    gradleVersion = '5.5'
 }
 
 if (!hasProperty('mainClass')) {
