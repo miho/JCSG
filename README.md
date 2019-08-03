@@ -32,7 +32,7 @@ To see what's possible with JCSG try [JFXScad](https://github.com/miho/JFXScad).
 
 ### Requirements
 
-- Java >= 1.8
+- Java >= 11
 - Internet connection (dependencies are downloaded automatically)
 - IDE: [Gradle](http://www.gradle.org/) Plugin (not necessary for command line usage)
 
