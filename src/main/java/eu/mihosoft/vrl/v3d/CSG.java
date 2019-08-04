@@ -128,10 +128,6 @@ public class CSG implements IuserAPI{
 	/** The manipulator. */
 	private Affine manipulator;
 	private Bounds bounds;
-	/**
-	 * This is the trace for where this csg was created
-	 */
-	private final Exception creationEventStackTrace = new Exception();
 	public static final int INDEX_OF_PARAMETRIC_DEFAULT = 0;
 	public static final int INDEX_OF_PARAMETRIC_LOWER = 1;
 	public static final int INDEX_OF_PARAMETRIC_UPPER = 2;
@@ -155,9 +151,18 @@ public class CSG implements IuserAPI{
 	 * Instantiates a new csg.
 	 */
 	public CSG() {
-		storage = new PropertyStorage();
-		addStackTrace(creationEventStackTrace);
+		this(true);
 	}
+
+	public CSG(boolean makeException) {
+		storage = new PropertyStorage();
+
+		if (makeException) {
+			// This is the trace for where this csg was created
+			addStackTrace(new Exception());
+		}
+	}
+
 	public CSG prepForManufacturing() {
 		if (getManufacturing() == null)
 			return this;
@@ -2253,7 +2258,7 @@ public class CSG implements IuserAPI{
 	}
 
 	/**
-	 * @param exportFormats the exportFormat to add
+	 * @param exportFormat the exportFormat to add
 	 */
 	public void addExportFormat(String exportFormat) {
 		if(this.exportFormats==null)
