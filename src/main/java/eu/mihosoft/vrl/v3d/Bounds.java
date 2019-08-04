@@ -26,10 +26,10 @@ public class Bounds {
     private final Vector3d max;
     
     /** The csg. */
-    private final CSG csg;
+    private CSG csg;
     
     /** The cube. */
-    private final Cube cube;
+    private Cube cube;
 
     /**
      * Constructor.
@@ -50,9 +50,6 @@ public class Bounds {
 
         this.min = min.clone();
         this.max = max.clone();
-
-        cube = new Cube(center, bounds);
-        csg = cube.toCSG();
     }
 
     /* (non-Javadoc)
@@ -87,6 +84,11 @@ public class Bounds {
      * @return this bounding box as csg
      */
     public CSG toCSG() {
+        if (csg == null) {
+            cube = new Cube(center, bounds);
+            csg = cube.toCSG();
+        }
+
         return csg;
     }
 
@@ -96,6 +98,11 @@ public class Bounds {
      * @return this bounding box as cube
      */
     public Cube toCube() {
+        if (cube == null) {
+            cube = new Cube(center, bounds);
+            csg = cube.toCSG();
+        }
+
         return cube;
     }
 
