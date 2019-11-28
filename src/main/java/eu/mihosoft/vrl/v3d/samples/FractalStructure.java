@@ -249,8 +249,8 @@ public class FractalStructure {
      * @return a fractal structure as CSG
      */
     private CSG createStructure() {
-        ArrayList<Polygon> polygonList = new ArrayList();
-        ArrayList<Vector3d> tmpList = new ArrayList();
+        ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
+        ArrayList<Vector3d> tmpList = new ArrayList<Vector3d>();
 
         //all ground points without the center point
         for (int i = 0; i < groundPoints.size() - 1; i++) {
