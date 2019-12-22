@@ -140,6 +140,8 @@ public class CSG implements IuserAPI{
 	private ArrayList<Transform> slicePlanes=null;
 	private ArrayList<String> exportFormats=null;
 	
+	private static boolean useStackTraces=true;
+	
 	private static ICSGProgress progressMoniter=new ICSGProgress() {
 		@Override
 		public void progressUpdate(int currentIndex, int finalIndex, String type, CSG intermediateShape) {
@@ -151,13 +153,9 @@ public class CSG implements IuserAPI{
 	 * Instantiates a new csg.
 	 */
 	public CSG() {
-		this(true);
-	}
-
-	public CSG(boolean makeException) {
 		storage = new PropertyStorage();
 
-		if (makeException) {
+		if (useStackTraces) {
 			// This is the trace for where this csg was created
 			addStackTrace(new Exception());
 		}
@@ -1998,26 +1996,28 @@ public class CSG implements IuserAPI{
 	}
 
 	public CSG historySync(CSG dyingCSG) {
-		this.addCreationEventStringList(dyingCSG.getCreationEventStackTraceList());
-		Set<String> params = dyingCSG.getParameters();
-		for (String param : params) {
-			boolean existing = false;
-			for (String s : this.getParameters()) {
-				if (s.contentEquals(param))
-					existing = true;
+		if(useStackTraces) {
+			this.addCreationEventStringList(dyingCSG.getCreationEventStackTraceList());
+			Set<String> params = dyingCSG.getParameters();
+			for (String param : params) {
+				boolean existing = false;
+				for (String s : this.getParameters()) {
+					if (s.contentEquals(param))
+						existing = true;
+				}
+				if (!existing) {
+					Parameter vals = CSGDatabase.get(param);
+					if (vals != null)
+						this.setParameter(vals, dyingCSG.getMapOfparametrics().get(param));
+				}
 			}
-			if (!existing) {
-				Parameter vals = CSGDatabase.get(param);
-				if (vals != null)
-					this.setParameter(vals, dyingCSG.getMapOfparametrics().get(param));
-			}
+			this.setColor(dyingCSG.getColor());
 		}
-		this.setColor(dyingCSG.getColor());
 		return this;
 	}
 
 	public CSG addCreationEventStringList(ArrayList<String> incoming) {
-
+		if(useStackTraces) 
 		for (String s : incoming) {
 			addCreationEventString(s);
 		}
@@ -2026,7 +2026,7 @@ public class CSG implements IuserAPI{
 	}
 
 	public CSG addCreationEventString(String thisline) {
-
+		if(useStackTraces) {
 		boolean dupLine = false;
 		for (String s : groovyFileLines) {
 			if (s.contentEquals(thisline)) {
@@ -2036,6 +2036,7 @@ public class CSG implements IuserAPI{
 		}
 		if (!dupLine) {
 			groovyFileLines.add(thisline);
+		}
 		}
 
 		return this;
@@ -2278,6 +2279,14 @@ public class CSG implements IuserAPI{
 	}
 	public static void setNumFacesInOffset(int numFacesInOffset) {
 		CSG.numFacesInOffset = numFacesInOffset;
+	}
+
+	public static boolean isUseStackTraces() {
+		return useStackTraces;
+	}
+
+	public static void setUseStackTraces(boolean useStackTraces) {
+		CSG.useStackTraces = useStackTraces;
 	}
 	
 }
