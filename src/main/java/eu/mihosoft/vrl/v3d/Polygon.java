@@ -62,7 +62,7 @@ public final class Polygon {
      *  Note:  uses first three vertices to define the plane.
      */
     public final Plane plane;
-	private final Exception creationEventStackTrace = new Exception();
+	//private final Exception creationEventStackTrace = new Exception();
     
 
     /**
@@ -584,9 +584,9 @@ public final class Polygon {
         return shared;
     }
 
-	public Exception getCreationEventStackTrace() {
-		return creationEventStackTrace;
-	}
+//	public Exception getCreationEventStackTrace() {
+//		return creationEventStackTrace;
+//	}
 
 	public List<Vector3d> getPoints() {
 		ArrayList<Vector3d> p =new ArrayList<>();
