@@ -595,4 +595,116 @@ public final class Polygon {
 		}
 		return p;
 	}
+	/**
+	 * Movey.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	// Helper/wrapper functions for movement
+	public Polygon movey(Number howFarToMove) {
+		return this.transformed(Transform.unity().translateY(howFarToMove.doubleValue()));
+	}
+
+	/**
+	 * Movez.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	public Polygon movez(Number howFarToMove) {
+		return this.transformed(Transform.unity().translateZ(howFarToMove.doubleValue()));
+	}
+
+	/**
+	 * Movex.
+	 *
+	 * @param howFarToMove
+	 *            the how far to move
+	 * @return the csg
+	 */
+	public Polygon movex(Number howFarToMove) {
+		return this.transformed(Transform.unity().translateX(howFarToMove.doubleValue()));
+	}
+
+	/**
+	 * Rotz.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	// Rotation function, rotates the object
+	public Polygon rotz(Number degreesToRotate) {
+		return this.transformed(new Transform().rotZ(degreesToRotate.doubleValue()));
+	}
+
+	/**
+	 * Roty.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	public Polygon roty(Number degreesToRotate) {
+		return this.transformed(new Transform().rotY(degreesToRotate.doubleValue()));
+	}
+
+	/**
+	 * Rotx.
+	 *
+	 * @param degreesToRotate
+	 *            the degrees to rotate
+	 * @return the csg
+	 */
+	public Polygon rotx(Number degreesToRotate) {
+		return this.transformed(new Transform().rotX(degreesToRotate.doubleValue()));
+	}
+
+	/**
+	 * Scalez.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	// Scale function, scales the object
+	public Polygon scalez(Number scaleValue) {
+		return this.transformed(new Transform().scaleZ(scaleValue.doubleValue()));
+	}
+
+	/**
+	 * Scaley.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public Polygon scaley(Number scaleValue) {
+		return this.transformed(new Transform().scaleY(scaleValue.doubleValue()));
+	}
+
+	/**
+	 * Scalex.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public Polygon scalex(Number scaleValue) {
+		return this.transformed(new Transform().scaleX(scaleValue.doubleValue()));
+	}
+
+	/**
+	 * Scale.
+	 *
+	 * @param scaleValue
+	 *            the scale value
+	 * @return the csg
+	 */
+	public Polygon scale(Number scaleValue) {
+		return this.transformed(new Transform().scale(scaleValue.doubleValue()));
+	}
 }

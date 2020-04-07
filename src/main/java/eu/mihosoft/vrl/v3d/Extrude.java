@@ -131,6 +131,10 @@ public class Extrude {
 		throw new AssertionError("Don't instantiate me!", null);
 	}
 
+	public static CSG polygons(Polygon polygon1, Number zDistance) {
+		return polygons(polygon1, polygon1.transformed(new Transform().movez(zDistance)));
+	}
+	
 	public static CSG polygons(Polygon polygon1, Polygon polygon2) {
 		// if(!isCCW(polygon1)) {
 		// polygon1=Polygon.fromPoints(toCCW(polygon1.getPoints()));
@@ -172,7 +176,8 @@ public class Extrude {
 	}
 
 	public static ArrayList<CSG> polygons(eu.mihosoft.vrl.v3d.Polygon polygon1, ArrayList<Transform> transforms) {
-
+		if(transforms.size()==1)
+			transforms.add(0, new Transform());
 		polygon1 = Polygon.fromPoints(toCCW(polygon1.getPoints()));
 		if(transforms.size()<2) {
 			transforms.add(0, new Transform());
