@@ -98,13 +98,14 @@ public class PolygonUtil {
      */
     public static List<eu.mihosoft.vrl.v3d.Polygon> concaveToConvex(
             eu.mihosoft.vrl.v3d.Polygon concave) {
-
+    	
         List<eu.mihosoft.vrl.v3d.Polygon> result = new ArrayList<>();
 
         Vector3d normal = concave.vertices.get(0).normal.clone();
 
         boolean cw = !Extrude.isCCW(concave);
-
+        concave = Extrude.toCCW(concave);
+        
         eu.mihosoft.vrl.v3d.ext.org.poly2tri.Polygon p
                 = fromCSGPolygon(concave);
         

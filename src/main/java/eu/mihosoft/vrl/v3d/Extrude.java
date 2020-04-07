@@ -655,4 +655,14 @@ public class Extrude {
 		return move(slice, p);
 
 	}
+
+	public static Polygon toCCW(Polygon concave) {
+		if(!isCCW(concave)) {	
+			List<Vector3d> points = concave.getPoints();
+			List<Vector3d> result = new ArrayList<>(points);
+			Collections.reverse(result);
+			return Polygon.fromPoints(result);
+		}
+		return concave;
+	}
 }
