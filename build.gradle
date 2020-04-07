@@ -96,7 +96,7 @@ version = props."app.version"
 artifacts {
 	archives javadocJar, sourcesJar, jar
 }
-/*
+
 signing {
 	sign configurations.archives
 }
@@ -144,6 +144,4 @@ uploadArchives {
 	  }
 	}
   }
-  
-
-*/
+ 
