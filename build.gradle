@@ -92,7 +92,7 @@ group = "com.neuronrobotics"
 archivesBaseName = props."app.name"
 version = props."app.version"
 
-
+/*
 artifacts {
 	archives javadocJar, sourcesJar, jar
 }
@@ -144,4 +144,5 @@ uploadArchives {
 	  }
 	}
   }
+  */
  
