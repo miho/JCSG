@@ -32,6 +32,7 @@ mainClassName = mainClass
 repositories {
     mavenCentral()
     jcenter()
+	mavenLocal()
 }
 
 // javadoc is way too strict for my taste.
@@ -43,6 +44,9 @@ if (JavaVersion.current().isJava8Compatible()) {
         }
     }
 }
+//home/hephaestus/.m2/repository/net/jsdia/jsdi_lib/4.5.0-SNAPSHOT/jsdi_lib-4.5.0-SNAPSHOT.pom
+//home/hephaestus/.m2/repository/net/jsdai/jsdai_lib/4.5.0-SNAPSHOT/jsdai_lib-4.5.0-SNAPSHOT.pom
+//home/hephaestus/.m2/repository/net/jsdia/jsdai_lib/4.5.0-SNAPSHOT/jsdai_lib-4.5.0-SNAPSHOT.pom
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     
@@ -76,8 +80,9 @@ dependencies {
     
     compile fileTree (dir: 'libs', includes: ['*.jar'])
     //compile group: 'java3d', name: 'vecmath', version: '1.3.1' , classifier: "javadoc"
-    
-
+	compile fileTree (dir: 'libs/jsdai', includes: ['*.jar'])
+	compile fileTree (dir: 'libs/jsdai', includes: ['*.zip'])
+	
 	
 }
 

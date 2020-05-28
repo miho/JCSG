@@ -11,7 +11,8 @@ public class Objtest {
 
 	@Test
 	public void test() throws IOException {
-		CSG csg = new Cube (1).toCSG();
+		CSG hole = new Cylinder(0.2, 2).toCSG().movez(-1);
+		CSG csg = new Cube (1).toCSG().difference(hole);
 		csg.addDatumReference(new Transform());
 		
 		String s=csg.toObjString()
@@ -20,7 +21,7 @@ public class Objtest {
 		assertFalse(s.length()<4);		
 		FileUtil.write(Paths.get("test.obj"),
 				csg.toObjString());
-		csg.toObj().toFiles(Paths.get("test2.obj"));
+//		csg.toObj().toFiles(Paths.get("test2.obj"));
 	}
 
 }

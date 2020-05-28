@@ -17,5 +17,8 @@
 /*.svg
 out
 
-/test2.mtl
-/test2.obj
+/*.mtl
+/*.obj
+/*.stp
+
+
