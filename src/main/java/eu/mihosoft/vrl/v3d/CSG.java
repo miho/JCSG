@@ -1256,98 +1256,98 @@ public class CSG implements IuserAPI{
 		return this;
 	}
 
-//	/**
-//	 * To obj.
-//	 *
-//	 * @return the obj file
-//	 */
-//	public ObjFile toObj() {
-//
-//		StringBuilder objSb = new StringBuilder();
-//
-//		objSb.append("mtllib " + ObjFile.MTL_NAME);
-//
-//		objSb.append("# Group").append("\n");
-//		objSb.append("g v3d.csg\n");
-//
-//		class PolygonStruct {
-//
-//			PropertyStorage storage;
-//			List<Integer> indices;
-//			String materialName;
-//
-//			public PolygonStruct(PropertyStorage storage, List<Integer> indices, String materialName) {
-//				this.storage = storage;
-//				this.indices = indices;
-//				this.materialName = materialName;
-//			}
-//		}
-//
-//		List<Vertex> vertices = new ArrayList<>();
-//		List<PolygonStruct> indices = new ArrayList<>();
-//
-//		objSb.append("\n# Vertices\n");
-//
-//		Map<PropertyStorage, Integer> materialNames = new HashMap<>();
-//
-//		int materialIndex = 0;
-//
-//		for (Polygon p : getPolygons()) {
-//			List<Integer> polyIndices = new ArrayList<>();
-//
-//			p.vertices.stream().forEach((v) -> {
-//				if (!vertices.contains(v)) {
-//					vertices.add(v);
-//					v.toObjString(objSb);
-//					polyIndices.add(vertices.size());
-//				} else {
-//					polyIndices.add(vertices.indexOf(v) + 1);
-//				}
-//			});
-//
-//			if (!materialNames.containsKey(p.getStorage())) {
-//				materialIndex++;
-//				materialNames.put(p.getStorage(), materialIndex);
-//				p.getStorage().set("material:name", materialIndex);
-//			}
-//
-//			indices.add(
-//					new PolygonStruct(p.getStorage(), polyIndices, "material-" + materialNames.get(p.getStorage())));
-//		}
-//
-//		objSb.append("\n# Faces").append("\n");
-//
-//		for (PolygonStruct ps : indices) {
-//
-//			// add mtl info
-//			ps.storage.getValue("material:color")
-//					.ifPresent((v) -> objSb.append("usemtl ").append(ps.materialName).append("\n"));
-//
-//			// we triangulate the polygon to ensure
-//			// compatibility with 3d printer software
-//			List<Integer> pVerts = ps.indices;
-//			int index1 = pVerts.get(0);
-//			for (int i = 0; i < pVerts.size() - 2; i++) {
-//				int index2 = pVerts.get(i + 1);
-//				int index3 = pVerts.get(i + 2);
-//
-//				objSb.append("f ").append(index1).append(" ").append(index2).append(" ").append(index3).append("\n");
-//			}
-//		}
-//
-//		objSb.append("\n# End Group v3d.csg").append("\n");
-//
-//		StringBuilder mtlSb = new StringBuilder();
-//
-//		materialNames.keySet().forEach(s -> {
-//			if (s.contains("material:color")) {
-//				mtlSb.append("newmtl material-").append(s.getValue("material:name").get()).append("\n");
-//				mtlSb.append("Kd ").append(s.getValue("material:color").get()).append("\n");
-//			}
-//		});
-//
-//		return new ObjFile(objSb.toString(), mtlSb.toString());
-//	}
+	/**
+	 * To obj.
+	 *
+	 * @return the obj file
+	 */
+	public ObjFile toObj() {
+
+		StringBuilder objSb = new StringBuilder();
+
+		objSb.append("mtllib " + ObjFile.MTL_NAME);
+
+		objSb.append("# Group").append("\n");
+		objSb.append("g v3d.csg\n");
+
+		class PolygonStruct {
+
+			PropertyStorage storage;
+			List<Integer> indices;
+			String materialName;
+
+			public PolygonStruct(PropertyStorage storage, List<Integer> indices, String materialName) {
+				this.storage = storage;
+				this.indices = indices;
+				this.materialName = materialName;
+			}
+		}
+
+		List<Vertex> vertices = new ArrayList<>();
+		List<PolygonStruct> indices = new ArrayList<>();
+
+		objSb.append("\n# Vertices\n");
+
+		Map<PropertyStorage, Integer> materialNames = new HashMap<>();
+
+		int materialIndex = 0;
+
+		for (Polygon p : getPolygons()) {
+			List<Integer> polyIndices = new ArrayList<>();
+
+			p.vertices.stream().forEach((v) -> {
+				if (!vertices.contains(v)) {
+					vertices.add(v);
+					v.toObjString(objSb);
+					polyIndices.add(vertices.size());
+				} else {
+					polyIndices.add(vertices.indexOf(v) + 1);
+				}
+			});
+
+			if (!materialNames.containsKey(p.getStorage())) {
+				materialIndex++;
+				materialNames.put(p.getStorage(), materialIndex);
+				p.getStorage().set("material:name", materialIndex);
+			}
+
+			indices.add(
+					new PolygonStruct(p.getStorage(), polyIndices, "material-" + materialNames.get(p.getStorage())));
+		}
+
+		objSb.append("\n# Faces").append("\n");
+
+		for (PolygonStruct ps : indices) {
+
+			// add mtl info
+			ps.storage.getValue("material:color")
+					.ifPresent((v) -> objSb.append("usemtl ").append(ps.materialName).append("\n"));
+
+			// we triangulate the polygon to ensure
+			// compatibility with 3d printer software
+			List<Integer> pVerts = ps.indices;
+			int index1 = pVerts.get(0);
+			for (int i = 0; i < pVerts.size() - 2; i++) {
+				int index2 = pVerts.get(i + 1);
+				int index3 = pVerts.get(i + 2);
+
+				objSb.append("f ").append(index1).append(" ").append(index2).append(" ").append(index3).append("\n");
+			}
+		}
+
+		objSb.append("\n# End Group v3d.csg").append("\n");
+
+		StringBuilder mtlSb = new StringBuilder();
+
+		materialNames.keySet().forEach(s -> {
+			if (s.contains("material:color")) {
+				mtlSb.append("newmtl material-").append(s.getValue("material:name").get()).append("\n");
+				mtlSb.append("Kd ").append(s.getValue("material:color").get()).append("\n");
+			}
+		});
+
+		return new ObjFile(objSb.toString(), mtlSb.toString());
+	}
 
 	/**
 	 * Returns this csg in OBJ string format.

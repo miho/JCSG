@@ -20,6 +20,7 @@ public class Objtest {
 		assertFalse(s.length()<4);		
 		FileUtil.write(Paths.get("test.obj"),
 				csg.toObjString());
+		csg.toObj().toFiles(Paths.get("test2.obj"));
 	}
 
 }
