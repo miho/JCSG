@@ -166,11 +166,9 @@ public class Bounds {
      * @param p polygon to check
      * @return {@code true} if the polygon intersects this bounding box;
      * {@code false} otherwise
-     * @deprecated not implemented yet
      */
-    @Deprecated
     public boolean intersects(Polygon p) {
-        throw new UnsupportedOperationException("Implementation missing!");
+        return p.vertices.stream().filter(this::contains).count()>0;
     }
 
     /**

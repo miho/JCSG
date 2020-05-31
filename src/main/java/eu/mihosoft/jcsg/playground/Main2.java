@@ -5,165 +5,152 @@
  */
 package eu.mihosoft.jcsg.playground;
 
-import eu.mihosoft.jcsg.Bounds;
-import eu.mihosoft.jcsg.CSG;
-import eu.mihosoft.jcsg.Cube;
-import eu.mihosoft.jcsg.ObjFile;
-import eu.mihosoft.jcsg.Polygon;
-import eu.mihosoft.jcsg.STL;
-import eu.mihosoft.jcsg.Sphere;
-import eu.mihosoft.jcsg.Vertex;
+import eu.mihosoft.jcsg.*;
 import eu.mihosoft.vvecmath.ModifiableVector3d;
 import eu.mihosoft.vvecmath.Plane;
 import eu.mihosoft.vvecmath.Transform;
 import eu.mihosoft.vvecmath.Vector3d;
 
-import javax.lang.model.type.IntersectionType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author Michael Hoffer (info@michaelhoffer.de)
  */
-public class Main {
+public class Main2 {
 
     public static final double EPS = 1e-8;
+    // s3 = s1 - s2
 
+    // # Step 1:
+    //
+    // Take all polygons of s2 that have vertices inside the bounding box b 1of s1
+    // (polygons with only some vertices inside of b are cut along the planes of b1)
+    // All polygons outside of b1 are ignored from now on.
+    //
+    // Remark: collinear polygons are considered as being outside of b1.
+    //
+    // # Step 2:
+    //
+    // Cut all remaining polygons of s2 with the polygons of s1. Only keep the polygons with all vertices
+    // inside of b1.
+    //
+    // # Step 3:
+    //
+    // a) For each remaining polygon p of s2: cast an orthogonal ray from the center of p (normal) and
+    //    count the number of intersecting polygons of s1. If the ray hits a vertex of p or cuts the
+    //    boundary, it counts as being intersected by the ray.
+    //
+    // b) Classify the resulting polygon by whether the number of intersections is even or uneven number
+    //    of intersections. An uneven number of intersections indicates that the polygon is inside of s1;
+    //    An even number of intersections indicates that the polygon is outside of s2.
+    //
+    //
+    // # Step 5:
+    //
+    // Repeat these steps (1-4) with s1 and s2 reversed.
+    //
+    // # Step 6:
+    //
+    // s3 consists of all polygons of s1 classified as being outside of s2 and all polygons of s2 being
+    // classified as being inside of s1.
+    //
+    //   _________
+    //  /   /*\   \
+    //  |   |*|   |           * = intersection
+    //  \___\*/___/
+    //
+    //   _________                    ____
+    //  /   / \   \                  /   /
+    //  |   | |   |            ===   |   |
+    //  \___\ /___/                  \___\
     public static void main(String[] args) throws IOException {
 
-        testCut();
+        CSG s1 = new Cube(2).toCSG();
+        CSG s2 = new Sphere(Vector3d.x(0.0), 1.25, 32, 32).toCSG();
 
-        CSG c1 = new Cube(Vector3d.zero(), Vector3d.xyz(1, 1, 1)).toCSG();
+        Files.write(Paths.get("diff-orig.stl"), s2.difference(s1).toStlString().getBytes());
 
-        CSG c2 = new Cube(Vector3d.xyz(1, 1, 1), Vector3d.xyz(2, 2, 2)).toCSG()
-                .transformed(Transform.unity().rot(Vector3d.ZERO, Vector3d.UNITY, 78));
+        Classification classification = classify(s1,s2);
 
-//        Files.write(Paths.get("c1.stl"), c1.toStlString().getBytes());
-//        Files.write(Paths.get("c2.stl"), c2.toStlString().getBytes());
-//        c1 = STL.file(Paths.get("c1.stl"));
-//        c2 = STL.file(Paths.get("c2.stl"));
-//        c1 = new Sphere(Vector3d.x(0.), 0.5, 16, 16).toCSG();
-//        c2 = new Sphere(Vector3d.x(0.6), 0.5, 16, 16).toCSG();
-        c2 = new Sphere(Vector3d.x(0.0), 0.65, 16, 16).toCSG();
-        List<Polygon> result1 = splitPolygons(
-                c1.getPolygons(), c2.getPolygons(),
-                c1.getBounds(), c2.getBounds()
-        );
+        List<Polygon> polygons = new ArrayList<>();
 
-        List<Polygon> result2 = splitPolygons(
-                c2.getPolygons(), c1.getPolygons(),
-                c2.getBounds(), c1.getBounds()
-        );
+        polygons.addAll(classification.outsideS1);
+//        polygons.addAll(classification.outsideS2);
+//        polygons.addAll(classification.insideS1);
+        polygons.addAll(classification.insideS2);
 
-  /*      result1 = splitPolygons(
-                result2, c2.getPolygons(),
-                c1.getBounds(), c2.getBounds());*/
+        CSG difference = CSG.fromPolygons(polygons);
 
-        List<Polygon> splitted = new ArrayList<>();
-        splitted.addAll(result1);
-        splitted.addAll(result2);
-
-//        CSG.fromPolygons(splitted).toObj(100).toFiles(Paths.get("test-split1.obj"));
-//
-        Files.write(Paths.get("test-split1.stl"),
-                CSG.fromPolygons(splitted).toStlString().getBytes());
-        List<Polygon> inC2 = new ArrayList<>();
-        List<Polygon> outC2 = new ArrayList<>();
-        List<Polygon> sameC2 = new ArrayList<>();
-        List<Polygon> oppositeC2 = new ArrayList<>();
-
-        List<Polygon> unknownOfC1 = new ArrayList<>();
-
-        for (Polygon p : result2) {
-            PolygonType pT = classifyPolygon(p, c2.getPolygons(), c2.getBounds());
-
-            if (pT == PolygonType.INSIDE) {
-                inC2.add(p);
-            }
-
-            if (pT == PolygonType.SAME) {
-                sameC2.add(p);
-            }
-
-            if (pT == PolygonType.OPPOSITE) {
-                oppositeC2.add(p);
-            }
-
-            if (pT == PolygonType.OUTSIDE) {
-                outC2.add(p);
-            }
-
-            if (pT == PolygonType.UNKNOWN) {
-                unknownOfC1.add(p);
-            }
-        }
-
-        List<Polygon> inC1 = new ArrayList<>();
-        List<Polygon> outC1 = new ArrayList<>();
-        List<Polygon> sameC1 = new ArrayList<>();
-        List<Polygon> oppositeC1 = new ArrayList<>();
-
-        List<Polygon> unknownOfC2 = new ArrayList<>();
-
-        for (Polygon p : result1) {
-            PolygonType pT = classifyPolygon(p, c1.getPolygons(), c1.getBounds());
-
-            if (pT == PolygonType.INSIDE) {
-                inC1.add(p);
-            }
-
-            if (pT == PolygonType.OUTSIDE) {
-                outC1.add(p);
-            }
-
-            if (pT == PolygonType.SAME) {
-                sameC1.add(p);
-            }
-
-            if (pT == PolygonType.OPPOSITE) {
-                oppositeC1.add(p);
-            }
-
-            if (pT == PolygonType.UNKNOWN) {
-                unknownOfC2.add(p);
-            }
-        }
-
-        List<Polygon> difference = new ArrayList<>();
-        difference.addAll(outC2);
-        difference.addAll(oppositeC2);
-        for (Polygon p : inC1) {
-            p.flip();
-        }
-        for (Polygon p : inC2) {
-            p.flip();
-        }
-
-        difference.addAll(inC1);
-
-        System.err.println(">> creating CSG");
-
-        CSG result = CSG.fromPolygons(difference);
-
-        System.err.println(">> unknown  polygons in C1: " + unknownOfC1.size());
-        System.err.println(">> unknown  polygons in C2: " + unknownOfC2.size());
-        System.err.println(">> opposite polygons in C1: " + oppositeC1.size());
-        System.err.println(">> opposite polygons in C2: " + oppositeC2.size());
-        System.err.println(">> inside   polygons in C1: " + inC1.size());
-        System.err.println(">> inside   polygons in C2: " + inC2.size());
-
-        Files.write(Paths.get("test.stl"), result.toStlString().getBytes());
-
+        Files.write(Paths.get("diff.stl"), difference.toStlString().getBytes());
     }
+
+    static class Classification {
+        public List<Polygon> insideS1;
+        public List<Polygon> outsideS1;
+        public List<Polygon> insideS2;
+        public List<Polygon> outsideS2;
+    }
+
+    static class Classification1 {
+        public List<Polygon> inside;
+        public List<Polygon> outside;
+    }
+
+    public static Classification classify(CSG s1, CSG s2) {
+        Classification result = new Classification();
+
+        Classification1 r1 = classify1(s1,s2);
+        Classification1 r2 = classify1(s2,s1);
+
+        result.insideS1 = r1.inside;
+        result.outsideS1 = r1.outside;
+        result.insideS2 = r2.inside;
+        result.outsideS2 = r2.outside;
+
+        return result;
+    }
+
+    public static Classification1 classify1(CSG s1, CSG s2) {
+
+        // step 1
+
+        // get polygons inside of b
+        Bounds b1 = s1.getBounds();
+        Bounds b2 = s2.getBounds();
+        List<Polygon> ps1 = s1.getPolygons();
+        List<Polygon> ps2 = s2.getPolygons();//.stream().filter(p->b1.intersects(p)).collect(Collectors.toList());
+
+        // step 2
+
+        // cut polygons
+        ps2 = splitPolygons(ps1, ps2, b1, b2);//.stream().filter(p->p.vertices.stream().filter(v->b1.contains(v)).count()==p.vertices.size()).collect(Collectors.toList());
+
+        // step 3
+
+        double TOL = 1e-10;
+
+        Map<Boolean, List<Polygon>> polygons = ps2.parallelStream().collect(Collectors.partitioningBy(p-> {
+            return classifyPolygon(p, ps1, b1) == PolygonType.OUTSIDE;
+        }));
+
+        List<Polygon> inside  = polygons.get(false);
+        List<Polygon> outside = polygons.get(true);
+
+        Classification1 result = new Classification1();
+        result.inside = inside;
+        result.outside = outside;
+
+        return result;
+    }
+
+
 
     public static PolygonType classifyPolygon(Polygon p1, List<Polygon> polygons, Bounds b) {
 
@@ -350,7 +337,7 @@ public class Main {
         double numerator = A * point.x() + B * point.y() + C * point.z() + D;
         double denominator = A * direction.x() + B * direction.y() + C * direction.z();
 
-        //if line is paralel to the plane...
+        //if line is parallel to the plane...
         if (Math.abs(denominator) < TOL) {
             //if line is contained in the plane...
             if (Math.abs(numerator) < TOL) {
@@ -566,7 +553,7 @@ public class Main {
 //            Files.write(Paths.get("test-split1.stl"),
 //                    CSG.fromPolygons(cutsWithP1).toStlString().getBytes());
         } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main2.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         ModifiableVector3d segmentP1 = Vector3d.zero().asModifiable();

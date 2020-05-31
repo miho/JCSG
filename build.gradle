@@ -14,7 +14,7 @@ sourceCompatibility = '11'
 //repairHeaders.licenseHeaderText = new File(projectDir,'./license-template.txt')
 
 wrapper {
-    gradleVersion = '5.5'
+    gradleVersion = '6.4'
 }
 
 if (!hasProperty('mainClass')) {
