@@ -80,8 +80,8 @@ dependencies {
     
     compile fileTree (dir: 'libs', includes: ['*.jar'])
     //compile group: 'java3d', name: 'vecmath', version: '1.3.1' , classifier: "javadoc"
-	compile fileTree (dir: 'libs/jsdai', includes: ['*.jar'])
-	compile fileTree (dir: 'libs/jsdai', includes: ['*.zip'])
+	//compile fileTree (dir: 'libs/jsdai', includes: ['*.jar'])
+	//compile fileTree (dir: 'libs/jsdai', includes: ['*.zip'])
 	
 	
 }
