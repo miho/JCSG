@@ -22,3 +22,7 @@ out
 /*.stp
 
 
+/freecad.FCStd
+/handmade.step
+/test-export-2.step
+/test-export.step
