@@ -23,25 +23,25 @@ public class CSGDatabase {
     private static final HashMap<String,ArrayList<IParameterChanged>> parameterListeners=new HashMap<>();
 	public static void set(String key, Parameter value){
 		getDatabase();
-		synchronized(database){
+		//synchronized(database){
 			getDatabase().put(key, value);
-		}
+		//}
 	}
 	public static Parameter get(String key){
 		Parameter ret =null;
 		getDatabase();// load database before synchronization
-		synchronized(database){
+		//synchronized(database){
 			ret=getDatabase().get(key);
-		}
+		//}
 		return ret;
 	}
 	
 	public static   void clear(){
 
 		getDatabase();
-		synchronized(database){
+		//synchronized(database){
 			database.clear();
-		}
+		//}
 		parameterListeners.clear();
 		saveDatabase();
 	}
@@ -70,9 +70,9 @@ public class CSGDatabase {
 	
 
 	public static void delete(String key){
-		synchronized(database){
+		//synchronized(database){
 			getDatabase().remove(key);
-		}
+		//}
 	}
 	private static HashMap<String,Parameter> getDatabase() {
 		if(database==null){
@@ -158,9 +158,9 @@ public class CSGDatabase {
 	public static String getDataBaseString(){
 		String writeOut=null;
 		getDatabase();
-		synchronized(database){
+		//synchronized(database){
 			 writeOut  =gson.toJson(database, TT_mapStringString); 
-		}
+		//}
 		return writeOut;
 	}
 	
