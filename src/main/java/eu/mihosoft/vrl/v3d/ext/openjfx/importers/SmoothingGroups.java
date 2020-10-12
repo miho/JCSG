@@ -31,6 +31,7 @@
  */
 package eu.mihosoft.vrl.v3d.ext.openjfx.importers;
 
+import eu.mihosoft.vrl.v3d.Vector3d;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -40,8 +41,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import com.sun.javafx.geom.Vec3f;
 import javafx.scene.shape.TriangleMesh;
+import javax.vecmath.Vector3f;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -179,8 +180,8 @@ public class SmoothingGroups {
      * @param index the index
      * @return the normal
      */
-    Vec3f getNormal(int index) {
-        return new Vec3f(normals[index * 3], normals[index * 3 + 1], normals[index * 3 + 2]);
+    Vector3f getNormal(int index) {
+        return new Vector3f(normals[index * 3], normals[index * 3 + 1], normals[index * 3 + 2]);
     }
     
     /** The Constant normalAngle. */
@@ -193,15 +194,15 @@ public class SmoothingGroups {
      * @param n2 the n2
      * @return true, if is normals equal
      */
-    private static boolean isNormalsEqual(Vec3f n1, Vec3f n2) {
+    private static boolean isNormalsEqual(Vector3f n1, Vector3f n2) {
         if (n1.x == 1.0e20f || n1.y == 1.0e20f || n1.z == 1.0e20f
                 || n2.x == 1.0e20f || n2.y == 1.0e20f || n2.z == 1.0e20f) {
             //System.out.println("unlocked normal found, skipping");
             return false;
         }
-        Vec3f myN1 = new Vec3f(n1);
+        Vector3f myN1 = new Vector3f(n1);
         myN1.normalize();
-        Vec3f myN2 = new Vec3f(n2);
+        Vector3f myN2 = new Vector3f(n2);
         myN2.normalize();
         return myN1.dot(myN2) >= normalAngle;
     }
