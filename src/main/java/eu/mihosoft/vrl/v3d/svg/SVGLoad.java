@@ -23,6 +23,7 @@ import org.apache.batik.dom.svg.SVGOMImageElement;
 import org.apache.batik.dom.svg.SVGOMPathElement;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGImageElement;
@@ -45,10 +46,12 @@ public class SVGLoad {
 	private static final String GROUP_ELEMENT_NAME = "g";
 	private Document svgDocument;
 	boolean hp = true;
-	private ArrayList<CSG> sections = null;
-	private ArrayList<CSG> holes = null;
-
-	private List<Polygon> polygons = null;
+	private HashMap<String,List<Polygon>> polygonByLayers = null;
+	private HashMap<String,ArrayList<CSG>> csgByLayers = new HashMap<String, ArrayList<CSG>>(); 
+//	private ArrayList<CSG> sections = null;
+//	private ArrayList<CSG> holes = null;
+//
+//	private List<Polygon> polygons = null;
 	private ISVGLoadProgress progress = null;
 	private double thickness;
 	private boolean negativeThickness = false;
@@ -244,24 +247,24 @@ public class SVGLoad {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<Polygon> toPolygons(File f) throws IOException {
+	public static HashMap<String,List<Polygon>> toPolygons(File f) throws IOException {
 		return new SVGLoad(f.toURI()).toPolygons();
 
 	}
 
-	public List<Polygon> toPolygons(double resolution) {
-		if (polygons == null) {
+	public HashMap<String,List<Polygon>> toPolygons(double resolution) {
+		if(polygonByLayers==null)
 			try {
 				loadAllGroups(resolution, new Transform());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-		return polygons;
+
+		return getPolygonByLayers();
 	}
 
-	public List<Polygon> toPolygons() {
+	public HashMap<String,List<Polygon>> toPolygons() {
 		return toPolygons(0.001);
 	}
 
@@ -304,7 +307,7 @@ public class SVGLoad {
 		for (int j = 0; j < pnCount; j++) {
 			if (SVGOMGElement.class.isInstance(pn.item(j))) {
 				SVGOMGElement element = (SVGOMGElement) pn.item(j);
-				loadGroup(element, resolution, startingFrame);
+				loadGroup(element, resolution, startingFrame,null);
 			}
 			// else
 			// println "UNKNOWN ELEMENT "+pn.item(j).getClass()
@@ -312,20 +315,35 @@ public class SVGLoad {
 
 	}
 
-	private void loadGroup(SVGOMGElement element, double resolution, Transform startingFrame) {
+	private void loadGroup(SVGOMGElement element, double resolution, Transform startingFrame, String encapsulatingLayer) {
 		Node transforms = element.getAttributes().getNamedItem("transform");
 		Transform newFrame = getNewframe(startingFrame, transforms);
-		//System.out.println("Group " + element.getAttribute("id") + " root " + newFrame.getX() + " " + newFrame.getY());
+		String layername;
+		
+		try {
+			layername=element.getAttributeNS("http://www.inkscape.org/namespaces/inkscape", "label");
+			if(layername==null|| layername.length()==0)
+				throw new RuntimeException();
+		}catch (Throwable t) {
+			layername=null;
+		}
+		if(layername==null) {
+			layername=encapsulatingLayer;
+		}else {
+			//System.out.println("Updated to layer "+layername+" from "+encapsulatingLayer);
+		}
+		//System.out.println("\tGroup " + element.getAttribute("id") +"\n\t inkscape name: "+layername+ " \n\t root " + newFrame.getX() + " " + newFrame.getY());
+		
 		NodeList children = element.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node n = children.item(i);
 			if (SVGOMGElement.class.isInstance(n)) {
-				loadGroup((SVGOMGElement) n, resolution, newFrame);
+				loadGroup((SVGOMGElement) n, resolution, newFrame,layername);
 			} else {
 				// System.out.println("\tNot group:
 				// "+n.getAttributes().getNamedItem("id").getNodeValue());
 				try {
-					loadPath(n, resolution, newFrame);
+					loadPath(n, resolution, newFrame,layername);
 				} catch (Throwable t) {
 
 					t.printStackTrace();
@@ -351,7 +369,7 @@ public class SVGLoad {
 					.replaceAll("\\)", "").split("\\,");
 			// System.out.println(id.getNodeValue() + " " + transformValues);
 			double scalex = toPx(transformValues[0]);
-			double scaley = toPx(transformValues[1]);
+			double scaley = toPx(transformValues.length==2?transformValues[1]:transformValues[0]);
 			newFrame.scale(scalex, scaley, 1);
 
 		} else if (transformValue.contains("matrix")) {
@@ -373,7 +391,7 @@ public class SVGLoad {
 	}
 
 	// SVGOMGElement
-	private void loadPath(Node pathNode, double resolution, Transform startingFrame) {
+	private void loadPath(Node pathNode, double resolution, Transform startingFrame, String encapsulatingLayer) {
 		Transform newFrame;
 		// NodeList pathNodes = element.getElementsByTagName("path");
 		// Node transforms = element.getAttributes().getNamedItem("transform");
@@ -388,7 +406,7 @@ public class SVGLoad {
 						MetaPostPath2 mpp = new MetaPostPath2(pathNode);
 						String code = mpp.toCode();
 						//System.out.println("\tPath "+pathNode.getAttributes().getNamedItem("id").getNodeValue()+" "+newFrame);
-						loadComposite(code, resolution, newFrame);
+						loadComposite(code, resolution, newFrame,encapsulatingLayer);
 					}else if(SVGOMImageElement.class.isInstance(pathNode)) {
 						SVGImageElement image = (SVGOMImageElement) pathNode;
 						//System.out.println("Loading Image element..");
@@ -423,7 +441,7 @@ public class SVGLoad {
 
 	}
 
-	private void loadComposite(String code, double resolution, Transform startingFrame) {
+	private void loadComposite(String code, double resolution, Transform startingFrame, String encapsulatingLayer) {
 		// Count the occourences of M
 		int count = code.length() - code.replace("M", "").length();
 		if (count < 2) {
@@ -431,7 +449,7 @@ public class SVGLoad {
 
 			// setHolePolarity(true);
 			try {
-				loadSingle(code, resolution, startingFrame);
+				loadSingle(code, resolution, startingFrame,encapsulatingLayer);
 			} catch (Exception ex) {
 				// BowlerStudio.printStackTrace(ex);
 			}
@@ -446,7 +464,7 @@ public class SVGLoad {
 				if (sectionedPart.length() > 1) {
 
 					// println "Seperated complex: "
-					loadSingle(sectionedPart, resolution, startingFrame);
+					loadSingle(sectionedPart, resolution, startingFrame,encapsulatingLayer);
 				}
 			}
 		}
@@ -464,7 +482,7 @@ public class SVGLoad {
 		
 		return runningTotal<0;
 	}
-	private void loadSingle(String code, double resolution, Transform startingFrame) {
+	private void loadSingle(String code, double resolution, Transform startingFrame, String encapsulatingLayer) {
 		// println code
 		BezierPath path = new BezierPath();
 		path.parsePathString(code);
@@ -480,54 +498,34 @@ public class SVGLoad {
 
 		// System.out.println(" Path " + code);
 		Polygon poly = Polygon.fromPoints(p);
-		if (polygons == null)
-			polygons = new ArrayList<Polygon>();
-
-		boolean hole = isCCW(poly);
+		if(getPolygonByLayers()==null)
+			setPolygonByLayers(new HashMap<String, List<Polygon>>());
+		if (getPolygonByLayers().get(encapsulatingLayer) == null)
+			getPolygonByLayers().put(encapsulatingLayer, new ArrayList<Polygon>());
+		List<Polygon>  list = getPolygonByLayers().get(encapsulatingLayer);
 		poly = Polygon.fromPoints(Extrude.toCCW(poly.getPoints()));
+		list.add(poly);
 
-		polygons.add(poly);
-		if (!hp)
-			hole = !hole;
-		CSG newbit;
-
-		newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), poly);//.rotz(180);
-		// to
-		// mm
-
-		if (negativeThickness) {
-			newbit = newbit.toZMax();
-		}
-		// scale
-
-		try {
-
-			if (!hole) {
-				// println "NOT hole"
-				getSections().add(newbit);
-			} else {
-				// println "Hole"
-				
-				//getHoles().add(newbit);
-				newbit.setColor(Color.RED);
-				sections.add(newbit);
-			}
-
-			//
-			//
-		} catch (Exception ex) {
-			// System.out.println(" Path "+code );
-			// BowlerStudio.printStackTrace(ex);
-			//
-		}
-		if (progress != null) {
-			progress.onShape(newbit);
-		} else {
-			progressDefault.onShape(newbit);
-		}
 	}
-
-	public ArrayList<CSG> extrude(double t, double resolution) throws IOException {
+	public List<String> getLayers(){
+		ArrayList<String> layers= new ArrayList<String>();
+		if(getPolygonByLayers()==null) {
+			toPolygons();
+		}
+		for(String key:getPolygonByLayers().keySet() )
+			layers.add(key);
+		return layers;
+	}
+	public CSG extrudeLayerToCSG(double t,String layer){
+		return CSG.unionAll(extrudeLayers(t,0.01,layer).get(layer));
+	}
+	public ArrayList<CSG> extrudeLayer(double t,String layer){
+		return extrudeLayers(t,0.01,layer).get(layer);
+	}
+	public HashMap<String,ArrayList<CSG>> extrudeLayers(double t){
+		return extrudeLayers(t,0.01,null);
+	}
+	public HashMap<String,ArrayList<CSG>> extrudeLayers(double t, double resolution, String targetLayer){
 		this.thickness = t;
 
 		if (thickness < 0) {
@@ -536,88 +534,44 @@ public class SVGLoad {
 		} else {
 			negativeThickness = false;
 		}
-		/**
-		 * Reads a file and parses the path elements.
-		 * 
-		 * @param args
-		 *            args[0] - Filename to parse.
-		 * @throws IOException
-		 *             Error reading the SVG file.
-		 */
 
-		// SVGLoad converter = new eu.mihosoft.vrl.v3d.svg.SVGLoad(uri.toString());
-		// println "Loading converter"
-
-		if (getSections() == null)
-			setSections(new ArrayList<CSG>());
-		if (getHoles() == null)
-			setHoles(new ArrayList<CSG>());
-		getSections().clear();
-		getHoles().clear();
-
-		loadAllGroups(resolution, new Transform());
-		loadExtrusionSectoins();
-
-		return getSections();
+		toPolygons(0.001);
+		
+		for(String key: getPolygonByLayers().keySet()) {
+			if(targetLayer!=null)
+				if(!targetLayer.contentEquals(key))
+					continue;
+			if(csgByLayers.get(key)==null) {
+				csgByLayers.put(key, new ArrayList<CSG>());
+			}
+			ArrayList<CSG> parts = csgByLayers.get(key);
+			parts.clear();
+			for(Polygon p:getPolygonByLayers().get(key)) {
+				CSG newbit;
+				newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), p);
+				if (negativeThickness) {
+					newbit = newbit.toZMax();
+				}
+				parts.add(newbit);
+			}
+		}
+		
+		return csgByLayers;
 	}
 
-	private void loadExtrusionSectoins() {
-		// sections.addAll(holes);
-		// return;
+	public ArrayList<CSG> extrude(double t, double resolution) throws IOException {
 
-		if (getSections().size() == 0 && getHoles().size() != 0) {
-			getSections().addAll(getHoles());
-			getHoles().clear();
-		}
-		ArrayList<CSG> notHoles = new ArrayList<>();
-		for (CSG c : holes) {
-			boolean touchesSomething = false;
-			for (CSG p : sections) {
-				if (p.touching(c)) {
-					touchesSomething = true;
-					break;
-				}
-			}
-			if (!touchesSomething) {
-				notHoles.add(c);
-			}
-		}
-		for (CSG c : notHoles) {
-			holes.remove(c);
-			sections.add(c);
-		}
-		if (getSections().size() == 0)
-			return;
-		double ymax = getSections().get(0).getMaxY();
-		for (CSG c : getSections()) {
-			if (c.getMaxY() > ymax) {
-				ymax = c.getMaxY();
-			}
-		}
-		for (int i = 0; i < getSections().size(); i++) {
-			CSG tmp = getSections().get(i);
-			// boolean touching = false;
-			for (int j = 0; j < getHoles().size(); j++) {
-				CSG c = getHoles().get(j);
-				if (tmp.touching(c) && tmp.getPolygons().size() > 0) {
-					CSG intermTmp = tmp.difference(c);
-					if (intermTmp.getPolygons().size() > 0) {
-						tmp = intermTmp; // getHoles().remove(h);
-					} else {
-						// only apply holes that dont obliterate the part
-						// getSections().add(c);
-						// getHoles().remove(c);
-						// j--;
-					}
-				}
-			}
 
-			// tmp = tmp.rotx(180).toZMin().movey(height);
-			
-			getSections().set(i, tmp);
+		HashMap<String,ArrayList<CSG>> layers =extrudeLayers( t,  resolution,null);
+		ArrayList<CSG> all = new ArrayList<CSG>();
+		for(String key:layers.keySet()) {
+			all.addAll(layers.get(key));
 		}
-
+		
+		
+		return all;
 	}
+
 
 	/**
 	 * This will set the document to parse. This method also initializes the SVG DOM
@@ -686,24 +640,13 @@ public class SVGLoad {
 	public static ISVGLoadProgress getProgressDefault() {
 		return progressDefault;
 	}
-
-	public static void setProgressDefault(ISVGLoadProgress progressDefault) {
-		SVGLoad.progressDefault = progressDefault;
+	
+	private HashMap<String,List<Polygon>> getPolygonByLayers() {
+		return polygonByLayers;
+	}
+	private void setPolygonByLayers(HashMap<String,List<Polygon>> polygonByLayers) {
+		this.polygonByLayers = polygonByLayers;
 	}
 
-	public ArrayList<CSG> getHoles() {
-		return holes;
-	}
 
-	public void setHoles(ArrayList<CSG> holes) {
-		this.holes = holes;
-	}
-
-	public ArrayList<CSG> getSections() {
-		return sections;
-	}
-
-	public void setSections(ArrayList<CSG> sections) {
-		this.sections = sections;
-	}
 }
