@@ -85,7 +85,10 @@ public class SVGLoad {
 		return Double.parseDouble(value);
 	}
 	private void setScale(double value) {
+		
 		scale=value;
+		if(scale.isInfinite()||scale.isNaN())
+			throw new RuntimeException("Scale must be real number");
 		units.put("mm", (1/getScale()));
 		units.put("px", 1.0);
 		units.put("cm", units.get("mm")/10.0);
@@ -305,12 +308,20 @@ public class SVGLoad {
 		// println "Loading groups from "+pn.getClass()
 		int pnCount = pn.getLength();
 		for (int j = 0; j < pnCount; j++) {
-			if (SVGOMGElement.class.isInstance(pn.item(j))) {
-				SVGOMGElement element = (SVGOMGElement) pn.item(j);
+			Node item = pn.item(j);
+			System.out.println("\tTOP LEVEL :"+item);
+			if (SVGOMGElement.class.isInstance(item)) {
+				
+				SVGOMGElement element = (SVGOMGElement) item;
 				loadGroup(element, resolution, startingFrame,null);
+			} if(SVGOMPathElement.class.isInstance(item) || SVGOMImageElement.class.isInstance(item)) {
+				try {
+					loadPath(item, resolution, startingFrame,"TOP");
+				} catch (Throwable t) {
+
+					t.printStackTrace();
+				}
 			}
-			// else
-			// println "UNKNOWN ELEMENT "+pn.item(j).getClass()
 		}
 
 	}
@@ -340,8 +351,7 @@ public class SVGLoad {
 			if (SVGOMGElement.class.isInstance(n)) {
 				loadGroup((SVGOMGElement) n, resolution, newFrame,layername);
 			} else {
-				// System.out.println("\tNot group:
-				// "+n.getAttributes().getNamedItem("id").getNodeValue());
+				//System.out.println("\tNot group:"+n);
 				try {
 					loadPath(n, resolution, newFrame,layername);
 				} catch (Throwable t) {
@@ -399,6 +409,7 @@ public class SVGLoad {
 			// System.out.println("\tPath
 			// "+pathNode.getAttributes().getNamedItem("id").getNodeValue());
 			if (pathNode.getAttributes() != null) {
+				System.out.println("Path loading "+pathNode);
 				Node transforms = pathNode.getAttributes().getNamedItem("transform");
 				newFrame = getNewframe(startingFrame, transforms);
 				try {

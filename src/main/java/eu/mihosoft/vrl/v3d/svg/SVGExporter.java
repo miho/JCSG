@@ -22,16 +22,17 @@ public class SVGExporter {
 	//public static final double Scale = 3.543307;// SVG px to MM scale facto
 	private static final double Scale = 3.543307;
 	private int colorTicker=0;
-	private  List<String> colorNames = Arrays.asList("crimson","gray","black","darkmagenta","darkolivegreen","darkgreen",
+	public static  List<String> colorNames = Arrays.asList("crimson","gray","darkmagenta","darkolivegreen","darkgreen",
 			"darkblue",
 			"deeppink",
 			"chartreuse",
 			"green",
 			"orange",
 			"lime",
+			"black",
 			"tomato"); 
 	double min[] = { 0, 0 };
-	double max[] = { 0, 0 };
+	double max[] = { 100, 100 };
 	private ArrayList<String> polylines= new ArrayList<>() ;
 	private ArrayList<String> groups= new ArrayList<>() ;
 	private ArrayList<String> layers= new ArrayList<>() ;
