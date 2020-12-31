@@ -297,7 +297,7 @@ public class SVGLoad {
 			height = toMM(hval);
 			width = toMM(wval);
 			double value =viewW/width;
-			System.out.println("Page size height = "+height+" width ="+width+" with scale "+(int)(value*25.4)+" DPI ");
+			//System.out.println("Page size height = "+height+" width ="+width+" with scale "+(int)(value*25.4)+" DPI ");
 			setScale( value);
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -309,7 +309,7 @@ public class SVGLoad {
 		int pnCount = pn.getLength();
 		for (int j = 0; j < pnCount; j++) {
 			Node item = pn.item(j);
-			System.out.println("\tTOP LEVEL :"+item);
+			//System.out.println("\tTOP LEVEL :"+item);
 			if (SVGOMGElement.class.isInstance(item)) {
 				
 				SVGOMGElement element = (SVGOMGElement) item;
@@ -409,7 +409,7 @@ public class SVGLoad {
 			// System.out.println("\tPath
 			// "+pathNode.getAttributes().getNamedItem("id").getNodeValue());
 			if (pathNode.getAttributes() != null) {
-				System.out.println("Path loading "+pathNode);
+				//System.out.println("Path loading "+pathNode);
 				Node transforms = pathNode.getAttributes().getNamedItem("transform");
 				newFrame = getNewframe(startingFrame, transforms);
 				try {
