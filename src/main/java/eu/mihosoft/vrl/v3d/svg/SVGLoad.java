@@ -528,7 +528,10 @@ public class SVGLoad {
 		return layers;
 	}
 	public CSG extrudeLayerToCSG(double t,String layer){
-		return CSG.unionAll(extrudeLayers(t,0.01,layer).get(layer));
+		CSG unionAll = CSG.unionAll(extrudeLayers(t,0.01,layer).get(layer));
+		unionAll.setName(layer);
+		
+		return unionAll;
 	}
 	public ArrayList<CSG> extrudeLayer(double t,String layer){
 		return extrudeLayers(t,0.01,layer).get(layer);
