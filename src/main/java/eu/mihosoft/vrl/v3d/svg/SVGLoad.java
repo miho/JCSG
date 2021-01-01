@@ -524,7 +524,7 @@ public class SVGLoad {
 			toPolygons();
 		}
 		for(String key:getPolygonByLayers().keySet() )
-			layers.add(key);
+			layers.add(0,key);
 		return layers;
 	}
 	public CSG extrudeLayerToCSG(double t,String layer){
