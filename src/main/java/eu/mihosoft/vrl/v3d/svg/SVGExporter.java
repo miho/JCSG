@@ -111,7 +111,7 @@ public class SVGExporter {
 //		if(groups.size()==0)
 //			return;
 		String  groupsLine="<g\n"+
-							"inkscape:label=\""+name+" Slice "+layerCounter+"\"\n"+
+							"inkscape:label=\""+name+"Slice "+layerCounter+"\"\n"+
 							"inkscape:groupmode=\"layer\" \n"+
 							"id=\"layer"+layerCounter+"\" \n"+
 							">"
