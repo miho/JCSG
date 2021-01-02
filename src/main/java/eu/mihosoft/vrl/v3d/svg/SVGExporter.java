@@ -108,8 +108,8 @@ public class SVGExporter {
 	}
 	private void makeLayer(){
 		makeGroup();
-		if(groups.size()==0)
-			return;
+//		if(groups.size()==0)
+//			return;
 		String  groupsLine="<g\n"+
 							"inkscape:label=\""+name+" Slice "+layerCounter+"\"\n"+
 							"inkscape:groupmode=\"layer\" \n"+
