@@ -432,21 +432,28 @@ public class SVGLoad {
 //							
 //						}
 						Color c = null;
-						
-						String []style = pathNode.getAttributes().getNamedItem( "style").getNodeValue().split(";");
+						//System.out.println("Layer "+encapsulatingLayer);
 						try {
+							String []style = pathNode.getAttributes().getNamedItem( "style").getNodeValue().split(";");
 							for(String s:style) {
 								if(s.startsWith("fill:")) {
-									c=Color.web(s.split(":")[1]);
+									String string = s.split(":")[1];
+									c=Color.web(string);
 									break;
 								}
 							}
 						}catch(java.lang.IllegalArgumentException ex) {
 							// this means the fill is set to "none"
+						}catch(Exception ex) {
+							//ex.printStackTrace();
+						}
+						if(c==null) {
 							try {
+								String []style = pathNode.getAttributes().getNamedItem( "style").getNodeValue().split(";");
 								for(String s:style) {
 									if(s.startsWith("stroke:")) {
-										c=Color.web(s.split(":")[1]);
+										String string = s.split(":")[1];
+										c=Color.web(string);
 										break;
 									}
 								}
@@ -454,10 +461,8 @@ public class SVGLoad {
 								// this means the stroke is set to "none" the default green color will be used
 								
 							}catch(Exception ex1) {
-								ex1.printStackTrace();
+								//ex1.printStackTrace();
 							}
-						}catch(Exception ex) {
-							ex.printStackTrace();
 						}
 						MetaPostPath2 mpp = new MetaPostPath2(pathNode);
 						String code = mpp.toCode();
