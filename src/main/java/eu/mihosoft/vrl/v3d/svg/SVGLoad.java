@@ -48,6 +48,7 @@ public class SVGLoad {
 	boolean hp = true;
 	private HashMap<String,List<Polygon>> polygonByLayers = null;
 	private HashMap<String,ArrayList<CSG>> csgByLayers = new HashMap<String, ArrayList<CSG>>(); 
+	private HashMap<Polygon,Color> colors=new HashMap<>();
 //	private ArrayList<CSG> sections = null;
 //	private ArrayList<CSG> holes = null;
 //
@@ -411,13 +412,57 @@ public class SVGLoad {
 			if (pathNode.getAttributes() != null) {
 				//System.out.println("Path loading "+pathNode);
 				Node transforms = pathNode.getAttributes().getNamedItem("transform");
+
+				
 				newFrame = getNewframe(startingFrame, transforms);
 				try {
 					if(SVGOMPathElement.class.isInstance(pathNode)) {
+//						NamedNodeMap attribs = pathNode.getAttributes();
+//						for(int i=0;i<attribs.getLength();i++) {
+//							Node n = attribs.item(i);
+//							String namespaceURI = n.getNamespaceURI();
+//							String nodeName = n.getNodeName();
+//							System.out.print("\nName "+nodeName+" namespace "+namespaceURI);
+//							try {
+//								System.out.print(" value "+attribs.getNamedItemNS(namespaceURI, nodeName).getNodeValue());
+//							}catch(Exception ex) {
+//								
+//							}
+//							System.out.println("");
+//							
+//						}
+						Color c = null;
+						
+						String []style = pathNode.getAttributes().getNamedItem( "style").getNodeValue().split(";");
+						try {
+							for(String s:style) {
+								if(s.startsWith("fill:")) {
+									c=Color.web(s.split(":")[1]);
+									break;
+								}
+							}
+						}catch(java.lang.IllegalArgumentException ex) {
+							// this means the fill is set to "none"
+							try {
+								for(String s:style) {
+									if(s.startsWith("stroke:")) {
+										c=Color.web(s.split(":")[1]);
+										break;
+									}
+								}
+							}catch(java.lang.IllegalArgumentException ex1) {
+								// this means the stroke is set to "none" the default green color will be used
+								
+							}catch(Exception ex1) {
+								ex1.printStackTrace();
+							}
+						}catch(Exception ex) {
+							ex.printStackTrace();
+						}
 						MetaPostPath2 mpp = new MetaPostPath2(pathNode);
 						String code = mpp.toCode();
 						//System.out.println("\tPath "+pathNode.getAttributes().getNamedItem("id").getNodeValue()+" "+newFrame);
-						loadComposite(code, resolution, newFrame,encapsulatingLayer);
+						loadComposite(code, resolution, newFrame,encapsulatingLayer,c);
 					}else if(SVGOMImageElement.class.isInstance(pathNode)) {
 						SVGImageElement image = (SVGOMImageElement) pathNode;
 						//System.out.println("Loading Image element..");
@@ -452,7 +497,7 @@ public class SVGLoad {
 
 	}
 
-	private void loadComposite(String code, double resolution, Transform startingFrame, String encapsulatingLayer) {
+	private void loadComposite(String code, double resolution, Transform startingFrame, String encapsulatingLayer, Color c) {
 		// Count the occourences of M
 		int count = code.length() - code.replace("M", "").length();
 		if (count < 2) {
@@ -460,7 +505,7 @@ public class SVGLoad {
 
 			// setHolePolarity(true);
 			try {
-				loadSingle(code, resolution, startingFrame,encapsulatingLayer);
+				loadSingle(code, resolution, startingFrame,encapsulatingLayer, c);
 			} catch (Exception ex) {
 				// BowlerStudio.printStackTrace(ex);
 			}
@@ -475,7 +520,7 @@ public class SVGLoad {
 				if (sectionedPart.length() > 1) {
 
 					// println "Seperated complex: "
-					loadSingle(sectionedPart, resolution, startingFrame,encapsulatingLayer);
+					loadSingle(sectionedPart, resolution, startingFrame,encapsulatingLayer, c);
 				}
 			}
 		}
@@ -493,7 +538,7 @@ public class SVGLoad {
 		
 		return runningTotal<0;
 	}
-	private void loadSingle(String code, double resolution, Transform startingFrame, String encapsulatingLayer) {
+	private void loadSingle(String code, double resolution, Transform startingFrame, String encapsulatingLayer, Color c) {
 		// println code
 		BezierPath path = new BezierPath();
 		path.parsePathString(code);
@@ -515,6 +560,8 @@ public class SVGLoad {
 			getPolygonByLayers().put(encapsulatingLayer, new ArrayList<Polygon>());
 		List<Polygon>  list = getPolygonByLayers().get(encapsulatingLayer);
 		poly = Polygon.fromPoints(Extrude.toCCW(poly.getPoints()));
+		if(c!=null)
+			colors.put(poly, c);
 		list.add(poly);
 
 	}
@@ -523,8 +570,8 @@ public class SVGLoad {
 		if(getPolygonByLayers()==null) {
 			toPolygons();
 		}
-		for(String key:getPolygonByLayers().keySet() )
-			layers.add(0,key);
+		for(Object key:getPolygonByLayers().keySet().stream().sorted().toArray() )
+			layers.add((String) key);
 		return layers;
 	}
 	public CSG extrudeLayerToCSG(double t,String layer){
@@ -565,6 +612,9 @@ public class SVGLoad {
 				newbit = Extrude.getExtrusionEngine().extrude(new Vector3d(0, 0, thickness), p);
 				if (negativeThickness) {
 					newbit = newbit.toZMax();
+				}
+				if(colors.get(p)!=null) {
+					newbit.setColor(colors.get(p));
 				}
 				parts.add(newbit);
 			}
