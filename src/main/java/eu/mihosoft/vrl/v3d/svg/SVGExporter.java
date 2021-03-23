@@ -21,6 +21,7 @@ public class SVGExporter {
 	//0.376975
 	//public static final double Scale = 3.543307;// SVG px to MM scale facto
 	private static final double Scale = 3.543307;
+	private static final double VueBoxSize = 100;
 	private int colorTicker=0;
 	public static  List<String> colorNames = Arrays.asList("crimson","gray","darkmagenta","darkolivegreen","darkgreen",
 			"darkblue",
@@ -32,7 +33,7 @@ public class SVGExporter {
 			"black",
 			"tomato"); 
 	double min[] = { 0, 0 };
-	double max[] = { 100, 100 };
+	double max[] = { VueBoxSize, VueBoxSize };
 	private ArrayList<String> polylines= new ArrayList<>() ;
 	private ArrayList<String> groups= new ArrayList<>() ;
 	private ArrayList<String> layers= new ArrayList<>() ;
@@ -60,11 +61,11 @@ public class SVGExporter {
   " xmlns:svg=\"http://www.w3.org/2000/svg\""+
   " xmlns=\"http://www.w3.org/2000/svg\""+
   " xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\""+
-  " xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\" version=\"1.1\" viewBox=\"" + (min[0] ) + " "
-				+ (min[1] ) + " " + (totalX) + " "+ 
+  " xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\" version=\"1.1\"\n viewBox=\"" + (0 ) + " "
+				+ (0) + " " + (totalX) + " "+ 
 				(totalY ) + "\""+ 
-				" id=\"svg2\" "+
-				 "width=\""+totalXmm+"mm\""+
+				"\n id=\"svg2\" "+
+				 "\n width=\""+totalXmm+"mm\""+
 				   "\n height=\""+totalYmm+"mm\""+
 				 ">\n";
 		header+= " <defs  \n"+
@@ -131,27 +132,15 @@ public class SVGExporter {
 		String section = "  <polyline points=\"";
 
 		for (Vertex v : p.vertices) {
-			Vector3d position = v.pos;
+			Vector3d position = v.pos.transformed(new Transform().rotX(180));
 			double x = (position.x * Scale);
-			double y = -(position.y * Scale);
+			double y = (position.y * Scale)+VueBoxSize;
 			section += x + "," + y + " ";
-			if (x > max[0]) {
-				max[0] = x;
-			}
-			if (x < min[0]) {
-				min[0] = x;
-			}
-			if (y > max[1]) {
-				max[1] = y;
-			}
-			if (y < min[1]) {
-				min[1] = y;
-			}
 		}
 		// Close loop
-		Vector3d position = p.vertices.get(0).pos;
+		Vector3d position = p.vertices.get(0).pos.transformed(new Transform().rotX(180));
 		double x = (position.x * Scale);
-		double y = -(position.y * Scale);
+		double y = (position.y * Scale)+VueBoxSize;
 		section += x + "," + y + " ";
 		section= section + "\" \nstroke=\""+color+"\" \nstroke-width=\"1\" \nfill=\"none\"\nid=\"line"+(lineCounter++)+"\" />\n";
 		polylines.add(section);

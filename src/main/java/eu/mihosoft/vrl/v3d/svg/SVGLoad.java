@@ -21,6 +21,7 @@ import org.apache.batik.dom.svg.SVGItem;
 import org.apache.batik.dom.svg.SVGOMGElement;
 import org.apache.batik.dom.svg.SVGOMImageElement;
 import org.apache.batik.dom.svg.SVGOMPathElement;
+import org.apache.batik.dom.svg.SVGOMPolylineElement;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -28,6 +29,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGImageElement;
 import org.w3c.dom.svg.SVGPathSegList;
+import org.w3c.dom.svg.SVGPointList;
+
 import com.piro.bezier.BezierPath;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Edge;
@@ -409,12 +412,16 @@ public class SVGLoad {
 		if (pathNode != null) {
 			// System.out.println("\tPath
 			// "+pathNode.getAttributes().getNamedItem("id").getNodeValue());
-			if (pathNode.getAttributes() != null) {
 				//System.out.println("Path loading "+pathNode);
-				Node transforms = pathNode.getAttributes().getNamedItem("transform");
-
 				
-				newFrame = getNewframe(startingFrame, transforms);
+
+				newFrame = startingFrame;
+				try {
+					Node transforms = pathNode.getAttributes().getNamedItem("transform");
+					newFrame = getNewframe(startingFrame, transforms);
+				}catch(Exception ex) {
+					// no transform
+				}
 				try {
 					if(SVGOMPathElement.class.isInstance(pathNode)) {
 //						NamedNodeMap attribs = pathNode.getAttributes();
@@ -468,6 +475,66 @@ public class SVGLoad {
 						String code = mpp.toCode();
 						//System.out.println("\tPath "+pathNode.getAttributes().getNamedItem("id").getNodeValue()+" "+newFrame);
 						loadComposite(code, resolution, newFrame,encapsulatingLayer,c);
+					}else if(SVGOMPolylineElement.class.isInstance(pathNode)) {
+						Color c = null;
+						//System.out.println("Layer "+encapsulatingLayer);
+						try {
+							String []style = pathNode.getAttributes().getNamedItem( "style").getNodeValue().split(";");
+							for(String s:style) {
+								if(s.startsWith("fill:")) {
+									String string = s.split(":")[1];
+									c=Color.web(string);
+									break;
+								}
+							}
+						}catch(java.lang.IllegalArgumentException ex) {
+							// this means the fill is set to "none"
+						}catch(Exception ex) {
+							//ex.printStackTrace();
+						}
+						try {
+							c=Color.web(pathNode.getAttributes().getNamedItem( "stroke").getNodeValue());
+						}catch(java.lang.IllegalArgumentException ex) {
+							// this means the fill is set to "none"
+						}catch(Exception ex) {
+							//ex.printStackTrace();
+						}
+						if(c==null) {
+							try {
+								String []style = pathNode.getAttributes().getNamedItem( "style").getNodeValue().split(";");
+								for(String s:style) {
+									if(s.startsWith("stroke:")) {
+										String string = s.split(":")[1];
+										c=Color.web(string);
+										break;
+									}
+								}
+							}catch(java.lang.IllegalArgumentException ex1) {
+								// this means the stroke is set to "none" the default green color will be used
+								
+							}catch(Exception ex1) {
+								//ex1.printStackTrace();
+							}
+						}
+						
+						
+						String sb =null;
+						SVGOMPolylineElement pathElement = (SVGOMPolylineElement)pathNode;
+						SVGPointList pathList = pathElement.getPoints();
+						// String offset = pathElement.getOwnerSVGElement();
+
+						int pathObjects = pathList.getNumberOfItems();
+
+						for (int i = 0; i < pathObjects; i++) {
+							SVGItem item = (SVGItem) pathList.getItem(i);
+							String itemLine = String.format("%s%n", item.getValueAsString());
+							if(sb==null) {
+								sb="M "+itemLine;
+							}
+							sb += "L "+itemLine;
+						}
+						sb+="z\n";
+						loadComposite(sb, resolution, newFrame,encapsulatingLayer,c);
 					}else if(SVGOMImageElement.class.isInstance(pathNode)) {
 						SVGImageElement image = (SVGOMImageElement) pathNode;
 						//System.out.println("Loading Image element..");
@@ -496,7 +563,6 @@ public class SVGLoad {
 					System.out.println("Found "+pathNode.getClass());
 					//ex.printStackTrace();
 				}
-			}
 
 		}
 
