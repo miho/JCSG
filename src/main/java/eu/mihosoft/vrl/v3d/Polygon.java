@@ -115,6 +115,7 @@ public final class Polygon {
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
+        validateAndInit(vertices);
     }
 
     /**
@@ -132,8 +133,27 @@ public final class Polygon {
                 vertices.get(0).pos,
                 vertices.get(1).pos,
                 vertices.get(2).pos);
+        validateAndInit(vertices);
     }
+    private void validateAndInit(List<Vertex> vertices1) {
+        for (Vertex v : vertices1) {
+            v.normal = plane.normal;
+        }
+        if (Vector3d.ZERO.equals(plane.normal)) {
+            valid = false;
+            System.err.println(
+                    "Normal is zero! Probably, duplicate points have been specified!\n\n" + toStlString());
+//            throw new RuntimeException(
+//                    "Normal is zero! Probably, duplicate points have been specified!\n\n"+toStlString());
+        }
 
+        if (vertices.size() < 3) {
+            throw new RuntimeException(
+                    "Invalid polygon: at least 3 vertices expected, got: "
+                    + vertices.size());
+        }
+        
+    }
     /**
      * Constructor. Creates a new polygon that consists of the specified
      * vertices.
@@ -460,116 +480,6 @@ public final class Polygon {
         return true;
     }
 
-//    private static List<Polygon> concaveToConvex(Polygon concave) {
-//        List<Polygon> result = new ArrayList<>();
-//
-//        Triangulation t = new Triangulation();
-//        
-//        double[] xv = new double[concave.vertices.size()];
-//        double[] yv = new double[concave.vertices.size()];
-//        
-//        for(int i = 0; i < xv.length;i++) {
-//            Vector3d pos = concave.vertices.get(i).pos;
-//            xv[i] = pos.x;
-//            yv[i] = pos.y;
-//        }
-//        
-//        TriangleTri[] triangles = t.triangulatePolygon(xv, yv, xv.length);
-//        
-//        for(TriangleTri tr : triangles) {
-//            double x1 = tr.x[0];
-//            double x2 = tr.x[1];
-//            double x3 = tr.x[2];
-//            double y1 = tr.y[0];
-//            double y2 = tr.y[1];
-//            double y3 = tr.y[2];
-//            
-//            Vertex v1 = new Vertex(new Vector3d(x1, y1), new Vector3d(0, 0));
-//            Vertex v2 = new Vertex(new Vector3d(x2, y2), new Vector3d(0, 0));
-//            Vertex v3 = new Vertex(new Vector3d(x3, y3), new Vector3d(0, 0));
-//            
-//            result.add(new Polygon(v1,v2,v3));
-//        }
-//
-//        return result;
-//    }
-//    private static List<Polygon> concaveToConvex(Polygon concave) {
-//        List<Polygon> result = new ArrayList<>();
-//
-//        //convert polygon to convex polygons
-//        EarClippingTriangulator clippingTriangulator = new EarClippingTriangulator();
-//        double[] vertexArray = new double[concave.vertices.size() * 2];
-//        for (int i = 0; i < vertexArray.length; i += 2) {
-//            Vertex v = concave.vertices.get(i / 2);
-//            vertexArray[i + 0] = v.pos.x;
-//            vertexArray[i + 1] = v.pos.y;
-//        }
-// 
-//        IntArray indices = clippingTriangulator.computeTriangles(vertexArray);
-//        
-//        System.out.println("indices: " + indices.size + ", vertices: " + vertexArray.length);
-//        
-//        for (double i : vertexArray) {
-//            System.out.println("vertices: " + i);
-//        }
-//        
-//        Vertex[] newPolygonVerts = new Vertex[3];
-//
-//        int count = 0;
-//        for (int i = 0; i < indices.size; i+=2) {
-//            double x = vertexArray[indices.items[i]+0];
-//            double y = vertexArray[indices.items[i]+1];
-//            
-//            Vector3d pos = new Vector3d(x, y);
-//            Vertex v = new Vertex(pos, new Vector3d(0, 0, 0));
-//
-//            System.out.println("writing vertex: " + (count));
-//            newPolygonVerts[count] = v;
-//
-//            if (count == 2) {
-//                result.add(new Polygon(newPolygonVerts));
-//                count = 0;
-//            } else {
-//                count++;
-//            }
-//        }
-//        
-//        System.out.println("---");
-//        
-//        for (Polygon p : result) {
-//            System.out.println(p.toStlString());
-//        }
-//
-//        return result;
-//        
-////        Point3d[] points = new Point3d[concave.vertices.size()];
-////        
-////        for (int i = 0; i < points.length;i++) {
-////            Vector3d pos = concave.vertices.get(i).pos;
-////            points[i] = new Point3d(pos.x, pos.y, pos.z);
-////        }
-////        
-////        QuickHull3D hull = new QuickHull3D();
-////        hull.build(points);
-////
-////        System.out.println("Vertices:");
-////        Point3d[] vertices = hull.getVertices();
-////        for (int i = 0; i < vertices.length; i++) {
-////            Point3d pnt = vertices[i];
-////            System.out.println(pnt.x + " " + pnt.y + " " + pnt.z);
-////        }
-////
-////        System.out.println("Faces:");
-////        int[][] faceIndices = hull.getFaces();
-////        for (int i = 0; i < faceIndices.length; i++) {
-////            for (int k = 0; k < faceIndices[i].length; k++) {
-////                System.out.print(faceIndices[i][k] + " ");
-////            }
-////            System.out.println("");
-////        }
-//
-////        return result;
-//    }
     /**
  * Gets the storage.
  *
@@ -707,4 +617,15 @@ public final class Polygon {
 	public Polygon scale(Number scaleValue) {
 		return this.transformed(new Transform().scale(scaleValue.doubleValue()));
 	}
+
+	 /**
+     * Indicates whether this polyon is valid, i.e., if it
+     *
+     * @return
+     */
+    public boolean isValid() {
+        return valid;
+    }
+
+    private boolean valid = true;
 }

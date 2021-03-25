@@ -44,12 +44,13 @@ import java.util.List;
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Plane {
-
+	private static IPolygonDebugger debugger = null;
+	private static boolean useDebugger = false;
     /**
      * EPSILON is the tolerance used by {@link #splitPolygon(eu.mihosoft.vrl.v3d.Polygon, java.util.List, java.util.List, java.util.List, java.util.List)
      * } to decide if a point is on the plane.
      */
-    public static final double EPSILON = 1e-6;
+    public static final double EPSILON = 0.01;
 
     /**
      * XY plane.
@@ -137,21 +138,43 @@ public class Plane {
         final int COPLANAR = 0;
         final int FRONT = 1;
         final int BACK = 2;
-        final int SPANNING = 3;
-
-        // Classify each point as well as the entire polygon into one of the above
-        // four classes.
+        final int SPANNING = 3; // == some in the FRONT + some in the BACK
+        if(debugger!=null && useDebugger) {
+//        	debugger.display(polygon);
+//        	debugger.display(coplanarFront);
+//        	debugger.display(coplanarBack);
+//        	debugger.display(front);
+//        	debugger.display(back);
+        }
+        // Classify each point as well as the entire polygon into one of the 
+        // above four classes.
         int polygonType = 0;
         List<Integer> types = new ArrayList<>();
+        boolean somePointsInfront = false;
+        boolean somePointsInBack = false;
+        boolean someCoplainer = false;
         for (int i = 0; i < polygon.vertices.size(); i++) {
-            double t = this.normal.dot(polygon.vertices.get(i).pos) - this.dist;
+            double t = this.normal.dot(polygon.vertices.get(i).pos) - this.dist; 
             int type = (t < -Plane.EPSILON) ? BACK : (t > Plane.EPSILON) ? FRONT : COPLANAR;
-            polygonType |= type;
+            //polygonType |= type;
+            if(type==BACK)
+            	somePointsInBack=true;
+            if(type==FRONT)
+            	somePointsInfront = true;
+            if(type==COPLANAR)
+            	someCoplainer=true;
             types.add(type);
         }
-        
+        if(somePointsInBack && somePointsInfront)
+        	polygonType=SPANNING;
+        else if(somePointsInBack) {
+        	polygonType=BACK;
+        }else if(somePointsInfront)
+        	polygonType=FRONT;
+        if(someCoplainer && (somePointsInBack||somePointsInfront)) {
+        	throw new RuntimeException("Polygon is not flat by at least "+EPSILON);
+        }
         //System.out.println("> switching");
-
         // Put the polygon in the correct list, splitting it when necessary.
         switch (polygonType) {
             case COPLANAR:
@@ -183,7 +206,8 @@ public class Plane {
                         b.add(ti != BACK ? vi.clone() : vi);
                     }
                     if ((ti | tj) == SPANNING) {
-                        double t = (this.dist - this.normal.dot(vi.pos)) / this.normal.dot(vj.pos.minus(vi.pos));
+                        double t = (this.dist - this.normal.dot(vi.pos))
+                                / this.normal.dot(vj.pos.minus(vi.pos));
                         Vertex v = vi.interpolate(vj, t);
                         f.add(v);
                         b.add(v.clone());
@@ -191,11 +215,31 @@ public class Plane {
                 }
                 if (f.size() >= 3) {
                     front.add(new Polygon(f, polygon.getStorage()));
+                }else {
+                	System.out.println("Front Clip Fault!");
                 }
                 if (b.size() >= 3) {
                     back.add(new Polygon(b, polygon.getStorage()));
+                }else {
+                	System.out.println("Back Clip Fault!");
                 }
                 break;
         }
     }
+
+	public static IPolygonDebugger getDebugger() {
+		return debugger;
+	}
+
+	public static void setDebugger(IPolygonDebugger debugger) {
+		Plane.debugger = debugger;
+	}
+
+	public static boolean isUseDebugger() {
+		return useDebugger;
+	}
+
+	public static void setUseDebugger(boolean useDebugger) {
+		Plane.useDebugger = useDebugger;
+	}
 }

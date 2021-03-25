@@ -48,218 +48,245 @@ import java.util.stream.Stream;
  */
 final class Node {
 
-    /**
-     * Polygons.
-     */
-    private List<Polygon> polygons;
-    /**
-     * Plane used for BSP.
-     */
-    private Plane plane;
-    /**
-     * Polygons in front of the plane.
-     */
-    private Node front;
-    /**
-     * Polygons in back of the plane.
-     */
-    private Node back;
+	/**
+	 * Polygons.
+	 */
+	private List<Polygon> polygons;
+	/**
+	 * Plane used for BSP.
+	 */
+	private Plane plane;
+	/**
+	 * Polygons in front of the plane.
+	 */
+	private Node front;
+	/**
+	 * Polygons in back of the plane.
+	 */
+	private Node back;
+	
+	private long maxDepth = -1;
 
-    /**
-     * Constructor.
-     *
-     * Creates a BSP node consisting of the specified polygons.
-     *
-     * @param polygons polygons
-     */
-    public Node(List<Polygon> polygons) {
-        this.polygons = new ArrayList<>();
-        if (polygons != null) {
-            this.build(polygons);
-        }
-    }
+	/**
+	 * Constructor.
+	 *
+	 * Creates a BSP node consisting of the specified polygons.
+	 *
+	 * @param polygons polygons
+	 */
+	public Node(List<Polygon> polygons) {
+		this.polygons = new ArrayList<>();
+		if (polygons != null) {
+			this.build(polygons);
+		}
+	}
 
-    /**
-     * Constructor. Creates a node without polygons.
-     */
-    public Node() {
-        this(null);
-    }
+	/**
+	 * Constructor. Creates a node without polygons.
+	 */
+	public Node() {
+		this(null);
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
-    @Override
-    public Node clone() {
-        Node node = new Node();
-        node.plane = this.plane == null ? null : this.plane.clone();
-        node.front = this.front == null ? null : this.front.clone();
-        node.back = this.back == null ? null : this.back.clone();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Node clone() {
+		Node node = new Node();
+		node.plane = this.plane == null ? null : this.plane.clone();
+		node.front = this.front == null ? null : this.front.clone();
+		node.back = this.back == null ? null : this.back.clone();
 //        node.polygons = new ArrayList<>();
 //        polygons.parallelStream().forEach((Polygon p) -> {
 //            node.polygons.add(p.clone());
 //        });
 
-        Stream<Polygon> polygonStream;
+		Stream<Polygon> polygonStream;
 
-        if (polygons.size() > 200) {
-            polygonStream = polygons.parallelStream();
-        } else {
-            polygonStream = polygons.stream();
-        }
+//        if (polygons.size() > 200) {
+//            polygonStream = polygons.parallelStream();
+//        } else 
+		polygonStream = polygons.stream();
 
-        node.polygons = polygonStream.
-                map(p -> p.clone()).collect(Collectors.toList());
+		node.polygons = polygonStream.map(p -> p.clone()).collect(Collectors.toList());
 
-        return node;
-    }
+		return node;
+	}
 
-    /**
-     * Converts solid space to empty space and vice verca.
-     */
-    public void invert() {
-        
-        Stream<Polygon> polygonStream;
+	/**
+	 * Converts solid space to empty space and vice verca.
+	 */
+	public void invert() {
 
-        if (polygons.size() > 200) {
-            polygonStream = polygons.parallelStream();
-        } else {
-            polygonStream = polygons.stream();
-        }
+		Stream<Polygon> polygonStream;
 
-        polygonStream.forEach((polygon) -> {
-            polygon.flip();
-        });
+//        if (polygons.size() > 200) {
+//            polygonStream = polygons.parallelStream();
+//        } else 
+		polygonStream = polygons.stream();
 
-        if (this.plane == null && !polygons.isEmpty()) {
-            this.plane = polygons.get(0).plane.clone();
-        } else if (this.plane == null && polygons.isEmpty()) {
-            throw new RuntimeException("Please fix me! I don't know what to do?");
-        }
+		polygonStream.forEach((polygon) -> {
+			polygon.flip();
+		});
 
-        this.plane.flip();
+		if (this.plane == null && !polygons.isEmpty()) {
+			this.plane = polygons.get(0).plane.clone();
+		} else if (this.plane == null && polygons.isEmpty()) {
 
-        if (this.front != null) {
-            this.front.invert();
-        }
-        if (this.back != null) {
-            this.back.invert();
-        }
-        Node temp = this.front;
-        this.front = this.back;
-        this.back = temp;
-    }
+			System.err.println("Please fix me! I don't know what to do?");
+			throw new RuntimeException("Please fix me! I don't know what to do?");
+			// return;
+		}
 
-    /**
-     * Recursively removes all polygons in the {@link polygons} list that are
-     * contained within this BSP tree.
-     *
-     *  Note:  polygons are splitted if necessary.
-     *
-     * @param polygons the polygons to clip
-     *
-     * @return the cliped list of polygons
-     */
-    private List<Polygon> clipPolygons(List<Polygon> polygons) {
+		this.plane.flip();
 
-        if (this.plane == null) {
-            return new ArrayList<>(polygons);
-        }
+		if (this.front != null) {
+			this.front.invert();
+		}
+		if (this.back != null) {
+			this.back.invert();
+		}
+		Node temp = this.front;
+		this.front = this.back;
+		this.back = temp;
+	}
 
-        List<Polygon> frontP = new ArrayList<>();
-        List<Polygon> backP = new ArrayList<>();
+	/**
+	 * Recursively removes all polygons in the {@link polygons} list that are
+	 * contained within this BSP tree.
+	 *
+	 * Note: polygons are splitted if necessary.
+	 *
+	 * @param polygons the polygons to clip
+	 *
+	 * @return the cliped list of polygons
+	 */
+	private List<Polygon> clipPolygons(List<Polygon> polygons) {
 
-        for (Polygon polygon : polygons) {
-            this.plane.splitPolygon(polygon, frontP, backP, frontP, backP);
-        }
-        if (this.front != null) {
-            frontP = this.front.clipPolygons(frontP);
-        }
-        if (this.back != null) {
-            backP = this.back.clipPolygons(backP);
-        } else {
-            backP = new ArrayList<>(0);
-        }
+		if (this.plane == null) {
+			return new ArrayList<>(polygons);
+		}
 
-        frontP.addAll(backP);
-        return frontP;
-    }
+		List<Polygon> frontP = new ArrayList<>();
+		List<Polygon> backP = new ArrayList<>();
 
-    // Remove all polygons in this BSP tree that are inside the other BSP tree
-    // `bsp`.
-    /**
-     * Removes all polygons in this BSP tree that are inside the specified BSP
-     * tree ({@code bsp}).
-     *
-     *  Note:  polygons are splitted if necessary.
-     *
-     * @param bsp bsp that shall be used for clipping
-     */
-    public void clipTo(Node bsp) {
-        this.polygons = bsp.clipPolygons(this.polygons);
-        if (this.front != null) {
-            this.front.clipTo(bsp);
-        }
-        if (this.back != null) {
-            this.back.clipTo(bsp);
-        }
-    }
+		for (Polygon polygon : polygons) {
+			this.plane.splitPolygon(polygon, frontP, backP, frontP, backP);
+		}
+		if (this.front != null) {
+			frontP = this.front.clipPolygons(frontP);
+		}
+		if (this.back != null) {
+			backP = this.back.clipPolygons(backP);
+		} else {
+			backP = new ArrayList<>(0);
+		}
 
-    /**
-     * Returns a list of all polygons in this BSP tree.
-     *
-     * @return a list of all polygons in this BSP tree
-     */
-    public List<Polygon> allPolygons() {
-        List<Polygon> localPolygons = new ArrayList<>(this.polygons);
-        if (this.front != null) {
-            localPolygons.addAll(this.front.allPolygons());
+		frontP.addAll(backP);
+		return frontP;
+	}
+
+	// Remove all polygons in this BSP tree that are inside the other BSP tree
+	// `bsp`.
+	/**
+	 * Removes all polygons in this BSP tree that are inside the specified BSP tree
+	 * ({@code bsp}).
+	 *
+	 * Note: polygons are splitted if necessary.
+	 *
+	 * @param bsp bsp that shall be used for clipping
+	 */
+	public void clipTo(Node bsp) {
+		this.polygons = bsp.clipPolygons(this.polygons);
+		if (this.front != null) {
+			this.front.clipTo(bsp);
+		}
+		if (this.back != null) {
+			this.back.clipTo(bsp);
+		}
+	}
+
+	/**
+	 * Returns a list of all polygons in this BSP tree.
+	 *
+	 * @return a list of all polygons in this BSP tree
+	 */
+	public List<Polygon> allPolygons() {
+		List<Polygon> localPolygons = new ArrayList<>(this.polygons);
+		if (this.front != null) {
+			localPolygons.addAll(this.front.allPolygons());
 //            polygons = Utils.concat(polygons, this.front.allPolygons());
-        }
-        if (this.back != null) {
+		}
+		if (this.back != null) {
 //            polygons = Utils.concat(polygons, this.back.allPolygons());
-            localPolygons.addAll(this.back.allPolygons());
-        }
+			localPolygons.addAll(this.back.allPolygons());
+		}
 
-        return localPolygons;
-    }
+		return localPolygons;
+	}
 
-    /**
-     * Build a BSP tree out of {@code polygons}. When called on an existing
-     * tree, the new polygons are filtered down to the bottom of the tree and
-     * become new nodes there. Each set of polygons is partitioned using the
-     * first polygon (no heuristic is used to pick a good split).
-     *
-     * @param polygons polygons used to build the BSP
-     */
-    public final void build(List<Polygon> polygons) {
-        
-        if (polygons.isEmpty()) return;
+	/**
+	 * Build a BSP tree out of {@code polygons}. When called on an existing tree,
+	 * the new polygons are filtered down to the bottom of the tree and become new
+	 * nodes there. Each set of polygons is partitioned using the first polygon (no
+	 * heuristic is used to pick a good split).
+	 *
+	 * @param polygons polygons used to build the BSP
+	 */
+	public final void build(List<Polygon> polygons) {
+		build(polygons, 0,polygons.size() );
+	}
 
-        if (this.plane == null) {
-            this.plane = polygons.get(0).plane.clone();
-        }
+	/**
+	 * Build a BSP tree out of {@code polygons}. When called on an existing tree,
+	 * the new polygons are filtered down to the bottom of the tree and become new
+	 * nodes there. Each set of polygons is partitioned using the first polygon (no
+	 * heuristic is used to pick a good split).
+	 *
+	 * @param polygons polygons used to build the BSP
+	 */
+	public final void build(List<Polygon> polygons, long depth, long maxDepth) {
+//		if (depth > maxDepth) {
+//			throw new RuntimeException("Impossible Node depth " + depth + " with " + polygons.size() + " remaining max = "+maxDepth );
+//		}
+//		if (depth > 200) {
+//			System.out.println("Node depth " + depth + " with " + polygons.size() + " remaining ");
+//			Plane.setUseDebugger(true);
+//		} else {
+//			Plane.setUseDebugger(false);
+//		}
 
-        List<Polygon> frontP = new ArrayList<>();
-        List<Polygon> backP = new ArrayList<>();
+		if (polygons.isEmpty()) {
 
-        // parellel version does not work here
-        polygons.forEach((polygon) -> {
-            this.plane.splitPolygon(
-                    polygon, this.polygons, this.polygons, frontP, backP);
-        });
+			return;
+		}
 
-        if (frontP.size() > 0) {
-            if (this.front == null) {
-                this.front = new Node();
-            }
-            this.front.build(frontP);
-        }
-        if (backP.size() > 0) {
-            if (this.back == null) {
-                this.back = new Node();
-            }
-            this.back.build(backP);
-        }
-    }
+		if (this.plane == null) {
+			this.plane = polygons.get(0).plane.clone();
+		}
+		//this.polygons.add(polygons.get(0));
+
+		List<Polygon> frontP = new ArrayList<>();
+		List<Polygon> backP = new ArrayList<>();
+
+		// parellel version does not work here
+		for(int i=0;i<polygons.size();i++) {
+			this.plane.splitPolygon(polygons.get(i), this.polygons, this.polygons, frontP, backP);
+		}
+		if (frontP.size() > 0) {
+			if (this.front == null) {
+				this.front = new Node();
+			}
+			this.front.build(frontP, depth + 1,maxDepth);
+		}
+		if (backP.size() > 0) {
+			if (this.back == null) {
+				this.back = new Node();
+			}
+			this.back.build(backP, depth + 1,maxDepth);
+		}
+	}
 }
