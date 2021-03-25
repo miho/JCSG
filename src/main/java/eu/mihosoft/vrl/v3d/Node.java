@@ -106,9 +106,9 @@ final class Node {
 
 		Stream<Polygon> polygonStream;
 
-//        if (polygons.size() > 200) {
-//            polygonStream = polygons.parallelStream();
-//        } else 
+        if (polygons.size() > 200) {
+            polygonStream = polygons.parallelStream();
+        } else 
 		polygonStream = polygons.stream();
 
 		node.polygons = polygonStream.map(p -> p.clone()).collect(Collectors.toList());
@@ -123,9 +123,9 @@ final class Node {
 
 		Stream<Polygon> polygonStream;
 
-//        if (polygons.size() > 200) {
-//            polygonStream = polygons.parallelStream();
-//        } else 
+        if (polygons.size() > 200) {
+            polygonStream = polygons.parallelStream();
+        } else 
 		polygonStream = polygons.stream();
 
 		polygonStream.forEach((polygon) -> {

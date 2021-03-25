@@ -50,7 +50,7 @@ public class Plane {
      * EPSILON is the tolerance used by {@link #splitPolygon(eu.mihosoft.vrl.v3d.Polygon, java.util.List, java.util.List, java.util.List, java.util.List)
      * } to decide if a point is on the plane.
      */
-    public static final double EPSILON = 0.01;
+    public static final double EPSILON = 0.00000001;
 
     /**
      * XY plane.
@@ -146,21 +146,32 @@ public class Plane {
 //        	debugger.display(front);
 //        	debugger.display(back);
         }
-        // Classify each point as well as the entire polygon into one of the 
-        // above four classes.
+        // search for the epsilon values of the incoming plane
+        double negEpsilon = -Plane.EPSILON;
+        double posEpsilon = Plane.EPSILON;
+        for (int i = 0; i < polygon.vertices.size(); i++) {
+        	double t = polygon.plane.normal.dot(polygon.vertices.get(i).pos) - polygon.plane.dist; 
+        	if(t>posEpsilon) {
+        		//System.err.println("Non flat polygon, increasing positive epsilon "+t);
+        		posEpsilon=t+Plane.EPSILON;
+        	}
+        	if(t<negEpsilon) {
+        		//System.err.println("Non flat polygon, decreasing negative epsilon "+t);
+        		negEpsilon=t-Plane.EPSILON;
+        	}
+        }
         int polygonType = 0;
         List<Integer> types = new ArrayList<>();
         boolean somePointsInfront = false;
         boolean somePointsInBack = false;
         for (int i = 0; i < polygon.vertices.size(); i++) {
             double t = this.normal.dot(polygon.vertices.get(i).pos) - this.dist; 
-            int type = (t < -Plane.EPSILON) ? BACK : (t > Plane.EPSILON) ? FRONT : COPLANAR;
+            int type = (t < negEpsilon) ? BACK : (t > posEpsilon) ? FRONT : COPLANAR;
             //polygonType |= type;
             if(type==BACK)
             	somePointsInBack=true;
             if(type==FRONT)
             	somePointsInfront = true;
-
             types.add(type);
         }
         if(somePointsInBack && somePointsInfront)
