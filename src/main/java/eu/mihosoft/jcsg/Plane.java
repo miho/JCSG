@@ -136,17 +136,40 @@ class Plane {
         final int BACK = 2;
         final int SPANNING = 3; // == some in the FRONT + some in the BACK
 
-        // Classify each point as well as the entire polygon into one of the 
-        // above four classes.
+       // search for the epsilon values of the incoming plane
+        double negEpsilon = -Plane.EPSILON;
+        double posEpsilon = Plane.EPSILON;
+        for (int i = 0; i < polygon.vertices.size(); i++) {
+        	double t = polygon.plane.normal.dot(polygon.vertices.get(i).pos) - polygon.plane.dist; 
+        	if(t>posEpsilon) {
+        		//System.err.println("Non flat polygon, increasing positive epsilon "+t);
+        		posEpsilon=t+Plane.EPSILON;
+        	}
+        	if(t<negEpsilon) {
+        		//System.err.println("Non flat polygon, decreasing negative epsilon "+t);
+        		negEpsilon=t-Plane.EPSILON;
+        	}
+        }
         int polygonType = 0;
-        List<Integer> types = new ArrayList<>(polygon.vertices.size());
+        List<Integer> types = new ArrayList<>();
+        boolean somePointsInfront = false;
+        boolean somePointsInBack = false;
         for (int i = 0; i < polygon.vertices.size(); i++) {
             double t = this.normal.dot(polygon.vertices.get(i).pos) - this.dist; 
-            int type = (t < -Plane.EPSILON) ? BACK : (t > Plane.EPSILON) ? FRONT : COPLANAR;
-            polygonType |= type;
+            int type = (t < negEpsilon) ? BACK : (t > posEpsilon) ? FRONT : COPLANAR;
+            //polygonType |= type;
+            if(type==BACK)
+            	somePointsInBack=true;
+            if(type==FRONT)
+            	somePointsInfront = true;
             types.add(type);
         }
-
+        if(somePointsInBack && somePointsInfront)
+        	polygonType=SPANNING;
+        else if(somePointsInBack) {
+        	polygonType=BACK;
+        }else if(somePointsInfront)
+        	polygonType=FRONT;
         //System.out.println("> switching");
         // Put the polygon in the correct list, splitting it when necessary.
         switch (polygonType) {
