@@ -152,7 +152,6 @@ public class Plane {
         List<Integer> types = new ArrayList<>();
         boolean somePointsInfront = false;
         boolean somePointsInBack = false;
-        boolean someCoplainer = false;
         for (int i = 0; i < polygon.vertices.size(); i++) {
             double t = this.normal.dot(polygon.vertices.get(i).pos) - this.dist; 
             int type = (t < -Plane.EPSILON) ? BACK : (t > Plane.EPSILON) ? FRONT : COPLANAR;
@@ -161,8 +160,7 @@ public class Plane {
             	somePointsInBack=true;
             if(type==FRONT)
             	somePointsInfront = true;
-            if(type==COPLANAR)
-            	someCoplainer=true;
+
             types.add(type);
         }
         if(somePointsInBack && somePointsInfront)
@@ -171,9 +169,7 @@ public class Plane {
         	polygonType=BACK;
         }else if(somePointsInfront)
         	polygonType=FRONT;
-        if(someCoplainer && (somePointsInBack||somePointsInfront)) {
-        	throw new RuntimeException("Polygon is not flat by at least "+EPSILON);
-        }
+
         //System.out.println("> switching");
         // Put the polygon in the correct list, splitting it when necessary.
         switch (polygonType) {
