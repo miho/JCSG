@@ -738,13 +738,37 @@ public class CSG implements IuserAPI{
 	 * @return union of this csg and the specified csgs
 	 */
 	public CSG union(List<CSG> csgs) {
+//		ArrayList<Polygon> incomingPolys = new ArrayList<>();
+//		for(int i=0;i<csgs.size();i++) {
+//			incomingPolys.addAll(csgs.get(i).getPolygons());
+//		}
+//		//System.out.println("Node list A");
+//		Node a = new Node(this.clone().getPolygons());
+//		//System.out.println("Node list B");
+//		Node b = new Node(incomingPolys);
+//		//System.out.println("a.clipTo(b)");
+//		a.clipTo(b);
+//		//System.out.println("b.clipTo(a)");
+//		b.clipTo(a);
+//		//System.out.println("b.invert();");
+//		b.invert();
+//		//System.out.println("b.clipTo(a);");
+//		b.clipTo(a);
+//		//System.out.println("b.invert();");
+//		b.invert();
+//		//System.out.println("a.build(b.allPolygons());");
+//		a.build(b.allPolygons());
+//		//System.out.println("CSG.fromPolygons(a.allPolygons()).optimization(getOptType())");
+//		return CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
 
 		CSG result = this;
 
 		for (int i=0;i<csgs.size();i++) {
 			CSG csg = csgs.get(i);
 			result = result.union(csg);
-			progressMoniter.progressUpdate(i, csgs.size(), "Union", result);
+			if(Thread.interrupted())
+				break;
+			progressMoniter.progressUpdate(i, csgs.size(), " Union ", result);
 		}
 
 		return result;
@@ -972,6 +996,8 @@ public class CSG implements IuserAPI{
 			csgsUnion = csgsUnion.union(csgs.get(i));
 			progressMoniter.progressUpdate(i, csgs.size(), "Difference", csgsUnion);
 			csgsUnion.historySync(csgs.get(i));
+			if(Thread.interrupted())
+				break;
 		}
 
 		return difference(csgsUnion);
@@ -1190,6 +1216,8 @@ public class CSG implements IuserAPI{
 			csgsUnion = csgsUnion.union(csgs.get(i));
 			progressMoniter.progressUpdate(i, csgs.size(), "Intersect", csgsUnion);
 			csgsUnion.historySync(csgs.get(i));
+			if(Thread.interrupted())
+				break;
 		}
 
 		return intersect(csgsUnion);
@@ -1684,6 +1712,32 @@ public class CSG implements IuserAPI{
 	 * @param travelingShape a shape to sweep around
 	 * @return
 	 */
+	public ArrayList<CSG> minkowskiHullShape( CSG travelingShape){
+		ArrayList<CSG> bits = new ArrayList<>();
+		for(Polygon p: this.getPolygons()){
+			List<Vector3d> plist = new ArrayList<>();
+			for(Vertex v:p.vertices){
+				CSG newSHape = travelingShape.move(v);
+				for(Polygon np: newSHape.getPolygons()) {
+					for(Vertex nv:np.vertices) {
+						plist.add(nv.pos);
+					}
+				}
+			}
+			bits.add(HullUtil.hull(plist));
+		}
+		return  bits;
+	}
+	/**
+	 * This is a simplified version of a minkowski transform using convex hull and the internal list of convex polygons
+	 * The shape is placed at the vertex of each point on a polygon, and the result is convex hulled together. 
+	 * This collection is returned.
+	 *  To make a normal insets, difference this collection
+	 *  To make an outset by the normals, union this collection with this object. 
+	 * 
+	 * @param travelingShape a shape to sweep around
+	 * @return
+	 */
 	public ArrayList<CSG> minkowski( CSG travelingShape){
 		HashMap<Vertex,CSG> map= new HashMap<>();
 		for(Polygon p: travelingShape.getPolygons()){
@@ -1706,7 +1760,7 @@ public class CSG implements IuserAPI{
 	public CSG minkowskiDifference(CSG itemToDifference, CSG minkowskiObject) {
 		CSG intersection = this.intersect(itemToDifference);
 		
-		ArrayList<CSG> csgDiff = intersection.mink(minkowskiObject);
+		ArrayList<CSG> csgDiff = intersection.minkowskiHullShape(minkowskiObject);
 		CSG result = this;
 		for (int i=0;i<csgDiff.size();i++){
 			result= result.difference(csgDiff.get(i));
@@ -1727,7 +1781,7 @@ public class CSG implements IuserAPI{
 		double shellThickness = Math.abs(tolerance);
 		if(shellThickness<0.001)
 			return this;
-		return minkowskiDifference(itemToDifference,new Cube(shellThickness).toCSG());
+		return minkowskiDifference(itemToDifference,new Sphere(shellThickness/2.0,8,4).toCSG());
 	}
 	public CSG toolOffset(Number sn) {
 		double shellThickness =sn.doubleValue();
@@ -1738,7 +1792,7 @@ public class CSG implements IuserAPI{
 		double z = shellThickness;
 		if(z>this.getTotalZ()/2)
 			z=this.getTotalZ()/2;
-		CSG printNozzel = new Sphere(z/2.0,getNumFacesForOffsets()/2,4).toCSG();
+		CSG printNozzel = new Sphere(z/2.0,8,4).toCSG();
 		
 		if(cut){
 			ArrayList<CSG> mikObjs = minkowski(printNozzel);
@@ -1748,7 +1802,7 @@ public class CSG implements IuserAPI{
 			}
 			return remaining;
 		}
-		return union(minkowski(printNozzel));
+		return union(minkowskiHullShape(printNozzel));
 	}
 	private int getNumFacesForOffsets() {
 		return getNumfacesinoffset();
