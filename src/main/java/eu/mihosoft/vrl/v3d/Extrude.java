@@ -545,10 +545,31 @@ public class Extrude {
 	public static ArrayList<CSG> revolve(CSG slice, double radius, int numSlices) {
 		return revolve(slice, radius, 360.0, null, numSlices);
 	}
-
+	public static ArrayList<CSG> revolve(Polygon poly, int numSlices) {
+		return revolve( poly, 0,  numSlices);
+	}
+	public static ArrayList<CSG> revolve(Polygon poly, double radius, int numSlices) {
+		ArrayList<CSG> parts = new ArrayList<CSG>();
+		ArrayList<Polygon> slices = new ArrayList<Polygon>();
+		
+		for(int i=0;i<numSlices;i++ ) {	
+			double angle = 360.0/((double)numSlices)*((double)i);
+			slices.add(poly.transformed(new Transform().movex(radius).roty(angle)));
+		}
+		for(int i=0;i<slices.size();i++) {
+			int next=i+1;
+			if(next==slices.size())
+				next=0;
+			//println "Extruding "+i+" to "+next
+			parts.add(Extrude.polygons(slices.get(i),slices.get(next)));
+		}
+		
+		return parts;
+	}
 	public static ArrayList<CSG> revolve(CSG slice, double radius, double archLen, int numSlices) {
 		return revolve(slice, radius, archLen, null, numSlices);
 	}
+	
 
 	public static ArrayList<CSG> revolve(CSG slice, double radius, double archLen, List<List<Vector3d>> points,
 			int numSlices) {
