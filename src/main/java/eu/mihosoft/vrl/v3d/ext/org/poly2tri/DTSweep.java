@@ -1153,9 +1153,16 @@ private final static double PI_div2 = Math.PI / 2;
      * @param node - middle node, that is the bottom of the hole
      */
     private static void fill(DTSweepContext tcx, AdvancingFrontNode node) {
-        DelaunayTriangle triangle = new DelaunayTriangle(node.prev.point,
-                node.point,
-                node.next.point);
+    	if(node.prev==null) {
+    		new RuntimeException("Invalid null node in fill ").printStackTrace();
+    		return;
+    	}
+        TriangulationPoint point = node.prev.point;
+		TriangulationPoint point2 = node.point;
+		TriangulationPoint point3 = node.next.point;
+		DelaunayTriangle triangle = new DelaunayTriangle(point,
+                point2,
+                point3);
         // TODO: should copy the cEdge value from neighbor triangles
         //       for now cEdge values are copied during the legalize 
         triangle.markNeighbor(node.prev.triangle);

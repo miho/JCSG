@@ -34,6 +34,7 @@
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 
 import eu.mihosoft.vrl.v3d.Extrude;
+import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.Vertex;
 import java.util.ArrayList;
@@ -97,7 +98,10 @@ public class PolygonUtil {
      * @return the list
      */
     public static List<eu.mihosoft.vrl.v3d.Polygon> concaveToConvex(
-            eu.mihosoft.vrl.v3d.Polygon concave) {
+            eu.mihosoft.vrl.v3d.Polygon incoming) {
+    	
+    	Transform orentation = new Transform().roty(incoming.plane.normal.x*90);// th triangulation function needs the polygon on the xy plane
+    	eu.mihosoft.vrl.v3d.Polygon concave = incoming.transformed(orentation);
     	
         List<eu.mihosoft.vrl.v3d.Polygon> result = new ArrayList<>();
 
@@ -131,7 +135,7 @@ public class PolygonUtil {
                     eu.mihosoft.vrl.v3d.Polygon poly = 
                             new eu.mihosoft.vrl.v3d.Polygon(
                                     triPoints, concave.getStorage());
-                    result.add(poly);
+                    result.add(poly.transform(orentation.inverse()));
                     counter = 0;
                     triPoints = new ArrayList<>();
 
