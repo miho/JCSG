@@ -34,6 +34,7 @@
 package eu.mihosoft.vrl.v3d.ext.org.poly2tri;
 
 import eu.mihosoft.vrl.v3d.Extrude;
+import eu.mihosoft.vrl.v3d.Plane;
 import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.Vertex;
@@ -99,9 +100,15 @@ public class PolygonUtil {
      */
     public static List<eu.mihosoft.vrl.v3d.Polygon> concaveToConvex(
             eu.mihosoft.vrl.v3d.Polygon incoming) {
-    	
-    	Transform orentation = new Transform().roty(incoming.plane.normal.x*90);// th triangulation function needs the polygon on the xy plane
-    	eu.mihosoft.vrl.v3d.Polygon concave = incoming.transformed(orentation);
+    	eu.mihosoft.vrl.v3d.Polygon concave;
+    	boolean xnorm = Math.abs(incoming.plane.normal.x)>=1.0-Plane.EPSILON;
+    	Transform orentationInv=null;
+    	if(xnorm) {
+	    	Transform orentation = new Transform().roty(incoming.plane.normal.x*90);// th triangulation function needs the polygon on the xy plane
+	    	orentationInv =  orentation.inverse();
+	    	concave = incoming.transformed(orentation);
+    	}else
+    		concave=incoming;
     	
         List<eu.mihosoft.vrl.v3d.Polygon> result = new ArrayList<>();
 
@@ -135,7 +142,10 @@ public class PolygonUtil {
                     eu.mihosoft.vrl.v3d.Polygon poly = 
                             new eu.mihosoft.vrl.v3d.Polygon(
                                     triPoints, concave.getStorage());
-                    result.add(poly.transform(orentation.inverse()));
+                    if(xnorm)
+                    	result.add(poly.transform(orentationInv));
+                    else
+                    	result.add(poly);
                     counter = 0;
                     triPoints = new ArrayList<>();
 
