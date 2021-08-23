@@ -153,7 +153,7 @@ public class CSG implements IuserAPI{
 	 * Instantiates a new csg.
 	 */
 	public CSG() {
-		storage = new PropertyStorage();
+		setStorage(new PropertyStorage());
 
 		if (useStackTraces) {
 			// This is the trace for where this csg was created
@@ -588,7 +588,7 @@ public class CSG implements IuserAPI{
 		CSG csg = new CSG();
 		csg.setPolygons(polygons);
 
-		csg.storage = storage;
+		csg.setStorage(storage);
 
 		for (Polygon polygon : polygons) {
 			polygon.setStorage(storage);
@@ -804,7 +804,7 @@ public class CSG implements IuserAPI{
 	 */
 	public CSG hull() {
 
-		return HullUtil.hull(this, storage).historySync(this);
+		return HullUtil.hull(this, getStorage()).historySync(this);
 	}
 	
 	public static CSG unionAll(CSG... csgs){
@@ -832,7 +832,7 @@ public class CSG implements IuserAPI{
 	public CSG hull(List<CSG> csgs) {
 
 		CSG csgsUnion = new CSG();
-		csgsUnion.storage = storage;
+		csgsUnion.setStorage(storage);
 		csgsUnion.optType = optType;
 		csgsUnion.setPolygons(this.clone().getPolygons());
 
@@ -841,7 +841,7 @@ public class CSG implements IuserAPI{
 			csgsUnion.historySync(csg);
 		});
 
-		csgsUnion.getPolygons().forEach(p -> p.setStorage(storage));
+		csgsUnion.getPolygons().forEach(p -> p.setStorage(getStorage()));
 		bounds = null;
 		return csgsUnion.hull();
 
@@ -1281,7 +1281,7 @@ public class CSG implements IuserAPI{
 	 * @return the csg
 	 */
 	public CSG color(Color c) {
-		storage.set("material:color", "" + c.getRed() + " " + c.getGreen() + " " + c.getBlue());
+		getStorage().set("material:color", "" + c.getRed() + " " + c.getGreen() + " " + c.getBlue());
 
 		return this;
 	}
@@ -1329,7 +1329,7 @@ public class CSG implements IuserAPI{
 					polyIndices.add(vertices.indexOf(v) + 1);
 				}
 			});
-			indices.add(new PolygonStruct(storage, polyIndices, " "));
+			indices.add(new PolygonStruct(getStorage(), polyIndices, " "));
 
 		}
 		HashMap<Vertex,Integer> mapping = new HashMap<Vertex, Integer>();
@@ -1416,7 +1416,7 @@ public class CSG implements IuserAPI{
 
 		CSG result = CSG.fromPolygons(newpolygons).optimization(getOptType());
 
-		result.storage = storage;
+		result.setStorage(storage);
 
 		return result.historySync(this);
 	}
@@ -2174,6 +2174,14 @@ public class CSG implements IuserAPI{
 
 	private void setDatumReferences(ArrayList<Transform> datumReferences) {
 		this.datumReferences = datumReferences;
+	}
+
+	public PropertyStorage getStorage() {
+		return storage;
+	}
+
+	public void setStorage(PropertyStorage storage) {
+		this.storage = storage;
 	}
 	
 }
