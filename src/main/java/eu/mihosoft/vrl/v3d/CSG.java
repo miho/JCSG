@@ -1059,9 +1059,9 @@ public class CSG implements IuserAPI{
 			} else
 				return this;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 			try {
-			System.err.println("CSG difference failed, performing workaround");
+			//System.err.println("CSG difference failed, performing workaround");
 			//ex.printStackTrace();
 			CSG intersectingParts = csg
 					.intersect(this);
