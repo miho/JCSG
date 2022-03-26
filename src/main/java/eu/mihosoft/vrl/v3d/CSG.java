@@ -2024,7 +2024,10 @@ public class CSG implements IuserAPI{
 		this.markForRegeneration = false;
 		if (regenerate == null)
 			return this;
-		return regenerate.regenerate(this).setManipulator(this.getManipulator()).setColor(this.getColor());
+		CSG regenerate2 = regenerate.regenerate(this);
+		if(regenerate2!=null)
+			return regenerate2.setManipulator(this.getManipulator()).setColor(this.getColor());
+		return this;
 	}
 
 	public HashMap<String, IParametric> getMapOfparametrics() {
