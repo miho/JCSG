@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 public class JavaFXInitializer extends javafx.application.Application {
 	private static final int NUM_COUNT = 2;
 	private final static java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(NUM_COUNT);
-	
+	private static boolean errored=false;
 	public JavaFXInitializer(){
 		
 	}
@@ -29,14 +29,18 @@ public class JavaFXInitializer extends javafx.application.Application {
 		}
 		new Thread() {
 			public void run() {
-				gointernal();
+				try {
+					gointernal();
+				}catch(Throwable t) {
+					errored=true;
+				}
 			}
 		}.start();
 		try {
 			JavaFXInitializer.latch.await();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+		} catch (Throwable e) {
 			e.printStackTrace();
+			return;
 		}
 		StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
 		StackTraceElement e = stacktrace[2];//maybe this number needs to be corrected
