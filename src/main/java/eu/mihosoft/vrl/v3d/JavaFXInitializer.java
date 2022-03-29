@@ -3,7 +3,7 @@ package eu.mihosoft.vrl.v3d;
 public class JavaFXInitializer {
 	private static final int NUM_COUNT = 2;
 	private final static java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(NUM_COUNT);
-	private static boolean errored=false;
+	public static boolean errored=false;
 	public JavaFXInitializer(){
 		
 	}
@@ -24,6 +24,7 @@ public class JavaFXInitializer {
 			initApp.launch();
 		}catch(Throwable e) {
 			latch.countDown();
+			errored=true;
 		}
 	}
 	public static void go() {
@@ -44,6 +45,7 @@ public class JavaFXInitializer {
 			JavaFXInitializer.latch.await();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			errored=true;
 		}
 		StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
 		StackTraceElement e = stacktrace[2];//maybe this number needs to be corrected
