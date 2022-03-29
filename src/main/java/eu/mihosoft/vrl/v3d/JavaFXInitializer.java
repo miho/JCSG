@@ -1,8 +1,6 @@
 package eu.mihosoft.vrl.v3d;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-public class JavaFXInitializer extends javafx.application.Application {
+public class JavaFXInitializer {
 	private static final int NUM_COUNT = 2;
 	private final static java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(NUM_COUNT);
 	private static boolean errored=false;
@@ -17,8 +15,14 @@ public class JavaFXInitializer extends javafx.application.Application {
 		System.out.println("Starting JavaFX initializer..."+JavaFXInitializer.class);
 		latch.countDown();
 		try {
-			launch();
-		}catch(java.lang.IllegalStateException e) {
+			class initApp extends javafx.application.Application{
+				@Override
+				public void start(javafx.stage.Stage primaryStage) throws Exception {
+					latch.countDown();
+				}
+			}
+			initApp.launch();
+		}catch(Throwable e) {
 			latch.countDown();
 		}
 	}
@@ -40,14 +44,10 @@ public class JavaFXInitializer extends javafx.application.Application {
 			JavaFXInitializer.latch.await();
 		} catch (Throwable e) {
 			e.printStackTrace();
-			return;
 		}
 		StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
 		StackTraceElement e = stacktrace[2];//maybe this number needs to be corrected
 		System.out.println("Finished JavaFX initializing! "+e);
 	}
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		latch.countDown();
-	}
+
 }
