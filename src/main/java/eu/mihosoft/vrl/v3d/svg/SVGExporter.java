@@ -176,17 +176,28 @@ public class SVGExporter {
 		write(svg.make(), defaultDir);
 	}
 	public static void export(List<CSG> currentCsg, File defaultDir) throws IOException {
-		SVGExporter svg = new SVGExporter();
-		int i=0;
-		long start = System.currentTimeMillis();
-		for(CSG tmp:currentCsg){
-			System.out.println("Slicing CSG "+tmp.getName()+" "+(i+1)+" of "+(currentCsg.size()));
-			addCsg(tmp,svg);
-			i++;
+		try {
+			eu.mihosoft.vrl.v3d.JavaFXInitializer.go();
+		} catch (Throwable t) {
+			t.printStackTrace();
+			System.err.println("ERROR No UI engine availible");
 		}
-		
-		write(svg.make(), defaultDir);
-		System.out.println("Finished slicing CSGs took "+((((double)(System.currentTimeMillis()-start)))/1000.0)+" seconds");
+		if (!eu.mihosoft.vrl.v3d.JavaFXInitializer.errored) {
+			SVGExporter svg = new SVGExporter();
+			int i = 0;
+			long start = System.currentTimeMillis();
+			for (CSG tmp : currentCsg) {
+				System.out.println("Slicing CSG " + tmp.getName() + " " + (i + 1) + " of " + (currentCsg.size()));
+				addCsg(tmp, svg);
+				i++;
+			}
+
+			write(svg.make(), defaultDir);
+			System.out.println("Finished slicing CSGs took "
+					+ ((((double) (System.currentTimeMillis() - start))) / 1000.0) + " seconds");
+		} else {
+			System.err.println("ERROR No UI engine availible, SVG slicing is GPU accelerated and will not work");
+		}
 	}
 	private static void addCsg(CSG currentCsg, SVGExporter svg) throws IOException {
 		svg.setName(currentCsg.getName());
