@@ -15,16 +15,12 @@ public class JavaFXInitializer {
 		System.out.println("Starting JavaFX initializer..."+JavaFXInitializer.class);
 		latch.countDown();
 		try {
-			class initApp extends javafx.application.Application{
-				@Override
-				public void start(javafx.stage.Stage primaryStage) throws Exception {
-					latch.countDown();
-				}
-			}
-			initApp.launch();
+			 final javafx.embed.swing.JFXPanel fxPanel = new javafx.embed.swing.JFXPanel();
+			 latch.countDown();
 		}catch(Throwable e) {
 			latch.countDown();
 			errored=true;
+			e.printStackTrace();
 		}
 	}
 	public static void go() {
@@ -37,6 +33,7 @@ public class JavaFXInitializer {
 				try {
 					gointernal();
 				}catch(Throwable t) {
+					t.printStackTrace();
 					errored=true;
 				}
 			}
