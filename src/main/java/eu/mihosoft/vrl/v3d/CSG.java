@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -240,10 +241,16 @@ public class CSG implements IuserAPI{
 		current.setMaterial(m);
 		
 
-		if (getManipulator() != null) {
+		boolean hasManipulator = getManipulator() != null;
+		boolean hasAssembly = getStorage().getValue("AssembleAffine")!=Optional.empty();
+
+		if (hasManipulator || hasAssembly)
 			current.getTransforms().clear();
+
+		if (hasManipulator)
 			current.getTransforms().add(getManipulator());
-		}
+		if (hasAssembly)
+			current.getTransforms().add((Affine)getStorage().getValue("AssembleAffine").get());
 
 		current.setCullFace(CullFace.NONE);
 		return current;
@@ -2187,4 +2194,24 @@ public class CSG implements IuserAPI{
 		this.storage = storage;
 	}
 	
+	CSG addAssemblyStep(int stepNumber, Transform explodedPose) {
+		String key = "AssemblySteps";
+		PropertyStorage incomingGetStorage = getStorage();
+		if(incomingGetStorage.getValue(key)==Optional.empty()) {
+			HashMap<Integer,Transform> map= new HashMap<>();
+			incomingGetStorage.set(key, map);
+		}
+		if(incomingGetStorage.getValue("MaxAssemblyStep")==Optional.empty()) {
+			incomingGetStorage.set("MaxAssemblyStep", Integer.valueOf(stepNumber));
+		}
+		Integer max = (Integer) incomingGetStorage.getValue("MaxAssemblyStep").get();
+		if(stepNumber>max.intValue()) {
+			incomingGetStorage.set("MaxAssemblyStep", Integer.valueOf(stepNumber));
+		}
+		HashMap<Integer,Transform> map=(HashMap<Integer, Transform>) incomingGetStorage.getValue(key).get();
+		map.put(stepNumber, explodedPose);
+		if(incomingGetStorage.getValue("AssembleAffine")==Optional.empty())
+			incomingGetStorage.set("AssembleAffine", new Affine());
+		return this;
+	}
 }
