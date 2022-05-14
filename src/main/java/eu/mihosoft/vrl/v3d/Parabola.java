@@ -68,9 +68,17 @@ public class Parabola {
     }
     return eu.mihosoft.vrl.v3d.ext.quickhull3d.HullUtil.hull(pointsOut);
   }
+  
+  public static CSG cone(double Radius, double height) {
+	    return coneByHeight(Radius,height,0).rotx(90).toZMin();
+  }
+  public static CSG cone(double Radius, double height, double b) {
+		    return coneByHeight(Radius,height,b).rotx(90).toZMin();
+  }
   public static CSG coneByHeight(double Radius, double height) {
     return coneByHeight(Radius,height,0);
   }
+  
   public static CSG coneByHeight(double Radius, double height, double b) {
     double a=(height-(b*Radius))/(Radius*Radius);
     ArrayList<Vector3d> points = new Parabola().fromEquation(Radius, a, b).getpoints();// upper
