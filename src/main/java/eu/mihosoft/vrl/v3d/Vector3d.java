@@ -608,17 +608,17 @@ public class Vector3d extends javax.vecmath.Vector3d{
         return result;
 
     }
-    public double getX() {
-		// TODO Auto-generated method stub
-		return x;
-	}
-    public double getY() {
-		// TODO Auto-generated method stub
-		return y;
-	}
-	public double getZ() {
-		// TODO Auto-generated method stub
-		return z;
-	}
+//    public double getX() {
+//		// TODO Auto-generated method stub
+//		return x;
+//	}
+//    public double getY() {
+//		// TODO Auto-generated method stub
+//		return y;
+//	}
+//	public double getZ() {
+//		// TODO Auto-generated method stub
+//		return z;
+//	}
 
 }
