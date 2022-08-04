@@ -205,6 +205,19 @@ public class CSG implements IuserAPI{
 		}
 		return this;
 	}
+	/**
+	 * Sets the Temporary color.
+	 *
+	 * @param Temporary color
+	 *            the new Temporary  color
+	 */
+	public CSG setTemporaryColor(Color color) {
+		if (current != null) {
+			PhongMaterial m = new PhongMaterial(color);
+			current.setMaterial(m);
+		}
+		return this;
+	}
 
 	/**
 	 * Sets the manipulator.
