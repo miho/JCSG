@@ -246,9 +246,19 @@ public class CSG implements IuserAPI{
 	public MeshView getMesh() {
 		if (current != null)
 			return current;
+		current = newMesh();
+		return current;
+	}
+	/**
+	 * Gets the mesh.
+	 *
+	 * @return the mesh
+	 */
+	public MeshView newMesh() {
+
 		MeshContainer meshContainer = toJavaFXMesh(null);
 
-		current = meshContainer.getAsMeshViews().get(0);
+		MeshView current = meshContainer.getAsMeshViews().get(0);
 
 		PhongMaterial m = new PhongMaterial(getColor());
 		current.setMaterial(m);
@@ -268,6 +278,7 @@ public class CSG implements IuserAPI{
 		current.setCullFace(CullFace.NONE);
 		return current;
 	}
+	
 
 	/**
 	 * To z min.
