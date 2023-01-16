@@ -619,10 +619,29 @@ public class Extrude {
 
 			slice.set(i, sweep);
 		}
-
 		return slice;
 	}
+	
+	public static ArrayList<CSG> hull(ArrayList<CSG> s, ArrayList<Transform> p) {
+		ArrayList<CSG> slice=move(s, p);
+		for (int i = 0; i < slice.size() - 1; i++) {
+			// Polygon p1 =Slice.slice(slice.get(i), new Transform(), 0).get(0);
+			// Polygon p2 =Slice.slice(slice.get(i+1), new Transform(), 0).get(0);
+			// CSG sweep = polygons(p1, p2);
+			CSG sweep = HullUtil.hull(slice.get(i), slice.get(i + 1));
 
+			slice.set(i, sweep);
+		}
+		return slice;
+	}
+	public static ArrayList<CSG> hull(CSG c, ArrayList<Transform> p) {
+		ArrayList<CSG> s = new ArrayList<>();
+		for(int i=0;i<p.size();i++) {
+			s.add(c.clone());
+		}
+		return hull(s,  p) ;
+	}
+	
 	public static ArrayList<CSG> linear(ArrayList<CSG> s, ArrayList<Double> endPoint) {
 		ArrayList<Double> start = (ArrayList<Double>) Arrays.asList(0.0, 0.0, 0.0);
 		return bezier(s, start, endPoint, endPoint);
