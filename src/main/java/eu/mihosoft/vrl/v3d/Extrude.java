@@ -58,10 +58,8 @@ public class Extrude {
 		 * Extrudes the specified path (convex or concave polygon without holes or
 		 * intersections, specified in CCW) into the specified direction.
 		 *
-		 * @param dir
-		 *            direction
-		 * @param points
-		 *            path (convex or concave polygon without holes or intersections)
+		 * @param dir    direction
+		 * @param points path (convex or concave polygon without holes or intersections)
 		 *
 		 * @return a CSG object that consists of the extruded polygon
 		 */
@@ -75,10 +73,8 @@ public class Extrude {
 		/**
 		 * Extrude.
 		 *
-		 * @param dir
-		 *            the dir
-		 * @param polygon1
-		 *            the polygon1
+		 * @param dir      the dir
+		 * @param polygon1 the polygon1
 		 * @return the csg
 		 */
 		public CSG extrude(Vector3d dir, Polygon polygon1) {
@@ -134,7 +130,7 @@ public class Extrude {
 	public static CSG polygons(Polygon polygon1, Number zDistance) {
 		return polygons(polygon1, polygon1.transformed(new Transform().movez(zDistance)));
 	}
-	
+
 	public static CSG polygons(Polygon polygon1, Polygon polygon2) {
 		// if(!isCCW(polygon1)) {
 		// polygon1=Polygon.fromPoints(toCCW(polygon1.getPoints()));
@@ -176,15 +172,15 @@ public class Extrude {
 	}
 
 	public static ArrayList<CSG> polygons(eu.mihosoft.vrl.v3d.Polygon polygon1, ArrayList<Transform> transforms) {
-		if(transforms.size()==1)
+		if (transforms.size() == 1)
 			transforms.add(0, new Transform());
 		polygon1 = Polygon.fromPoints(toCCW(polygon1.getPoints()));
-		if(transforms.size()<2) {
+		if (transforms.size() < 2) {
 			transforms.add(0, new Transform());
 		}
 		ArrayList<CSG> parts = new ArrayList<>();
 		Transform transform = new Transform();
-		//transform.rotY(90);
+		// transform.rotY(90);
 		for (int i = 0; i < transforms.size() - 1; i++) {
 			CSG tmp = polygons(polygon1.transformed(transform).transformed(transforms.get(i)),
 					polygon1.transformed(transform).transformed(transforms.get(i + 1)));
@@ -193,9 +189,10 @@ public class Extrude {
 		return parts;
 
 	}
-	public static ArrayList<CSG> polygons(eu.mihosoft.vrl.v3d.Polygon polygon1, Transform ...transformparts) {
 
-		return polygons(polygon1,(ArrayList<Transform>) Arrays.asList(transformparts));
+	public static ArrayList<CSG> polygons(eu.mihosoft.vrl.v3d.Polygon polygon1, Transform... transformparts) {
+
+		return polygons(polygon1, (ArrayList<Transform>) Arrays.asList(transformparts));
 
 	}
 
@@ -208,10 +205,8 @@ public class Extrude {
 	 * Extrudes the specified path (convex or concave polygon without holes or
 	 * intersections, specified in CCW) into the specified direction.
 	 *
-	 * @param dir
-	 *            direction
-	 * @param points
-	 *            path (convex or concave polygon without holes or intersections)
+	 * @param dir    direction
+	 * @param points path (convex or concave polygon without holes or intersections)
 	 *
 	 * @return a CSG object that consists of the extruded polygon
 	 */
@@ -223,8 +218,7 @@ public class Extrude {
 	/**
 	 * To ccw.
 	 *
-	 * @param points
-	 *            the points
+	 * @param points the points
 	 * @return the list
 	 */
 	public static List<Vector3d> toCCW(List<Vector3d> points) {
@@ -241,8 +235,7 @@ public class Extrude {
 	/**
 	 * To cw.
 	 *
-	 * @param points
-	 *            the points
+	 * @param points the points
 	 * @return the list
 	 */
 	static List<Vector3d> toCW(List<Vector3d> points) {
@@ -259,8 +252,7 @@ public class Extrude {
 	/**
 	 * Checks if is ccw.
 	 *
-	 * @param polygon
-	 *            the polygon
+	 * @param polygon the polygon
 	 * @return true, if is ccw
 	 */
 	public static boolean isCCW(Polygon polygon) {
@@ -327,10 +319,8 @@ public class Extrude {
 	/**
 	 * Normalized x.
 	 *
-	 * @param v1
-	 *            the v1
-	 * @param v2
-	 *            the v2
+	 * @param v1 the v1
+	 * @param v2 the v2
 	 * @return the double
 	 */
 	private static double normalizedX(Vector3d v1, Vector3d v2) {
@@ -418,7 +408,7 @@ public class Extrude {
 		BezierPath path2 = new BezierPath();
 		path2.parsePathString(pathStringB);
 
-		return bezierToTransforms(path, path2, resolution);
+		return bezierToTransforms(path, path2, resolution, null, null);
 	}
 
 	public static ArrayList<CSG> moveAlongProfile(CSG object, List<List<Vector3d>> points, int resolution) {
@@ -435,7 +425,7 @@ public class Extrude {
 		path2.parsePathString("C " + controlA.x + "," + controlA.z + " " + controlB.x + "," + controlB.z + " "
 				+ endPoint.x + "," + endPoint.z);
 
-		return bezierToTransforms(path, path2, iterations);
+		return bezierToTransforms(path, path2, iterations, controlA, controlB);
 	}
 
 	public static ArrayList<Transform> bezierToTransforms(List<Vector3d> parts, int iterations) {
@@ -450,14 +440,48 @@ public class Extrude {
 		return bezierToTransforms(parts.get(0), parts.get(1), parts.get(2), parts.get(3), iterations);
 	}
 
-	public static ArrayList<Transform> bezierToTransforms(BezierPath pathA, BezierPath pathB, int iterations) {
+	private Transform toTransform() {
+
+		return null;
+	}
+
+	public static ArrayList<Transform> bezierToTransforms(BezierPath pathA, BezierPath pathB, int iterations,
+			Vector3d controlA, Vector3d controlB) {
+		double d = 1.0 / (double) iterations;
 		ArrayList<Transform> p = new ArrayList<Transform>();
 		Vector3d pointAStart = pathA.eval(0);
 		Vector3d pointBStart = pathB.eval(0);
 		double x = pointAStart.x, y = pointAStart.y, z = pointBStart.y;
 		double lastx = x, lasty = y, lastz = z;
 		// float min = (float) 0.0001;
-		for (int i = 0; i < iterations - 1; i++) {
+		int startIndex = 0;
+		if (controlA != null) {
+			startIndex = 1;
+			double ydiff = controlA.y - y;
+			double zdiff = controlA.z - z;
+			double xdiff = controlA.x - x;
+			double rise = zdiff;
+			double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
+			double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
+			// System.out.println("Rot z = "+rotz+" x="+xdiff+" y="+ydiff);
+			double roty = Math.toDegrees(Math.atan2(rise, run));
+			Transform t = new Transform();
+			t.translateX(x);
+			t.translateY(y);
+			t.translateZ(z);
+			t.rotZ(-rotz);
+			t.rotY(roty);
+			p.add(t);
+		}
+		Transform t;
+		double ydiff;
+		double zdiff;
+		double xdiff;
+		double rise;
+		double run;
+		double rotz;
+		double roty;
+		for (int i = startIndex; i < iterations - 1; i++) {
 			float pathFunction = (float) (((float) i) / ((float) (iterations - 1)));
 
 			Vector3d pointA = pathA.eval(pathFunction);
@@ -467,26 +491,26 @@ public class Extrude {
 			y = pointA.y;
 			z = pointB.y;
 
-			Transform t = new Transform();
+			t = new Transform();
 			t.translateX(x);
 			t.translateY(y);
 			t.translateZ(z);
 
-			Vector3d pointAEst = pathA.eval((float) (pathFunction + (1.0 / (double) iterations)));
-			Vector3d pointBEst = pathB.eval((float) (pathFunction + (1.0 / (double) iterations)));
+			Vector3d pointAEst = pathA.eval((float) (pathFunction + d));
+			Vector3d pointBEst = pathB.eval((float) (pathFunction + d));
 			double xest = pointAEst.x;
 			double yest = pointAEst.y;
 			double zest = pointBEst.y;
-			double ydiff = yest - y;
-			double zdiff = zest - z;
-			double xdiff = xest - x;
+			ydiff = yest - y;
+			zdiff = zest - z;
+			xdiff = xest - x;
 			// t.rotX(45-Math.toDegrees(Math.atan2(zdiff,ydiff)))
 
-			double rise = zdiff;
-			double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
-			double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
+			rise = zdiff;
+			run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
+			rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
 			// System.out.println("Rot z = "+rotz+" x="+xdiff+" y="+ydiff);
-			double roty = Math.toDegrees(Math.atan2(rise, run));
+			roty = Math.toDegrees(Math.atan2(rise, run));
 
 			t.rotZ(-rotz);
 			t.rotY(roty);
@@ -498,25 +522,31 @@ public class Extrude {
 			lasty = y;
 			lastz = z;
 		}
+
 		Vector3d pointA = pathA.eval((float) 1);
 		Vector3d pointB = pathB.eval((float) 1);
 
 		x = pointA.x;
 		y = pointA.y;
 		z = pointB.y;
-		Transform t = new Transform();
+		t = new Transform();
 		t.translateX(x);
 		t.translateY(y);
 		t.translateZ(z);
+		if (controlB != null) {
+			lastx = controlB.x;
+			lasty = controlB.y;
+			lastz = controlB.z;
+		}
 
-		double ydiff = y - lasty;
-		double zdiff = z - lastz;
-		double xdiff = x - lastx;
+		ydiff = y - lasty;
+		zdiff = z - lastz;
+		xdiff = x - lastx;
 
-		double rise = zdiff;
-		double run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
-		double rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
-		double roty = Math.toDegrees(Math.atan2(rise, run));
+		rise = zdiff;
+		run = Math.sqrt((ydiff * ydiff) + (xdiff * xdiff));
+		rotz = 90 - Math.toDegrees(Math.atan2(xdiff, ydiff));
+		roty = Math.toDegrees(Math.atan2(rise, run));
 
 		t.rotZ(-rotz);
 		t.rotY(roty);
@@ -539,45 +569,47 @@ public class Extrude {
 		// newParts.remove(parts.size()-1)
 		// newParts.remove(0)
 		// System.out.println("Parsing "+startString+" \nand\n"+b);
-		return bezierToTransforms(path, path2, iterations);
+		return bezierToTransforms(path, path2, iterations, controlA, controlB);
 	}
 
 	public static ArrayList<CSG> revolve(CSG slice, double radius, int numSlices) {
 		return revolve(slice, radius, 360.0, null, numSlices);
 	}
+
 	public static ArrayList<CSG> revolve(Polygon poly, int numSlices) {
-		return revolve( poly, 0,  numSlices);
+		return revolve(poly, 0, numSlices);
 	}
+
 	public static ArrayList<CSG> revolve(Polygon poly, double radius, int numSlices) {
 		ArrayList<CSG> parts = new ArrayList<CSG>();
 		ArrayList<Polygon> slices = new ArrayList<Polygon>();
-		
-		for(int i=0;i<numSlices;i++ ) {	
-			double angle = 360.0/((double)numSlices)*((double)i);
+
+		for (int i = 0; i < numSlices; i++) {
+			double angle = 360.0 / ((double) numSlices) * ((double) i);
 			slices.add(poly.transformed(new Transform().movex(radius).roty(angle)));
 		}
-		for(int i=0;i<slices.size();i++) {
-			int next=i+1;
-			if(next==slices.size())
-				next=0;
-			//println "Extruding "+i+" to "+next
-			parts.add(Extrude.polygons(slices.get(i),slices.get(next)));
+		for (int i = 0; i < slices.size(); i++) {
+			int next = i + 1;
+			if (next == slices.size())
+				next = 0;
+			// println "Extruding "+i+" to "+next
+			parts.add(Extrude.polygons(slices.get(i), slices.get(next)));
 		}
-		
+
 		return parts;
 	}
+
 	public static ArrayList<CSG> revolve(CSG slice, double radius, double archLen, int numSlices) {
 		return revolve(slice, radius, archLen, null, numSlices);
 	}
-	
 
 	public static ArrayList<CSG> revolve(CSG slice, double radius, double archLen, List<List<Vector3d>> points,
 			int numSlices) {
 		ArrayList<CSG> parts = new ArrayList<CSG>();
 		double slices = (double) numSlices;
-		double increment = archLen /slices;
+		double increment = archLen / slices;
 		CSG slicePRofile = slice.movey(radius);
-		
+
 		for (double i = 0; i < (archLen + increment); i += increment) {
 			parts.add(slicePRofile.rotz(i));
 		}
@@ -589,8 +621,8 @@ public class Extrude {
 			}
 		}
 		for (int i = 0; i < parts.size() - 1; i++) {
-			
-			CSG sweep = CSG.hullAll(parts.get(i),parts.get(i + 1));
+
+			CSG sweep = CSG.hullAll(parts.get(i), parts.get(i + 1));
 			parts.set(i, sweep);
 		}
 
@@ -621,9 +653,9 @@ public class Extrude {
 		}
 		return slice;
 	}
-	
+
 	public static ArrayList<CSG> hull(ArrayList<CSG> s, ArrayList<Transform> p) {
-		ArrayList<CSG> slice=move(s, p);
+		ArrayList<CSG> slice = move(s, p);
 		for (int i = 0; i < slice.size() - 1; i++) {
 			// Polygon p1 =Slice.slice(slice.get(i), new Transform(), 0).get(0);
 			// Polygon p2 =Slice.slice(slice.get(i+1), new Transform(), 0).get(0);
@@ -634,14 +666,15 @@ public class Extrude {
 		}
 		return slice;
 	}
+
 	public static ArrayList<CSG> hull(CSG c, ArrayList<Transform> p) {
 		ArrayList<CSG> s = new ArrayList<>();
-		for(int i=0;i<p.size();i++) {
+		for (int i = 0; i < p.size(); i++) {
 			s.add(c.clone());
 		}
-		return hull(s,  p) ;
+		return hull(s, p);
 	}
-	
+
 	public static ArrayList<CSG> linear(ArrayList<CSG> s, ArrayList<Double> endPoint) {
 		ArrayList<Double> start = (ArrayList<Double>) Arrays.asList(0.0, 0.0, 0.0);
 		return bezier(s, start, endPoint, endPoint);
@@ -696,13 +729,13 @@ public class Extrude {
 
 	public static ArrayList<CSG> moveBezier(CSG slice, BezierPath pathA, BezierPath pathB, int iterations) {
 
-		ArrayList<Transform> p = bezierToTransforms(pathA, pathB, iterations);
+		ArrayList<Transform> p = bezierToTransforms(pathA, pathB, iterations, null, null);
 		return move(slice, p);
 
 	}
 
 	public static Polygon toCCW(Polygon concave) {
-		if(!isCCW(concave)) {	
+		if (!isCCW(concave)) {
 			List<Vector3d> points = concave.getPoints();
 			List<Vector3d> result = new ArrayList<>(points);
 			Collections.reverse(result);
