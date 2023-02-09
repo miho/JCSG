@@ -272,6 +272,22 @@ public class Transform {
 		return t1.z;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		javax.vecmath.Vector3d t1 = new javax.vecmath.Vector3d();
+		getInternalMatrix().get(t1);
+		Quat4d q1 = new Quat4d();
+		getInternalMatrix().get(q1);
+		
+		return "X="+t1.x+" Y="+t1.y+" Z="+t1.z+" Qx="+ q1.x+" Qy="+q1.y+" Qz="+q1.z+" Qw="+q1.w;
+	}
+
+
 	/**
 	 * Applies a translation operation to this transform.
 	 *
@@ -562,15 +578,6 @@ public class Transform {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return getInternalMatrix().toString();
-	}
 
 	public Matrix4d getInternalMatrix() {
 		return m;
