@@ -1923,7 +1923,7 @@ public class CSG implements IuserAPI{
 			}
 		}
 		this.setColor(dyingCSG.getColor());
-		setName(getName()+dyingCSG.getName());
+		setName(getName().length()==0?dyingCSG.getName():name);
 		return this;
 	}
 
