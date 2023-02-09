@@ -799,7 +799,7 @@ public class CSG implements IuserAPI{
 			result = result.union(csg);
 			if(Thread.interrupted())
 				break;
-			progressMoniter.progressUpdate(i, csgs.size(), " Union ", result);
+			progressMoniter.progressUpdate(i, csgs.size(), "Union", result);
 		}
 
 		return result;
@@ -1908,21 +1908,22 @@ public class CSG implements IuserAPI{
 	public CSG historySync(CSG dyingCSG) {
 		if(useStackTraces) {
 			this.addCreationEventStringList(dyingCSG.getCreationEventStackTraceList());
-			Set<String> params = dyingCSG.getParameters();
-			for (String param : params) {
-				boolean existing = false;
-				for (String s : this.getParameters()) {
-					if (s.contentEquals(param))
-						existing = true;
-				}
-				if (!existing) {
-					Parameter vals = CSGDatabase.get(param);
-					if (vals != null)
-						this.setParameter(vals, dyingCSG.getMapOfparametrics().get(param));
-				}
-			}
-			this.setColor(dyingCSG.getColor());
 		}
+		Set<String> params = dyingCSG.getParameters();
+		for (String param : params) {
+			boolean existing = false;
+			for (String s : this.getParameters()) {
+				if (s.contentEquals(param))
+					existing = true;
+			}
+			if (!existing) {
+				Parameter vals = CSGDatabase.get(param);
+				if (vals != null)
+					this.setParameter(vals, dyingCSG.getMapOfparametrics().get(param));
+			}
+		}
+		this.setColor(dyingCSG.getColor());
+		setName(getName()+dyingCSG.getName());
 		return this;
 	}
 
