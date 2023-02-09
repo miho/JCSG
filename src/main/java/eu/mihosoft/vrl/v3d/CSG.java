@@ -842,8 +842,8 @@ public class CSG implements IuserAPI{
 		return unionAll(Arrays.asList(csgs));
 	}
 	public static CSG unionAll(List<CSG> csgs){
-		CSG first = csgs.remove(0);
-		return first.union(csgs);
+		CSG first = csgs.get(0);
+		return first.union(csgs.stream().skip(1).collect(Collectors.toList()));
 	}
 	
 	public static CSG hullAll(CSG... csgs){
@@ -943,7 +943,11 @@ public class CSG implements IuserAPI{
 			allPolygons.addAll(csg.getPolygons());
 		}
 		bounds = null;
-		return CSG.fromPolygons(allPolygons).optimization(getOptType());
+		CSG back =CSG.fromPolygons(allPolygons).optimization(getOptType());
+		if(getName().length()!=0 && csg.getName().length()!=0 ) {
+			back.setName(name+" unioned to "+csg.getName());
+		}
+		return back;
 	}
 
 	/**
@@ -975,8 +979,11 @@ public class CSG implements IuserAPI{
 			allPolygons.addAll(this.getPolygons());
 			allPolygons.addAll(csg.getPolygons());
 		}
-
-		return CSG.fromPolygons(allPolygons).optimization(getOptType());
+		CSG back =CSG.fromPolygons(allPolygons).optimization(getOptType());
+		if(getName().length()!=0 && csg.getName().length()!=0 ) {
+			back.setName(name+" unioned to "+csg.getName());
+		}
+		return back;
 	}
 
 	/**
@@ -995,7 +1002,11 @@ public class CSG implements IuserAPI{
 		b.clipTo(a);
 		b.invert();
 		a.build(b.allPolygons());
-		return CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
+		CSG back = CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
+		if(getName().length()!=0 && csg.getName().length()!=0 ) {
+			back.setName(name+" unioned to "+csg.getName());
+		}
+		return back;
 	}
 
 	/**
@@ -1128,8 +1139,11 @@ public class CSG implements IuserAPI{
 
 		CSG a1 = this._differenceNoOpt(csg.getBounds().toCSG());
 		CSG a2 = this.intersect(csg.getBounds().toCSG());
-
-		return a2._differenceNoOpt(b)._unionIntersectOpt(a1).optimization(getOptType());
+		CSG BACK =a2._differenceNoOpt(b)._unionIntersectOpt(a1).optimization(getOptType());
+		if(getName().length()!=0 && csg.getName().length()!=0 ) {
+			BACK.setName(csg.getName()+" differenced from "+name);
+		}
+		return BACK;
 	}
 
 	/**
@@ -1158,8 +1172,11 @@ public class CSG implements IuserAPI{
 		List<Polygon> allPolygons = new ArrayList<>();
 		allPolygons.addAll(outer);
 		allPolygons.addAll(innerCSG._differenceNoOpt(csg).getPolygons());
-
-		return CSG.fromPolygons(allPolygons).optimization(getOptType());
+		CSG BACK =CSG.fromPolygons(allPolygons).optimization(getOptType());
+		if(getName().length()!=0 && csg.getName().length()!=0 ) {
+			BACK.setName(csg.getName()+" differenced from "+name);
+		}
+		return BACK;
 	}
 
 	/**
@@ -1184,6 +1201,9 @@ public class CSG implements IuserAPI{
 		a.invert();
 
 		CSG csgA = CSG.fromPolygons(a.allPolygons()).optimization(getOptType());
+		if(getName().length()!=0 && csg.getName().length()!=0 ) {
+			csgA.setName(csg.getName()+" differenced from "+name);
+		}
 		return csgA;
 	}
 
@@ -1215,7 +1235,11 @@ public class CSG implements IuserAPI{
 		b.clipTo(a);
 		a.build(b.allPolygons());
 		a.invert();
-		return CSG.fromPolygons(a.allPolygons()).optimization(getOptType()).historySync(csg).historySync(this);
+		CSG back = CSG.fromPolygons(a.allPolygons()).optimization(getOptType()).historySync(csg).historySync(this);
+		if(getName().length()!=0 && csg.getName().length()!=0 ) {
+			back.setName(csg.getName()+" intersection with "+name);
+		}
+		return back;
 	}
 
 	/**
@@ -1445,11 +1469,15 @@ public class CSG implements IuserAPI{
 		List<Polygon> newpolygons = this.getPolygons().stream().map(p -> p.transformed(transform))
 				.collect(Collectors.toList());
 
-		CSG result = CSG.fromPolygons(newpolygons).optimization(getOptType());
+		CSG csg = CSG.fromPolygons(newpolygons).optimization(getOptType());
 
-		result.setStorage(storage);
+		csg.setStorage(storage);
+		
+		if(getName().length()!=0 ) {
+			csg.setName(name+" transformed by["+transform+"]");
+		}
 
-		return result.historySync(this);
+		return csg.historySync(this);
 	}
 
 	/**
@@ -1923,7 +1951,8 @@ public class CSG implements IuserAPI{
 			}
 		}
 		this.setColor(dyingCSG.getColor());
-		setName(getName().length()==0?dyingCSG.getName():name);
+		if(getName().length()==0)
+			setName(dyingCSG.getName());
 		return this;
 	}
 
