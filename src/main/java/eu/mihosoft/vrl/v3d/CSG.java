@@ -267,7 +267,7 @@ public class CSG implements IuserAPI{
 		
 
 		boolean hasManipulator = getManipulator() != null;
-		boolean hasAssembly = getStorage().getValue("AssembleAffine")!=Optional.empty();
+		boolean hasAssembly = getAssemblyStorage().getValue("AssembleAffine")!=Optional.empty();
 
 		if (hasManipulator || hasAssembly)
 			current.getTransforms().clear();
@@ -275,7 +275,7 @@ public class CSG implements IuserAPI{
 		if (hasManipulator)
 			current.getTransforms().add(getManipulator());
 		if (hasAssembly)
-			current.getTransforms().add((Affine)getStorage().getValue("AssembleAffine").get());
+			current.getTransforms().add((Affine)getAssemblyStorage().getValue("AssembleAffine").get());
 
 		current.setCullFace(CullFace.NONE);
 		return current;
