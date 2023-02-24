@@ -117,7 +117,9 @@ public class CSG implements IuserAPI{
 	private OptType optType = null;
 
 	/** The storage. */
-	private PropertyStorage storage;
+	private PropertyStorage str;
+	private PropertyStorage assembly;
+	
 	/** The current. */
 	private MeshView current;
 	
@@ -863,7 +865,7 @@ public class CSG implements IuserAPI{
 	public CSG hull(List<CSG> csgs) {
 
 		CSG csgsUnion = new CSG();
-		csgsUnion.setStorage(storage);
+		//csgsUnion.setStorage(storage);
 		csgsUnion.optType = optType;
 		csgsUnion.setPolygons(this.clone().getPolygons());
 
@@ -1471,7 +1473,7 @@ public class CSG implements IuserAPI{
 
 		CSG csg = CSG.fromPolygons(newpolygons).optimization(getOptType());
 
-		csg.setStorage(storage);
+		//csg.setStorage(storage);
 		
 		if(getName().length()!=0 ) {
 			csg.setName(name+" transformed by["+transform+"]");
@@ -2241,16 +2243,16 @@ public class CSG implements IuserAPI{
 	}
 
 	public PropertyStorage getStorage() {
-		return storage;
+		return str;
 	}
 
 	public void setStorage(PropertyStorage storage) {
-		this.storage = storage;
+		this.str = storage;
 	}
 	
 	CSG addAssemblyStep(int stepNumber, Transform explodedPose) {
 		String key = "AssemblySteps";
-		PropertyStorage incomingGetStorage = getStorage();
+		PropertyStorage incomingGetStorage = getAssemblyStorage();
 		if(incomingGetStorage.getValue(key)==Optional.empty()) {
 			HashMap<Integer,Transform> map= new HashMap<>();
 			incomingGetStorage.set(key, map);
@@ -2267,5 +2269,11 @@ public class CSG implements IuserAPI{
 		if(incomingGetStorage.getValue("AssembleAffine")==Optional.empty())
 			incomingGetStorage.set("AssembleAffine", new Affine());
 		return this;
+	}
+
+	public PropertyStorage getAssemblyStorage() {
+		if(assembly==null)
+			assembly= new PropertyStorage();
+		return assembly;
 	}
 }
