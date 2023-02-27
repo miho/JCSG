@@ -378,7 +378,12 @@ public class SVGLoad {
 			newFrame.apply(new Transform().translate(toPx(transformValues[0]),
 					toPx(transformValues[1]), 0));
 
-		} else if (transformValue.contains("scale")) {
+		}else if (transformValue.contains("rotate")) {
+			String[] rotvals = transformValue.replaceAll("rotate", "").replaceAll("\\(", "")
+					.replaceAll("\\)", "").split("\\,");
+			newFrame.apply(new Transform().rotZ(Double.parseDouble(rotvals[0])));
+
+		}  else if (transformValue.contains("scale")) {
 			String[] transformValues = transformValue.replaceAll("scale", "").replaceAll("\\(", "")
 					.replaceAll("\\)", "").split("\\,");
 			// System.out.println(id.getNodeValue() + " " + transformValues);
