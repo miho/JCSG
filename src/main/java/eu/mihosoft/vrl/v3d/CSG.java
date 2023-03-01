@@ -475,6 +475,16 @@ public class CSG implements IuserAPI{
 	public CSG moveToCenterZ() {
 		return this.movez(-this.getCenterZ());
 	}
+
+	/**
+	 * moveToCenter.
+	 * Moves in x, y, z
+	 *
+	 * @return the csg
+	 */
+	public CSG moveToCenter() {
+		return this.movex(-this.getCenterX()).movey(-this.getCenterY()).movez(-this.getCenterZ());
+	}
 	
 	public  ArrayList<CSG> move( ArrayList<Transform> p) {
 		ArrayList<CSG> bits = new ArrayList<CSG>();
