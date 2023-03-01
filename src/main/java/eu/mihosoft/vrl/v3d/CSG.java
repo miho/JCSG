@@ -450,29 +450,29 @@ public class CSG implements IuserAPI{
 	}
 
 	/**
-	 * centerx.
+	 * moveToCenterX.
 	 *
 	 * @return the csg
 	 */
-	public CSG centerx() {
+	public CSG moveToCenterX() {
 		return this.movex(-this.getCenterX());
 	}
 
 	/**
-	 * centery.
+	 * moveToCenterY.
 	 *
 	 * @return the csg
 	 */
-	public CSG centery() {
+	public CSG moveToCenterY() {
 		return this.movey(-this.getCenterY());
 	}
 
 	/**
-	 * centerz.
+	 * moveToCenterZ.
 	 *
 	 * @return the csg
 	 */
-	public CSG centerz() {
+	public CSG moveToCenterZ() {
 		return this.movez(-this.getCenterZ());
 	}
 	
