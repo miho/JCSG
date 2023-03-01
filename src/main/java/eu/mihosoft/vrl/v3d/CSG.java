@@ -450,6 +450,7 @@ public class CSG implements IuserAPI{
 	}
 
 	/**
+	 * Helper function moving CSG to center X
 	 * moveToCenterX.
 	 *
 	 * @return the csg
@@ -459,6 +460,7 @@ public class CSG implements IuserAPI{
 	}
 
 	/**
+	 * Helper function moving CSG to center Y
 	 * moveToCenterY.
 	 *
 	 * @return the csg
@@ -468,6 +470,7 @@ public class CSG implements IuserAPI{
 	}
 
 	/**
+	 * Helper function moving CSG to center Z
 	 * moveToCenterZ.
 	 *
 	 * @return the csg
@@ -477,6 +480,7 @@ public class CSG implements IuserAPI{
 	}
 
 	/**
+	 * Helper function moving CSG to center X, Y, Z
 	 * moveToCenter.
 	 * Moves in x, y, z
 	 *
