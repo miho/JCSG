@@ -381,7 +381,8 @@ public class SVGLoad {
 		}else if (transformValue.contains("rotate")) {
 			String[] rotvals = transformValue.replaceAll("rotate", "").replaceAll("\\(", "")
 					.replaceAll("\\)", "").split("\\,");
-			newFrame= new Transform().rotZ(-Double.parseDouble(rotvals[0]))
+			newFrame= startingFrame.inverse()
+					.apply(new Transform().rotZ(-Double.parseDouble(rotvals[0])))
 					.apply(startingFrame);
 
 		}  else if (transformValue.contains("scale")) {
