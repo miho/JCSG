@@ -448,6 +448,47 @@ public class CSG implements IuserAPI{
 	public CSG movex(Number howFarToMove) {
 		return this.transformed(Transform.unity().translateX(howFarToMove.doubleValue()));
 	}
+
+	/**
+	 * Helper function moving CSG to center X
+	 * moveToCenterX.
+	 *
+	 * @return the csg
+	 */
+	public CSG moveToCenterX() {
+		return this.movex(-this.getCenterX());
+	}
+
+	/**
+	 * Helper function moving CSG to center Y
+	 * moveToCenterY.
+	 *
+	 * @return the csg
+	 */
+	public CSG moveToCenterY() {
+		return this.movey(-this.getCenterY());
+	}
+
+	/**
+	 * Helper function moving CSG to center Z
+	 * moveToCenterZ.
+	 *
+	 * @return the csg
+	 */
+	public CSG moveToCenterZ() {
+		return this.movez(-this.getCenterZ());
+	}
+
+	/**
+	 * Helper function moving CSG to center X, Y, Z
+	 * moveToCenter.
+	 * Moves in x, y, z
+	 *
+	 * @return the csg
+	 */
+	public CSG moveToCenter() {
+		return this.movex(-this.getCenterX()).movey(-this.getCenterY()).movez(-this.getCenterZ());
+	}
 	
 	public  ArrayList<CSG> move( ArrayList<Transform> p) {
 		ArrayList<CSG> bits = new ArrayList<CSG>();
