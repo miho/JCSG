@@ -2292,9 +2292,10 @@ public class CSG implements IuserAPI{
 	}
 	
 	/**
-	 * Adds construction tabs to a given CSG object in order to facilitate connection with other boards.
-	 * Assumes Z can be arbitrary but uniform height.
-	 * Assumes the edge having tabs added extends fully between MinX and MaxX.
+	 * Adds construction tabs to a given CSG object in order to facilitate connection with other boards and returns the CSG with tabs added plus separate fastener objects interspersed between tabs.
+	 * Assumes board thickness is the thinnest dimension.
+	 * Assumes board thickness can be arbitrary but uniform height.
+	 * Assumes the edge having tabs added extends fully between Min and Max in that dimension.
 	 * 
 	 * Example usage:
 	 * 	// Create a temporary copy of the target object, without any tabs
@@ -2307,12 +2308,12 @@ public class CSG implements IuserAPI{
 	 * 	Vector3d edgeDirection = new Vector3d(0, -1, 0);
 	 * 
 	 * 	// Define the diameter of the fastener holes to be added using a LengthParameter object
-	 * 	LengthParameter screwDiameter = new LengthParameter(0.1, "in");
+	 * 	LengthParameter screwDiameter = new LengthParameter("Screw Hole Diameter (mm)", 3, [0, 20])
 	 * 
 	 * 	// Add tabs to the temporary object using the edgeDirection and screwDiameter parameters
-	 * 	ArrayList<CSG> returned = addTabs(boardTemp, edgeDirection, screwDiameter);
+	 * 	ArrayList<CSG> returned = boardTemp.addTabs(edgeDirection, screwDiameter);
 	 * 
-	 * 	// Combine the modified temporary object with the original object, while adding the new tabs and fastener holes
+	 * 	// Combine the modified temporary object with the original object, to add the new tabs
 	 * 	board = boardTemp.union(returned.get(0));
 	 * 
 	 * 	// Add the separate fastener hole objects to the list
