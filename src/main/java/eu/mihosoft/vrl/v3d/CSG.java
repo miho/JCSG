@@ -2359,7 +2359,7 @@ public class CSG implements IuserAPI{
 	    
 	    // If the board is larger in Z than in X, assume that the board is oriented into the XY plane and rotate to flatten it onto the XY plane
 	    if (boardTemp.getMaxZ() > boardTemp.getMaxX()) {
-	    	boardTrans = boardTrans.roty(-90);
+//	    	boardTrans = boardTrans.roty(-90);
 	    }
 		
 		// Apply new cumulative transformation to the boardInput
