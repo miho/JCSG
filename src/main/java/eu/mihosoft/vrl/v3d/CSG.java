@@ -2358,7 +2358,8 @@ public class CSG implements IuserAPI{
 	    boardTrans = boardTrans.movex(-boardTemp.getMinX()).movey(-boardTemp.getMinY()).movez(-boardTemp.getMinZ());
 	    
 	    // If the board is larger in Z than in X, assume that the board is oriented into the XY plane and rotate to flatten it onto the XY plane
-	    if (boardTemp.getMaxZ() > boardTemp.getMaxX()) {
+	    if (boardTemp.getTotalZ() > boardTemp.getTotalX()) {
+	    	boardTrans = boardTrans.movex(0);
 //	    	boardTrans = boardTrans.roty(-90);
 	    }
 		
