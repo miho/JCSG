@@ -2291,6 +2291,125 @@ public class CSG implements IuserAPI{
 		this.str = storage;
 	}
 	
+	/**
+	 * Adds construction tabs to a given CSG object in order to facilitate connection with other boards.
+	 * Assumes Z can be arbitrary but uniform height.
+	 * Assumes the edge having tabs added extends fully between MinX and MaxX.
+	 * 
+	 * Example usage:
+	 * 	// Create a temporary copy of the target object, without any tabs
+	 *	CSG boardTemp = board
+	 *	
+	 *	// Instantiate a bucket to hold fastener CSG objects in
+	 *	ArrayList<CSG> fasteners = []
+	 * 	
+	 * 	// Define the direction of the edge to be tabbed using a Vector3d object, in this case the edge being in the negative Y direction
+	 * 	Vector3d edgeDirection = new Vector3d(0, -1, 0);
+	 * 
+	 * 	// Define the diameter of the fastener holes to be added using a LengthParameter object
+	 * 	LengthParameter screwDiameter = new LengthParameter(0.1, "in");
+	 * 
+	 * 	// Add tabs to the temporary object using the edgeDirection and screwDiameter parameters
+	 * 	ArrayList<CSG> returned = addTabs(boardTemp, edgeDirection, screwDiameter);
+	 * 
+	 * 	// Combine the modified temporary object with the original object, while adding the new tabs and fastener holes
+	 * 	board = boardTemp.union(returned.get(0));
+	 * 
+	 * 	// Add the separate fastener hole objects to the list
+	 * 	fasteners = returned.subList(1, returned.size());
+	 *
+	 * @param boardInput the original CSG object to add tabs to
+	 * @param edgeDirection a Vector3d object representing the direction of the edge of the board to which tabs and fastener holes will be added
+	 * @param fastenerHoleDiameter a LengthParameter object representing the diameter of the fastener holes to be added
+	 * @return an ArrayList of CSG objects representing the original board with added tabs and separate fastener hole objects
+	 * @throws Exception if the edgeDirection parameter is not a cartesian unit Vector3d object or uses an unimplemented orientation
+	 */
+	public ArrayList<CSG> addTabs(Vector3d edgeDirection, LengthParameter fastenerHoleDiameter) throws Exception {
+		
+		ArrayList<CSG> result = new ArrayList<CSG>();
+		ArrayList<CSG> fasteners = new ArrayList<CSG>();
+		
+		// Instantiate a new transformation which will capture cumulative transformations being operated on the input board, to be reversed later
+		Transform boardTrans = new Transform();
+		
+		// Determine orientation transformation, based on edgeDirection vector
+		// TODO: instead of JUST edgeDirection, use max values to also try to determine which is the cutting direction
+		if (edgeDirection.equals(Vector3d.X_ONE)) {
+			boardTrans = boardTrans.rotz(90);
+		} else if (edgeDirection.equals(Vector3d.X_ONE.negated())) {
+			boardTrans = boardTrans.rotz(-90);
+		} else if (edgeDirection.equals(Vector3d.Y_ONE)) {
+			boardTrans = boardTrans.rotz(180);
+		} else if (edgeDirection.equals(Vector3d.Y_ONE.negated())) {
+			//boardTrans = boardTrans;											// original addTabs orientation, so no transformation needed
+		} else if (edgeDirection.equals(Vector3d.Z_ONE)) {
+			throw new Exception("Invalid edge direction: TODO - Implement Z edge directions.");
+		} else if (edgeDirection.equals(Vector3d.Z_ONE.negated())) {
+			throw new Exception("Invalid edge direction: TODO - Implement Z edge directions.");
+		} else {
+			throw new Exception("Invalid edge direction: edgeDirection must be a cartesian unit Vector3d object.");
+		}
+		
+		// Apply orientation transformation
+	    CSG boardTemp = this.transformed(boardTrans);
+		
+	    // Translate the boardTemp object so that its minimum corner is at the origin, adding to cumulative transformation
+	    boardTrans = boardTrans.movex(-boardTemp.getMinX()).movey(-boardTemp.getMinY()).movez(-boardTemp.getMinZ());
+		
+		// Apply new cumulative transformation to the boardInput
+	    boardTemp = this.transformed(boardTrans);
+	    
+	    // Define the size of the tabs and the distance between tab cycles
+	    double tabSize = boardTemp.getMaxZ() * 2;
+	    double cycleSize = tabSize * 3;
+	    
+	    // Determine the minimum buffer space between the edge of the board and the tabs
+	    double minBuffer = boardTemp.getMaxZ();
+	    
+	    // Create a temporary CSG object for a single tab
+	    CSG tabTemp = new Cube(tabSize, boardTemp.getMaxZ(), boardTemp.getMaxZ()).toCSG();
+	    
+	    // Position the temporary tab object at the first tab location
+	    tabTemp = tabTemp.movex(tabTemp.getMaxX())
+	                     .movey(-tabTemp.getMaxY() + boardTemp.getMinY())
+	                     .movez(tabTemp.getMaxZ());
+
+		// Create a temporary CSG object for a single fastener hole
+		double fastenerHoleRadius = fastenerHoleDiameter.getMM() / 2.0;
+		double fastenerHoleDepth = boardTemp.getMaxZ();
+		CSG fastenerHoleTemp = new Cylinder(fastenerHoleRadius, fastenerHoleDepth).toCSG();
+		
+	    // Position the temporary fastener hole object at an initial fastener hole location that does not actually render (analogous to the first tab location, but the first tab is not associated with a fastener)
+		fastenerHoleTemp = fastenerHoleTemp.rotx(-90)
+											.movex(-tabSize)
+											.movey(0)
+											.movez(boardTemp.getMaxZ()/2);
+	    
+	    // Calculate the number of full tab-space cycles to add, not including the first tab (this is also the number of fastener objects to return)
+	    int iterNum = (int) Math.floor((boardTemp.getMaxX() - tabSize - minBuffer*2) / cycleSize);	// Round down to ensure an integer value
+	    
+	    // Calculate the clearance beyond the outermost tabs, equal on both sides and never more than minBuffer
+	    double bufferVal = (boardTemp.getMaxX() - (tabSize + cycleSize * iterNum)) / 2;
+		
+		// Add the first tab, which due to not being paired with a fastener is removed from the loop
+		boardTemp = boardTemp.union(tabTemp.movex(bufferVal));
+	    
+	    // Add the desired number of tabs & fasteners at regular intervals
+	    for(int i=1; i<=iterNum; i++) {
+	        double xVal = bufferVal + i * cycleSize;
+	        boardTemp = boardTemp.union(tabTemp.movex(xVal));
+			fasteners.add(fastenerHoleTemp.movex(xVal).transformed(boardTrans.inverse()));
+	    }
+	    
+	    // Translate the boardTemp object back to its original position
+	    boardTemp = boardTemp.transformed(boardTrans.inverse());
+		
+		result.add(boardTemp);
+		result.addAll(fasteners);
+	    
+	    return result;
+	}
+	
 	CSG addAssemblyStep(int stepNumber, Transform explodedPose) {
 		String key = "AssemblySteps";
 		PropertyStorage incomingGetStorage = getAssemblyStorage();
