@@ -2421,7 +2421,7 @@ public class CSG implements IuserAPI{
 		result.addAll(fasteners);
 	    
 	    return result;
-	}
+	} 
 	
 	CSG addAssemblyStep(int stepNumber, Transform explodedPose) {
 		String key = "AssemblySteps";
