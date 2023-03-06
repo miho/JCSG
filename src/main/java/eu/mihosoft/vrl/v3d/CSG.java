@@ -2350,7 +2350,7 @@ public class CSG implements IuserAPI{
 		} else if (edgeDirection.equals(Vector3d.Z_ONE.negated())) {
 			boardTrans = boardTrans.rotx(90);
 		} else {
-			throw new Exception("Invalid edge direction: edgeDirection must be a cartesian unit Vector3d object.");
+			throw new Exception("Invalid edge direction: edgeDirection must be a cartesian unit Vector3d object. Try Vector3d.Y_ONE.negated() - Current value: " + edgeDirection.toString());
 		}
 		
 		// Apply orientation transformation
@@ -2421,7 +2421,7 @@ public class CSG implements IuserAPI{
 		result.addAll(fasteners);
 	    
 	    return result;
-	} 
+	}
 	
 	CSG addAssemblyStep(int stepNumber, Transform explodedPose) {
 		String key = "AssemblySteps";
