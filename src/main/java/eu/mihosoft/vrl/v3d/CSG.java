@@ -2404,8 +2404,10 @@ public class CSG implements IuserAPI{
 	    // Calculate the clearance beyond the outermost tabs, equal on both sides and never more than minBuffer
 	    double bufferVal = (boardTemp.getMaxX() - (tabSize + cycleSize * iterNum)) / 2;
 		
-		// Add the first tab, which due to not being paired with a fastener is removed from the loop
-		boardTemp = boardTemp.union(tabTemp.movex(bufferVal));
+		// Add the first tab if there is enough room, which due to not being paired with a fastener is removed from the loop
+		if (boardTemp.getTotalX() > tabSize + 2 * bufferVal) {
+			boardTemp = boardTemp.union(tabTemp.movex(bufferVal));
+		}
 	    
 	    // Add the desired number of tabs & fasteners at regular intervals
 	    for(int i=1; i<=iterNum; i++) {
