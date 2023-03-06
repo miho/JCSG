@@ -2356,14 +2356,16 @@ public class CSG implements IuserAPI{
 		
 	    // Translate the boardTemp object so that its minimum corner is at the origin, adding to cumulative transformation
 	    boardTrans = boardTrans.movex(-boardTemp.getMinX()).movey(-boardTemp.getMinY()).movez(-boardTemp.getMinZ());
+		
+		// Apply translation transformation
+	    boardTemp = this.transformed(boardTrans);
 	    
 	    // If the board is larger in Z than in X, assume that the board is oriented into the XY plane and rotate to flatten it onto the XY plane
 	    if (boardTemp.getTotalZ() > boardTemp.getTotalX()) {
-	    	boardTrans = boardTrans.movex(0);
-//	    	boardTrans = boardTrans.roty(-90);
+	    	boardTrans = boardTrans.roty(-90).movez(boardTemp.getMaxX());
 	    }
 		
-		// Apply new cumulative transformation to the boardInput
+		// Apply final cumulative transformation to the boardInput
 	    boardTemp = this.transformed(boardTrans);
 	    
 	    // Define the size of the tabs and the distance between tab cycles
