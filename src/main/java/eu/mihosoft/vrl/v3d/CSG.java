@@ -2297,6 +2297,8 @@ public class CSG implements IuserAPI{
 	 * Assumes board thickness can be arbitrary but uniform height.
 	 * Assumes the edge having tabs added extends fully between Min and Max in that dimension.
 	 * 
+	 * TODO: Find the polygon defined by the XY plane slice that is perhaps 0.5mm into the normalized +Y. Add tabs to THAT polygon's minX/maxX instead of part's global minX/maxX.
+	 * 
 	 * Example usage:
 	 * 	// Create a temporary copy of the target object, without any tabs
 	 *	CSG boardTemp = board
@@ -2304,7 +2306,7 @@ public class CSG implements IuserAPI{
 	 *	// Instantiate a bucket to hold fastener CSG objects in
 	 *	ArrayList<CSG> fasteners = []
 	 * 	
-	 * 	// Define the direction of the edge to be tabbed using a Vector3d object, in this case the edge being in the negative Y direction
+	 * 	// Define the direction of the edge to be tabbed using a Vector3d object, in this case the edge facing in the negative Y direction
 	 * 	Vector3d edgeDirection = new Vector3d(0, -1, 0);
 	 * 
 	 * 	// Define the diameter of the fastener holes to be added using a LengthParameter object
@@ -2344,9 +2346,9 @@ public class CSG implements IuserAPI{
 		} else if (edgeDirection.equals(Vector3d.Y_ONE.negated())) {
 			//boardTrans = boardTrans;											// original addTabs orientation, so no transformation needed
 		} else if (edgeDirection.equals(Vector3d.Z_ONE)) {
-			throw new Exception("Invalid edge direction: TODO - Implement Z edge directions.");
+			boardTrans = boardTrans.rotx(-90);
 		} else if (edgeDirection.equals(Vector3d.Z_ONE.negated())) {
-			throw new Exception("Invalid edge direction: TODO - Implement Z edge directions.");
+			boardTrans = boardTrans.rotx(90);
 		} else {
 			throw new Exception("Invalid edge direction: edgeDirection must be a cartesian unit Vector3d object.");
 		}
@@ -2367,6 +2369,8 @@ public class CSG implements IuserAPI{
 		
 		// Apply final cumulative transformation to the boardInput
 	    boardTemp = this.transformed(boardTrans);
+	    
+	    // TODO: Here, find the polygon defined by the XY plane slice that is perhaps 0.5mm into the +Y. Add tabs to THAT polygon's minX/maxX instead of part's global minX/maxX.
 	    
 	    // Define the size of the tabs and the distance between tab cycles
 	    double tabSize = boardTemp.getMaxZ() * 2;
