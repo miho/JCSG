@@ -95,6 +95,13 @@ public class Vector3d extends javax.vecmath.Vector3d{
      * @param x x value
      * @param y y value
      */
+    public Vector3d(double x, double y) {
+
+        this.x = x;
+        this.y = y;
+        this.z = 0;
+    }
+    
     public Vector3d(Number x, Number y) {
     	
     	this(x, y, (double) 0);
