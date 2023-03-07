@@ -81,36 +81,10 @@ public class Vector3d extends javax.vecmath.Vector3d{
         this.z = z;
     }
     
-    public Vector3d(Object x, Object y, Object z) {
-    	if (x instanceof Double) {
-            this.x = (Double) x;
-    	} else if (x instanceof Number) {
-            this.x = ((Number) x).doubleValue();
-        } else if (x instanceof String) {
-            this.x = Double.parseDouble((String) x);
-        } else {
-            throw new IllegalArgumentException("Invalid type for x. Type must be double and is instead:: " + x.getClass().getName());
-        }
-
-    	if (y instanceof Double) {
-            this.y = (Double) y;
-    	} else if (y instanceof Number) {
-            this.y = ((Number) y).doubleValue();
-        } else if (y instanceof String) {
-            this.y = Double.parseDouble((String) y);
-        } else {
-            throw new IllegalArgumentException("Invalid type for y. Type must be double and is instead: " + y.getClass().getName());
-        }
-
-    	if (z instanceof Double) {
-            this.z = (Double) z;
-    	} else if (z instanceof Number) {
-            this.z = ((Number) z).doubleValue();
-        } else if (z instanceof String) {
-            this.z = Double.parseDouble((String) z);
-        } else {
-            throw new IllegalArgumentException("Invalid type for z. Type must be double and is instead:: " + z.getClass().getName());
-        }
+    public Vector3d(Number x, Number y, Number z) {
+        this.x = x.doubleValue();
+        this.y = y.doubleValue();
+        this.z = z.doubleValue();
     }
 
 
@@ -121,7 +95,7 @@ public class Vector3d extends javax.vecmath.Vector3d{
      * @param x x value
      * @param y y value
      */
-    public Vector3d(Object x, Object y) {
+    public Vector3d(Number x, Number y) {
     	
     	this(x, y, (double) 0);
     	
@@ -135,7 +109,7 @@ public class Vector3d extends javax.vecmath.Vector3d{
      * @param x x value
      * @param y y value
      */
-    public static Vector3d xy(Object x, Object y) {
+    public static Vector3d xy(Number x, Number y) {
         return new Vector3d(x,y);
     }
 
@@ -147,7 +121,7 @@ public class Vector3d extends javax.vecmath.Vector3d{
      * @param y y value
      * @param z z value
      */
-    public static Vector3d xyz(Object x, Object y, Object z) {
+    public static Vector3d xyz(Number x, Number y, Number z) {
         return new Vector3d(x,y,z);
     }
     @Override
