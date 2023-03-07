@@ -116,8 +116,11 @@ public class Vector3d extends javax.vecmath.Vector3d{
      * @param x x value
      * @param y y value
      */
-    public static Vector3d xy(Number x, Number y) {
+    public static Vector3d xy(double x, double y) {
         return new Vector3d(x,y);
+    }
+    public static Vector3d xy(Number x, Number y) {
+        return xy(x.doubleValue(),y.doubleValue());
     }
 
     /**
@@ -128,6 +131,9 @@ public class Vector3d extends javax.vecmath.Vector3d{
      * @param y y value
      * @param z z value
      */
+    public static Vector3d xyz(double x, double y, double z) {
+        return new Vector3d(x,y,z);
+    }
     public static Vector3d xyz(Number x, Number y, Number z) {
         return new Vector3d(x,y,z);
     }
