@@ -2323,52 +2323,18 @@ public class CSG implements IuserAPI{
 	 *
 	 * @param boardInput the original CSG object to add tabs to
 	 * @param edgeDirection a Vector3d object representing the direction of the edge of the board to which tabs and fastener holes will be added
-	 * @param fastenerHoleDiameter a LengthParameter object representing the diameter of the fastener holes to be added
+	 * @param fastener a CSG object representing a template fastener to be added between the tabs
 	 * @return an ArrayList of CSG objects representing the original board with added tabs and separate fastener hole objects
 	 * @throws Exception if the edgeDirection parameter is not a cartesian unit Vector3d object or uses an unimplemented orientation
 	 */
-	public ArrayList<CSG> addTabs(Vector3d edgeDirection, LengthParameter fastenerHoleDiameter) throws Exception {
+	public ArrayList<CSG> addTabs(Vector3d edgeDirection, CSG fastener) throws Exception {
 		
 		ArrayList<CSG> result = new ArrayList<CSG>();
 		ArrayList<CSG> fasteners = new ArrayList<CSG>();
 		
-		// Instantiate a new transformation which will capture cumulative transformations being operated on the input board, to be reversed later
-		Transform boardTrans = new Transform();
-		
-		// Determine orientation transformation, based on edgeDirection vector
-		// TODO: instead of JUST edgeDirection, use max values to also try to determine which is the cutting direction
-		if (edgeDirection.equals(Vector3d.X_ONE)) {
-			boardTrans = boardTrans.rotz(90);
-		} else if (edgeDirection.equals(Vector3d.X_ONE.negated())) {
-			boardTrans = boardTrans.rotz(-90);
-		} else if (edgeDirection.equals(Vector3d.Y_ONE)) {
-			boardTrans = boardTrans.rotz(180);
-		} else if (edgeDirection.equals(Vector3d.Y_ONE.negated())) {
-			//boardTrans = boardTrans;											// original addTabs orientation, so no transformation needed
-		} else if (edgeDirection.equals(Vector3d.Z_ONE)) {
-			boardTrans = boardTrans.rotx(-90);
-		} else if (edgeDirection.equals(Vector3d.Z_ONE.negated())) {
-			boardTrans = boardTrans.rotx(90);
-		} else {
-			throw new Exception("Invalid edge direction: edgeDirection must be a cartesian unit Vector3d object. Try Vector3d.Y_ONE.negated() - Current value: " + edgeDirection.toString());
-		}
-		
-		// Apply orientation transformation
+		// Apply cumulative transformation to the board
+		Transform boardTrans = addTabsReorientation(edgeDirection);
 	    CSG boardTemp = this.transformed(boardTrans);
-		
-	    // Translate the boardTemp object so that its minimum corner is at the origin, adding to cumulative transformation
-	    boardTrans = boardTrans.movex(-boardTemp.getMinX()).movey(-boardTemp.getMinY()).movez(-boardTemp.getMinZ());
-		
-		// Apply translation transformation
-	    boardTemp = this.transformed(boardTrans);
-	    
-	    // If the board is larger in Z than in X, assume that the board is oriented into the XY plane and rotate to flatten it onto the XY plane
-	    if (boardTemp.getTotalZ() > boardTemp.getTotalX()) {
-	    	boardTrans = boardTrans.roty(-90).movez(boardTemp.getMaxX());
-	    }
-		
-		// Apply final cumulative transformation to the boardInput
-	    boardTemp = this.transformed(boardTrans);
 	    
 	    // TODO: Here, find the polygon defined by the XY plane slice that is perhaps 0.5mm into the +Y. Add tabs to THAT polygon's minX/maxX instead of part's global minX/maxX.
 	    
@@ -2386,14 +2352,9 @@ public class CSG implements IuserAPI{
 	    tabTemp = tabTemp.movex(tabTemp.getMaxX())
 	                     .movey(-tabTemp.getMaxY() + boardTemp.getMinY())
 	                     .movez(tabTemp.getMaxZ());
-
-		// Create a temporary CSG object for a single fastener hole
-		double fastenerHoleRadius = fastenerHoleDiameter.getMM() / 2.0;
-		double fastenerHoleDepth = boardTemp.getMaxZ();
-		CSG fastenerHoleTemp = new Cylinder(fastenerHoleRadius, fastenerHoleDepth).toCSG();
 		
 	    // Position the temporary fastener hole object at an initial fastener hole location that does not actually render (analogous to the first tab location, but the first tab is not associated with a fastener)
-		fastenerHoleTemp = fastenerHoleTemp.rotx(-90)
+		CSG fastenerHoleTemp = fastener.rotx(-90)
 											.movex(-tabSize)
 											.movey(0)
 											.movez(boardTemp.getMaxZ()/2);
@@ -2423,6 +2384,64 @@ public class CSG implements IuserAPI{
 		result.addAll(fasteners);
 	    
 	    return result;
+	}
+
+	/**
+	 * @param edgeDirection
+	 * @return
+	 * @throws Exception
+	 */
+	private Transform addTabsReorientation(Vector3d edgeDirection) throws Exception {
+		// Instantiate a new transformation which will capture cumulative transformations being operated on the input board, to be reversed later
+		Transform boardTrans = new Transform();
+		
+		// Determine orientation transformation, based on edgeDirection vector
+		if (edgeDirection.equals(Vector3d.X_ONE)) {
+			boardTrans = boardTrans.rotz(90);
+		} else if (edgeDirection.equals(Vector3d.X_ONE.negated())) {
+			boardTrans = boardTrans.rotz(-90);
+		} else if (edgeDirection.equals(Vector3d.Y_ONE)) {
+			boardTrans = boardTrans.rotz(180);
+		} else if (edgeDirection.equals(Vector3d.Y_ONE.negated())) {
+			//boardTrans = boardTrans;											// original addTabs orientation, so no transformation needed
+		} else if (edgeDirection.equals(Vector3d.Z_ONE)) {
+			boardTrans = boardTrans.rotx(-90);
+		} else if (edgeDirection.equals(Vector3d.Z_ONE.negated())) {
+			boardTrans = boardTrans.rotx(90);
+		} else {
+			throw new Exception("Invalid edge direction: edgeDirection must be a cartesian unit Vector3d object. Try Vector3d.Y_ONE.negated() - Current value: " + edgeDirection.toString());
+		}
+		
+		// Apply orientation transformation
+	    CSG boardTemp = this.transformed(boardTrans);
+		
+	    // Translate the boardTemp object so that its minimum corner is at the origin, adding to cumulative transformation
+	    boardTrans = boardTrans.movex(-boardTemp.getMinX()).movey(-boardTemp.getMinY()).movez(-boardTemp.getMinZ());
+		
+		// Apply translation transformation
+	    boardTemp = this.transformed(boardTrans);
+	    
+	    // If the board is larger in Z than in X, assume that the board is oriented into the XY plane and rotate to flatten it onto the XY plane
+	    if (boardTemp.getTotalZ() > boardTemp.getTotalX()) {
+	    	boardTrans = boardTrans.roty(-90).movez(boardTemp.getMaxX());
+	    }
+		return boardTrans;
+	}
+	
+
+
+	public ArrayList<CSG> addTabs(Vector3d edgeDirection, LengthParameter fastenerHoleDiameter) throws Exception {
+		
+		// Apply cumulative transformation to the board
+		Transform boardTrans = addTabsReorientation(edgeDirection);
+	    CSG boardTemp = this.transformed(boardTrans);
+	    
+		// Create a temporary CSG object for a single fastener hole
+		double fastenerHoleRadius = fastenerHoleDiameter.getMM() / 2.0;
+		double fastenerHoleDepth = boardTemp.getMaxZ();
+		CSG fastenerHoleTemp = new Cylinder(fastenerHoleRadius, fastenerHoleDepth).toCSG();
+		ArrayList<CSG> result = this.addTabs(edgeDirection, fastenerHoleTemp);
+		return result;
 	}
 	
 	CSG addAssemblyStep(int stepNumber, Transform explodedPose) {
