@@ -76,11 +76,17 @@ public class Vector3d extends javax.vecmath.Vector3d{
      * @param z z value
      */
     public Vector3d(double x, double y, double z) {
-
         this.x = x;
         this.y = y;
         this.z = z;
     }
+    
+    public Vector3d(Number x, Number y, Number z) {
+        this.x = x.doubleValue();
+        this.y = y.doubleValue();
+        this.z = z.doubleValue();
+    }
+
 
     /**
      * Creates a new vector with specified {@code x}, {@code y} and
@@ -95,6 +101,12 @@ public class Vector3d extends javax.vecmath.Vector3d{
         this.y = y;
         this.z = 0;
     }
+    
+    public Vector3d(Number x, Number y) {
+    	
+    	this(x, y, (double) 0);
+    	
+    }
 
 
     /**
@@ -107,6 +119,9 @@ public class Vector3d extends javax.vecmath.Vector3d{
     public static Vector3d xy(double x, double y) {
         return new Vector3d(x,y);
     }
+    public static Vector3d xy(Number x, Number y) {
+        return xy(x.doubleValue(),y.doubleValue());
+    }
 
     /**
      * Creates a new vector with specified {@code x}, {@code y} and
@@ -117,6 +132,9 @@ public class Vector3d extends javax.vecmath.Vector3d{
      * @param z z value
      */
     public static Vector3d xyz(double x, double y, double z) {
+        return new Vector3d(x,y,z);
+    }
+    public static Vector3d xyz(Number x, Number y, Number z) {
         return new Vector3d(x,y,z);
     }
     @Override
