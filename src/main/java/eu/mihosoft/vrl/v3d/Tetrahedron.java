@@ -63,7 +63,8 @@ public class Tetrahedron extends Primitive {
      */
     @Override
     public List<Polygon> toPolygons() {
-    	
+  	  if(radius<=0)
+	  		throw new NumberFormatException("radius can not be negative");
     	double _1_sqrt2 = 1/Math.sqrt(2);
     	
     	List<Vector3d> points = new ArrayList<>();

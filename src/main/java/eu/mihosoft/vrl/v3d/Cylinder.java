@@ -209,9 +209,19 @@ public class Cylinder extends Primitive {
      */
     @Override
     public List<Polygon> toPolygons() {
+    	if(startRadius<=0)
+    		throw new NumberFormatException("startRadius can not be negative");
+    	if(endRadius<=0)
+    		throw new NumberFormatException("endRadius can not be negative");
+    	if(numSlices<3)
+    		throw new NumberFormatException("Slices can not be less than 3");
+
         final Vector3d s = getStart();
         Vector3d e = getEnd();
         final Vector3d ray = e.minus(s);
+        if(ray.z<=0)
+    		throw new NumberFormatException("Z can not be negative");
+        
         final Vector3d axisZ = ray.normalized();
         boolean isY = (Math.abs(axisZ.y) > 0.5);
         final Vector3d axisX = new Vector3d(isY ? 1 : 0, !isY ? 1 : 0, 0).

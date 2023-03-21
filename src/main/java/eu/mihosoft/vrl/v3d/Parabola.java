@@ -22,6 +22,8 @@ public class Parabola {
   }
 
   public Parabola fromEquation(double Radius, double a, double b) {
+	  if(Radius<=0)
+	  		throw new NumberFormatException("radius can not be negative");
     this.Radius = Radius;
     if (Math.abs(a) == 0) {
       throw new RuntimeException("A value in parabola must be non zero");

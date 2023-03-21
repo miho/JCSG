@@ -34,6 +34,12 @@ public class Isosceles extends Primitive {
    */
   @Override
   public List<Polygon> toPolygons() {
+	  if(w<=0)
+  		throw new NumberFormatException("w can not be negative");
+	  if(h<=0)
+	  		throw new NumberFormatException("h can not be negative");
+	  if(d<=0)
+	  		throw new NumberFormatException("d can not be negative");
       CSG polygon = Extrude.points(new Vector3d(0, 0, w),// This is the  extrusion depth
               new Vector3d(0,0),// All values after this are the points in the polygon
               new Vector3d(0,-h/2),// upper right corner

@@ -21,7 +21,13 @@ public class Wedge extends Primitive {
    * @param d depth
    */
   public Wedge(double w, double h, double d) {
-    this.w = w;
+	if (w < 0)
+			throw new RuntimeException("w must be positive");
+	if (h < 0)
+		throw new RuntimeException("w must be positive");
+	if (d < 0)
+		throw new RuntimeException("w must be positive");
+	this.w = w;
     this.h = h;
     this.d = d;
   }

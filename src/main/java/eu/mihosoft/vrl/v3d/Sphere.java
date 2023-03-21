@@ -165,6 +165,8 @@ public class Sphere extends Primitive {
      */
     @Override
     public List<Polygon> toPolygons() {
+  	  if(radius<=0)
+	  		throw new NumberFormatException("radius can not be negative");
         List<Polygon> polygons = new ArrayList<>();
 
         for (int i = 0; i < getNumSlices(); i++) {

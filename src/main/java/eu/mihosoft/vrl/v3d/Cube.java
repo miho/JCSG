@@ -119,7 +119,12 @@ public class Cube extends Primitive {
      */
     @Override
     public List<Polygon> toPolygons() {
-
+    	if(dimensions.x<=0)
+    		throw new NumberFormatException("X can not be negative");
+    	if(dimensions.y<=0)
+    		throw new NumberFormatException("Y can not be negative");
+    	if(dimensions.z<=0)
+    		throw new NumberFormatException("Z can not be negative");
         int[][][] a = {
             // position     // normal
             {{0, 4, 6, 2}, {-1, 0, 0}},

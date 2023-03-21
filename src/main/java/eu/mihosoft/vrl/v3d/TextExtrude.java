@@ -118,6 +118,8 @@ public class TextExtrude {
 	}
 
 	private TextExtrude(String text, Font font, double dir) {
+		if(dir<=0)
+	  		throw new NumberFormatException("length can not be negative");
 		this.dir = dir;
 		points = new ArrayList<>();
 		this.text=text;
