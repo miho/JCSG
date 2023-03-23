@@ -18,7 +18,7 @@ public class TetrahedronTest {
 		
 		CSG tetrahedron = new Tetrahedron(radius).toCSG();
 		CSG box = new Cube(3*radius).toCSG().difference(new Cube(2*radius).toCSG());
-		CSG insphere = new Sphere(1/3).toCSG();
+		CSG insphere = new Sphere(1.0/3.0).toCSG();
 		
 		assertTrue(tetrahedron.intersect(box).getPolygons().size() == 0);
 		assertTrue(insphere.difference(tetrahedron).getPolygons().size() == 0);
