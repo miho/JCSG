@@ -63,7 +63,8 @@ public class Octahedron extends Primitive {
      */
     @Override
     public List<Polygon> toPolygons() {
-    	
+    	if(radius<=0)
+      		throw new NumberFormatException("radius can not be negative");
     	double sqrt2_2 = Math.sqrt(2)/2;
     	
     	List<Vector3d> points = new ArrayList<>();

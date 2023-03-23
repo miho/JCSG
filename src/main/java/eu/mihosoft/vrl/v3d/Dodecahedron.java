@@ -63,7 +63,9 @@ public class Dodecahedron extends Primitive {
      */
     @Override
     public List<Polygon> toPolygons() {
-    	
+    	if(radius<=0)
+    		throw new NumberFormatException("radius can not be negative");
+
     	double phi = (Math.sqrt(5)+1)/2;
     	
     	List<Vector3d> points = new ArrayList<>();
