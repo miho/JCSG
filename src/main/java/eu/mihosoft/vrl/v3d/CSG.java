@@ -56,6 +56,7 @@ import com.neuronrobotics.interaction.CadInteractionEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.CullFace;
+import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Affine;
@@ -278,6 +279,10 @@ public class CSG implements IuserAPI{
 			current.getTransforms().add((Affine)getAssemblyStorage().getValue("AssembleAffine").get());
 
 		current.setCullFace(CullFace.NONE);
+		if(isWireFrame())
+			current.setDrawMode(DrawMode.LINE);
+		else
+			current.setDrawMode(DrawMode.FILL);
 		return current;
 	}
 	
@@ -2470,4 +2475,15 @@ public class CSG implements IuserAPI{
 			assembly= new PropertyStorage();
 		return assembly;
 	}
+	
+	public boolean isWireFrame() {
+		if(! getStorage().getValue("skeleton").isPresent())
+			return false;
+		return (boolean) getStorage().getValue("skeleton").get();
+	}
+	
+	public void setIsWireFrame(boolean b) {
+		getStorage().set("skeleton",b);
+	}
+	
 }
