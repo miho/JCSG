@@ -59,7 +59,7 @@ public class Toroid extends Primitive {
 	}
 	public Toroid(double innerRadius, double OuterRadius, int numSlices, int facets) {
 		if (innerRadius < 0)
-			throw new RuntimeException("Inner radious must be positive");
+			throw new RuntimeException("Inner radius must be positive");
 		if (innerRadius >= OuterRadius)
 			throw new RuntimeException("Outer radius must be larger than inner radius");
 		double crossSecRad = OuterRadius - innerRadius;
